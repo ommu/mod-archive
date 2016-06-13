@@ -5,7 +5,7 @@
  * @var $data ArchiveType
  * version: 0.0.1
  *
- * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
+ * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @copyright Copyright (c) 2016 Ommu Platform (ommu.co)
  * @created date 13 June 2016, 23:55 WIB
  * @link http://company.ommu.co
