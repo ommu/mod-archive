@@ -30,70 +30,42 @@
 <fieldset>
 
 	<div class="clearfix">
-		<?php echo $form->labelEx($model,'license'); ?>
+		<label>
+			<?php echo $model->getAttributeLabel('license');?> <span class="required">*</span><br/>
+			<span><?php echo Yii::t('phrase', 'Enter the your license key that is provided to you when you purchased this plugin. If you do not know your license key, please contact support team.');?></span>
+		</label>
 		<div class="desc">
-			<?php echo $form->textField($model,'license',array('size'=>32,'maxlength'=>32)); ?>
+			<?php echo $form->textField($model,'license',array('maxlength'=>32,'class'=>'span-4','disabled'=>'disabled')); ?>
 			<?php echo $form->error($model,'license'); ?>
-			<?php /*<div class="small-px silent"></div>*/?>
+			<span class="small-px"><?php echo Yii::t('phrase', 'Format: XXXX-XXXX-XXXX-XXXX');?></span>
 		</div>
 	</div>
 
-	<div class="clearfix publish">
+	<div class="clearfix">
 		<?php echo $form->labelEx($model,'permission'); ?>
 		<div class="desc">
-			<?php echo $form->checkBox($model,'permission'); ?>
-			<?php echo $form->labelEx($model,'permission'); ?>
+			<span class="small-px"><?php echo Yii::t('phrase', 'Select whether or not you want to let the public (visitors that are not logged-in) to view the following sections of your social network. In some cases (such as Profiles, Blogs, and Albums), if you have given them the option, your users will be able to make their pages private even though you have made them publically viewable here. For more permissions settings, please visit the General Settings page.');?></span>
+			<?php echo $form->radioButtonList($model, 'permission', array(
+				1 => Yii::t('phrase', 'Yes, the public can view Archive unless they are made private.'),
+				0 => Yii::t('phrase', 'No, the public cannot view Archive.'),
+			)); ?>
 			<?php echo $form->error($model,'permission'); ?>
-			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
 
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'meta_keyword'); ?>
 		<div class="desc">
-			<?php echo $form->textArea($model,'meta_keyword',array('rows'=>6, 'cols'=>50)); ?>
+			<?php echo $form->textArea($model,'meta_keyword',array('rows'=>6, 'cols'=>50, 'class'=>'span-7 smaller')); ?>
 			<?php echo $form->error($model,'meta_keyword'); ?>
-			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
 
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'meta_description'); ?>
 		<div class="desc">
-			<?php echo $form->textArea($model,'meta_description',array('rows'=>6, 'cols'=>50)); ?>
+			<?php echo $form->textArea($model,'meta_description',array('rows'=>6, 'cols'=>50, 'class'=>'span-7 smaller')); ?>
 			<?php echo $form->error($model,'meta_description'); ?>
-			<?php /*<div class="small-px silent"></div>*/?>
-		</div>
-	</div>
-
-	<div class="clearfix">
-		<?php echo $form->labelEx($model,'modified_date'); ?>
-		<div class="desc">
-			<?php
-			!$model->isNewRecord ? ($model->modified_date != '0000-00-00' ? $model->modified_date = date('d-m-Y', strtotime($model->modified_date)) : '') : '';
-			//echo $form->textField($model,'modified_date');
-			$this->widget('zii.widgets.jui.CJuiDatePicker',array(
-				'model'=>$model,
-				'attribute'=>'modified_date',
-				//'mode'=>'datetime',
-				'options'=>array(
-					'dateFormat' => 'dd-mm-yy',
-				),
-				'htmlOptions'=>array(
-					'class' => 'span-4',
-				 ),
-			)); ?>
-			<?php echo $form->error($model,'modified_date'); ?>
-			<?php /*<div class="small-px silent"></div>*/?>
-		</div>
-	</div>
-
-	<div class="clearfix">
-		<?php echo $form->labelEx($model,'modified_id'); ?>
-		<div class="desc">
-			<?php echo $form->textField($model,'modified_id',array('size'=>11,'maxlength'=>11)); ?>
-			<?php echo $form->error($model,'modified_id'); ?>
-			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
 
@@ -105,14 +77,6 @@
 	</div>
 
 </fieldset>
-<?php /*
-<div class="dialog-content">
-</div>
-<div class="dialog-submit">
-	<?php echo CHtml::submitButton($model->isNewRecord ? Yii::t('phrase', 'Create') : Yii::t('phrase', 'Save') ,array('onclick' => 'setEnableSave()')); ?>
-	<?php echo CHtml::button(Yii::t('phrase', 'Cancel'), array('id'=>'closed')); ?>
-</div>
-*/?>
 <?php $this->endWidget(); ?>
 
 
