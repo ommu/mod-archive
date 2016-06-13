@@ -22,6 +22,9 @@ plugin_menu		:
 			- urlTitle: Storys
 				urlRules: {siteType: 0,1, userLevel: 1,2}
 				urlPath: {url: o/story/manage, attr: -, icon: -}
+			- urlTitle: Type
+				urlRules: {siteType: 0,1, userLevel: 1,2}
+				urlPath: {url: o/type/manage, attr: -, icon: -}
 
 content_menu	:
 # controller o/location
@@ -32,4 +35,9 @@ content_menu	:
 # controller o/story
 	- urlTitle: Add Story
 		urlRules: {archive, o/story, manage, siteType: 0,1, userLevel: 1,2}
+		urlPath: {url: add, attr: -, icon: -}
+		
+# controller o/type
+	- urlTitle: Add Type
+		urlRules: {archive, o/type, manage, siteType: 0,1, userLevel: 1,2}
 		urlPath: {url: add, attr: -, icon: -}
