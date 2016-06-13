@@ -1,6 +1,6 @@
 <?php
 /**
- * KckrModule
+ * ArchiveModule
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @copyright Copyright (c) 2016 Ommu Platform (ommu.co)
@@ -10,7 +10,7 @@
  *----------------------------------------------------------------------------------------------------------
  */
 
-class KckrModule extends CWebModule
+class ArchiveModule extends CWebModule
 {
 	public $defaultController = 'site';
 
@@ -21,8 +21,8 @@ class KckrModule extends CWebModule
 
 		// import the module-level models and components
 		$this->setImport(array(
-			'kckr.models.*',
-			'kckr.components.*',
+			'archive.models.*',
+			'archive.components.*',
 		));
 	}
 
