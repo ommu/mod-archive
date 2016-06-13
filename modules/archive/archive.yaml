@@ -10,3 +10,26 @@ author			: Putra Sudaryanto [putra@sudaryanto.me]
 db_table_name	: 
  
 db_sql_filename	: 
+
+plugin_menu		:
+	- urlTitle: Settings
+		urlRules: {siteType: 0,1, userLevel: 1,2}
+		urlPath: {url: o/setting/edit, attr: -, icon: -}
+		submenu :
+			- urlTitle: Locations
+				urlRules: {siteType: 0,1, userLevel: 1,2}
+				urlPath: {url: o/location/manage, attr: -, icon: -}
+			- urlTitle: Storys
+				urlRules: {siteType: 0,1, userLevel: 1,2}
+				urlPath: {url: o/story/manage, attr: -, icon: -}
+
+content_menu	:
+# controller o/location
+	- urlTitle: Add Location
+		urlRules: {archive, o/location, manage, siteType: 0,1, userLevel: 1,2}
+		urlPath: {url: add, attr: -, icon: -}
+		
+# controller o/story
+	- urlTitle: Add Story
+		urlRules: {archive, o/story, manage, siteType: 0,1, userLevel: 1,2}
+		urlPath: {url: add, attr: -, icon: -}
