@@ -81,12 +81,12 @@ class Archives extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('location_id, type_id, archive_title, archive_type_id, archive_publish_year, archive_numbers', 'required'),
+			array('location_id, type_id, archive_title, archive_type_id, archive_publish_year', 'required'),
 			array('publish, location_id, type_id, story_id, archive_type_id, archive_multiple,
 				back_field', 'numerical', 'integerOnly'=>true),
 			array('archive_publish_year', 'length', 'max'=>4),
 			array('creation_id, modified_id', 'length', 'max'=>11),
-			array('story_id, archive_desc,
+			array('story_id, archive_desc, archive_numbers,
 				archive_number_single, archive_number_multiple', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -326,7 +326,6 @@ class Archives extends CActiveRecord
 					'class' => 'center',
 				),
 			);
-			$this->defaultColumns[] = 'archive_numbers';
 			$this->defaultColumns[] = array(
 				'name' => 'archive_total',
 				'value' => '$data->archive_total',
@@ -415,6 +414,19 @@ class Archives extends CActiveRecord
 				$this->creation_id = Yii::app()->user->id;
 			else
 				$this->modified_id = Yii::app()->user->id;
+		}
+		return true;
+	}
+	
+	/**
+	 * before save attributes
+	 */
+	protected function beforeSave() {
+		if(parent::beforeSave()) {	
+			if($this->archive_multiple && $this->archive_multiple == 0)
+				$this->archive_numbers = serialize($this->archive_number_single);
+			else
+				$this->archive_numbers = serialize($this->archive_number_multiple);
 		}
 		return true;
 	}

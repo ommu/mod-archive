@@ -44,12 +44,10 @@ EOP;
 )); ?>
 
 <div id="show-field" class="hide">
-	<div class="field">
-		<?php echo $form->textField($model,'archive_number_multiple[][id]', array('placeholder'=>'Detail Archive', 'class'=>'span-4')); ?>
-		<?php echo $form->textField($model,'archive_number_multiple[][start]', array('placeholder'=>'Start', 'class'=>'span-3')); ?>
-		<?php echo $form->textField($model,'archive_number_multiple[][finish]', array('placeholder'=>'Finish', 'class'=>'span-3')); ?>
-		<a class="drop" href="javascript:void(0);" title="<?php echo Yii::t('phrase', 'Drop');?>"><?php echo Yii::t('phrase', 'Drop');?></a>
-	</div>
+	<?php echo $this->renderPartial('_form_field', array(
+		'model'=>$model,
+		'form'=>$form,
+	)); ?>
 </div>
 
 <?php //begin.Messages ?>
@@ -138,15 +136,6 @@ EOP;
 		</div>
 	</div>
 
-	<div class="clearfix">
-		<?php echo $form->labelEx($model,'archive_numbers'); ?>
-		<div class="desc">
-			<?php echo $form->textArea($model,'archive_numbers',array('rows'=>6, 'cols'=>50)); ?>
-			<?php echo $form->error($model,'archive_numbers'); ?>
-			<?php /*<div class="small-px silent"></div>*/?>
-		</div>
-	</div>
-
 	<div class="clearfix publish">
 		<?php echo $form->labelEx($model,'archive_multiple'); ?>
 		<div class="desc">
@@ -156,21 +145,34 @@ EOP;
 		</div>
 	</div>
 
-	<div class="clearfix" id="single">
+	<div class="clearfix <?php echo $model->archive_multiple == 0 ? '' :'hide';?>" id="single">
 		<?php echo $form->labelEx($model,'archive_number_single'); ?>
 		<div class="desc">
-			<div>
-				<?php echo $form->textField($model,'archive_number_single[start]', array('placeholder'=>'Start', 'class'=>'span-3')); ?>
-				<?php echo $form->textField($model,'archive_number_single[finish]', array('placeholder'=>'Finish', 'class'=>'span-3')); ?>
-			</div>
+			<?php if(!$model->isNewRecord && $model->archive_multiple == 0)
+				$model->archive_number_single = unserialize($model->archive_numbers);
+			//print_r($model->archive_number_single);?>
+			<?php echo $form->textField($model,'archive_number_single[start]', array('placeholder'=>'Start', 'class'=>'span-3')); ?>
+			<?php echo $form->textField($model,'archive_number_single[finish]', array('placeholder'=>'Finish', 'class'=>'span-3')); ?>
 			<?php echo $form->error($model,'archive_number_single'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
 
-	<div class="clearfix hide" id="multiple">
+	<div class="clearfix <?php echo $model->archive_multiple == 1 ? '' :'hide';?>" id="multiple">
 		<?php echo $form->labelEx($model,'archive_number_multiple'); ?>
 		<div class="desc">
+			<?php if(!$model->isNewRecord) {
+				if($model->archive_multiple == 1)
+					$model->archive_number_multiple = unserialize($model->archive_numbers);
+				$data = count($model->archive_number_multiple)/3;
+				for($i = 0; $i<$data; $i++) {
+					echo $this->renderPartial('_form_field', array(
+						'model'=>$model,
+						'form'=>$form,
+					));
+				}
+			}				
+			print_r($model->archive_number_multiple);?>
 			<?php echo CHtml::button(Yii::t('phrase', 'Add Field'), array('id'=>'add-field')); ?>
 			<?php echo $form->error($model,'archive_number_multiple'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>

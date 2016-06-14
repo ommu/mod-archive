@@ -1,0 +1,23 @@
+<?php
+/**
+ * Archives (archives)
+ * @var $this AdminController
+ * @var $model Archives
+ * @var $form CActiveForm
+ * version: 0.0.1
+ *
+ * @author Putra Sudaryanto <putra@sudaryanto.id>
+ * @copyright Copyright (c) 2016 Ommu Platform (ommu.co)
+ * @created date 13 June 2016, 23:54 WIB
+ * @link http://company.ommu.co
+ * @contect (+62)856-299-4114
+ *
+ */
+?>
+
+<div class="field">
+	<?php echo $form->textField($model,'archive_number_multiple[][id]', array('placeholder'=>'Detail Archive', 'class'=>'span-4')); ?>
+	<?php echo $form->textField($model,'archive_number_multiple[][start]', array('placeholder'=>'Start', 'class'=>'span-3')); ?>
+	<?php echo $form->textField($model,'archive_number_multiple[][finish]', array('placeholder'=>'Finish', 'class'=>'span-3')); ?>
+	<a class="drop" href="javascript:void(0);" title="<?php echo Yii::t('phrase', 'Drop');?>"><?php echo Yii::t('phrase', 'Drop');?></a>
+</div>
