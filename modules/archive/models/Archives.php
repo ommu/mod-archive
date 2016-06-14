@@ -32,6 +32,7 @@
  * @property string $archive_desc
  * @property integer $archive_type_id
  * @property string $archive_publish_year
+ * @property integer $archive_multiple
  * @property string $archive_numbers
  * @property string $creation_date
  * @property string $creation_id
@@ -46,6 +47,8 @@ class Archives extends CActiveRecord
 	public $defaultColumns = array();
 	public $archive_total;
 	public $back_field;
+	public $archive_number_single;
+	public $archive_number_multiple;
 	
 	// Variable Search
 	public $creation_search;
@@ -79,14 +82,15 @@ class Archives extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('location_id, type_id, archive_title, archive_type_id, archive_publish_year, archive_numbers', 'required'),
-			array('publish, location_id, type_id, story_id, archive_type_id, 
+			array('publish, location_id, type_id, story_id, archive_type_id, archive_multiple,
 				back_field', 'numerical', 'integerOnly'=>true),
 			array('archive_publish_year', 'length', 'max'=>4),
 			array('creation_id, modified_id', 'length', 'max'=>11),
-			array('story_id, archive_desc', 'safe'),
+			array('story_id, archive_desc,
+				archive_number_single, archive_number_multiple', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('archive_id, publish, location_id, type_id, story_id, archive_title, archive_desc, archive_type_id, archive_publish_year, archive_numbers, creation_date, creation_id, modified_date, modified_id,
+			array('archive_id, publish, location_id, type_id, story_id, archive_title, archive_desc, archive_type_id, archive_publish_year, archive_multiple, archive_numbers, creation_date, creation_id, modified_date, modified_id,
 				archive_total, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -120,8 +124,9 @@ class Archives extends CActiveRecord
 			'story_id' => Yii::t('attribute', 'Story'),
 			'archive_title' => Yii::t('attribute', 'Title'),
 			'archive_desc' => Yii::t('attribute', 'Description'),
-			'archive_type_id' => Yii::t('attribute', 'Type ID'),
+			'archive_type_id' => Yii::t('attribute', 'Archive Type ID'),
 			'archive_publish_year' => Yii::t('attribute', 'Publish Year'),
+			'archive_multiple' => Yii::t('attribute', 'Is Multiple Archive'),
 			'archive_numbers' => Yii::t('attribute', 'Numbers'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
@@ -131,6 +136,8 @@ class Archives extends CActiveRecord
 			'modified_search' => Yii::t('attribute', 'Modified'),
 			'archive_total' => Yii::t('attribute', 'Total'),
 			'back_field' => Yii::t('attribute', 'Back to Manage'),
+			'archive_number_single' => Yii::t('attribute', 'Number Single'),
+			'archive_number_multiple' => Yii::t('attribute', 'Number Multiple'),
 		);
 		/*
 			'Archive' => 'Archive',
@@ -190,6 +197,7 @@ class Archives extends CActiveRecord
 		$criteria->compare('t.archive_desc',strtolower($this->archive_desc),true);
 		$criteria->compare('t.archive_type_id',$this->archive_type_id);
 		$criteria->compare('t.archive_publish_year',strtolower($this->archive_publish_year),true);
+		$criteria->compare('t.archive_multiple',$this->archive_multiple);
 		$criteria->compare('t.archive_numbers',strtolower($this->archive_numbers),true);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
@@ -257,6 +265,7 @@ class Archives extends CActiveRecord
 			$this->defaultColumns[] = 'archive_desc';
 			$this->defaultColumns[] = 'archive_type_id';
 			$this->defaultColumns[] = 'archive_publish_year';
+			$this->defaultColumns[] = 'archive_multiple';
 			$this->defaultColumns[] = 'archive_numbers';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';

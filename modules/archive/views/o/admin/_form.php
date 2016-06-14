@@ -13,6 +13,28 @@
  * @contect (+62)856-299-4114
  *
  */
+
+	$cs = Yii::app()->getClientScript();
+$js=<<<EOP
+	$('#Archives_archive_multiple').on('change', function() {
+		var id = $(this).prop('checked');		
+		if(id == true) {
+			$('div#multiple').slideDown();
+			$('div#single').slideUp();
+		} else {
+			$('div#single').slideDown();
+			$('div#multiple').slideUp();
+		}
+	});
+	$('input[type="button"]#add-field').on('click', function() {
+		var body = $(this).parents('form').find('div#show-field').html();
+		$('#add-field').before(body);
+	});
+	$('a.drop').live('click', function() {
+		$(this).parents('div.field').remove();
+	});
+EOP;
+	$cs->registerScript('archive', $js, CClientScript::POS_END);
 ?>
 
 <?php $form=$this->beginWidget('application.components.system.OActiveForm', array(
@@ -20,6 +42,15 @@
 	'enableAjaxValidation'=>true,
 	//'htmlOptions' => array('enctype' => 'multipart/form-data')
 )); ?>
+
+<div id="show-field" class="hide">
+	<div class="field">
+		<?php echo $form->textField($model,'archive_number_multiple[][id]', array('placeholder'=>'Detail Archive', 'class'=>'span-4')); ?>
+		<?php echo $form->textField($model,'archive_number_multiple[][start]', array('placeholder'=>'Start', 'class'=>'span-3')); ?>
+		<?php echo $form->textField($model,'archive_number_multiple[][finish]', array('placeholder'=>'Finish', 'class'=>'span-3')); ?>
+		<a class="drop" href="javascript:void(0);" title="<?php echo Yii::t('phrase', 'Drop');?>"><?php echo Yii::t('phrase', 'Drop');?></a>
+	</div>
+</div>
 
 <?php //begin.Messages ?>
 <div id="ajax-message">
@@ -85,7 +116,7 @@
 		<div class="desc">
 			<?php echo $form->textField($model,'archive_publish_year',array('maxlength'=>4, 'class'=>'span-3')); ?>
 			<?php echo $form->error($model,'archive_publish_year'); ?>
-			<?php /*<div class="small-px silent"></div>*/?>
+			<div class="small-px silent mt-5">example: 2015, 2016</div>
 		</div>
 	</div>
 
@@ -112,6 +143,36 @@
 		<div class="desc">
 			<?php echo $form->textArea($model,'archive_numbers',array('rows'=>6, 'cols'=>50)); ?>
 			<?php echo $form->error($model,'archive_numbers'); ?>
+			<?php /*<div class="small-px silent"></div>*/?>
+		</div>
+	</div>
+
+	<div class="clearfix publish">
+		<?php echo $form->labelEx($model,'archive_multiple'); ?>
+		<div class="desc">
+			<?php echo $form->checkBox($model,'archive_multiple'); ?>
+			<?php echo $form->error($model,'archive_multiple'); ?>
+			<?php /*<div class="small-px silent"></div>*/?>
+		</div>
+	</div>
+
+	<div class="clearfix" id="single">
+		<?php echo $form->labelEx($model,'archive_number_single'); ?>
+		<div class="desc">
+			<div>
+				<?php echo $form->textField($model,'archive_number_single[start]', array('placeholder'=>'Start', 'class'=>'span-3')); ?>
+				<?php echo $form->textField($model,'archive_number_single[finish]', array('placeholder'=>'Finish', 'class'=>'span-3')); ?>
+			</div>
+			<?php echo $form->error($model,'archive_number_single'); ?>
+			<?php /*<div class="small-px silent"></div>*/?>
+		</div>
+	</div>
+
+	<div class="clearfix hide" id="multiple">
+		<?php echo $form->labelEx($model,'archive_number_multiple'); ?>
+		<div class="desc">
+			<?php echo CHtml::button(Yii::t('phrase', 'Add Field'), array('id'=>'add-field')); ?>
+			<?php echo $form->error($model,'archive_number_multiple'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
