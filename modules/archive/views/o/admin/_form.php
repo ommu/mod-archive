@@ -72,10 +72,10 @@
 	</div>
 
 	<div class="clearfix">
-		<?php echo $form->labelEx($model,'archive_type_number'); ?>
+		<?php echo $form->labelEx($model,'archive_type_id'); ?>
 		<div class="desc">
-			<?php echo $form->textField($model,'archive_type_number', array('class'=>'span-3')); ?>
-			<?php echo $form->error($model,'archive_type_number'); ?>
+			<?php echo $form->textField($model,'archive_type_id', array('class'=>'span-3')); ?>
+			<?php echo $form->error($model,'archive_type_id'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
@@ -124,6 +124,20 @@
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
+	
+	<?php if($model->isNewRecord) {?>
+	<div class="clearfix">
+		<?php echo $form->labelEx($model,'back_field'); ?>
+		<div class="desc">
+			<?php echo $form->checkBox($model,'back_field'); ?>
+			<?php echo $form->error($model,'back_field'); ?>
+			<?php /*<div class="small-px silent"></div>*/?>
+		</div>
+	</div>
+	<?php } else {
+		$model->back_field = 1;
+		echo $form->hiddenField($model,'back_field');
+	}?>
 
 	<div class="submit clearfix">
 		<label>&nbsp;</label>

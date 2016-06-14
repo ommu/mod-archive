@@ -56,8 +56,8 @@
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('archive_type_number'); ?><br/>
-			<?php echo $form->textField($model,'archive_type_number'); ?>
+			<?php echo $model->getAttributeLabel('archive_type_id'); ?><br/>
+			<?php echo $form->textField($model,'archive_type_id'); ?>
 		</li>
 
 		<li>

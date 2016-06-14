@@ -155,7 +155,10 @@ class AdminController extends Controller
 			if($model->save()) {
 				Yii::app()->user->setFlash('success', Yii::t('phrase', 'Archives success created.'));
 				//$this->redirect(array('view','id'=>$model->archive_id));
-				$this->redirect(array('manage'));
+				if($model->back_field == 1)
+					$this->redirect(array('manage'));
+				else
+					$this->redirect(array('add'));
 			}
 		}
 

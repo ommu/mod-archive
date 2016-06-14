@@ -30,7 +30,7 @@
  * @property integer $story_id
  * @property string $archive_title
  * @property string $archive_desc
- * @property integer $archive_type_number
+ * @property integer $archive_type_id
  * @property string $archive_publish_year
  * @property string $archive_numbers
  * @property string $creation_date
@@ -44,6 +44,8 @@
 class Archives extends CActiveRecord
 {
 	public $defaultColumns = array();
+	public $archive_total;
+	public $back_field;
 	
 	// Variable Search
 	public $creation_search;
@@ -76,15 +78,16 @@ class Archives extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('location_id, type_id, archive_title, archive_type_number, archive_publish_year, archive_numbers', 'required'),
-			array('publish, location_id, type_id, story_id, archive_type_number', 'numerical', 'integerOnly'=>true),
+			array('location_id, type_id, archive_title, archive_type_id, archive_publish_year, archive_numbers', 'required'),
+			array('publish, location_id, type_id, story_id, archive_type_id, 
+				back_field', 'numerical', 'integerOnly'=>true),
 			array('archive_publish_year', 'length', 'max'=>4),
 			array('creation_id, modified_id', 'length', 'max'=>11),
 			array('story_id, archive_desc', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('archive_id, publish, location_id, type_id, story_id, archive_title, archive_desc, archive_type_number, archive_publish_year, archive_numbers, creation_date, creation_id, modified_date, modified_id,
-				creation_search, modified_search', 'safe', 'on'=>'search'),
+			array('archive_id, publish, location_id, type_id, story_id, archive_title, archive_desc, archive_type_id, archive_publish_year, archive_numbers, creation_date, creation_id, modified_date, modified_id,
+				archive_total, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -115,17 +118,19 @@ class Archives extends CActiveRecord
 			'location_id' => Yii::t('attribute', 'Location'),
 			'type_id' => Yii::t('attribute', 'Type'),
 			'story_id' => Yii::t('attribute', 'Story'),
-			'archive_title' => Yii::t('attribute', 'Archive Title'),
-			'archive_desc' => Yii::t('attribute', 'Archive Desc'),
-			'archive_type_number' => Yii::t('attribute', 'Archive Type Number'),
-			'archive_publish_year' => Yii::t('attribute', 'Archive Publish Year'),
-			'archive_numbers' => Yii::t('attribute', 'Archive Numbers'),
+			'archive_title' => Yii::t('attribute', 'Title'),
+			'archive_desc' => Yii::t('attribute', 'Description'),
+			'archive_type_id' => Yii::t('attribute', 'Type ID'),
+			'archive_publish_year' => Yii::t('attribute', 'Publish Year'),
+			'archive_numbers' => Yii::t('attribute', 'Numbers'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
+			'archive_total' => Yii::t('attribute', 'Total'),
+			'back_field' => Yii::t('attribute', 'Back to Manage'),
 		);
 		/*
 			'Archive' => 'Archive',
@@ -183,7 +188,7 @@ class Archives extends CActiveRecord
 		$criteria->compare('t.story_id',$this->story_id);
 		$criteria->compare('t.archive_title',strtolower($this->archive_title),true);
 		$criteria->compare('t.archive_desc',strtolower($this->archive_desc),true);
-		$criteria->compare('t.archive_type_number',$this->archive_type_number);
+		$criteria->compare('t.archive_type_id',$this->archive_type_id);
 		$criteria->compare('t.archive_publish_year',strtolower($this->archive_publish_year),true);
 		$criteria->compare('t.archive_numbers',strtolower($this->archive_numbers),true);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
@@ -198,6 +203,7 @@ class Archives extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
+		$criteria->compare('t.archive_total',$this->archive_total);
 		
 		// Custom Search
 		$criteria->with = array(
@@ -249,7 +255,7 @@ class Archives extends CActiveRecord
 			$this->defaultColumns[] = 'story_id';
 			$this->defaultColumns[] = 'archive_title';
 			$this->defaultColumns[] = 'archive_desc';
-			$this->defaultColumns[] = 'archive_type_number';
+			$this->defaultColumns[] = 'archive_type_id';
 			$this->defaultColumns[] = 'archive_publish_year';
 			$this->defaultColumns[] = 'archive_numbers';
 			$this->defaultColumns[] = 'creation_date';
@@ -278,14 +284,48 @@ class Archives extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			$this->defaultColumns[] = 'location_id';
-			$this->defaultColumns[] = 'type_id';
-			$this->defaultColumns[] = 'story_id';
 			$this->defaultColumns[] = 'archive_title';
-			$this->defaultColumns[] = 'archive_desc';
-			$this->defaultColumns[] = 'archive_type_number';
-			$this->defaultColumns[] = 'archive_publish_year';
+			$this->defaultColumns[] = array(
+				'name' => 'location_id',
+				'value' => '$data->location->location_name',
+				'filter' => ArchiveLocation::getLocation(),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'story_id',
+				'value' => '$data->story_id != "0" ? $data->story->story_name : "-"',
+				'filter' => ArchiveStory::getStory(),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'type_id',
+				'value' => '$data->type->type_name',
+				'filter' => ArchiveType::getType(),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'archive_type_id',
+				'value' => '$data->archive_type_id',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'archive_publish_year',
+				'value' => '$data->archive_publish_year',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
 			$this->defaultColumns[] = 'archive_numbers';
+			$this->defaultColumns[] = array(
+				'name' => 'archive_total',
+				'value' => '$data->archive_total',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			/*
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
 				'value' => '$data->creation_relation->displayname',
@@ -316,6 +356,7 @@ class Archives extends CActiveRecord
 					),
 				), true),
 			);
+			*/
 			if(!isset($_GET['type'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'publish',
@@ -349,6 +390,11 @@ class Archives extends CActiveRecord
 			$model = self::model()->findByPk($id);
 			return $model;			
 		}
+	}
+	
+	protected function afterFind() {
+		$this->archive_total = 0;
+		parent::afterFind();		
 	}
 
 	/**

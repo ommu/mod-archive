@@ -20,6 +20,17 @@
 	);
 ?>
 
+<?php //begin.Messages ?>
+<div id="ajax-message">
+<?php
+if(Yii::app()->user->hasFlash('error'))
+	echo Utility::flashError(Yii::app()->user->getFlash('error'));
+if(Yii::app()->user->hasFlash('success'))
+	echo Utility::flashSuccess(Yii::app()->user->getFlash('success'));
+?>
+</div>
+<?php //begin.Messages ?>
+	
 <div class="form">
 	<?php echo $this->renderPartial('_form', array('model'=>$model)); ?>
 </div>
