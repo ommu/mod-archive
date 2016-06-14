@@ -315,6 +315,30 @@ class ArchiveStory extends CActiveRecord
 	}
 
 	/**
+	 * Get Story
+	 */
+	public static function getStory($publish=null, $type=null) 
+	{		
+		$criteria=new CDbCriteria;
+		if($publish != null)
+			$criteria->compare('t.publish',$publish);
+		$model = self::model()->findAll($criteria);
+
+		if($type == null) {
+			$items = array();
+			if($model != null) {
+				foreach($model as $key => $val)
+					$items[$val->story_id] = $val->story_name.' ('.$val->story_code.')';
+				return $items;
+				
+			} else
+				return false;
+			
+		} else
+			return $model;
+	}
+
+	/**
 	 * before validate attributes
 	 */
 	protected function beforeValidate() {

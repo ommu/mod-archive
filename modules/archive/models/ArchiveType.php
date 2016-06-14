@@ -318,6 +318,30 @@ class ArchiveType extends CActiveRecord
 	}
 
 	/**
+	 * Get Type
+	 */
+	public static function getType($publish=null, $type=null) 
+	{		
+		$criteria=new CDbCriteria;
+		if($publish != null)
+			$criteria->compare('t.publish',$publish);
+		$model = self::model()->findAll($criteria);
+
+		if($type == null) {
+			$items = array();
+			if($model != null) {
+				foreach($model as $key => $val)
+					$items[$val->type_id] = $val->type_name.' ('.$val->type_code.')';
+				return $items;
+				
+			} else
+				return false;
+			
+		} else
+			return $model;
+	}
+
+	/**
 	 * before validate attributes
 	 */
 	protected function beforeValidate() {
