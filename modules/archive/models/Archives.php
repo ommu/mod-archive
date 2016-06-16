@@ -45,13 +45,13 @@
 class Archives extends CActiveRecord
 {
 	public $defaultColumns = array();
-	public $archive_code;
 	public $archive_total;
 	public $back_field;
 	public $archive_number_single;
 	public $archive_number_multiple;
 	
 	// Variable Search
+	public $code_search;
 	public $creation_search;
 	public $modified_search;
 
@@ -92,7 +92,7 @@ class Archives extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('archive_id, publish, location_id, type_id, story_id, archive_title, archive_desc, archive_type_id, archive_publish_year, archive_multiple, archive_numbers, creation_date, creation_id, modified_date, modified_id,
-				archive_code, archive_total, creation_search, modified_search', 'safe', 'on'=>'search'),
+				archive_total, code_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -109,6 +109,7 @@ class Archives extends CActiveRecord
 			'story' => array(self::BELONGS_TO, 'ArchiveStory', 'story_id'),
 			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
+			'view' => array(self::BELONGS_TO, 'ViewArchives', 'archive_id'),
 		);
 	}
 
@@ -135,8 +136,8 @@ class Archives extends CActiveRecord
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
-			'archive_code' => Yii::t('attribute', 'Code'),
 			'archive_total' => Yii::t('attribute', 'Total'),
+			'code_search' => Yii::t('attribute', 'Code'),
 			'back_field' => Yii::t('attribute', 'Back to Manage'),
 			'archive_number_single' => Yii::t('attribute', 'Number Single'),
 			'archive_number_multiple' => Yii::t('attribute', 'Number Multiple'),
@@ -219,7 +220,6 @@ class Archives extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
-		$criteria->compare('t.archive_code',$this->archive_code);
 		$criteria->compare('t.archive_total',$this->archive_total);
 		
 		// Custom Search
@@ -232,9 +232,13 @@ class Archives extends CActiveRecord
 				'alias'=>'modified_relation',
 				'select'=>'displayname',
 			),
+			'view' => array(
+				'alias'=>'view',
+			),
 		);
 		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
 		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
+		$criteria->compare('view.archive_code',strtolower($this->code_search), true);
 
 		if(!isset($_GET['Archives_sort']))
 			$criteria->order = 't.archive_id DESC';
@@ -302,7 +306,10 @@ class Archives extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			$this->defaultColumns[] = 'archive_code';
+			$this->defaultColumns[] = array(
+				'name' => 'code_search',
+				'value' => '$data->view->archive_code',
+			);
 			$this->defaultColumns[] = 'archive_title';
 			$this->defaultColumns[] = array(
 				'name' => 'location_id',
@@ -411,7 +418,7 @@ class Archives extends CActiveRecord
 	}
 
 	/**
-	 * get Total Archive
+	 * get Item Archive
 	 */
 	public static function getItemArchive($data, $type=0)
 	{
@@ -436,7 +443,7 @@ class Archives extends CActiveRecord
 	}
 
 	/**
-	 * get Total Archive
+	 * get Total Item Archive
 	 */
 	public static function getTotalItemArchive($data)
 	{
@@ -452,7 +459,7 @@ class Archives extends CActiveRecord
 	}
 
 	/**
-	 * get Detail Archive
+	 * get Detail Item Archive
 	 */
 	public static function getDetailItemArchive($data, $multiple=0)
 	{
@@ -474,7 +481,6 @@ class Archives extends CActiveRecord
 	
 	protected function afterFind() 
 	{
-		$this->archive_code = 'ommu';
 		$this->archive_total = self::getItemArchive($this->archive_numbers, $this->archive_multiple);
 		
 		parent::afterFind();		
@@ -490,10 +496,10 @@ class Archives extends CActiveRecord
 			else
 				$this->modified_id = Yii::app()->user->id;
 			
-			if($this->location->type_enable == 1 && $this->type_id == '')
-				$this->addError('type_id', 'Type cannot be blank.');
 			if($this->location->story_enable == 1 && $this->story_id == '')
 				$this->addError('story_id', 'Story cannot be blank.');
+			if($this->location->type_enable == 1 && $this->type_id == '')
+				$this->addError('type_id', 'Type cannot be blank.');
 			if($this->archive_multiple == 0 && (empty($this->archive_number_single) || $this->archive_number_single == null))
 				$this->addError('archive_number_single', 'Number Single cannot be blank.');
 			if($this->archive_multiple == 1 && (empty($this->archive_number_multiple) || $this->archive_number_multiple == null))
