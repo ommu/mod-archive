@@ -16,6 +16,14 @@ plugin_menu		:
 		urlRules: {siteType: 0,1, userLevel: 1,2}
 		urlPath: {url: o/admin/manage, attr: -, icon: -}
 		
+	- urlTitle: Statistics
+		urlRules: {siteType: 0,1, userLevel: 1,2}
+		urlPath: {url: -, attr: -, icon: -}
+		submenu :
+			- urlTitle: Years
+				urlRules: {siteType: 0,1, userLevel: 1,2}
+				urlPath: {url: statistic/year/manage, attr: -, icon: -}
+		
 	- urlTitle: Settings
 		urlRules: {siteType: 0,1, userLevel: 1,2}
 		urlPath: {url: o/setting/edit, attr: -, icon: -}

@@ -29,6 +29,7 @@
 class ViewArchiveYear extends CActiveRecord
 {
 	public $defaultColumns = array();
+	public $archive_total;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -70,7 +71,8 @@ class ViewArchiveYear extends CActiveRecord
 			array('archives', 'length', 'max'=>21),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('publish_year, archives', 'safe', 'on'=>'search'),
+			array('publish_year, archives,
+				archive_total', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -82,6 +84,7 @@ class ViewArchiveYear extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'archives' => array(self::HAS_MANY, 'Archives', 'archive_publish_year'),
 		);
 	}
 
@@ -93,6 +96,7 @@ class ViewArchiveYear extends CActiveRecord
 		return array(
 			'publish_year' => Yii::t('attribute', 'Publish Year'),
 			'archives' => Yii::t('attribute', 'Archives'),
+			'archive_total' => Yii::t('attribute', 'Total'),
 		);
 		/*
 			'Publish Year' => 'Publish Year',
@@ -121,6 +125,7 @@ class ViewArchiveYear extends CActiveRecord
 
 		$criteria->compare('t.publish_year',strtolower($this->publish_year),true);
 		$criteria->compare('t.archives',strtolower($this->archives),true);
+		$criteria->compare('t.archive_total',$this->archive_total);
 
 		if(!isset($_GET['ViewArchiveYear_sort']))
 			$criteria->order = 't.publish_year DESC';
@@ -177,6 +182,10 @@ class ViewArchiveYear extends CActiveRecord
 			);
 			$this->defaultColumns[] = 'publish_year';
 			$this->defaultColumns[] = 'archives';
+			$this->defaultColumns[] = array(
+				'name' => 'archive_total',
+				'value' => '$data->archive_total',
+			);
 		}
 		parent::afterConstruct();
 	}
@@ -197,72 +206,10 @@ class ViewArchiveYear extends CActiveRecord
 			return $model;			
 		}
 	}
-
-	/**
-	 * before validate attributes
-	 */
-	/*
-	protected function beforeValidate() {
-		if(parent::beforeValidate()) {
-			// Create action
-		}
-		return true;
-	}
-	*/
-
-	/**
-	 * after validate attributes
-	 */
-	/*
-	protected function afterValidate()
-	{
-		parent::afterValidate();
-			// Create action
-		return true;
-	}
-	*/
 	
-	/**
-	 * before save attributes
-	 */
-	/*
-	protected function beforeSave() {
-		if(parent::beforeSave()) {
-		}
-		return true;	
+	protected function afterFind() {
+		$this->archive_total = Archives::getTotalItemArchive($this->archives());
+		parent::afterFind();		
 	}
-	*/
-	
-	/**
-	 * After save attributes
-	 */
-	/*
-	protected function afterSave() {
-		parent::afterSave();
-		// Create action
-	}
-	*/
-
-	/**
-	 * Before delete attributes
-	 */
-	/*
-	protected function beforeDelete() {
-		if(parent::beforeDelete()) {
-			// Create action
-		}
-		return true;
-	}
-	*/
-
-	/**
-	 * After delete attributes
-	 */
-	/*
-	protected function afterDelete() {
-		parent::afterDelete();
-		// Create action
-	}
-	*/
 
 }
