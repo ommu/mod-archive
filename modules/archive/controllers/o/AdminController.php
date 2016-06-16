@@ -10,6 +10,8 @@
  * TOC :
  *	Index
  *	Manage
+ *	Import
+ *	ImportMultiple
  *	Add
  *	Edit
  *	View
@@ -136,7 +138,283 @@ class AdminController extends Controller
 			'model'=>$model,
 			'columns' => $columns,
 		));
-	}	
+	}
+	
+	/**
+	 * Creates a new model.
+	 * If creation is successful, the browser will be redirected to the 'view' page.
+	 */
+	public function actionImport() 
+	{
+		ini_set('max_execution_time', 0);
+		ob_start();
+		
+		$path = 'public/archive/import';
+
+		// Generate path directory
+		if(!file_exists($path)) {
+			@mkdir($path, 0755, true);
+
+			// Add File in Article Folder (index.php)
+			$newFile = $path.'/index.php';
+			$FileHandle = fopen($newFile, 'w');
+		} else
+			@chmod($path, 0755, true);
+		
+		$error = array();
+		
+		if(isset($_FILES['importExcel'])) {
+			$fileName = CUploadedFile::getInstanceByName('importExcel');
+			if(in_array(strtolower($fileName->extensionName), array('xls','xlsx'))) {				
+				$file = time().'_'.$fileName->name;
+				if($fileName->saveAs($path.'/'.$file)) {
+					Yii::import('ext.excel_reader.OExcelReader');
+					$xls = new OExcelReader($path.'/'.$file);
+					
+					for ($row = 2; $row <= $xls->sheets[0]['numRows']; $row++) {
+						$archive_code			= strtolower(trim($xls->sheets[0]['cells'][$row][1]));
+						$archive_title			= trim($xls->sheets[0]['cells'][$row][2]);
+						$location_code			= strtolower(trim($xls->sheets[0]['cells'][$row][3]));
+						$story_code				= strtolower(trim($xls->sheets[0]['cells'][$row][4]));
+						$type_name				= strtolower(trim($xls->sheets[0]['cells'][$row][5]));
+						$archive_numbers		= strtolower(trim($xls->sheets[0]['cells'][$row][6]));
+						$archive_publish_year	= strtoupper(trim($xls->sheets[0]['cells'][$row][7]));
+						$archive_desc			= trim($xls->sheets[0]['cells'][$row][8]);
+						
+						$archive_code = explode('.', $archive_code);
+						$archive_numbers = explode('-', $archive_numbers);
+						
+						if($archive_code[0] == $location_code) {
+							$location = ArchiveLocation::model()->findByAttributes(array('location_code' => $location_code), array(
+								'select' => 'location_id, story_enable, type_enable',
+							));
+							if($location->story_enable == 1) {
+								$archive_code_type = preg_replace("/[^a-zA-Z]/","",$archive_code[2]);
+								$archive_code_number = preg_replace("/[^0-9]/","",$archive_code[2]);
+								if($archive_code[1] == $story_code) {
+									$story = ArchiveStory::model()->findByAttributes(array('story_code' => $story_code), array(
+										'select' => 'story_id',
+									));
+									$type = ArchiveType::model()->findByAttributes(array('type_name' => $type_name), array(
+										'select' => 'type_id, type_code',
+									));
+									if($archive_code_type == $type->type_code) {
+										$model=new Archives;
+										$model->location_id = $location->location_id;
+										$model->type_id = $type->type_id;
+										$model->story_id = $story->story_id;
+										$model->archive_title = $archive_title;
+										$model->archive_desc = $archive_desc;
+										$model->archive_type_id = $archive_code_number;
+										$model->archive_publish_year = $archive_publish_year;
+										$model->archive_multiple = 0;
+										$model->archive_number_single = array(
+											'start'=>$archive_numbers[0],
+											'finish'=>$archive_numbers[1],
+										);
+										$model->save();
+									}
+								}
+							} else {
+								if($location->type_enable == 1) {
+									$archive_code_type = preg_replace("/[^a-zA-Z]/","",$archive_code[1]);
+									$archive_code_number = preg_replace("/[^0-9]/","",$archive_code[1]);
+									
+									$type = ArchiveType::model()->findByAttributes(array('type_name' => $type_name), array(
+										'select' => 'type_id, type_code',
+									));
+									if($archive_code_type == $type->type_code) {
+										$model=new Archives;
+										$model->location_id = $location->location_id;
+										$model->type_id = $type->type_id;
+										$model->story_id = 0;
+										$model->archive_title = $archive_title;
+										$model->archive_desc = $archive_desc;
+										$model->archive_type_id = $archive_code_number;
+										$model->archive_publish_year = $archive_publish_year;
+										$model->archive_multiple = 0;
+										$model->archive_number_single = array(
+											'start'=>$archive_numbers[0],
+											'finish'=>$archive_numbers[1],
+										);
+										$model->save();
+									}									
+								} else {
+									$model=new Archives;
+									$model->location_id = $location->location_id;
+									$model->type_id = 0;
+									$model->story_id = 0;
+									$model->archive_title = $archive_title;
+									$model->archive_desc = $archive_desc;
+									$model->archive_type_id = $archive_code[1];
+									$model->archive_publish_year = $archive_publish_year;
+									$model->archive_multiple = 0;
+									$model->archive_number_single = array(
+										'start'=>$archive_numbers[0],
+										'finish'=>$archive_numbers[1],
+									);
+									$model->save();
+								}
+							}
+						}
+					}
+					
+					Yii::app()->user->setFlash('success', 'Import Archive Single Success.');
+					$this->redirect(array('manage'));
+					
+				} else
+					Yii::app()->user->setFlash('errorFile', 'Gagal menyimpan file.');
+			} else
+				Yii::app()->user->setFlash('errorFile', 'Hanya file .xls dan .xlsx yang dibolehkan.');
+		}
+
+		ob_end_flush();
+		
+		$this->dialogDetail = true;
+		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+		$this->dialogWidth = 600;
+
+		$this->pageTitle = 'Import Archive Single';
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_import');
+	}
+	
+	/**
+	 * Creates a new model.
+	 * If creation is successful, the browser will be redirected to the 'view' page.
+	 */
+	public function actionImportMultiple() 
+	{
+		ini_set('max_execution_time', 0);
+		ob_start();
+		
+		$path = 'public/archive/import';
+
+		// Generate path directory
+		if(!file_exists($path)) {
+			@mkdir($path, 0755, true);
+
+			// Add File in Article Folder (index.php)
+			$newFile = $path.'/index.php';
+			$FileHandle = fopen($newFile, 'w');
+		} else
+			@chmod($path, 0755, true);
+		
+		$error = array();
+		
+		if(isset($_FILES['importExcel'])) {
+			$fileName = CUploadedFile::getInstanceByName('importExcel');
+			if(in_array(strtolower($fileName->extensionName), array('xls','xlsx'))) {				
+				$file = time().'_multiple_'.$fileName->name;
+				if($fileName->saveAs($path.'/'.$file)) {
+					Yii::import('ext.excel_reader.OExcelReader');
+					$xls = new OExcelReader($path.'/'.$file);
+					
+					for ($row = 2; $row <= $xls->sheets[0]['numRows']; $row++) {
+						$archive_code			= strtolower(trim($xls->sheets[0]['cells'][$row][1]));
+						$archive_title			= trim($xls->sheets[0]['cells'][$row][2]);
+						$location_code			= strtolower(trim($xls->sheets[0]['cells'][$row][3]));
+						$story_code				= strtolower(trim($xls->sheets[0]['cells'][$row][4]));
+						$type_name				= strtolower(trim($xls->sheets[0]['cells'][$row][5]));
+						$archive_numbers		= trim($xls->sheets[0]['cells'][$row][6]);
+						$archive_publish_year	= strtoupper(trim($xls->sheets[0]['cells'][$row][7]));
+						$archive_desc			= trim($xls->sheets[0]['cells'][$row][8]);
+						
+						$archive_code = explode('.', $archive_code);
+						$archive_numbers = explode('#', $archive_numbers);
+						if(!empty($archive_numbers)) {
+							foreach($archive_numbers as $key => $val) {
+								$archive_numbers[$key] = explode('-', trim($val));
+								foreach($archive_numbers[$key] as $key2 => $val2) {
+									if($key2 == 0) {
+										$archive_numbers[$key]['id'] = trim($archive_numbers[$key][0]);
+										unset($archive_numbers[$key][0]);
+									} else if($key2 == 1) {
+										$archive_numbers[$key]['start'] = trim($archive_numbers[$key][1]);
+										unset($archive_numbers[$key][1]);
+									} else if($key2 == 2) {
+										$archive_numbers[$key]['finish'] = trim($archive_numbers[$key][2]);
+										unset($archive_numbers[$key][2]);
+									}
+								}
+							}
+						}
+						
+						if($archive_code[0] == $location_code) {
+							$location = ArchiveLocation::model()->findByAttributes(array('location_code' => $location_code), array(
+								'select' => 'location_id, story_enable, type_enable',
+							));
+							if($location->story_enable == 1) {
+								$archive_code_type = preg_replace("/[^a-zA-Z]/","",$archive_code[2]);
+								$archive_code_number = preg_replace("/[^0-9]/","",$archive_code[2]);
+								if($archive_code[1] == $story_code) {
+									$story = ArchiveStory::model()->findByAttributes(array('story_code' => $story_code), array(
+										'select' => 'story_id',
+									));
+									$type = ArchiveType::model()->findByAttributes(array('type_name' => $type_name), array(
+										'select' => 'type_id, type_code',
+									));
+									if($archive_code_type == $type->type_code) {
+										$model=new Archives;
+										$model->location_id = $location->location_id;
+										$model->type_id = $type->type_id;
+										$model->story_id = $story->story_id;
+										$model->archive_title = $archive_title;
+										$model->archive_desc = $archive_desc;
+										$model->archive_type_id = $archive_code_number;
+										$model->archive_publish_year = $archive_publish_year;
+										$model->archive_multiple = 1;
+										$model->archive_number_multiple = $archive_numbers;
+										$model->save();
+									}
+								}
+							} else {
+								if($location->type_enable == 1) {
+									$archive_code_type = preg_replace("/[^a-zA-Z]/","",$archive_code[1]);
+									$archive_code_number = preg_replace("/[^0-9]/","",$archive_code[1]);
+									
+									$type = ArchiveType::model()->findByAttributes(array('type_name' => $type_name), array(
+										'select' => 'type_id, type_code',
+									));
+									if($archive_code_type == $type->type_code) {
+										$model=new Archives;
+										$model->location_id = $location->location_id;
+										$model->type_id = $type->type_id;
+										$model->story_id = 0;
+										$model->archive_title = $archive_title;
+										$model->archive_desc = $archive_desc;
+										$model->archive_type_id = $archive_code_number;
+										$model->archive_publish_year = $archive_publish_year;
+										$model->archive_multiple = 1;
+										$model->archive_number_multiple = $archive_numbers;
+										$model->save();
+									}									
+								}
+							}
+						}
+					}
+					
+					Yii::app()->user->setFlash('success', 'Import Archive Multiple Success.');
+					$this->redirect(array('manage'));
+					
+				} else
+					Yii::app()->user->setFlash('errorFile', 'Gagal menyimpan file.');
+			} else
+				Yii::app()->user->setFlash('errorFile', 'Hanya file .xls dan .xlsx yang dibolehkan.');
+		}
+
+		ob_end_flush();
+		
+		$this->dialogDetail = true;
+		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+		$this->dialogWidth = 600;
+
+		$this->pageTitle = 'Import Archive Multiple';
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_import');
+	}
 	
 	/**
 	 * Creates a new model.

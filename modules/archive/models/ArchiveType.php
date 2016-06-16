@@ -39,6 +39,7 @@
 class ArchiveType extends CActiveRecord
 {
 	public $defaultColumns = array();
+	public $archive_total;
 	
 	// Variable Search
 	public $creation_search;
@@ -80,7 +81,7 @@ class ArchiveType extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('type_id, publish, type_name, type_desc, type_code, creation_date, creation_id, modified_date, modified_id,
-				creation_search, modified_search', 'safe', 'on'=>'search'),
+				archive_total, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -93,8 +94,11 @@ class ArchiveType extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'archives' => array(self::HAS_MANY, 'Archives', 'type_id'),
+			'archive_publish' => array(self::HAS_MANY, 'Archives', 'type_id', 'on'=>'archive_publish.publish = 1'),
+			'archive_unpublish' => array(self::HAS_MANY, 'Archives', 'type_id', 'on'=>'archive_unpublish.publish = 1'),
 			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
+			'view' => array(self::BELONGS_TO, 'ViewArchiveType', 'type_id'),
 		);
 	}
 
@@ -115,6 +119,7 @@ class ArchiveType extends CActiveRecord
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
+			'archive_total' => Yii::t('attribute', 'Total'),
 		);
 		/*
 			'Type' => 'Type',
@@ -174,6 +179,7 @@ class ArchiveType extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
+		$criteria->compare('t.archive_total',$this->archive_total);
 		
 		// Custom Search
 		$criteria->with = array(
@@ -251,7 +257,28 @@ class ArchiveType extends CActiveRecord
 			);
 			$this->defaultColumns[] = 'type_name';
 			$this->defaultColumns[] = 'type_desc';
-			$this->defaultColumns[] = 'type_code';
+			$this->defaultColumns[] = array(
+				'name' => 'type_code',
+				'value' => 'strtoupper($data->type_code)',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'header' => Yii::t('attribute', 'Archives'),
+				'value' => 'CHtml::link($data->view->archives, Yii::app()->controller->createUrl("o/admin/manage",array("type"=>$data->type_id)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'archive_total',
+				'value' => '$data->archive_total',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
 				'value' => '$data->creation_relation->displayname',
@@ -331,7 +358,7 @@ class ArchiveType extends CActiveRecord
 			$items = array();
 			if($model != null) {
 				foreach($model as $key => $val)
-					$items[$val->type_id] = $val->type_name.' ('.$val->type_code.')';
+					$items[$val->type_id] = $val->type_name.' ('.strtoupper($val->type_code).')';
 				return $items;
 				
 			} else
@@ -339,6 +366,11 @@ class ArchiveType extends CActiveRecord
 			
 		} else
 			return $model;
+	}
+	
+	protected function afterFind() {
+		$this->archive_total = Archives::getTotalArchive($this->archives());
+		parent::afterFind();		
 	}
 
 	/**
@@ -350,6 +382,17 @@ class ArchiveType extends CActiveRecord
 				$this->creation_id = Yii::app()->user->id;
 			else
 				$this->modified_id = Yii::app()->user->id;
+		}
+		return true;
+	}
+	
+	/**
+	 * before save attributes
+	 */
+	protected function beforeSave() {
+		if(parent::beforeSave()) {
+			$this->type_name = strtolower($this->type_name);
+			$this->type_code = strtolower($this->type_code);
 		}
 		return true;
 	}

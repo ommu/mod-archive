@@ -36,6 +36,7 @@
 class ArchiveStory extends CActiveRecord
 {
 	public $defaultColumns = array();
+	public $archive_total;
 	
 	// Variable Search
 	public $creation_search;
@@ -77,7 +78,7 @@ class ArchiveStory extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('story_id, publish, story_name, story_desc, story_code, creation_date, creation_id, modified_date, modified_id,
-				creation_search, modified_search', 'safe', 'on'=>'search'),
+				archive_total, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -90,8 +91,11 @@ class ArchiveStory extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'archives' => array(self::HAS_MANY, 'Archives', 'story_id'),
+			'archive_publish' => array(self::HAS_MANY, 'Archives', 'story_id', 'on'=>'archive_publish.publish = 1'),
+			'archive_unpublish' => array(self::HAS_MANY, 'Archives', 'story_id', 'on'=>'archive_unpublish.publish = 1'),
 			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
+			'view' => array(self::BELONGS_TO, 'ViewArchiveStory', 'story_id'),
 		);
 	}
 
@@ -103,15 +107,16 @@ class ArchiveStory extends CActiveRecord
 		return array(
 			'story_id' => Yii::t('attribute', 'Story'),
 			'publish' => Yii::t('attribute', 'Publish'),
-			'story_name' => Yii::t('attribute', 'Story Name'),
-			'story_desc' => Yii::t('attribute', 'Story Desc'),
-			'story_code' => Yii::t('attribute', 'Story Code'),
+			'story_name' => Yii::t('attribute', 'Name'),
+			'story_desc' => Yii::t('attribute', 'Descripstion'),
+			'story_code' => Yii::t('attribute', 'Code'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
+			'archive_total' => Yii::t('attribute', 'Total'),
 		);
 		/*
 			'Story' => 'Story',
@@ -171,6 +176,7 @@ class ArchiveStory extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
+		$criteria->compare('t.archive_total',$this->archive_total);
 		
 		// Custom Search
 		$criteria->with = array(
@@ -248,7 +254,28 @@ class ArchiveStory extends CActiveRecord
 			);
 			$this->defaultColumns[] = 'story_name';
 			$this->defaultColumns[] = 'story_desc';
-			$this->defaultColumns[] = 'story_code';
+			$this->defaultColumns[] = array(
+				'name' => 'story_code',
+				'value' => 'strtoupper($data->story_code)',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'header' => Yii::t('attribute', 'Archives'),
+				'value' => 'CHtml::link($data->view->archives, Yii::app()->controller->createUrl("o/admin/manage",array("story"=>$data->story_id)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'archive_total',
+				'value' => '$data->archive_total',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
 				'value' => '$data->creation_relation->displayname',
@@ -328,7 +355,7 @@ class ArchiveStory extends CActiveRecord
 			$items = array();
 			if($model != null) {
 				foreach($model as $key => $val)
-					$items[$val->story_id] = $val->story_name.' ('.$val->story_code.')';
+					$items[$val->story_id] = $val->story_name.' ('.strtoupper($val->story_code).')';
 				return $items;
 				
 			} else
@@ -336,6 +363,11 @@ class ArchiveStory extends CActiveRecord
 			
 		} else
 			return $model;
+	}
+	
+	protected function afterFind() {
+		$this->archive_total = Archives::getTotalArchive($this->archives());
+		parent::afterFind();		
 	}
 
 	/**
@@ -347,6 +379,16 @@ class ArchiveStory extends CActiveRecord
 				$this->creation_id = Yii::app()->user->id;
 			else
 				$this->modified_id = Yii::app()->user->id;
+		}
+		return true;
+	}
+	
+	/**
+	 * before save attributes
+	 */
+	protected function beforeSave() {
+		if(parent::beforeSave()) {
+			$this->story_code = strtolower($this->story_code);
 		}
 		return true;
 	}

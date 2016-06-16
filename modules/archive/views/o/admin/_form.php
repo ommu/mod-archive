@@ -26,9 +26,19 @@ $js=<<<EOP
 			$('div#multiple').slideUp();
 		}
 	});
+	var i = 0;
+	var prev, next;
 	$('input[type="button"]#add-field').on('click', function() {
-		var body = $(this).parents('form').find('div#show-field').html();
-		$('#add-field').before(body);
+		var body = $('form div#show-field').html();
+		if($('#add-field').before(body)) {
+			prev = 'Archives\[archive_number_multiple\]\['+i+'\]';
+			i = i+1;
+			next = 'Archives\[archive_number_multiple\]\['+i+'\]';
+			$('form div#show-field').find('[id*="Archives_archive_number_multiple_"]').each(function() {
+				$(this).attr('name',$(this).attr('name').replace(prev,next));
+			});
+			//alert(prev+' '+next);
+		}
 	});
 	$('a.drop').live('click', function() {
 		$(this).parents('div.field').remove();
@@ -40,15 +50,24 @@ EOP;
 <?php $form=$this->beginWidget('application.components.system.OActiveForm', array(
 	'id'=>'archives-form',
 	'enableAjaxValidation'=>true,
-	//'htmlOptions' => array('enctype' => 'multipart/form-data')
+	'htmlOptions' => array(
+		'enctype' => 'multipart/form-data',
+		'class'=>'hide',
+	),
 )); ?>
-
-<div id="show-field" class="hide">
+<div id="show-field">
 	<?php echo $this->renderPartial('_form_field', array(
-		'model'=>$model,
 		'form'=>$form,
+		'model'=>$model,
 	)); ?>
 </div>
+<?php $this->endWidget(); ?>
+
+<?php $form=$this->beginWidget('application.components.system.OActiveForm', array(
+	'id'=>'archives-form',
+	'enableAjaxValidation'=>true,
+	//'htmlOptions' => array('enctype' => 'multipart/form-data')
+)); ?>
 
 <?php //begin.Messages ?>
 <div id="ajax-message">
@@ -127,15 +146,6 @@ EOP;
 		</div>
 	</div>
 
-	<div class="clearfix">
-		<?php echo $form->labelEx($model,'archive_desc'); ?>
-		<div class="desc">
-			<?php echo $form->textArea($model,'archive_desc',array('rows'=>6, 'cols'=>50, 'class'=>'span-10')); ?>
-			<?php echo $form->error($model,'archive_desc'); ?>
-			<?php /*<div class="small-px silent"></div>*/?>
-		</div>
-	</div>
-
 	<div class="clearfix publish">
 		<?php echo $form->labelEx($model,'archive_multiple'); ?>
 		<div class="desc">
@@ -150,7 +160,9 @@ EOP;
 		<div class="desc">
 			<?php if(!$model->isNewRecord && $model->archive_multiple == 0)
 				$model->archive_number_single = unserialize($model->archive_numbers);
-			//print_r($model->archive_number_single);?>
+			//echo '<pre>';
+			//print_r($model->archive_number_single);
+			//echo '<pre>';?>
 			<?php echo $form->textField($model,'archive_number_single[start]', array('placeholder'=>'Start', 'class'=>'span-3')); ?>
 			<?php echo $form->textField($model,'archive_number_single[finish]', array('placeholder'=>'Finish', 'class'=>'span-3')); ?>
 			<?php echo $form->error($model,'archive_number_single'); ?>
@@ -161,20 +173,35 @@ EOP;
 	<div class="clearfix <?php echo $model->archive_multiple == 1 ? '' :'hide';?>" id="multiple">
 		<?php echo $form->labelEx($model,'archive_number_multiple'); ?>
 		<div class="desc">
-			<?php if(!$model->isNewRecord) {
-				if($model->archive_multiple == 1)
-					$model->archive_number_multiple = unserialize($model->archive_numbers);
-				$data = count($model->archive_number_multiple)/3;
-				for($i = 0; $i<$data; $i++) {
+			<?php if($model->archive_multiple == 1) {
+				if(!$model->getErrors())
+					$data = $model->archive_number_multiple = unserialize($model->archive_numbers);
+				else
+					$data = $model->archive_number_multiple;
+			}
+			if(!empty($data)) {
+				foreach($data as $key => $val) {
 					echo $this->renderPartial('_form_field', array(
-						'model'=>$model,
 						'form'=>$form,
+						'model'=>$model,
+						'key'=>$key,
 					));
 				}
-			}				
-			print_r($model->archive_number_multiple);?>
+			}
+			//echo '<pre>';
+			//print_r($model->archive_number_multiple);
+			//echo '<pre>';?>
 			<?php echo CHtml::button(Yii::t('phrase', 'Add Field'), array('id'=>'add-field')); ?>
 			<?php echo $form->error($model,'archive_number_multiple'); ?>
+			<?php /*<div class="small-px silent"></div>*/?>
+		</div>
+	</div>
+
+	<div class="clearfix">
+		<?php echo $form->labelEx($model,'archive_desc'); ?>
+		<div class="desc">
+			<?php echo $form->textArea($model,'archive_desc',array('rows'=>6, 'cols'=>50, 'class'=>'span-10')); ?>
+			<?php echo $form->error($model,'archive_desc'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>

@@ -29,6 +29,7 @@
  * @property string $location_desc
  * @property string $location_code
  * @property integer $story_enable
+ * @property integer $type_enable
  * @property string $creation_date
  * @property string $creation_id
  * @property string $modified_date
@@ -37,6 +38,7 @@
 class ArchiveLocation extends CActiveRecord
 {
 	public $defaultColumns = array();
+	public $archive_total;
 	
 	// Variable Search
 	public $creation_search;
@@ -70,15 +72,15 @@ class ArchiveLocation extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('publish, location_name, location_code', 'required'),
-			array('publish, story_enable', 'numerical', 'integerOnly'=>true),
+			array('publish, story_enable, type_enable', 'numerical', 'integerOnly'=>true),
 			array('location_name', 'length', 'max'=>32),
 			array('location_code', 'length', 'max'=>8),
 			array('creation_id, modified_id', 'length', 'max'=>11),
 			array('location_desc', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('location_id, publish, location_name, location_desc, location_code, story_enable, creation_date, creation_id, modified_date, modified_id,
-				creation_search, modified_search', 'safe', 'on'=>'search'),
+			array('location_id, publish, location_name, location_desc, location_code, story_enable, type_enable, creation_date, creation_id, modified_date, modified_id,
+				archive_total, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -91,8 +93,11 @@ class ArchiveLocation extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'archives' => array(self::HAS_MANY, 'Archives', 'location_id'),
+			'archive_publish' => array(self::HAS_MANY, 'Archives', 'location_id', 'on'=>'archive_publish.publish = 1'),
+			'archive_unpublish' => array(self::HAS_MANY, 'Archives', 'location_id', 'on'=>'archive_unpublish.publish = 1'),
 			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
+			'view' => array(self::BELONGS_TO, 'ViewArchiveLocation', 'location_id'),
 		);
 	}
 
@@ -104,16 +109,18 @@ class ArchiveLocation extends CActiveRecord
 		return array(
 			'location_id' => Yii::t('attribute', 'Location'),
 			'publish' => Yii::t('attribute', 'Publish'),
-			'location_name' => Yii::t('attribute', 'Location Name'),
-			'location_desc' => Yii::t('attribute', 'Location Desc'),
-			'location_code' => Yii::t('attribute', 'Location Code'),
-			'story_enable' => Yii::t('attribute', 'Story Enable'),
+			'location_name' => Yii::t('attribute', 'Name'),
+			'location_desc' => Yii::t('attribute', 'Descripstion'),
+			'location_code' => Yii::t('attribute', 'Code'),
+			'story_enable' => Yii::t('attribute', 'Story'),
+			'type_enable' => Yii::t('attribute', 'Type'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
+			'archive_total' => Yii::t('attribute', 'Total'),
 		);
 		/*
 			'Location' => 'Location',
@@ -163,6 +170,7 @@ class ArchiveLocation extends CActiveRecord
 		$criteria->compare('t.location_desc',strtolower($this->location_desc),true);
 		$criteria->compare('t.location_code',strtolower($this->location_code),true);
 		$criteria->compare('t.story_enable',$this->story_enable);
+		$criteria->compare('t.type_enable',$this->type_enable);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
 		if(isset($_GET['creation']))
@@ -175,6 +183,7 @@ class ArchiveLocation extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
+		$criteria->compare('t.archive_total',$this->archive_total);
 		
 		// Custom Search
 		$criteria->with = array(
@@ -225,6 +234,7 @@ class ArchiveLocation extends CActiveRecord
 			$this->defaultColumns[] = 'location_desc';
 			$this->defaultColumns[] = 'location_code';
 			$this->defaultColumns[] = 'story_enable';
+			$this->defaultColumns[] = 'type_enable';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
 			$this->defaultColumns[] = 'modified_date';
@@ -253,7 +263,28 @@ class ArchiveLocation extends CActiveRecord
 			);
 			$this->defaultColumns[] = 'location_name';
 			$this->defaultColumns[] = 'location_desc';
-			$this->defaultColumns[] = 'location_code';
+			$this->defaultColumns[] = array(
+				'name' => 'location_code',
+				'value' => 'strtoupper($data->location_code)',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'header' => Yii::t('attribute', 'Archives'),
+				'value' => 'CHtml::link($data->view->archives, Yii::app()->controller->createUrl("o/admin/manage",array("location"=>$data->location_id)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'archive_total',
+				'value' => '$data->archive_total',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
 				'value' => '$data->creation_relation->displayname',
@@ -288,6 +319,20 @@ class ArchiveLocation extends CActiveRecord
 				$this->defaultColumns[] = array(
 					'name' => 'story_enable',
 					'value' => '$data->story_enable == 1 ? Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/unpublish.png\')',
+					'htmlOptions' => array(
+						'class' => 'center',
+					),
+					'filter'=>array(
+						1=>Yii::t('phrase', 'Yes'),
+						0=>Yii::t('phrase', 'No'),
+					),
+					'type' => 'raw',
+				);
+			}
+			if(!isset($_GET['type'])) {
+				$this->defaultColumns[] = array(
+					'name' => 'type_enable',
+					'value' => '$data->type_enable == 1 ? Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/unpublish.png\')',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
@@ -347,7 +392,7 @@ class ArchiveLocation extends CActiveRecord
 			$items = array();
 			if($model != null) {
 				foreach($model as $key => $val)
-					$items[$val->location_id] = $val->location_name.' ('.$val->location_code.')';
+					$items[$val->location_id] = $val->location_name.' ('.strtoupper($val->location_code).')';
 				return $items;
 				
 			} else
@@ -355,6 +400,11 @@ class ArchiveLocation extends CActiveRecord
 			
 		} else
 			return $model;
+	}
+	
+	protected function afterFind() {
+		$this->archive_total = Archives::getTotalArchive($this->archives());
+		parent::afterFind();		
 	}
 
 	/**
@@ -366,6 +416,16 @@ class ArchiveLocation extends CActiveRecord
 				$this->creation_id = Yii::app()->user->id;
 			else
 				$this->modified_id = Yii::app()->user->id;
+		}
+		return true;
+	}
+	
+	/**
+	 * before save attributes
+	 */
+	protected function beforeSave() {
+		if(parent::beforeSave()) {
+			$this->location_code = strtolower($this->location_code);
 		}
 		return true;
 	}

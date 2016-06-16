@@ -67,6 +67,16 @@
 		</div>
 
 		<div class="clearfix publish">
+			<?php echo $form->labelEx($model,'type_enable'); ?>
+			<div class="desc">
+				<?php echo $form->checkBox($model,'type_enable'); ?>
+				<?php echo $form->labelEx($model,'type_enable'); ?>
+				<?php echo $form->error($model,'type_enable'); ?>
+				<?php /*<div class="small-px silent"></div>*/?>
+			</div>
+		</div>
+
+		<div class="clearfix publish">
 			<?php echo $form->labelEx($model,'publish'); ?>
 			<div class="desc">
 				<?php echo $form->checkBox($model,'publish'); ?>

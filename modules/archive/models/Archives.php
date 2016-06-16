@@ -81,12 +81,12 @@ class Archives extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('location_id, type_id, archive_title, archive_type_id, archive_publish_year', 'required'),
+			array('location_id, archive_title, archive_type_id, archive_publish_year', 'required'),
 			array('publish, location_id, type_id, story_id, archive_type_id, archive_multiple,
 				back_field', 'numerical', 'integerOnly'=>true),
 			array('archive_publish_year', 'length', 'max'=>4),
 			array('creation_id, modified_id', 'length', 'max'=>11),
-			array('story_id, archive_desc, archive_numbers,
+			array('type_id, story_id, archive_desc, archive_numbers,
 				archive_number_single, archive_number_multiple', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -187,12 +187,18 @@ class Archives extends CActiveRecord
 			$criteria->addInCondition('t.publish',array(0,1));
 			$criteria->compare('t.publish',$this->publish);
 		}
-		$criteria->compare('t.location_id',$this->location_id);
+		if(isset($_GET['location']))
+			$criteria->compare('t.location_id',$_GET['location']);
+		else
+			$criteria->compare('t.location_id',$this->location_id);
 		if(isset($_GET['type']))
 			$criteria->compare('t.type_id',$_GET['type']);
 		else
 			$criteria->compare('t.type_id',$this->type_id);
-		$criteria->compare('t.story_id',$this->story_id);
+		if(isset($_GET['story']))
+			$criteria->compare('t.story_id',$_GET['story']);
+		else
+			$criteria->compare('t.story_id',$this->story_id);
 		$criteria->compare('t.archive_title',strtolower($this->archive_title),true);
 		$criteria->compare('t.archive_desc',strtolower($this->archive_desc),true);
 		$criteria->compare('t.archive_type_id',$this->archive_type_id);
@@ -308,7 +314,7 @@ class Archives extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'type_id',
-				'value' => '$data->type->type_name',
+				'value' => '$data->type_id != "0" ? $data->type->type_name : "-"',
 				'filter' => ArchiveType::getType(),
 				'type' => 'raw',
 			);
@@ -399,9 +405,44 @@ class Archives extends CActiveRecord
 			return $model;			
 		}
 	}
+
+	/**
+	 * User get information
+	 */
+	public static function getTotalArchive($array)
+	{
+		if($array != null) {
+			$total = 0;
+			foreach($array as $key => $val)
+				$total = $total + $val->archive_total;
+				
+			return $total;
+			
+		} else
+			return 0;
+	}
 	
 	protected function afterFind() {
-		$this->archive_total = 0;
+		if($this->archive_multiple == 0) {
+			$archive_number_single = $this->archive_number_single = unserialize($this->archive_numbers);
+			if(!empty($archive_number_single)) {
+				$data = (trim($archive_number_single['finish'])-trim($archive_number_single['start']));
+				$this->archive_total = $data == 0 ? $data : $data+1;
+			} else
+				$this->archive_total = 0;
+			
+		} else {
+			$archive_number_multiple = $this->archive_number_multiple = unserialize($this->archive_numbers);			
+			if(!empty($archive_number_multiple)) {
+				foreach($archive_number_multiple as $key => $val) {
+					$data = (trim($val['finish'])-trim($val['start']));
+					$data_plus = $data == 0 ? $data : $data+1;
+					$this->archive_total = $this->archive_total + $data_plus;
+				}
+				
+			} else
+				$this->archive_total = 0;
+		}
 		parent::afterFind();		
 	}
 
@@ -414,6 +455,15 @@ class Archives extends CActiveRecord
 				$this->creation_id = Yii::app()->user->id;
 			else
 				$this->modified_id = Yii::app()->user->id;
+			
+			if($this->location->type_enable == 1 && $this->type_id == '')
+				$this->addError('type_id', 'Type cannot be blank.');
+			if($this->location->story_enable == 1 && $this->story_id == '')
+				$this->addError('story_id', 'Story cannot be blank.');
+			if($this->archive_multiple == 0 && (empty($this->archive_number_single) || $this->archive_number_single == null))
+				$this->addError('archive_number_single', 'Number Single cannot be blank.');
+			if($this->archive_multiple == 1 && (empty($this->archive_number_multiple) || $this->archive_number_multiple == null))
+				$this->addError('archive_number_multiple', 'Number Multiple cannot be blank.');
 		}
 		return true;
 	}
@@ -422,8 +472,8 @@ class Archives extends CActiveRecord
 	 * before save attributes
 	 */
 	protected function beforeSave() {
-		if(parent::beforeSave()) {	
-			if($this->archive_multiple && $this->archive_multiple == 0)
+		if(parent::beforeSave()) {
+			if($this->archive_multiple == 0)
 				$this->archive_numbers = serialize($this->archive_number_single);
 			else
 				$this->archive_numbers = serialize($this->archive_number_multiple);

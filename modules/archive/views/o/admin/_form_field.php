@@ -13,11 +13,13 @@
  * @contect (+62)856-299-4114
  *
  */
+
+	$key = $model->isNewRecord ? '0' : (empty($model->archive_number_multiple) ? '0' : $key);
 ?>
 
 <div class="field">
-	<?php echo $form->textField($model,'archive_number_multiple[][id]', array('placeholder'=>'Detail Archive', 'class'=>'span-4')); ?>
-	<?php echo $form->textField($model,'archive_number_multiple[][start]', array('placeholder'=>'Start', 'class'=>'span-3')); ?>
-	<?php echo $form->textField($model,'archive_number_multiple[][finish]', array('placeholder'=>'Finish', 'class'=>'span-3')); ?>
+	<?php echo $form->textField($model,"archive_number_multiple[$key][id]", array('placeholder'=>'Detail Archive', 'class'=>'span-4')); ?>
+	<?php echo $form->textField($model,"archive_number_multiple[$key][start]", array('placeholder'=>'Start', 'class'=>'span-3')); ?>
+	<?php echo $form->textField($model,"archive_number_multiple[$key][finish]", array('placeholder'=>'Finish', 'class'=>'span-3')); ?>
 	<a class="drop" href="javascript:void(0);" title="<?php echo Yii::t('phrase', 'Drop');?>"><?php echo Yii::t('phrase', 'Drop');?></a>
 </div>
