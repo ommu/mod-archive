@@ -366,7 +366,7 @@ class ArchiveStory extends CActiveRecord
 	}
 	
 	protected function afterFind() {
-		$this->archive_total = Archives::getTotalArchive($this->archives());
+		$this->archive_total = Archives::getTotalItemArchive($this->archives());
 		parent::afterFind();		
 	}
 

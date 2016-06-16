@@ -45,6 +45,7 @@
 class Archives extends CActiveRecord
 {
 	public $defaultColumns = array();
+	public $archive_code;
 	public $archive_total;
 	public $back_field;
 	public $archive_number_single;
@@ -91,7 +92,7 @@ class Archives extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('archive_id, publish, location_id, type_id, story_id, archive_title, archive_desc, archive_type_id, archive_publish_year, archive_multiple, archive_numbers, creation_date, creation_id, modified_date, modified_id,
-				archive_total, creation_search, modified_search', 'safe', 'on'=>'search'),
+				archive_code, archive_total, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -134,6 +135,7 @@ class Archives extends CActiveRecord
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
+			'archive_code' => Yii::t('attribute', 'Code'),
 			'archive_total' => Yii::t('attribute', 'Total'),
 			'back_field' => Yii::t('attribute', 'Back to Manage'),
 			'archive_number_single' => Yii::t('attribute', 'Number Single'),
@@ -217,6 +219,7 @@ class Archives extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
+		$criteria->compare('t.archive_code',$this->archive_code);
 		$criteria->compare('t.archive_total',$this->archive_total);
 		
 		// Custom Search
@@ -299,6 +302,7 @@ class Archives extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
+			$this->defaultColumns[] = 'archive_code';
 			$this->defaultColumns[] = 'archive_title';
 			$this->defaultColumns[] = array(
 				'name' => 'location_id',
@@ -407,13 +411,38 @@ class Archives extends CActiveRecord
 	}
 
 	/**
-	 * User get information
+	 * get Total Archive
 	 */
-	public static function getTotalArchive($array)
+	public static function getItemArchive($data, $type=0)
 	{
-		if($array != null) {
+		$archive_number = unserialize($data);
+		if(!empty($archive_number)) {
+			if($type == 0) {
+				$item = (trim($archive_number['finish'])-trim($archive_number['start']));
+				$return = $item == 0 ? $item : $item+1;
+			} else {
+				$return = 0;
+				foreach($archive_number as $key => $val) {
+					$item = (trim($val['finish'])-trim($val['start']));
+					$data_plus = $item == 0 ? $item : $item+1;
+					$return = $return + $data_plus;
+				}				
+			}
+			
+		} else
+			$return = 0;
+		
+		return $return;
+	}
+
+	/**
+	 * get Total Archive
+	 */
+	public static function getTotalItemArchive($data)
+	{
+		if($data != null) {
 			$total = 0;
-			foreach($array as $key => $val)
+			foreach($data as $key => $val)
 				$total = $total + $val->archive_total;
 				
 			return $total;
@@ -421,28 +450,33 @@ class Archives extends CActiveRecord
 		} else
 			return 0;
 	}
-	
-	protected function afterFind() {
-		if($this->archive_multiple == 0) {
-			$archive_number_single = $this->archive_number_single = unserialize($this->archive_numbers);
-			if(!empty($archive_number_single)) {
-				$data = (trim($archive_number_single['finish'])-trim($archive_number_single['start']));
-				$this->archive_total = $data == 0 ? $data : $data+1;
-			} else
-				$this->archive_total = 0;
-			
-		} else {
-			$archive_number_multiple = $this->archive_number_multiple = unserialize($this->archive_numbers);			
-			if(!empty($archive_number_multiple)) {
-				foreach($archive_number_multiple as $key => $val) {
-					$data = (trim($val['finish'])-trim($val['start']));
-					$data_plus = $data == 0 ? $data : $data+1;
-					$this->archive_total = $this->archive_total + $data_plus;
-				}
-				
-			} else
-				$this->archive_total = 0;
+
+	/**
+	 * get Detail Archive
+	 */
+	public static function getDetailItemArchive($data, $multiple=0)
+	{
+		if($multiple == 0)
+			$return = implode('-', $data);
+		else {
+			$countData = count($data);
+			$i = 0;
+			foreach($data as $key => $val) {
+				$i++;
+				if($i != $countData)
+					$return .= strtoupper($val['id']).': '.$val['start'].'-'.$val['finish'].'<br/>';
+				else
+					$return .= strtoupper($val['id']).': '.$val['start'].'-'.$val['finish'];
+			}
 		}
+		return $return;
+	}
+	
+	protected function afterFind() 
+	{
+		$this->archive_code = 'ommu';
+		$this->archive_total = self::getItemArchive($this->archive_numbers, $this->archive_multiple);
+		
 		parent::afterFind();		
 	}
 

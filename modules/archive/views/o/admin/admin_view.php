@@ -22,58 +22,51 @@
 <?php $this->widget('application.components.system.FDetailView', array(
 	'data'=>$model,
 	'attributes'=>array(
-		array(
+		/* array(
 			'name'=>'archive_id',
 			'value'=>$model->archive_id,
 			//'value'=>$model->archive_id != '' ? $model->archive_id : '-',
-		),
+		), */
 		array(
-			'name'=>'publish',
-			'value'=>$model->publish == '1' ? Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
-			//'value'=>$model->publish,
+			'name'=>'archive_code',
+			'value'=>$model->archive_code,
 		),
 		array(
 			'name'=>'location_id',
-			'value'=>$model->location_id,
-			//'value'=>$model->location_id != '' ? $model->location_id : '-',
-		),
-		array(
-			'name'=>'type_id',
-			'value'=>$model->type_id,
-			//'value'=>$model->type_id != '' ? $model->type_id : '-',
+			'value'=>$model->location_id != 0 ? $model->location->location_name : '-',
 		),
 		array(
 			'name'=>'story_id',
-			'value'=>$model->story_id,
-			//'value'=>$model->story_id != '' ? $model->story_id : '-',
+			'value'=>$model->story_id != 0 ? $model->story->story_name : '-',
+		),
+		array(
+			'name'=>'type_id',
+			'value'=>$model->type_id != 0 ? $model->type->type_name : '-',
 		),
 		array(
 			'name'=>'archive_title',
 			'value'=>$model->archive_title != '' ? $model->archive_title : '-',
-			//'value'=>$model->archive_title != '' ? CHtml::link($model->archive_title, Yii::app()->request->baseUrl.'/public/visit/'.$model->archive_title, array('target' => '_blank')) : '-',
-			'type'=>'raw',
 		),
 		array(
 			'name'=>'archive_desc',
 			'value'=>$model->archive_desc != '' ? $model->archive_desc : '-',
-			//'value'=>$model->archive_desc != '' ? CHtml::link($model->archive_desc, Yii::app()->request->baseUrl.'/public/visit/'.$model->archive_desc, array('target' => '_blank')) : '-',
-			'type'=>'raw',
 		),
 		array(
 			'name'=>'archive_type_id',
-			'value'=>$model->archive_type_id,
-			//'value'=>$model->archive_type_id != '' ? $model->archive_type_id : '-',
+			'value'=>$model->archive_type_id != '' ? $model->archive_type_id : '-',
 		),
 		array(
 			'name'=>'archive_publish_year',
-			'value'=>$model->archive_publish_year,
-			//'value'=>$model->archive_publish_year != '' ? $model->archive_publish_year : '-',
+			'value'=>$model->archive_publish_year != '' ? $model->archive_publish_year : '-',
 		),
 		array(
 			'name'=>'archive_numbers',
-			'value'=>$model->archive_numbers != '' ? $model->archive_numbers : '-',
-			//'value'=>$model->archive_numbers != '' ? CHtml::link($model->archive_numbers, Yii::app()->request->baseUrl.'/public/visit/'.$model->archive_numbers, array('target' => '_blank')) : '-',
+			'value'=>Archives::getDetailItemArchive(unserialize($model->archive_numbers), $model->archive_multiple),
 			'type'=>'raw',
+		),
+		array(
+			'name'=>'archive_total',
+			'value'=>$model->archive_total,
 		),
 		array(
 			'name'=>'creation_date',
@@ -81,8 +74,7 @@
 		),
 		array(
 			'name'=>'creation_id',
-			'value'=>$model->creation_id,
-			//'value'=>$model->creation_id != 0 ? $model->creation_id : '-',
+			'value'=>$model->creation_id != 0 ? $model->creation_relation->displayname : '-',
 		),
 		array(
 			'name'=>'modified_date',
@@ -90,8 +82,12 @@
 		),
 		array(
 			'name'=>'modified_id',
-			'value'=>$model->modified_id,
-			//'value'=>$model->modified_id != 0 ? $model->modified_id : '-',
+			'value'=>$model->modified_id != 0 ? $model->modified_relation->displayname : '-',
+		),
+		array(
+			'name'=>'publish',
+			'value'=>$model->publish == '1' ? Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
+			'type'=>'raw',
 		),
 	),
 )); ?>
