@@ -236,6 +236,8 @@ class ViewArchives extends CActiveRecord
 			array_push($archive_code, $story);
 		if($condition['type'] == 1)
 			array_push($archive_code, $type.$id);
+		else
+			array_push($archive_code, $id);
 		
 		return implode(".", $archive_code);
 	}
