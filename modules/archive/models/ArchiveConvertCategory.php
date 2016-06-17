@@ -36,6 +36,10 @@
 class ArchiveConvertCategory extends CActiveRecord
 {
 	public $defaultColumns = array();
+	
+	// Variable Search
+	public $creation_search;
+	public $modified_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -64,15 +68,16 @@ class ArchiveConvertCategory extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('category_name, category_desc, category_code, creation_date, creation_id, modified_id', 'required'),
+			array('category_name, category_code', 'required'),
 			array('publish', 'numerical', 'integerOnly'=>true),
 			array('category_name', 'length', 'max'=>32),
 			array('category_code', 'length', 'max'=>8),
 			array('creation_id, modified_id', 'length', 'max'=>11),
-			array('modified_date', 'safe'),
+			array('category_desc', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('category_id, publish, category_name, category_desc, category_code, creation_date, creation_id, modified_date, modified_id', 'safe', 'on'=>'search'),
+			array('category_id, publish, category_name, category_desc, category_code, creation_date, creation_id, modified_date, modified_id, 
+				creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -84,6 +89,8 @@ class ArchiveConvertCategory extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
+			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 		);
 	}
 
@@ -102,6 +109,8 @@ class ArchiveConvertCategory extends CActiveRecord
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
+			'creation_search' => Yii::t('attribute', 'Creation'),
+			'modified_search' => Yii::t('attribute', 'Modified'),
 		);
 		/*
 			'Category' => 'Category',
@@ -161,6 +170,20 @@ class ArchiveConvertCategory extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
+		
+		// Custom Search
+		$criteria->with = array(
+			'creation_relation' => array(
+				'alias'=>'creation_relation',
+				'select'=>'displayname',
+			),
+			'modified_relation' => array(
+				'alias'=>'modified_relation',
+				'select'=>'displayname',
+			),
+		);
+		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
+		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
 
 		if(!isset($_GET['ArchiveConvertCategory_sort']))
 			$criteria->order = 't.category_id DESC';
@@ -222,23 +245,19 @@ class ArchiveConvertCategory extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			if(!isset($_GET['type'])) {
-				$this->defaultColumns[] = array(
-					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->category_id)), $data->publish, 1)',
-					'htmlOptions' => array(
-						'class' => 'center',
-					),
-					'filter'=>array(
-						1=>Yii::t('phrase', 'Yes'),
-						0=>Yii::t('phrase', 'No'),
-					),
-					'type' => 'raw',
-				);
-			}
 			$this->defaultColumns[] = 'category_name';
 			$this->defaultColumns[] = 'category_desc';
-			$this->defaultColumns[] = 'category_code';
+			$this->defaultColumns[] = array(
+				'name' => 'category_code',
+				'value' => 'strtoupper($data->category_code)',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'creation_search',
+				'value' => '$data->creation_relation->displayname',
+			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
 				'value' => 'Utility::dateFormat($data->creation_date)',
@@ -265,34 +284,20 @@ class ArchiveConvertCategory extends CActiveRecord
 					),
 				), true),
 			);
-			$this->defaultColumns[] = 'creation_id';
-			$this->defaultColumns[] = array(
-				'name' => 'modified_date',
-				'value' => 'Utility::dateFormat($data->modified_date)',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-				'filter' => Yii::app()->controller->widget('zii.widgets.jui.CJuiDatePicker', array(
-					'model'=>$this,
-					'attribute'=>'modified_date',
-					'language' => 'ja',
-					'i18nScriptFile' => 'jquery.ui.datepicker-en.js',
-					//'mode'=>'datetime',
+			if(!isset($_GET['type'])) {
+				$this->defaultColumns[] = array(
+					'name' => 'publish',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->category_id)), $data->publish, 1)',
 					'htmlOptions' => array(
-						'id' => 'modified_date_filter',
+						'class' => 'center',
 					),
-					'options'=>array(
-						'showOn' => 'focus',
-						'dateFormat' => 'dd-mm-yy',
-						'showOtherMonths' => true,
-						'selectOtherMonths' => true,
-						'changeMonth' => true,
-						'changeYear' => true,
-						'showButtonPanel' => true,
+					'filter'=>array(
+						1=>Yii::t('phrase', 'Yes'),
+						0=>Yii::t('phrase', 'No'),
 					),
-				), true),
-			);
-			$this->defaultColumns[] = 'modified_id';
+					'type' => 'raw',
+				);
+			}
 		}
 		parent::afterConstruct();
 	}
@@ -317,68 +322,24 @@ class ArchiveConvertCategory extends CActiveRecord
 	/**
 	 * before validate attributes
 	 */
-	/*
 	protected function beforeValidate() {
 		if(parent::beforeValidate()) {
-			// Create action
+			if($this->isNewRecord)
+				$this->creation_id = Yii::app()->user->id;
+			else
+				$this->modified_id = Yii::app()->user->id;
 		}
 		return true;
 	}
-	*/
-
-	/**
-	 * after validate attributes
-	 */
-	/*
-	protected function afterValidate()
-	{
-		parent::afterValidate();
-			// Create action
-		return true;
-	}
-	*/
 	
 	/**
 	 * before save attributes
 	 */
-	/*
 	protected function beforeSave() {
 		if(parent::beforeSave()) {
-		}
-		return true;	
-	}
-	*/
-	
-	/**
-	 * After save attributes
-	 */
-	/*
-	protected function afterSave() {
-		parent::afterSave();
-		// Create action
-	}
-	*/
-
-	/**
-	 * Before delete attributes
-	 */
-	/*
-	protected function beforeDelete() {
-		if(parent::beforeDelete()) {
-			// Create action
+			$this->category_code = strtolower($this->category_code);
 		}
 		return true;
 	}
-	*/
-
-	/**
-	 * After delete attributes
-	 */
-	/*
-	protected function afterDelete() {
-		parent::afterDelete();
-		// Create action
-	}
-	*/
 
 }

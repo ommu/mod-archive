@@ -41,6 +41,9 @@ plugin_menu		:
 			- urlTitle: Type
 				urlRules: {siteType: 0,1, userLevel: 1,2}
 				urlPath: {url: o/type/manage, attr: -, icon: -}
+			- urlTitle: Category
+				urlRules: {siteType: 0,1, userLevel: 1,2}
+				urlPath: {url: o/category/manage, attr: -, icon: -}
 
 content_menu	:		
 # controller o/admin
@@ -81,4 +84,9 @@ content_menu	:
 # controller o/type
 	- urlTitle: Add Types
 		urlRules: {archive, o/type, manage, siteType: 0,1, userLevel: 1,2}
+		urlPath: {url: add, attr: -, icon: -}
+		
+# controller o/category
+	- urlTitle: Add Category
+		urlRules: {archive, o/category, manage, siteType: 0,1, userLevel: 1,2}
 		urlPath: {url: add, attr: -, icon: -}
