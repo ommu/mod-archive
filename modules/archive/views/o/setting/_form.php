@@ -78,15 +78,6 @@
 		</div>
 	</div>
 
-	<div class="clearfix">
-		<?php echo $form->labelEx($model,'convert_required'); ?>
-		<div class="desc">
-			<?php echo $form->checkBox($model,'convert_required'); ?>
-			<?php echo $form->error($model,'convert_required'); ?>
-			<?php /*<div class="small-px silent"></div>*/?>
-		</div>
-	</div>
-
 	<div class="submit clearfix">
 		<label>&nbsp;</label>
 		<div class="desc">
