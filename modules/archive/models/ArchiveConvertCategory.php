@@ -89,6 +89,7 @@ class ArchiveConvertCategory extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'converts' => array(self::HAS_MANY, 'ArchiveConverts', 'convert_id'),
 			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 		);
