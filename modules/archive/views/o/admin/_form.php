@@ -119,6 +119,7 @@ EOP;
 		</div>
 	</div>
 
+	<?php if($setting->auto_numbering == 0) {?>
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'archive_type_id'); ?>
 		<div class="desc">
@@ -127,6 +128,7 @@ EOP;
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
+	<?php }?>
 
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'archive_publish_year'); ?>
@@ -194,6 +196,14 @@ EOP;
 			<?php echo CHtml::button(Yii::t('phrase', 'Add Field'), array('id'=>'add-field')); ?>
 			<?php echo $form->error($model,'archive_number_multiple'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
+		</div>
+	</div>
+
+	<div class="clearfix">
+		<?php echo $form->labelEx($model,'archive_pages'); ?>
+		<div class="desc">
+			<?php echo $form->textField($model,'archive_pages',array('maxlength'=>4, 'class'=>'span-3')); ?>
+			<?php echo $form->error($model,'archive_pages'); ?>
 		</div>
 	</div>
 

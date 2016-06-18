@@ -231,6 +231,10 @@ class ViewArchives extends CActiveRecord
 	 */
 	public static function getCodeArchive($condition, $location, $story, $type, $id)
 	{
+		if(ArchiveSettings::getInfo(1, 'auto_numbering') == 1)
+			$id = 0;
+		else
+			$id = $id;
 		$archive_code = array($location);
 		if($condition['story'] == 1)
 			array_push($archive_code, $story);

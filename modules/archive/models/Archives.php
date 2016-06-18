@@ -34,6 +34,7 @@
  * @property string $archive_publish_year
  * @property integer $archive_multiple
  * @property string $archive_numbers
+ * @property string $archive_pages
  * @property string $creation_date
  * @property string $creation_id
  * @property string $modified_date
@@ -82,16 +83,17 @@ class Archives extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('location_id, archive_title, archive_type_id, archive_publish_year', 'required'),
+			array('location_id, archive_title, archive_publish_year', 'required'),
+			array('archive_type_id', 'required', 'on'=>'not_auto_numbering'),
 			array('publish, location_id, type_id, story_id, archive_type_id, archive_multiple,
 				back_field', 'numerical', 'integerOnly'=>true),
 			array('archive_publish_year', 'length', 'max'=>4),
-			array('creation_id, modified_id', 'length', 'max'=>11),
-			array('type_id, story_id, archive_desc, archive_numbers,
+			array('archive_pages, creation_id, modified_id', 'length', 'max'=>11),
+			array('type_id, story_id, archive_desc, archive_numbers, archive_pages,
 				archive_number_single, archive_number_multiple', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('archive_id, publish, location_id, type_id, story_id, archive_title, archive_desc, archive_type_id, archive_publish_year, archive_multiple, archive_numbers, creation_date, creation_id, modified_date, modified_id,
+			array('archive_id, publish, location_id, type_id, story_id, archive_title, archive_desc, archive_type_id, archive_publish_year, archive_multiple, archive_numbers, archive_pages, creation_date, creation_id, modified_date, modified_id,
 				archive_total, code_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -130,6 +132,7 @@ class Archives extends CActiveRecord
 			'archive_publish_year' => Yii::t('attribute', 'Publish Year'),
 			'archive_multiple' => Yii::t('attribute', 'Is Multiple Archive'),
 			'archive_numbers' => Yii::t('attribute', 'Numbers'),
+			'archive_pages' => Yii::t('attribute', 'Pages'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
@@ -208,6 +211,7 @@ class Archives extends CActiveRecord
 		$criteria->compare('t.archive_publish_year',strtolower($this->archive_publish_year),true);
 		$criteria->compare('t.archive_multiple',$this->archive_multiple);
 		$criteria->compare('t.archive_numbers',strtolower($this->archive_numbers),true);
+		$criteria->compare('t.archive_pages',$this->archive_pages);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
 		if(isset($_GET['creation']))
@@ -280,6 +284,7 @@ class Archives extends CActiveRecord
 			$this->defaultColumns[] = 'archive_publish_year';
 			$this->defaultColumns[] = 'archive_multiple';
 			$this->defaultColumns[] = 'archive_numbers';
+			$this->defaultColumns[] = 'archive_pages';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
 			$this->defaultColumns[] = 'modified_date';
@@ -331,7 +336,7 @@ class Archives extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'archive_type_id',
-				'value' => '$data->archive_type_id',
+				'value' => 'ArchiveSettings::getInfo(1, "auto_numbering") == 1 ? 0 : $data->archive_type_id',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -346,6 +351,13 @@ class Archives extends CActiveRecord
 			$this->defaultColumns[] = array(
 				'name' => 'archive_total',
 				'value' => '$data->archive_total',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'archive_pages',
+				'value' => '$data->archive_pages != 0 ? $data->archive_pages : "-"',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
