@@ -28,6 +28,8 @@
  * @property integer $permission
  * @property string $meta_keyword
  * @property string $meta_description
+ * @property string $auto_numbering
+ * @property string $convert_required
  * @property string $modified_date
  * @property string $modified_id
  */
@@ -65,13 +67,13 @@ class ArchiveSettings extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('license, permission, meta_keyword, meta_description', 'required'),
-			array('permission', 'numerical', 'integerOnly'=>true),
+			array('license, permission, meta_keyword, meta_description, auto_numbering, convert_required', 'required'),
+			array('permission, auto_numbering, convert_required', 'numerical', 'integerOnly'=>true),
 			array('license', 'length', 'max'=>32),
 			array('modified_id', 'length', 'max'=>11),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, license, permission, meta_keyword, meta_description, modified_date, modified_id,
+			array('id, license, permission, meta_keyword, meta_description, auto_numbering, convert_required, modified_date, modified_id,
 				modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -99,6 +101,8 @@ class ArchiveSettings extends CActiveRecord
 			'permission' => Yii::t('attribute', 'Permission'),
 			'meta_keyword' => Yii::t('attribute', 'Meta Keyword'),
 			'meta_description' => Yii::t('attribute', 'Meta Description'),
+			'auto_numbering' => Yii::t('attribute', 'Auto Numbering'),
+			'convert_required' => Yii::t('attribute', 'Convert Required Archive Parent'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
@@ -138,6 +142,8 @@ class ArchiveSettings extends CActiveRecord
 		$criteria->compare('t.permission',$this->permission);
 		$criteria->compare('t.meta_keyword',strtolower($this->meta_keyword),true);
 		$criteria->compare('t.meta_description',strtolower($this->meta_description),true);
+		$criteria->compare('t.auto_numbering',$this->auto_numbering);
+		$criteria->compare('t.convert_required',$this->convert_required);
 		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
 		if(isset($_GET['modified']))
@@ -188,6 +194,8 @@ class ArchiveSettings extends CActiveRecord
 			$this->defaultColumns[] = 'permission';
 			$this->defaultColumns[] = 'meta_keyword';
 			$this->defaultColumns[] = 'meta_description';
+			$this->defaultColumns[] = 'auto_numbering';
+			$this->defaultColumns[] = 'convert_required';
 			$this->defaultColumns[] = 'modified_date';
 			$this->defaultColumns[] = 'modified_id';
 		}
@@ -216,6 +224,8 @@ class ArchiveSettings extends CActiveRecord
 			$this->defaultColumns[] = 'permission';
 			$this->defaultColumns[] = 'meta_keyword';
 			$this->defaultColumns[] = 'meta_description';
+			$this->defaultColumns[] = 'auto_numbering';
+			$this->defaultColumns[] = 'convert_required';
 			$this->defaultColumns[] = array(
 				'name' => 'modified_date',
 				'value' => 'Utility::dateFormat($data->modified_date)',
