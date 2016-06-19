@@ -13,7 +13,55 @@
  * @contect (+62)856-299-4114
  *
  */
+
+	$cs = Yii::app()->getClientScript();
+$js=<<<EOP
+	$('#ArchiveConverts_convert_multiple').on('change', function() {
+		var id = $(this).prop('checked');		
+		if(id == true) {
+			$('div#multiple').slideDown();
+			$('div#single').slideUp();
+		} else {
+			$('div#single').slideDown();
+			$('div#multiple').slideUp();
+		}
+	});
+	var i = 0;
+	var prev, next;
+	$('input[type="button"]#add-field').on('click', function() {
+		var body = $('form div#show-field').html();
+		if($('#add-field').before(body)) {
+			prev = 'ArchiveConverts\[convert_number_multiple\]\['+i+'\]';
+			i = i+1;
+			next = 'ArchiveConverts\[convert_number_multiple\]\['+i+'\]';
+			$('form div#show-field').find('[id*="ArchiveConverts_convert_number_multiple_"]').each(function() {
+				$(this).attr('name',$(this).attr('name').replace(prev,next));
+			});
+			//alert(prev+' '+next);
+		}
+	});
+	$('a.drop').live('click', function() {
+		$(this).parents('div.field').remove();
+	});
+EOP;
+	$cs->registerScript('archive', $js, CClientScript::POS_END);
 ?>
+
+<?php $form=$this->beginWidget('application.components.system.OActiveForm', array(
+	'id'=>'archive-converts-form',
+	'enableAjaxValidation'=>true,
+	'htmlOptions' => array(
+		//'enctype' => 'multipart/form-data',
+		'class'=>'hide',
+	),
+)); ?>
+<div id="show-field">
+	<?php echo $this->renderPartial('_form_field', array(
+		'form'=>$form,
+		'model'=>$model,
+	)); ?>
+</div>
+<?php $this->endWidget(); ?>
 
 <?php $form=$this->beginWidget('application.components.system.OActiveForm', array(
 	'id'=>'archive-converts-form',
@@ -69,6 +117,15 @@
 	<?php }?>
 
 	<div class="clearfix">
+		<?php echo $form->labelEx($model,'convert_publish_year'); ?>
+		<div class="desc">
+			<?php echo $form->textField($model,'convert_publish_year',array('maxlength'=>4, 'class'=>'span-3')); ?>
+			<?php echo $form->error($model,'convert_publish_year'); ?>
+			<div class="small-px silent mt-5">example: 2015, 2016</div>
+		</div>
+	</div>
+
+	<div class="clearfix">
 		<?php echo $form->labelEx($model,'convert_title'); ?>
 		<div class="desc">
 			<?php echo $form->textArea($model,'convert_title',array('rows'=>6, 'cols'=>50, 'class'=>'span-10 smaller')); ?>
@@ -86,17 +143,53 @@
 		</div>
 	</div>
 
-	<div class="clearfix">
-		<?php echo $form->labelEx($model,'convert_number'); ?>
+	<div class="clearfix publish">
+		<?php echo $form->labelEx($model,'convert_multiple'); ?>
 		<div class="desc">
-			<?php if(!$model->getErrors())
-				$model->convert_number = unserialize($model->convert_numbers);
+			<?php echo $form->checkBox($model,'convert_multiple'); ?>
+			<?php echo $form->error($model,'convert_multiple'); ?>
+			<?php /*<div class="small-px silent"></div>*/?>
+		</div>
+	</div>
+
+	<div class="clearfix <?php echo $model->convert_multiple == 0 ? '' :'hide';?>" id="single">
+		<?php echo $form->labelEx($model,'convert_number_single'); ?>
+		<div class="desc">
+			<?php if($model->convert_multiple == 0 && !$model->getErrors())
+				$model->convert_number_single = unserialize($model->convert_numbers);
 			//echo '<pre>';
-			//print_r($model->convert_number);
+			//print_r($model->convert_number_single);
 			//echo '<pre>';?>
-			<?php echo $form->textField($model,'convert_number[start]', array('placeholder'=>'Start', 'class'=>'span-3')); ?>
-			<?php echo $form->textField($model,'convert_number[finish]', array('placeholder'=>'Finish', 'class'=>'span-3')); ?>
-			<?php echo $form->error($model,'convert_number'); ?>
+			<?php echo $form->textField($model,'convert_number_single[start]', array('placeholder'=>'Start', 'class'=>'span-3')); ?>
+			<?php echo $form->textField($model,'convert_number_single[finish]', array('placeholder'=>'Finish', 'class'=>'span-3')); ?>
+			<?php echo $form->error($model,'convert_number_single'); ?>
+			<?php /*<div class="small-px silent"></div>*/?>
+		</div>
+	</div>
+
+	<div class="clearfix <?php echo $model->convert_multiple == 1 ? '' :'hide';?>" id="multiple">
+		<?php echo $form->labelEx($model,'convert_number_multiple'); ?>
+		<div class="desc">
+			<?php if($model->convert_multiple == 1) {
+				if(!$model->getErrors())
+					$data = $model->convert_number_multiple = unserialize($model->convert_numbers);
+				else
+					$data = $model->convert_number_multiple;
+			}
+			if(!empty($data)) {
+				foreach($data as $key => $val) {
+					echo $this->renderPartial('_form_field', array(
+						'form'=>$form,
+						'model'=>$model,
+						'key'=>$key,
+					));
+				}
+			}
+			//echo '<pre>';
+			//print_r($model->convert_number_multiple);
+			//echo '<pre>';?>
+			<?php echo CHtml::button(Yii::t('phrase', 'Add Field'), array('id'=>'add-field')); ?>
+			<?php echo $form->error($model,'convert_number_multiple'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>

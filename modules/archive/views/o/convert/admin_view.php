@@ -40,8 +40,8 @@
 			'value'=>$model->convert_cat_id != 0 ? $model->convert_cat_id : '-',
 		),
 		array(
-			'name'=>'convert_parent',
-			'value'=>$model->convert_parent != 0 ? $model->convert_parent : '-',
+			'name'=>'convert_publish_year',
+			'value'=>$model->convert_publish_year != '' ? $model->convert_publish_year : '-',
 		),
 		array(
 			'name'=>'convert_title',
@@ -52,13 +52,21 @@
 			'value'=>$model->convert_desc != '' ? $model->convert_desc : '-',
 		),
 		array(
-			'name'=>'archive_numbers',
-			'value'=>ArchiveConverts::getDetailItemArchive(unserialize($model->convert_numbers)),
+			'name'=>'convert_numbers',
+			'value'=>ArchiveConverts::getDetailItemArchive(unserialize($model->convert_numbers), $model->convert_multiple),
 			'type'=>'raw',
 		),
 		array(
 			'name'=>'convert_total',
 			'value'=>$model->convert_total,
+		),
+		array(
+			'name'=>'convert_pages',
+			'value'=>$model->convert_pages != 0 ? $model->convert_pages : '-',
+		),
+		array(
+			'name'=>'convert_copies',
+			'value'=>$model->convert_copies != 0 ? $model->convert_copies.' eks' : '-',
 		),
 		array(
 			'name'=>'creation_date',

@@ -36,11 +36,6 @@
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('convert_parent'); ?><br/>
-			<?php echo $form->textField($model,'convert_parent',array('size'=>11,'maxlength'=>11)); ?>
-		</li>
-
-		<li>
 			<?php echo $model->getAttributeLabel('convert_title'); ?><br/>
 			<?php echo $form->textArea($model,'convert_title',array('rows'=>6, 'cols'=>50)); ?>
 		</li>

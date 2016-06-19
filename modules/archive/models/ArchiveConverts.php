@@ -30,6 +30,8 @@
  * @property string $convert_title
  * @property string $convert_desc
  * @property integer $convert_cat_id
+ * @property string $convert_publish_year
+ * @property integer $convert_multiple
  * @property string $convert_numbers
  * @property string $convert_pages
  * @property string $convert_copies
@@ -47,7 +49,8 @@ class ArchiveConverts extends CActiveRecord
 	public $defaultColumns = array();
 	public $convert_total;
 	public $back_field;
-	public $convert_number;
+	public $convert_number_single;
+	public $convert_number_multiple;
 	
 	// Variable Search
 	public $code_search;
@@ -81,16 +84,17 @@ class ArchiveConverts extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('location_id, category_id, convert_title', 'required'),
+			array('location_id, category_id, convert_title, convert_publish_year', 'required'),
 			array('convert_cat_id', 'required', 'on'=>'not_auto_numbering'),
-			array('publish, location_id, category_id, convert_cat_id,
+			array('publish, location_id, category_id, convert_cat_id, convert_multiple,
 				back_field', 'numerical', 'integerOnly'=>true),
+			array('convert_publish_year', 'length', 'max'=>4),
 			array('convert_pages, convert_copies, creation_id, modified_id', 'length', 'max'=>11),
 			array('convert_desc, convert_numbers, convert_pages, convert_copies,
-				convert_number', 'safe'),
+				convert_number_single, convert_number_multiple', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('convert_id, publish, location_id, category_id, convert_title, convert_desc, convert_cat_id, convert_numbers, convert_pages, convert_copies, creation_date, creation_id, modified_date, modified_id,
+			array('convert_id, publish, location_id, category_id, convert_title, convert_desc, convert_cat_id, convert_publish_year, convert_multiple, convert_numbers, convert_pages, convert_copies, creation_date, creation_id, modified_date, modified_id,
 				convert_total, code_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -125,6 +129,8 @@ class ArchiveConverts extends CActiveRecord
 			'convert_title' => Yii::t('attribute', 'Title'),
 			'convert_desc' => Yii::t('attribute', 'Description'),
 			'convert_cat_id' => Yii::t('attribute', 'Convert Category ID'),
+			'convert_publish_year' => Yii::t('attribute', 'Publish Year'),
+			'convert_multiple' => Yii::t('attribute', 'Is Multiple Convert'),
 			'convert_numbers' => Yii::t('attribute', 'Numbers'),
 			'convert_pages' => Yii::t('attribute', 'Pages'),
 			'convert_copies' => Yii::t('attribute', 'Copies'),
@@ -134,10 +140,11 @@ class ArchiveConverts extends CActiveRecord
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'convert_total' => Yii::t('attribute', 'Total'),
 			'back_field' => Yii::t('attribute', 'Back to Manage'),
-			'convert_number' => Yii::t('attribute', 'Numbers'),
 			'code_search' => Yii::t('attribute', 'Code'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
+			'convert_number_single' => Yii::t('attribute', 'Number Single'),
+			'convert_number_multiple' => Yii::t('attribute', 'Number Multiple'),
 		);
 		/*
 			'Convert' => 'Convert',
@@ -194,6 +201,8 @@ class ArchiveConverts extends CActiveRecord
 		$criteria->compare('t.convert_title',strtolower($this->convert_title),true);
 		$criteria->compare('t.convert_desc',strtolower($this->convert_desc),true);
 		$criteria->compare('t.convert_cat_id',$this->convert_cat_id);
+		$criteria->compare('t.convert_publish_year',strtolower($this->convert_publish_year),true);
+		$criteria->compare('t.convert_multiple',$this->convert_multiple);
 		$criteria->compare('t.convert_numbers',strtolower($this->convert_numbers),true);
 		$criteria->compare('t.convert_pages',$this->convert_pages);
 		$criteria->compare('t.convert_copies',$this->convert_copies);
@@ -261,6 +270,8 @@ class ArchiveConverts extends CActiveRecord
 			$this->defaultColumns[] = 'convert_title';
 			$this->defaultColumns[] = 'convert_desc';
 			$this->defaultColumns[] = 'convert_cat_id';
+			$this->defaultColumns[] = 'convert_publish_year';
+			$this->defaultColumns[] = 'convert_multiple';
 			$this->defaultColumns[] = 'convert_numbers';
 			$this->defaultColumns[] = 'convert_pages';
 			$this->defaultColumns[] = 'convert_copies';
@@ -401,12 +412,21 @@ class ArchiveConverts extends CActiveRecord
 	/**
 	 * get Item Archive
 	 */
-	public static function getItemArchive($data)
+	public static function getItemArchive($data, $type=0)
 	{
 		$convert_number = unserialize($data);
 		if(!empty($convert_number)) {
-			$item = (trim($convert_number['finish'])-trim($convert_number['start']));
-			$return = $item == 0 ? $item : $item+1;
+			if($type == 0) {
+				$item = (trim($convert_number['finish'])-trim($convert_number['start']));
+				$return = $item == 0 ? $item : $item+1;
+			} else {
+				$return = 0;
+				foreach($convert_number as $key => $val) {
+					$item = (trim($val['finish'])-trim($val['start']));
+					$data_plus = $item == 0 ? $item : $item+1;
+					$return = $return + $data_plus;
+				}				
+			}
 			
 		} else
 			$return = 0;
@@ -417,15 +437,28 @@ class ArchiveConverts extends CActiveRecord
 	/**
 	 * get Detail Item Archive
 	 */
-	public static function getDetailItemArchive($data)
+	public static function getDetailItemArchive($data, $multiple=0)
 	{
-		$return = implode('-', $data);		
+		if($multiple == 0)
+			$return = implode('-', $data);
+		else {
+			$countData = count($data);
+			$i = 0;
+			foreach($data as $key => $val) {
+				$i++;
+				if($i != $countData)
+					$return .= strtoupper($val['id']).': '.$val['start'].'-'.$val['finish'].'<br/>';
+				else
+					$return .= strtoupper($val['id']).': '.$val['start'].'-'.$val['finish'];
+			}			
+		}
+		
 		return $return;
 	}
 	
 	protected function afterFind() 
 	{
-		$this->convert_total = self::getItemArchive($this->convert_numbers);
+		$this->convert_total = self::getItemArchive($this->convert_numbers, $this->convert_multiple);
 		
 		parent::afterFind();		
 	}
@@ -440,8 +473,10 @@ class ArchiveConverts extends CActiveRecord
 			else
 				$this->modified_id = Yii::app()->user->id;
 			
-			if(empty($this->convert_number) || $this->convert_number == null)
-				$this->addError('convert_number', 'Number cannot be blank.');
+			if($this->convert_multiple == 0 && (empty($this->convert_number_single) || $this->convert_number_single == null))
+				$this->addError('convert_number_single', 'Number Single cannot be blank.');
+			if($this->convert_multiple == 1 && (empty($this->convert_number_multiple) || $this->convert_number_multiple == null))
+				$this->addError('convert_number_multiple', 'Number Multiple cannot be blank.');
 		}
 		return true;
 	}
@@ -450,11 +485,11 @@ class ArchiveConverts extends CActiveRecord
 	 * before save attributes
 	 */
 	protected function beforeSave() {
-		$action = strtolower(Yii::app()->controller->action->id);
-		
 		if(parent::beforeSave()) {
-			if($action != 'publish')
-				$this->convert_numbers = serialize($this->convert_number);
+			if($this->convert_multiple == 0)
+				$this->convert_numbers = serialize($this->convert_number_single);
+			else
+				$this->convert_numbers = serialize($this->convert_number_multiple);
 		}
 		return true;
 	}
