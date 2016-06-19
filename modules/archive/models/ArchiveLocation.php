@@ -283,6 +283,13 @@ class ArchiveLocation extends CActiveRecord
 				'type' => 'raw',
 			);
 			$this->defaultColumns[] = array(
+				'name' => 'archive_total',
+				'value' => '$data->archive_total',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
 				'header' => Yii::t('attribute', 'Converts'),
 				'value' => 'CHtml::link($data->view->converts, Yii::app()->controller->createUrl("o/convert/manage",array("location"=>$data->location_id)))',
 				'htmlOptions' => array(
@@ -291,19 +298,13 @@ class ArchiveLocation extends CActiveRecord
 				'type' => 'raw',
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'archive_total',
-				'value' => '$data->archive_total',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-			);
-			$this->defaultColumns[] = array(
 				'name' => 'convert_total',
 				'value' => '$data->convert_total',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
 			);
+			/*
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
 				'value' => '$data->creation_relation->displayname',
@@ -334,6 +335,7 @@ class ArchiveLocation extends CActiveRecord
 					),
 				), true),
 			);
+			*/
 			if(!isset($_GET['type'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'story_enable',

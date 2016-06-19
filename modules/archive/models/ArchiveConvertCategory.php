@@ -260,6 +260,14 @@ class ArchiveConvertCategory extends CActiveRecord
 				),
 			);
 			$this->defaultColumns[] = array(
+				'header' => Yii::t('attribute', 'Converts'),
+				'value' => 'CHtml::link($data->view->converts, Yii::app()->controller->createUrl("o/convert/manage",array("category"=>$data->category_id)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
 				'name' => 'convert_total',
 				'value' => '$data->convert_total',
 				'htmlOptions' => array(
