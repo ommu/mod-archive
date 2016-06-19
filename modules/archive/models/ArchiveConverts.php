@@ -330,6 +330,13 @@ class ArchiveConverts extends CActiveRecord
 				),
 			);
 			$this->defaultColumns[] = array(
+				'name' => 'convert_publish_year',
+				'value' => '$data->convert_publish_year',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
 				'header' => 'convert_total',
 				'value' => '$data->convert_total',
 				'htmlOptions' => array(
