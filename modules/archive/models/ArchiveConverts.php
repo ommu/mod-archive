@@ -29,6 +29,7 @@
  * @property string $convert_parent
  * @property string $convert_title
  * @property string $convert_desc
+ * @property string $convert_numbers
  * @property string $creation_date
  * @property string $creation_id
  * @property string $modified_date
@@ -72,10 +73,10 @@ class ArchiveConverts extends CActiveRecord
 			array('category_id, convert_title, convert_desc, creation_date, creation_id, modified_id', 'required'),
 			array('publish, category_id', 'numerical', 'integerOnly'=>true),
 			array('convert_parent, creation_id, modified_id', 'length', 'max'=>11),
-			array('modified_date', 'safe'),
+			array('convert_numbers', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('convert_id, publish, category_id, convert_parent, convert_title, convert_desc, creation_date, creation_id, modified_date, modified_id', 'safe', 'on'=>'search'),
+			array('convert_id, publish, category_id, convert_parent, convert_title, convert_desc, convert_numbers, creation_date, creation_id, modified_date, modified_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -101,9 +102,10 @@ class ArchiveConverts extends CActiveRecord
 			'convert_id' => Yii::t('attribute', 'Convert'),
 			'publish' => Yii::t('attribute', 'Publish'),
 			'category_id' => Yii::t('attribute', 'Category'),
-			'convert_parent' => Yii::t('attribute', 'Convert Parent'),
-			'convert_title' => Yii::t('attribute', 'Convert Title'),
-			'convert_desc' => Yii::t('attribute', 'Convert Desc'),
+			'convert_parent' => Yii::t('attribute', 'Parent'),
+			'convert_title' => Yii::t('attribute', 'Title'),
+			'convert_desc' => Yii::t('attribute', 'Description'),
+			'convert_numbers' => Yii::t('attribute', 'Numbers'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
@@ -160,6 +162,7 @@ class ArchiveConverts extends CActiveRecord
 		$criteria->compare('t.convert_parent',strtolower($this->convert_parent),true);
 		$criteria->compare('t.convert_title',strtolower($this->convert_title),true);
 		$criteria->compare('t.convert_desc',strtolower($this->convert_desc),true);
+		$criteria->compare('t.convert_numbers',strtolower($this->convert_numbers),true);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
 		if(isset($_GET['creation']))
@@ -208,6 +211,7 @@ class ArchiveConverts extends CActiveRecord
 			$this->defaultColumns[] = 'convert_parent';
 			$this->defaultColumns[] = 'convert_title';
 			$this->defaultColumns[] = 'convert_desc';
+			$this->defaultColumns[] = 'convert_numbers';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
 			$this->defaultColumns[] = 'modified_date';
@@ -252,6 +256,7 @@ class ArchiveConverts extends CActiveRecord
 			$this->defaultColumns[] = 'convert_parent';
 			$this->defaultColumns[] = 'convert_title';
 			$this->defaultColumns[] = 'convert_desc';
+			$this->defaultColumns[] = 'convert_numbers';
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
 				'value' => 'Utility::dateFormat($data->creation_date)',
