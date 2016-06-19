@@ -36,7 +36,7 @@
 
 <?php //begin.Search ?>
 <div class="search-form">
-<?php $this->renderPartial('/convert_media/_search',array(
+<?php $this->renderPartial('/o/convert_media/_search',array(
 	'model'=>$model,
 )); ?>
 </div>
@@ -44,7 +44,7 @@
 
 <?php //begin.Grid Option ?>
 <div class="grid-form">
-<?php $this->renderPartial('/convert_media/_option_form',array(
+<?php $this->renderPartial('/o/convert_media/_option_form',array(
 	'model'=>$model,
 )); ?>
 </div>

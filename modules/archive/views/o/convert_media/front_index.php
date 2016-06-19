@@ -21,7 +21,7 @@
 
 <?php $this->widget('application.components.system.FListView', array(
 	'dataProvider'=>$dataProvider,
-	'itemView'=>'/convert_media/_view',
+	'itemView'=>'/o/convert_media/_view',
 	'pager' => array(
 		'header' => '',
 	), 

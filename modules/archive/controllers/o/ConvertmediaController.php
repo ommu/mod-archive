@@ -135,7 +135,7 @@ class ConvertmediaController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Archive Convert Medias');
 		$this->pageDescription = $setting->meta_description;
 		$this->pageMeta = $setting->meta_keyword;
-		$this->render('/convert_media/front_index',array(
+		$this->render('/o/convert_media/front_index',array(
 			'dataProvider'=>$dataProvider,
 		));
 		//$this->redirect(array('manage'));
@@ -161,11 +161,11 @@ class ConvertmediaController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'View Archive Convert Medias');
 		$this->pageDescription = '';
 		$this->pageMeta = $setting->meta_keyword;
-		$this->render('/convert_media/front_view',array(
+		$this->render('/o/convert_media/front_view',array(
 			'model'=>$model,
 		));
 		/*
-		$this->render('/convert_media/admin_view',array(
+		$this->render('/o/convert_media/admin_view',array(
 			'model'=>$model,
 		));
 		*/
@@ -195,7 +195,7 @@ class ConvertmediaController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Archive Convert Medias Manage');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('/convert_media/admin_manage',array(
+		$this->render('/o/convert_media/admin_manage',array(
 			'model'=>$model,
 			'columns' => $columns,
 		));
@@ -261,7 +261,7 @@ class ConvertmediaController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Create Archive Convert Medias');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('/convert_media/admin_add',array(
+		$this->render('/o/convert_media/admin_add',array(
 			'model'=>$model,
 		));
 	}
@@ -327,7 +327,7 @@ class ConvertmediaController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Update Archive Convert Medias');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('/convert_media/admin_edit',array(
+		$this->render('/o/convert_media/admin_edit',array(
 			'model'=>$model,
 		));
 	}
@@ -398,7 +398,7 @@ class ConvertmediaController extends Controller
 			$this->pageTitle = Yii::t('phrase', 'ArchiveConvertMedia Delete.');
 			$this->pageDescription = '';
 			$this->pageMeta = '';
-			$this->render('/convert_media/admin_delete');
+			$this->render('/o/convert_media/admin_delete');
 		}
 	}
 
@@ -455,7 +455,7 @@ class ConvertmediaController extends Controller
 			$this->pageTitle = $title;
 			$this->pageDescription = '';
 			$this->pageMeta = '';
-			$this->render('/convert_media/admin_publish',array(
+			$this->render('/o/convert_media/admin_publish',array(
 				'title'=>$title,
 				'model'=>$model,
 			));
@@ -496,7 +496,7 @@ class ConvertmediaController extends Controller
 			$this->pageTitle = Yii::t('phrase', 'Headline');
 			$this->pageDescription = '';
 			$this->pageMeta = '';
-			$this->render('/convert_media/admin_headline');
+			$this->render('/o/convert_media/admin_headline');
 		}
 	}
 

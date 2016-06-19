@@ -22,5 +22,5 @@
 ?>
 
 <div class="form">
-	<?php echo $this->renderPartial('/convert_media/_form', array('model'=>$model)); ?>
+	<?php echo $this->renderPartial('/o/convert_media/_form', array('model'=>$model)); ?>
 </div>
