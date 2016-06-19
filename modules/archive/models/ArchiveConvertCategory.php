@@ -38,6 +38,7 @@ class ArchiveConvertCategory extends CActiveRecord
 	public $defaultColumns = array();
 	public $convert_total;
 	public $convert_pages;
+	public $convert_copies;
 	
 	// Variable Search
 	public $convert_search;
@@ -80,7 +81,7 @@ class ArchiveConvertCategory extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('category_id, publish, category_name, category_desc, category_code, creation_date, creation_id, modified_date, modified_id, 
-				convert_total, convert_pages, convert_search, creation_search, modified_search', 'safe', 'on'=>'search'),
+				convert_total, convert_pages, convert_copies, convert_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -120,6 +121,7 @@ class ArchiveConvertCategory extends CActiveRecord
 			'modified_search' => Yii::t('attribute', 'Modified'),
 			'convert_total' => Yii::t('attribute', 'Total'),
 			'convert_pages' => Yii::t('attribute', 'Convert Pages'),
+			'convert_copies' => Yii::t('attribute', 'Convert Copies'),
 			'convert_search' => Yii::t('attribute', 'Convert'),
 		);
 		/*
@@ -182,6 +184,7 @@ class ArchiveConvertCategory extends CActiveRecord
 			$criteria->compare('t.modified_id',$this->modified_id);
 		$criteria->compare('t.convert_total',$this->convert_total, true);
 		$criteria->compare('t.convert_pages',$this->convert_pages, true);
+		$criteria->compare('t.convert_copies',$this->convert_copies, true);
 		
 		// Custom Search
 		$criteria->with = array(
@@ -294,6 +297,14 @@ class ArchiveConvertCategory extends CActiveRecord
 				),
 			);
 			$this->defaultColumns[] = array(
+				'header' => 'convert_copies',
+				'value' => '$data->convert_copies',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			/*
+			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
 				'value' => '$data->creation_relation->displayname',
 			);
@@ -323,6 +334,7 @@ class ArchiveConvertCategory extends CActiveRecord
 					),
 				), true),
 			);
+			*/
 			if(!isset($_GET['type'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'publish',
@@ -385,6 +397,7 @@ class ArchiveConvertCategory extends CActiveRecord
 	protected function afterFind() {
 		$this->convert_total = ArchiveConverts::getTotalItemArchive($this->converts());
 		$this->convert_pages = ArchiveConverts::getTotalItemArchive($this->converts(), 'page');
+		$this->convert_copies = ArchiveConverts::getTotalItemArchive($this->converts(), 'copy');
 		
 		parent::afterFind();		
 	}
