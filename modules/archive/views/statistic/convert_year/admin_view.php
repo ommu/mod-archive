@@ -3,7 +3,6 @@
  * View Archive Convert Years (view-archive-convert-year)
  * @var $this ConvertyearController
  * @var $model ViewArchiveConvertYear
- * @var $form CActiveForm
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
@@ -16,10 +15,22 @@
 
 	$this->breadcrumbs=array(
 		'View Archive Convert Years'=>array('manage'),
-		'Create',
+		$model->publish_year,
 	);
 ?>
 
-<div class="form">
-	<?php echo $this->renderPartial('/statistic/convert_year/_form', array('model'=>$model)); ?>
-</div>
+<?php $this->widget('application.components.system.FDetailView', array(
+	'data'=>$model,
+	'attributes'=>array(
+		array(
+			'name'=>'publish_year',
+			'value'=>$model->publish_year,
+			//'value'=>$model->publish_year != '' ? $model->publish_year : '-',
+		),
+		array(
+			'name'=>'converts',
+			'value'=>$model->converts,
+			//'value'=>$model->converts != '' ? $model->converts : '-',
+		),
+	),
+)); ?>

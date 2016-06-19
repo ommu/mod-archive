@@ -27,6 +27,9 @@ plugin_menu		:
 			- urlTitle: Archive Years
 				urlRules: {siteType: 0,1, userLevel: 1,2}
 				urlPath: {url: statistic/year/manage, attr: -, icon: -}
+			- urlTitle: Convert Years
+				urlRules: {siteType: 0,1, userLevel: 1,2}
+				urlPath: {url: statistic/convertyear/manage, attr: -, icon: -}
 		
 	- urlTitle: Settings
 		urlRules: {siteType: 0,1, userLevel: 1,2}

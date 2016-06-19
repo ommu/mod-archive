@@ -102,22 +102,6 @@ class YearController extends Controller
 	{
 		$this->redirect(array('manage'));
 	}
-	
-	/**
-	 * Displays a particular model.
-	 * @param integer $id the ID of the model to be displayed
-	 */
-	public function actionView($id) 
-	{
-		$model=$this->loadModel($id);
-
-		$this->pageTitle = Yii::t('phrase', 'View View Archive Years');
-		$this->pageDescription = '';
-		$this->pageMeta = '';
-		$this->render('admin_view',array(
-			'model'=>$model,
-		));
-	}	
 
 	/**
 	 * Manages all models.
@@ -148,6 +132,22 @@ class YearController extends Controller
 			'columns' => $columns,
 		));
 	}
+	
+	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
+	public function actionView($id) 
+	{
+		$model=$this->loadModel($id);
+
+		$this->pageTitle = Yii::t('phrase', 'View View Archive Years');
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_view',array(
+			'model'=>$model,
+		));
+	}	
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.

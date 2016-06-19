@@ -29,6 +29,9 @@
 class ViewArchiveConvertYear extends CActiveRecord
 {
 	public $defaultColumns = array();
+	public $convert_total;
+	public $convert_pages;
+	public $convert_copies;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -70,7 +73,8 @@ class ViewArchiveConvertYear extends CActiveRecord
 			array('converts', 'length', 'max'=>21),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('publish_year, converts', 'safe', 'on'=>'search'),
+			array('publish_year, converts, 
+				convert_total, convert_pages, convert_copies', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -96,6 +100,9 @@ class ViewArchiveConvertYear extends CActiveRecord
 		return array(
 			'publish_year' => Yii::t('attribute', 'Publish Year'),
 			'converts' => Yii::t('attribute', 'Converts'),
+			'convert_total' => Yii::t('attribute', 'Total'),
+			'convert_pages' => Yii::t('attribute', 'Pages'),
+			'convert_copies' => Yii::t('attribute', 'Copies'),
 		);
 		/*
 			'Publish Year' => 'Publish Year',
@@ -124,6 +131,9 @@ class ViewArchiveConvertYear extends CActiveRecord
 
 		$criteria->compare('t.publish_year',strtolower($this->publish_year),true);
 		$criteria->compare('t.converts',strtolower($this->converts),true);
+		$criteria->compare('t.convert_total',$this->convert_total, true);
+		$criteria->compare('t.convert_pages',$this->convert_pages, true);
+		$criteria->compare('t.convert_copies',$this->convert_copies, true);
 
 		if(!isset($_GET['ViewArchiveConvertYear_sort']))
 			$criteria->order = 't.publish_year DESC';
@@ -172,8 +182,28 @@ class ViewArchiveConvertYear extends CActiveRecord
 			);
 			$this->defaultColumns[] = 'publish_year';
 			$this->defaultColumns[] = 'converts';
+			$this->defaultColumns[] = array(
+				'header' => 'convert_total',
+				'value' => '$data->convert_total',
+			);
+			$this->defaultColumns[] = array(
+				'header' => 'convert_pages',
+				'value' => '$data->convert_pages',
+			);
+			$this->defaultColumns[] = array(
+				'header' => 'convert_copies',
+				'value' => '$data->convert_copies',
+			);
 		}
 		parent::afterConstruct();
+	}
+	
+	protected function afterFind() {
+		$this->convert_total = ArchiveConverts::getTotalItemArchive($this->converts());
+		$this->convert_pages = ArchiveConverts::getTotalItemArchive($this->converts(), 'page');
+		$this->convert_copies = ArchiveConverts::getTotalItemArchive($this->converts(), 'copy');
+		
+		parent::afterFind();		
 	}
 
 	/**
