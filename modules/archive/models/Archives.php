@@ -52,7 +52,7 @@ class Archives extends CActiveRecord
 	public $archive_number_multiple;
 	
 	// Variable Search
-	public $code_search;
+	public $archive_code_search;
 	public $creation_search;
 	public $modified_search;
 
@@ -94,7 +94,7 @@ class Archives extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('archive_id, publish, location_id, type_id, story_id, archive_title, archive_desc, archive_type_id, archive_publish_year, archive_multiple, archive_numbers, archive_pages, creation_date, creation_id, modified_date, modified_id,
-				archive_total, code_search, creation_search, modified_search', 'safe', 'on'=>'search'),
+				archive_total, archive_code_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -140,7 +140,7 @@ class Archives extends CActiveRecord
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
 			'archive_total' => Yii::t('attribute', 'Total'),
-			'code_search' => Yii::t('attribute', 'Code'),
+			'archive_code_search' => Yii::t('attribute', 'Code'),
 			'back_field' => Yii::t('attribute', 'Back to Manage'),
 			'archive_number_single' => Yii::t('attribute', 'Number Single'),
 			'archive_number_multiple' => Yii::t('attribute', 'Number Multiple'),
@@ -242,7 +242,7 @@ class Archives extends CActiveRecord
 		);
 		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
 		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
-		$criteria->compare('view.archive_code',strtolower($this->code_search), true);
+		$criteria->compare('view.archive_code',strtolower($this->archive_code_search), true);
 
 		if(!isset($_GET['Archives_sort']))
 			$criteria->order = 't.archive_id DESC';
@@ -312,7 +312,7 @@ class Archives extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = array(
-				'header' => 'code_search',
+				'header' => 'archive_code_search',
 				'value' => '$data->view->archive_code',
 			);
 			$this->defaultColumns[] = 'archive_title';

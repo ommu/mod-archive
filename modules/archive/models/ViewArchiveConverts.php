@@ -31,6 +31,7 @@
 class ViewArchiveConverts extends CActiveRecord
 {
 	public $defaultColumns = array();
+	public $convert_code;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -73,7 +74,8 @@ class ViewArchiveConverts extends CActiveRecord
 			array('location_code, category_code', 'length', 'max'=>8),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('convert_id, location_code, category_code, convert_cat_id', 'safe', 'on'=>'search'),
+			array('convert_id, location_code, category_code, convert_cat_id,
+				convert_code', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -97,7 +99,8 @@ class ViewArchiveConverts extends CActiveRecord
 			'convert_id' => Yii::t('attribute', 'Convert'),
 			'location_code' => Yii::t('attribute', 'Location Code'),
 			'category_code' => Yii::t('attribute', 'Category Code'),
-			'convert_cat_id' => Yii::t('attribute', 'Convert Cat'),
+			'convert_cat_id' => Yii::t('attribute', 'Convert Cat ID'),
+			'convert_code' => Yii::t('attribute', 'Code'),
 		);
 		/*
 			'Convert' => 'Convert',
@@ -130,6 +133,7 @@ class ViewArchiveConverts extends CActiveRecord
 		$criteria->compare('t.location_code',strtolower($this->location_code),true);
 		$criteria->compare('t.category_code',strtolower($this->category_code),true);
 		$criteria->compare('t.convert_cat_id',$this->convert_cat_id);
+		$criteria->compare('t.convert_code',$this->convert_code,true);
 
 		if(!isset($_GET['ViewArchiveConverts_sort']))
 			$criteria->order = 't.convert_id DESC';
@@ -173,7 +177,7 @@ class ViewArchiveConverts extends CActiveRecord
 	 * Set default columns to display
 	 */
 	protected function afterConstruct() {
-		if(count($this->defaultColumns) == 0) {/
+		if(count($this->defaultColumns) == 0) {
 			$this->defaultColumns[] = array(
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
@@ -201,6 +205,29 @@ class ViewArchiveConverts extends CActiveRecord
 			$model = self::model()->findByPk($id);
 			return $model;			
 		}
+	}
+
+	/**
+	 * get Code/Number Archive
+	 */
+	public static function getCodeArchive($location, $category, $id)
+	{
+		if(ArchiveSettings::getInfo(1, 'auto_numbering') == 1)
+			$id = 0;
+		else
+			$id = $id;
+		$convert_code = array($location);
+		array_push($convert_code, $category);
+		array_push($convert_code, $id);
+		
+		return implode(".", $convert_code);
+	}
+	
+	protected function afterFind() 
+	{		
+		$this->convert_code = self::getCodeArchive($this->location_code, $this->category_code, $this->convert_cat_id);
+		
+		parent::afterFind();		
 	}
 
 }

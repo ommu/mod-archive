@@ -53,7 +53,7 @@ class ArchiveConverts extends CActiveRecord
 	public $convert_number_multiple;
 	
 	// Variable Search
-	public $code_search;
+	public $convert_code_search;
 	public $creation_search;
 	public $modified_search;
 
@@ -95,7 +95,7 @@ class ArchiveConverts extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('convert_id, publish, location_id, category_id, convert_title, convert_desc, convert_cat_id, convert_publish_year, convert_multiple, convert_numbers, convert_pages, convert_copies, creation_date, creation_id, modified_date, modified_id,
-				convert_total, code_search, creation_search, modified_search', 'safe', 'on'=>'search'),
+				convert_total, convert_code_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -140,7 +140,7 @@ class ArchiveConverts extends CActiveRecord
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'convert_total' => Yii::t('attribute', 'Total'),
 			'back_field' => Yii::t('attribute', 'Back to Manage'),
-			'code_search' => Yii::t('attribute', 'Code'),
+			'convert_code_search' => Yii::t('attribute', 'Code'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
 			'convert_number_single' => Yii::t('attribute', 'Number Single'),
@@ -230,9 +230,13 @@ class ArchiveConverts extends CActiveRecord
 				'alias'=>'modified_relation',
 				'select'=>'displayname',
 			),
+			'view' => array(
+				'alias'=>'view',
+			),
 		);
 		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
 		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
+		$criteria->compare('view.convert_code',strtolower($this->convert_code_search), true);
 
 		if(!isset($_GET['ArchiveConverts_sort']))
 			$criteria->order = 't.convert_id DESC';
@@ -300,6 +304,10 @@ class ArchiveConverts extends CActiveRecord
 			$this->defaultColumns[] = array(
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
+			);
+			$this->defaultColumns[] = array(
+				'header' => 'convert_code_search',
+				'value' => '$data->view->convert_code',
 			);
 			$this->defaultColumns[] = 'convert_title';
 			$this->defaultColumns[] = array(

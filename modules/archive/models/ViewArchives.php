@@ -105,7 +105,7 @@ class ViewArchives extends CActiveRecord
 			'location_code' => Yii::t('attribute', 'Location Code'),
 			'story_code' => Yii::t('attribute', 'Story Code'),
 			'type_code' => Yii::t('attribute', 'Type Code'),
-			'archive_type_id' => Yii::t('attribute', 'Archive Type'),
+			'archive_type_id' => Yii::t('attribute', 'Archive Type ID'),
 			'archive_code' => Yii::t('attribute', 'Code'),
 		);
 		/*
@@ -145,7 +145,7 @@ class ViewArchives extends CActiveRecord
 		$criteria->compare('t.story_code',strtolower($this->story_code),true);
 		$criteria->compare('t.type_code',strtolower($this->type_code),true);
 		$criteria->compare('t.archive_type_id',$this->archive_type_id);
-		$criteria->compare('t.archive_code',$this->archive_code);
+		$criteria->compare('t.archive_code',$this->archive_code,true);
 
 		if(!isset($_GET['ViewArchives_sort']))
 			$criteria->order = 't.archive_id DESC';
