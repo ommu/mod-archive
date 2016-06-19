@@ -92,6 +92,7 @@ class ArchiveConvertCategory extends CActiveRecord
 			'converts' => array(self::HAS_MANY, 'ArchiveConverts', 'convert_id'),
 			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
+			'view' => array(self::BELONGS_TO, 'ViewArchiveConvertCategory', 'category_id'),
 		);
 	}
 
