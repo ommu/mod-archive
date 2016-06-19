@@ -78,6 +78,15 @@
 	</div>
 
 	<div class="clearfix">
+		<?php echo $form->labelEx($model,'convert_desc'); ?>
+		<div class="desc">
+			<?php echo $form->textArea($model,'convert_desc',array('rows'=>6, 'cols'=>50, 'class'=>'span-10')); ?>
+			<?php echo $form->error($model,'convert_desc'); ?>
+			<?php /*<div class="small-px silent"></div>*/?>
+		</div>
+	</div>
+
+	<div class="clearfix">
 		<?php echo $form->labelEx($model,'convert_number'); ?>
 		<div class="desc">
 			<?php if(!$model->getErrors())
@@ -93,11 +102,18 @@
 	</div>
 
 	<div class="clearfix">
-		<?php echo $form->labelEx($model,'convert_desc'); ?>
+		<?php echo $form->labelEx($model,'convert_pages'); ?>
 		<div class="desc">
-			<?php echo $form->textArea($model,'convert_desc',array('rows'=>6, 'cols'=>50, 'class'=>'span-10')); ?>
-			<?php echo $form->error($model,'convert_desc'); ?>
-			<?php /*<div class="small-px silent"></div>*/?>
+			<?php echo $form->textField($model,'convert_pages',array('maxlength'=>4, 'class'=>'span-3')); ?>
+			<?php echo $form->error($model,'convert_pages'); ?>
+		</div>
+	</div>
+
+	<div class="clearfix">
+		<?php echo $form->labelEx($model,'convert_copies'); ?>
+		<div class="desc">
+			<?php echo $form->textField($model,'convert_copies',array('maxlength'=>4, 'class'=>'span-3')); ?>
+			<?php echo $form->error($model,'convert_copies'); ?>
 		</div>
 	</div>
 

@@ -32,6 +32,7 @@
  * @property integer $convert_cat_id
  * @property string $convert_numbers
  * @property string $convert_pages
+ * @property string $convert_copies
  * @property string $creation_date
  * @property string $creation_id
  * @property string $modified_date
@@ -84,12 +85,12 @@ class ArchiveConverts extends CActiveRecord
 			array('convert_cat_id', 'required', 'on'=>'not_auto_numbering'),
 			array('publish, location_id, category_id, convert_cat_id,
 				back_field', 'numerical', 'integerOnly'=>true),
-			array('convert_pages, creation_id, modified_id', 'length', 'max'=>11),
-			array('convert_desc, convert_numbers, convert_pages,
+			array('convert_pages, convert_copies, creation_id, modified_id', 'length', 'max'=>11),
+			array('convert_desc, convert_numbers, convert_pages, convert_copies,
 				convert_number', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('convert_id, publish, location_id, category_id, convert_title, convert_desc, convert_cat_id, convert_numbers, convert_pages, creation_date, creation_id, modified_date, modified_id,
+			array('convert_id, publish, location_id, category_id, convert_title, convert_desc, convert_cat_id, convert_numbers, convert_pages, convert_copies, creation_date, creation_id, modified_date, modified_id,
 				convert_total, code_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -126,6 +127,7 @@ class ArchiveConverts extends CActiveRecord
 			'convert_cat_id' => Yii::t('attribute', 'Convert Category ID'),
 			'convert_numbers' => Yii::t('attribute', 'Numbers'),
 			'convert_pages' => Yii::t('attribute', 'Pages'),
+			'convert_copies' => Yii::t('attribute', 'Copies'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
@@ -194,6 +196,7 @@ class ArchiveConverts extends CActiveRecord
 		$criteria->compare('t.convert_cat_id',$this->convert_cat_id);
 		$criteria->compare('t.convert_numbers',strtolower($this->convert_numbers),true);
 		$criteria->compare('t.convert_pages',$this->convert_pages);
+		$criteria->compare('t.convert_copies',$this->convert_copies);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
 		if(isset($_GET['creation']))
@@ -260,6 +263,7 @@ class ArchiveConverts extends CActiveRecord
 			$this->defaultColumns[] = 'convert_cat_id';
 			$this->defaultColumns[] = 'convert_numbers';
 			$this->defaultColumns[] = 'convert_pages';
+			$this->defaultColumns[] = 'convert_copies';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
 			$this->defaultColumns[] = 'modified_date';
@@ -316,6 +320,13 @@ class ArchiveConverts extends CActiveRecord
 			$this->defaultColumns[] = array(
 				'name' => 'convert_pages',
 				'value' => '$data->convert_pages != 0 ? $data->convert_pages : "-"',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'convert_copies',
+				'value' => '$data->convert_copies != 0 ? $data->convert_copies : "-"',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),

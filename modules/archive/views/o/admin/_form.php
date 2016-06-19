@@ -148,6 +148,15 @@ EOP;
 		</div>
 	</div>
 
+	<div class="clearfix">
+		<?php echo $form->labelEx($model,'archive_desc'); ?>
+		<div class="desc">
+			<?php echo $form->textArea($model,'archive_desc',array('rows'=>6, 'cols'=>50, 'class'=>'span-10')); ?>
+			<?php echo $form->error($model,'archive_desc'); ?>
+			<?php /*<div class="small-px silent"></div>*/?>
+		</div>
+	</div>
+
 	<div class="clearfix publish">
 		<?php echo $form->labelEx($model,'archive_multiple'); ?>
 		<div class="desc">
@@ -204,15 +213,6 @@ EOP;
 		<div class="desc">
 			<?php echo $form->textField($model,'archive_pages',array('maxlength'=>4, 'class'=>'span-3')); ?>
 			<?php echo $form->error($model,'archive_pages'); ?>
-		</div>
-	</div>
-
-	<div class="clearfix">
-		<?php echo $form->labelEx($model,'archive_desc'); ?>
-		<div class="desc">
-			<?php echo $form->textArea($model,'archive_desc',array('rows'=>6, 'cols'=>50, 'class'=>'span-10')); ?>
-			<?php echo $form->error($model,'archive_desc'); ?>
-			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
 
