@@ -27,6 +27,9 @@
  * @property string $archives
  * @property string $archive_publish
  * @property string $archive_unpublish
+ * @property string $converts
+ * @property string $convert_publish
+ * @property string $convert_unpublish
  */
 class ViewArchiveLocation extends CActiveRecord
 {
@@ -68,10 +71,10 @@ class ViewArchiveLocation extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('location_id', 'numerical', 'integerOnly'=>true),
-			array('archives, archive_publish, archive_unpublish', 'length', 'max'=>21),
+			array('archives, archive_publish, archive_unpublish, converts, convert_publish, convert_unpublish', 'length', 'max'=>21),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('location_id, archives, archive_publish, archive_unpublish', 'safe', 'on'=>'search'),
+			array('location_id, archives, archive_publish, archive_unpublish, converts, convert_publish, convert_unpublish', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -96,6 +99,9 @@ class ViewArchiveLocation extends CActiveRecord
 			'archives' => Yii::t('attribute', 'Archives'),
 			'archive_publish' => Yii::t('attribute', 'Archive Publish'),
 			'archive_unpublish' => Yii::t('attribute', 'Archive Unpublish'),
+			'converts' => Yii::t('attribute', 'Converts'),
+			'convert_publish' => Yii::t('attribute', 'Convert Publish'),
+			'convert_unpublish' => Yii::t('attribute', 'Convert Unpublish'),
 		);
 		/*
 			'Location' => 'Location',
@@ -128,6 +134,9 @@ class ViewArchiveLocation extends CActiveRecord
 		$criteria->compare('t.archives',strtolower($this->archives),true);
 		$criteria->compare('t.archive_publish',strtolower($this->archive_publish),true);
 		$criteria->compare('t.archive_unpublish',strtolower($this->archive_unpublish),true);
+		$criteria->compare('t.converts',strtolower($this->converts),true);
+		$criteria->compare('t.convert_publish',strtolower($this->convert_publish),true);
+		$criteria->compare('t.convert_unpublish',strtolower($this->convert_unpublish),true);
 
 		if(!isset($_GET['ViewArchiveLocation_sort']))
 			$criteria->order = 't.location_id DESC';
@@ -162,6 +171,9 @@ class ViewArchiveLocation extends CActiveRecord
 			$this->defaultColumns[] = 'archives';
 			$this->defaultColumns[] = 'archive_publish';
 			$this->defaultColumns[] = 'archive_unpublish';
+			$this->defaultColumns[] = 'converts';
+			$this->defaultColumns[] = 'convert_publish';
+			$this->defaultColumns[] = 'convert_unpublish';
 		}
 
 		return $this->defaultColumns;
@@ -180,6 +192,9 @@ class ViewArchiveLocation extends CActiveRecord
 			$this->defaultColumns[] = 'archives';
 			$this->defaultColumns[] = 'archive_publish';
 			$this->defaultColumns[] = 'archive_unpublish';
+			$this->defaultColumns[] = 'converts';
+			$this->defaultColumns[] = 'convert_publish';
+			$this->defaultColumns[] = 'convert_unpublish';
 		}
 		parent::afterConstruct();
 	}
