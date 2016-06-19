@@ -37,8 +37,10 @@ class ArchiveConvertCategory extends CActiveRecord
 {
 	public $defaultColumns = array();
 	public $convert_total;
+	public $convert_pages;
 	
 	// Variable Search
+	public $convert_search;
 	public $creation_search;
 	public $modified_search;
 
@@ -78,7 +80,7 @@ class ArchiveConvertCategory extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('category_id, publish, category_name, category_desc, category_code, creation_date, creation_id, modified_date, modified_id, 
-				convert_total, creation_search, modified_search', 'safe', 'on'=>'search'),
+				convert_total, convert_pages, convert_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -94,6 +96,8 @@ class ArchiveConvertCategory extends CActiveRecord
 			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 			'view' => array(self::BELONGS_TO, 'ViewArchiveConvertCategory', 'category_id'),
 			'converts' => array(self::HAS_MANY, 'ArchiveConverts', 'category_id'),
+			'convert_publish' => array(self::HAS_MANY, 'ArchiveConverts', 'category_id', 'on'=>'convert_publish.publish = 1'),
+			'convert_unpublish' => array(self::HAS_MANY, 'ArchiveConverts', 'category_id', 'on'=>'convert_unpublish.publish = 1'),
 		);
 	}
 
@@ -115,6 +119,8 @@ class ArchiveConvertCategory extends CActiveRecord
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
 			'convert_total' => Yii::t('attribute', 'Total'),
+			'convert_pages' => Yii::t('attribute', 'Convert Pages'),
+			'convert_search' => Yii::t('attribute', 'Convert'),
 		);
 		/*
 			'Category' => 'Category',
@@ -174,7 +180,8 @@ class ArchiveConvertCategory extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
-		$criteria->compare('t.convert_total',$this->convert_total);
+		$criteria->compare('t.convert_total',$this->convert_total, true);
+		$criteria->compare('t.convert_pages',$this->convert_pages, true);
 		
 		// Custom Search
 		$criteria->with = array(
@@ -186,9 +193,14 @@ class ArchiveConvertCategory extends CActiveRecord
 				'alias'=>'modified_relation',
 				'select'=>'displayname',
 			),
+			'view' => array(
+				'alias'=>'view',
+				'select'=>'converts',
+			),
 		);
 		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
 		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
+		$criteria->compare('view.converts',$this->convert_search, true);
 
 		if(!isset($_GET['ArchiveConvertCategory_sort']))
 			$criteria->order = 't.category_id DESC';
@@ -260,7 +272,7 @@ class ArchiveConvertCategory extends CActiveRecord
 				),
 			);
 			$this->defaultColumns[] = array(
-				'header' => Yii::t('attribute', 'Converts'),
+				'name' => 'convert_search',
 				'value' => 'CHtml::link($data->view->converts, Yii::app()->controller->createUrl("o/convert/manage",array("category"=>$data->category_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
@@ -268,8 +280,15 @@ class ArchiveConvertCategory extends CActiveRecord
 				'type' => 'raw',
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'convert_total',
+				'header' => 'convert_total',
 				'value' => '$data->convert_total',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'header' => 'convert_pages',
+				'value' => '$data->convert_pages',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -365,6 +384,8 @@ class ArchiveConvertCategory extends CActiveRecord
 	
 	protected function afterFind() {
 		$this->convert_total = ArchiveConverts::getTotalItemArchive($this->converts());
+		$this->convert_pages = ArchiveConverts::getTotalItemArchive($this->converts(), 'page');
+		
 		parent::afterFind();		
 	}
 

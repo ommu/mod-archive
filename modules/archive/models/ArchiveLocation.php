@@ -39,9 +39,13 @@ class ArchiveLocation extends CActiveRecord
 {
 	public $defaultColumns = array();
 	public $archive_total;
+	public $archive_pages;
 	public $convert_total;
+	public $convert_pages;
 	
 	// Variable Search
+	public $archive_search;
+	public $convert_search;
 	public $creation_search;
 	public $modified_search;
 
@@ -81,7 +85,7 @@ class ArchiveLocation extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('location_id, publish, location_name, location_desc, location_code, story_enable, type_enable, creation_date, creation_id, modified_date, modified_id,
-				archive_total, convert_total, creation_search, modified_search', 'safe', 'on'=>'search'),
+				archive_total, archive_pages, convert_total, convert_pages, archive_search, convert_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -123,7 +127,11 @@ class ArchiveLocation extends CActiveRecord
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
 			'archive_total' => Yii::t('attribute', 'Archive Total'),
+			'archive_pages' => Yii::t('attribute', 'Archive Pages'),
 			'convert_total' => Yii::t('attribute', 'Convert Total'),
+			'convert_pages' => Yii::t('attribute', 'Convert Pages'),
+			'archive_search' => Yii::t('attribute', 'Archive'),
+			'convert_search' => Yii::t('attribute', 'Convert'),
 		);
 		/*
 			'Location' => 'Location',
@@ -186,8 +194,10 @@ class ArchiveLocation extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
-		$criteria->compare('t.archive_total',$this->archive_total);
-		$criteria->compare('t.convert_total',$this->convert_total);
+		$criteria->compare('t.archive_total',$this->archive_total, true);
+		$criteria->compare('t.archive_pages',$this->archive_pages, true);
+		$criteria->compare('t.convert_total',$this->convert_total, true);
+		$criteria->compare('t.convert_pages',$this->convert_pages, true);
 		
 		// Custom Search
 		$criteria->with = array(
@@ -199,9 +209,15 @@ class ArchiveLocation extends CActiveRecord
 				'alias'=>'modified_relation',
 				'select'=>'displayname',
 			),
+			'view' => array(
+				'alias'=>'view',
+				'select'=>'archives, converts',
+			),
 		);
 		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
 		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
+		$criteria->compare('view.archives',$this->archive_search, true);
+		$criteria->compare('view.converts',$this->convert_search, true);
 
 		if(!isset($_GET['ArchiveLocation_sort']))
 			$criteria->order = 't.location_id DESC';
@@ -275,7 +291,7 @@ class ArchiveLocation extends CActiveRecord
 				),
 			);
 			$this->defaultColumns[] = array(
-				'header' => Yii::t('attribute', 'Archives'),
+				'name' => 'archive_search',
 				'value' => 'CHtml::link($data->view->archives, Yii::app()->controller->createUrl("o/admin/manage",array("location"=>$data->location_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
@@ -283,14 +299,21 @@ class ArchiveLocation extends CActiveRecord
 				'type' => 'raw',
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'archive_total',
+				'header' => 'archive_total',
 				'value' => '$data->archive_total',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
 			);
 			$this->defaultColumns[] = array(
-				'header' => Yii::t('attribute', 'Converts'),
+				'header' => 'archive_pages',
+				'value' => '$data->archive_pages',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'convert_search',
 				'value' => 'CHtml::link($data->view->converts, Yii::app()->controller->createUrl("o/convert/manage",array("location"=>$data->location_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
@@ -298,8 +321,15 @@ class ArchiveLocation extends CActiveRecord
 				'type' => 'raw',
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'convert_total',
+				'header' => 'convert_total',
 				'value' => '$data->convert_total',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'header' => 'convert_pages',
+				'value' => '$data->convert_pages',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -425,7 +455,9 @@ class ArchiveLocation extends CActiveRecord
 	
 	protected function afterFind() {
 		$this->archive_total = Archives::getTotalItemArchive($this->archives());
+		$this->archive_pages = Archives::getTotalItemArchive($this->archives(), 'page');
 		$this->convert_total = ArchiveConverts::getTotalItemArchive($this->converts());
+		$this->convert_pages = ArchiveConverts::getTotalItemArchive($this->converts(), 'page');
 		parent::afterFind();		
 	}
 

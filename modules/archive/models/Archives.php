@@ -224,7 +224,7 @@ class Archives extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
-		$criteria->compare('t.archive_total',$this->archive_total);
+		$criteria->compare('t.archive_total',$this->archive_total, true);
 		
 		// Custom Search
 		$criteria->with = array(
@@ -312,7 +312,7 @@ class Archives extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'code_search',
+				'header' => 'code_search',
 				'value' => '$data->view->archive_code',
 			);
 			$this->defaultColumns[] = 'archive_title';
@@ -349,7 +349,7 @@ class Archives extends CActiveRecord
 				),
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'archive_total',
+				'header' => 'archive_total',
 				'value' => '$data->archive_total',
 				'htmlOptions' => array(
 					'class' => 'center',
@@ -456,14 +456,18 @@ class Archives extends CActiveRecord
 
 	/**
 	 * get Total Item Archive
+	 * $param = total, page
 	 */
-	public static function getTotalItemArchive($data)
+	public static function getTotalItemArchive($data, $param='total')
 	{
 		if($data != null) {
 			$total = 0;
-			foreach($data as $key => $val)
-				$total = $total + $val->archive_total;
-				
+			foreach($data as $key => $val) {
+				if($param == 'total')
+					$total = $total + $val->archive_total;
+				if($param == 'page')
+					$total = $total + $val->archive_pages;
+			}
 			return $total;
 			
 		} else

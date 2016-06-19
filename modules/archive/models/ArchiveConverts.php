@@ -218,7 +218,7 @@ class ArchiveConverts extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
-		$criteria->compare('t.convert_total',$this->convert_total);
+		$criteria->compare('t.convert_total',$this->convert_total, true);
 		
 		// Custom Search
 		$criteria->with = array(
@@ -322,7 +322,7 @@ class ArchiveConverts extends CActiveRecord
 				),
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'convert_total',
+				'header' => 'convert_total',
 				'value' => '$data->convert_total',
 				'htmlOptions' => array(
 					'class' => 'center',
@@ -436,14 +436,20 @@ class ArchiveConverts extends CActiveRecord
 
 	/**
 	 * get Total Item Archive
+	 * $param = total, page, copy
 	 */
-	public static function getTotalItemArchive($data)
+	public static function getTotalItemArchive($data, $param='total')
 	{
 		if($data != null) {
 			$total = 0;
-			foreach($data as $key => $val)
-				$total = $total + $val->convert_total;
-				
+			foreach($data as $key => $val) {
+				if($param == 'total')
+					$total = $total + $val->convert_total;
+				if($param == 'page')
+					$total = $total + $val->convert_pages;
+				if($param == 'copy')
+					$total = $total + $val->convert_copies;
+			}
 			return $total;
 			
 		} else

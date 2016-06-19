@@ -37,8 +37,10 @@ class ArchiveStory extends CActiveRecord
 {
 	public $defaultColumns = array();
 	public $archive_total;
+	public $archive_pages;
 	
 	// Variable Search
+	public $archive_search;
 	public $creation_search;
 	public $modified_search;
 
@@ -78,7 +80,7 @@ class ArchiveStory extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('story_id, publish, story_name, story_desc, story_code, creation_date, creation_id, modified_date, modified_id,
-				archive_total, creation_search, modified_search', 'safe', 'on'=>'search'),
+				archive_total, archive_pages, archive_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -90,12 +92,12 @@ class ArchiveStory extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'archives' => array(self::HAS_MANY, 'Archives', 'story_id'),
-			'archive_publish' => array(self::HAS_MANY, 'Archives', 'story_id', 'on'=>'archive_publish.publish = 1'),
-			'archive_unpublish' => array(self::HAS_MANY, 'Archives', 'story_id', 'on'=>'archive_unpublish.publish = 1'),
 			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 			'view' => array(self::BELONGS_TO, 'ViewArchiveStory', 'story_id'),
+			'archives' => array(self::HAS_MANY, 'Archives', 'story_id'),
+			'archive_publish' => array(self::HAS_MANY, 'Archives', 'story_id', 'on'=>'archive_publish.publish = 1'),
+			'archive_unpublish' => array(self::HAS_MANY, 'Archives', 'story_id', 'on'=>'archive_unpublish.publish = 1'),
 		);
 	}
 
@@ -117,6 +119,8 @@ class ArchiveStory extends CActiveRecord
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
 			'archive_total' => Yii::t('attribute', 'Total'),
+			'archive_pages' => Yii::t('attribute', 'Archive Pages'),
+			'archive_search' => Yii::t('attribute', 'Archive'),
 		);
 		/*
 			'Story' => 'Story',
@@ -176,7 +180,8 @@ class ArchiveStory extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
-		$criteria->compare('t.archive_total',$this->archive_total);
+		$criteria->compare('t.archive_total',$this->archive_total, true);
+		$criteria->compare('t.archive_pages',$this->archive_pages, true);
 		
 		// Custom Search
 		$criteria->with = array(
@@ -188,9 +193,14 @@ class ArchiveStory extends CActiveRecord
 				'alias'=>'modified_relation',
 				'select'=>'displayname',
 			),
+			'view' => array(
+				'alias'=>'view',
+				'select'=>'archives',
+			),
 		);
 		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
 		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
+		$criteria->compare('view.archives',$this->archive_search, true);
 
 		if(!isset($_GET['ArchiveStory_sort']))
 			$criteria->order = 't.story_id DESC';
@@ -262,7 +272,7 @@ class ArchiveStory extends CActiveRecord
 				),
 			);
 			$this->defaultColumns[] = array(
-				'header' => Yii::t('attribute', 'Archives'),
+				'name' => 'archive_search',
 				'value' => 'CHtml::link($data->view->archives, Yii::app()->controller->createUrl("o/admin/manage",array("story"=>$data->story_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
@@ -270,8 +280,15 @@ class ArchiveStory extends CActiveRecord
 				'type' => 'raw',
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'archive_total',
+				'header' => 'archive_total',
 				'value' => '$data->archive_total',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'header' => 'archive_pages',
+				'value' => '$data->archive_pages',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -367,6 +384,8 @@ class ArchiveStory extends CActiveRecord
 	
 	protected function afterFind() {
 		$this->archive_total = Archives::getTotalItemArchive($this->archives());
+		$this->archive_pages = Archives::getTotalItemArchive($this->archives(), 'page');
+		
 		parent::afterFind();		
 	}
 
