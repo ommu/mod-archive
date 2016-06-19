@@ -19,18 +19,33 @@
 	);
 ?>
 
-<?php $this->widget('application.components.system.FDetailView', array(
-	'data'=>$model,
-	'attributes'=>array(
-		array(
-			'name'=>'publish_year',
-			'value'=>$model->publish_year,
-			//'value'=>$model->publish_year != '' ? $model->publish_year : '-',
+<div class="dialog-content">
+	<?php $this->widget('application.components.system.FDetailView', array(
+		'data'=>$model,
+		'attributes'=>array(
+			array(
+				'name'=>'publish_year',
+				'value'=>$model->publish_year != '' ? $model->publish_year : '-',
+			),
+			array(
+				'name'=>'converts',
+				'value'=>$model->converts,
+			),
+			array(
+				'name'=>'convert_total',
+				'value'=>$model->convert_total,
+			),
+			array(
+				'name'=>'convert_pages',
+				'value'=>$model->convert_pages,
+			),
+			array(
+				'name'=>'convert_copies',
+				'value'=>$model->convert_copies,
+			),
 		),
-		array(
-			'name'=>'converts',
-			'value'=>$model->converts,
-			//'value'=>$model->converts != '' ? $model->converts : '-',
-		),
-	),
-)); ?>
+	)); ?>
+</div>
+<div class="dialog-submit">
+	<?php echo CHtml::button(Yii::t('phrase', 'Close'), array('id'=>'closed')); ?>
+</div>

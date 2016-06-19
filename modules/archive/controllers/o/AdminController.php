@@ -323,6 +323,7 @@ class AdminController extends Controller
 						
 						$archive_code = explode('.', $archive_code);
 						$archive_numbers = explode('#', $archive_numbers);
+						
 						if(!empty($archive_numbers)) {
 							foreach($archive_numbers as $key => $val) {
 								$archive_numbers[$key] = explode('-', trim($val));

@@ -336,27 +336,6 @@ class ArchiveConverts extends CActiveRecord
 					'class' => 'center',
 				),
 			);
-			$this->defaultColumns[] = array(
-				'header' => 'convert_total',
-				'value' => '$data->convert_total',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-			);
-			$this->defaultColumns[] = array(
-				'name' => 'convert_pages',
-				'value' => '$data->convert_pages != 0 ? $data->convert_pages : "-"',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-			);
-			$this->defaultColumns[] = array(
-				'name' => 'convert_copies',
-				'value' => '$data->convert_copies != 0 ? $data->convert_copies : "-"',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-			);
 			/*
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',

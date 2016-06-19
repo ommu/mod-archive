@@ -140,6 +140,10 @@ class ConvertyearController extends Controller
 	public function actionView($id) 
 	{
 		$model=$this->loadModel($id);
+		
+		$this->dialogDetail = true;
+		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+		$this->dialogWidth = 600;
 
 		$this->pageTitle = Yii::t('phrase', 'View View Archive Convert Years');
 		$this->pageDescription = '';

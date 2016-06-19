@@ -44,20 +44,20 @@
 			'value'=>$model->type_id != 0 ? $model->type->type_name : '-',
 		),
 		array(
-			'name'=>'archive_title',
-			'value'=>$model->archive_title != '' ? $model->archive_title : '-',
-		),
-		array(
-			'name'=>'archive_desc',
-			'value'=>$model->archive_desc != '' ? $model->archive_desc : '-',
-		),
-		array(
 			'name'=>'archive_type_id',
 			'value'=>$model->archive_type_id != 0 ? $model->archive_type_id : '-',
 		),
 		array(
 			'name'=>'archive_publish_year',
 			'value'=>$model->archive_publish_year != '' ? $model->archive_publish_year : '-',
+		),
+		array(
+			'name'=>'archive_title',
+			'value'=>$model->archive_title != '' ? $model->archive_title : '-',
+		),
+		array(
+			'name'=>'archive_desc',
+			'value'=>$model->archive_desc != '' ? $model->archive_desc : '-',
 		),
 		array(
 			'name'=>'archive_numbers',

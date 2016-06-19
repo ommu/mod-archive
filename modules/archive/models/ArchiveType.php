@@ -283,20 +283,6 @@ class ArchiveType extends CActiveRecord
 				'type' => 'raw',
 			);
 			$this->defaultColumns[] = array(
-				'header' => 'archive_total',
-				'value' => '$data->archive_total',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-			);
-			$this->defaultColumns[] = array(
-				'header' => 'archive_pages',
-				'value' => '$data->archive_pages',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-			);
-			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
 				'value' => '$data->creation_relation->displayname',
 			);

@@ -19,30 +19,28 @@
 	);
 ?>
 
-<?php //begin.Messages ?>
-<?php
-if(Yii::app()->user->hasFlash('success'))
-	echo Utility::flashSuccess(Yii::app()->user->getFlash('success'));
-?>
-<?php //end.Messages ?>
-
-<?php $this->widget('application.components.system.FDetailView', array(
-	'data'=>$model,
-	'attributes'=>array(
-		array(
-			'name'=>'publish_year',
-			'value'=>$model->publish_year,
-			//'value'=>$model->publish_year != '' ? $model->publish_year : '-',
-		),
-		array(
-			'name'=>'archives',
-			'value'=>$model->archives,
-			//'value'=>$model->archives != '' ? $model->archives : '-',
-		),
-	),
-)); ?>
-
 <div class="dialog-content">
+	<?php $this->widget('application.components.system.FDetailView', array(
+		'data'=>$model,
+		'attributes'=>array(
+			array(
+				'name'=>'publish_year',
+				'value'=>$model->publish_year != '' ? $model->publish_year : '-',
+			),
+			array(
+				'name'=>'archives',
+				'value'=>$model->archives,
+			),
+			array(
+				'name'=>'archive_total',
+				'value'=>$model->archive_total,
+			),
+			array(
+				'name'=>'archive_pages',
+				'value'=>$model->archive_pages,
+			),
+		),
+	)); ?>
 </div>
 <div class="dialog-submit">
 	<?php echo CHtml::button(Yii::t('phrase', 'Close'), array('id'=>'closed')); ?>

@@ -28,6 +28,10 @@
 			//'value'=>$model->convert_id != '' ? $model->convert_id : '-',
 		), */
 		array(
+			'name'=>'convert_code',
+			'value'=>$model->view->convert_code,
+		),
+		array(
 			'name'=>'location_id',
 			'value'=>$model->location_id != 0 ? $model->location->location_name : '-',
 		),

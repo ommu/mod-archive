@@ -348,20 +348,6 @@ class Archives extends CActiveRecord
 					'class' => 'center',
 				),
 			);
-			$this->defaultColumns[] = array(
-				'header' => 'archive_total',
-				'value' => '$data->archive_total',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-			);
-			$this->defaultColumns[] = array(
-				'name' => 'archive_pages',
-				'value' => '$data->archive_pages != 0 ? $data->archive_pages : "-"',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-			);
 			/*
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',

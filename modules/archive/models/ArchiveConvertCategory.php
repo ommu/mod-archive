@@ -283,28 +283,6 @@ class ArchiveConvertCategory extends CActiveRecord
 				'type' => 'raw',
 			);
 			$this->defaultColumns[] = array(
-				'header' => 'convert_total',
-				'value' => '$data->convert_total',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-			);
-			$this->defaultColumns[] = array(
-				'header' => 'convert_pages',
-				'value' => '$data->convert_pages',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-			);
-			$this->defaultColumns[] = array(
-				'header' => 'convert_copies',
-				'value' => '$data->convert_copies',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-			);
-			/*
-			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
 				'value' => '$data->creation_relation->displayname',
 			);
@@ -334,7 +312,6 @@ class ArchiveConvertCategory extends CActiveRecord
 					),
 				), true),
 			);
-			*/
 			if(!isset($_GET['type'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'publish',

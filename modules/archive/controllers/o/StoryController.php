@@ -248,7 +248,7 @@ class StoryController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'View Archive Stories');
 		$this->pageDescription = '';
 		$this->pageMeta ='';
-		$this->render('	',array(
+		$this->render('admin_view',array(
 			'model'=>$model,
 		));
 	}	

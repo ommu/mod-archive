@@ -23,31 +23,34 @@
 	<?php $this->widget('application.components.system.FDetailView', array(
 		'data'=>$model,
 		'attributes'=>array(
-			array(
+			/* array(
 				'name'=>'type_id',
 				'value'=>$model->type_id,
 				//'value'=>$model->type_id != '' ? $model->type_id : '-',
-			),
-			array(
-				'name'=>'publish',
-				'value'=>$model->publish == '1' ? Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
-				//'value'=>$model->publish,
-			),
+			), */
 			array(
 				'name'=>'type_name',
-				'value'=>$model->type_name,
-				//'value'=>$model->type_name != '' ? $model->type_name : '-',
+				'value'=>$model->type_name != '' ? $model->type_name : '-',
 			),
 			array(
 				'name'=>'type_desc',
 				'value'=>$model->type_desc != '' ? $model->type_desc : '-',
-				//'value'=>$model->type_desc != '' ? CHtml::link($model->type_desc, Yii::app()->request->baseUrl.'/public/visit/'.$model->type_desc, array('target' => '_blank')) : '-',
-				'type'=>'raw',
 			),
 			array(
 				'name'=>'type_code',
-				'value'=>$model->type_code,
-				//'value'=>$model->type_code != '' ? $model->type_code : '-',
+				'value'=>$model->type_code != '' ? strtoupper($model->type_code) : '-',
+			),
+			array(
+				'name'=>'archive_search',
+				'value'=>$model->view->archives,
+			),
+			array(
+				'name'=>'archive_total',
+				'value'=>$model->archive_total,
+			),
+			array(
+				'name'=>'archive_pages',
+				'value'=>$model->archive_pages,
 			),
 			array(
 				'name'=>'creation_date',
@@ -55,8 +58,7 @@
 			),
 			array(
 				'name'=>'creation_id',
-				'value'=>$model->creation_id,
-				//'value'=>$model->creation_id != 0 ? $model->creation_id : '-',
+				'value'=>$model->creation_id != 0 ? $model->creation_relation->displayname : '-',
 			),
 			array(
 				'name'=>'modified_date',
@@ -64,8 +66,12 @@
 			),
 			array(
 				'name'=>'modified_id',
-				'value'=>$model->modified_id,
-				//'value'=>$model->modified_id != 0 ? $model->modified_id : '-',
+				'value'=>$model->modified_id != 0 ? $model->modified_relation->displayname : '-',
+			),
+			array(
+				'name'=>'publish',
+				'value'=>$model->publish == '1' ? Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
+				'type'=>'raw',
 			),
 		),
 	)); ?>
