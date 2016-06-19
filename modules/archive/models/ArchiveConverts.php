@@ -435,6 +435,22 @@ class ArchiveConverts extends CActiveRecord
 	}
 
 	/**
+	 * get Total Item Archive
+	 */
+	public static function getTotalItemArchive($data)
+	{
+		if($data != null) {
+			$total = 0;
+			foreach($data as $key => $val)
+				$total = $total + $val->convert_total;
+				
+			return $total;
+			
+		} else
+			return 0;
+	}
+
+	/**
 	 * get Detail Item Archive
 	 */
 	public static function getDetailItemArchive($data, $multiple=0)

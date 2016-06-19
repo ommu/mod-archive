@@ -36,6 +36,7 @@
 class ArchiveConvertCategory extends CActiveRecord
 {
 	public $defaultColumns = array();
+	public $convert_total;
 	
 	// Variable Search
 	public $creation_search;
@@ -77,7 +78,7 @@ class ArchiveConvertCategory extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('category_id, publish, category_name, category_desc, category_code, creation_date, creation_id, modified_date, modified_id, 
-				creation_search, modified_search', 'safe', 'on'=>'search'),
+				convert_total, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -89,10 +90,10 @@ class ArchiveConvertCategory extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'converts' => array(self::HAS_MANY, 'ArchiveConverts', 'convert_id'),
 			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 			'view' => array(self::BELONGS_TO, 'ViewArchiveConvertCategory', 'category_id'),
+			'converts' => array(self::HAS_MANY, 'ArchiveConverts', 'category_id'),
 		);
 	}
 
@@ -113,6 +114,7 @@ class ArchiveConvertCategory extends CActiveRecord
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
+			'convert_total' => Yii::t('attribute', 'Total'),
 		);
 		/*
 			'Category' => 'Category',
@@ -172,6 +174,7 @@ class ArchiveConvertCategory extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
+		$criteria->compare('t.convert_total',$this->convert_total);
 		
 		// Custom Search
 		$criteria->with = array(
@@ -252,6 +255,13 @@ class ArchiveConvertCategory extends CActiveRecord
 			$this->defaultColumns[] = array(
 				'name' => 'category_code',
 				'value' => 'strtoupper($data->category_code)',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'convert_total',
+				'value' => '$data->convert_total',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -343,6 +353,11 @@ class ArchiveConvertCategory extends CActiveRecord
 			
 		} else
 			return $model;
+	}
+	
+	protected function afterFind() {
+		$this->convert_total = ArchiveConverts::getTotalItemArchive($this->converts());
+		parent::afterFind();		
 	}
 
 	/**

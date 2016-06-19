@@ -39,6 +39,7 @@ class ArchiveLocation extends CActiveRecord
 {
 	public $defaultColumns = array();
 	public $archive_total;
+	public $convert_total;
 	
 	// Variable Search
 	public $creation_search;
@@ -80,7 +81,7 @@ class ArchiveLocation extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('location_id, publish, location_name, location_desc, location_code, story_enable, type_enable, creation_date, creation_id, modified_date, modified_id,
-				archive_total, creation_search, modified_search', 'safe', 'on'=>'search'),
+				archive_total, convert_total, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -92,12 +93,13 @@ class ArchiveLocation extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'archives' => array(self::HAS_MANY, 'Archives', 'location_id'),
 			'archive_publish' => array(self::HAS_MANY, 'Archives', 'location_id', 'on'=>'archive_publish.publish = 1'),
 			'archive_unpublish' => array(self::HAS_MANY, 'Archives', 'location_id', 'on'=>'archive_unpublish.publish = 1'),
 			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 			'view' => array(self::BELONGS_TO, 'ViewArchiveLocation', 'location_id'),
+			'archives' => array(self::HAS_MANY, 'Archives', 'location_id'),
+			'converts' => array(self::HAS_MANY, 'ArchiveConverts', 'location_id'),
 		);
 	}
 
@@ -120,7 +122,8 @@ class ArchiveLocation extends CActiveRecord
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
-			'archive_total' => Yii::t('attribute', 'Total'),
+			'archive_total' => Yii::t('attribute', 'Archive Total'),
+			'convert_total' => Yii::t('attribute', 'Convert Total'),
 		);
 		/*
 			'Location' => 'Location',
@@ -184,6 +187,7 @@ class ArchiveLocation extends CActiveRecord
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
 		$criteria->compare('t.archive_total',$this->archive_total);
+		$criteria->compare('t.convert_total',$this->convert_total);
 		
 		// Custom Search
 		$criteria->with = array(
@@ -289,6 +293,13 @@ class ArchiveLocation extends CActiveRecord
 			$this->defaultColumns[] = array(
 				'name' => 'archive_total',
 				'value' => '$data->archive_total',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'convert_total',
+				'value' => '$data->convert_total',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -412,6 +423,7 @@ class ArchiveLocation extends CActiveRecord
 	
 	protected function afterFind() {
 		$this->archive_total = Archives::getTotalItemArchive($this->archives());
+		$this->convert_total = ArchiveConverts::getTotalItemArchive($this->converts());
 		parent::afterFind();		
 	}
 
