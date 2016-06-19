@@ -279,6 +279,14 @@ class ArchiveLocation extends CActiveRecord
 				'type' => 'raw',
 			);
 			$this->defaultColumns[] = array(
+				'header' => Yii::t('attribute', 'Converts'),
+				'value' => 'CHtml::link($data->view->converts, Yii::app()->controller->createUrl("o/convert/manage",array("location"=>$data->location_id)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
 				'name' => 'archive_total',
 				'value' => '$data->archive_total',
 				'htmlOptions' => array(
