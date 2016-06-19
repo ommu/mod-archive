@@ -473,6 +473,8 @@ class AdminController extends Controller
 
 		if(isset($_POST['Archives'])) {
 			$model->attributes=$_POST['Archives'];
+			if($setting->auto_numbering == 0)
+				$model->scenario = 'not_auto_numbering';
 			
 			if($model->save()) {
 				Yii::app()->user->setFlash('success', Yii::t('phrase', 'Archives success updated.'));

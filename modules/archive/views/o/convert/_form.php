@@ -69,15 +69,6 @@
 	<?php }?>
 
 	<div class="clearfix">
-		<?php echo $form->labelEx($model,'convert_parent'); ?>
-		<div class="desc">
-			<?php echo $form->textField($model,'convert_parent',array('maxlength'=>11)); ?>
-			<?php echo $form->error($model,'convert_parent'); ?>
-			<?php /*<div class="small-px silent"></div>*/?>
-		</div>
-	</div>
-
-	<div class="clearfix">
 		<?php echo $form->labelEx($model,'convert_title'); ?>
 		<div class="desc">
 			<?php echo $form->textArea($model,'convert_title',array('rows'=>6, 'cols'=>50, 'class'=>'span-10 smaller')); ?>

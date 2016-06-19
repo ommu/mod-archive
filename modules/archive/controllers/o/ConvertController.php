@@ -144,6 +144,10 @@ class ConvertController extends Controller
 	 */
 	public function actionAdd() 
 	{
+		$setting = ArchiveSettings::model()->findByPk(1,array(
+			'select' => 'auto_numbering',
+		));
+		
 		$model=new ArchiveConverts;
 
 		// Uncomment the following line if AJAX validation is needed
@@ -151,6 +155,8 @@ class ConvertController extends Controller
 
 		if(isset($_POST['ArchiveConverts'])) {
 			$model->attributes=$_POST['ArchiveConverts'];
+			if($setting->auto_numbering == 0)
+				$model->scenario = 'not_auto_numbering';
 			
 			if($model->save()) {
 				Yii::app()->user->setFlash('success', Yii::t('phrase', 'ArchiveConverts success created.'));
@@ -167,6 +173,7 @@ class ConvertController extends Controller
 		$this->pageMeta = '';
 		$this->render('admin_add',array(
 			'model'=>$model,
+			'setting'=>$setting,
 		));
 	}
 
@@ -177,6 +184,10 @@ class ConvertController extends Controller
 	 */
 	public function actionEdit($id) 
 	{
+		$setting = ArchiveSettings::model()->findByPk(1,array(
+			'select' => 'auto_numbering',
+		));
+		
 		$model=$this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
@@ -184,6 +195,8 @@ class ConvertController extends Controller
 
 		if(isset($_POST['ArchiveConverts'])) {
 			$model->attributes=$_POST['ArchiveConverts'];
+			if($setting->auto_numbering == 0)
+				$model->scenario = 'not_auto_numbering';
 			
 			if($model->save()) {
 				Yii::app()->user->setFlash('success', Yii::t('phrase', 'ArchiveConverts success updated.'));
@@ -197,6 +210,7 @@ class ConvertController extends Controller
 		$this->pageMeta = '';
 		$this->render('admin_edit',array(
 			'model'=>$model,
+			'setting'=>$setting,
 		));
 	}
 	
