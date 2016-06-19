@@ -28,8 +28,16 @@
 			//'value'=>$model->convert_id != '' ? $model->convert_id : '-',
 		), */
 		array(
+			'name'=>'location_id',
+			'value'=>$model->location_id != 0 ? $model->location->location_name : '-',
+		),
+		array(
 			'name'=>'category_id',
 			'value'=>$model->category_id != 0 ? $model->category->category_name : '-',
+		),
+		array(
+			'name'=>'convert_cat_id',
+			'value'=>$model->convert_cat_id != 0 ? $model->convert_cat_id : '-',
 		),
 		array(
 			'name'=>'convert_parent',

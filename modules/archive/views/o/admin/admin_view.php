@@ -53,7 +53,7 @@
 		),
 		array(
 			'name'=>'archive_type_id',
-			'value'=>$model->archive_type_id != '' ? $model->archive_type_id : '-',
+			'value'=>$model->archive_type_id != 0 ? $model->archive_type_id : '-',
 		),
 		array(
 			'name'=>'archive_publish_year',
