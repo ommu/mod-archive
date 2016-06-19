@@ -30,6 +30,12 @@
 )); ?>
 <div class="dialog-content">
 	<fieldset>
+		<div class="clearfix">
+			<label><?php echo Yii::t('attribute', 'Is Multiple Archive')?> <span class="required">*</span></label>
+			<div class="desc">
+				<?php echo CHtml::checkBox('archive_multiple');?>
+			</div>
+		</div>
 		
 		<div class="clearfix">
 			<label>Excel <span class="required">*</span></label>
@@ -38,7 +44,7 @@
 				<?php if(Yii::app()->user->hasFlash('errorFile')) {
 					echo '<div class="errorMessage">'.Yii::app()->user->getFlash('errorFile').'</div>';
 				}?>
-				<div class="pt-10"><a off_address="" target="_blank" class="template" href="<?php echo Yii::app()->request->baseUrl;?>/externals/archive/template/import_template.xlsx" title="Import Template">Import Template</a></div>
+				<div class="pt-10"><a off_address="" target="_blank" class="template" href="<?php echo Yii::app()->request->baseUrl;?>/externals/archive/template/import_archive_template.xlsx" title="Import Template">Import Template</a></div>
 			</div>
 		</div>
 
