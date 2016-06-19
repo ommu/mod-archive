@@ -19,47 +19,38 @@
 	);
 ?>
 
-<?php //begin.Messages ?>
-<?php
-if(Yii::app()->user->hasFlash('success'))
-	echo Utility::flashSuccess(Yii::app()->user->getFlash('success'));
-?>
-<?php //end.Messages ?>
-
 <?php $this->widget('application.components.system.FDetailView', array(
 	'data'=>$model,
 	'attributes'=>array(
-		array(
+		/* array(
 			'name'=>'convert_id',
 			'value'=>$model->convert_id,
 			//'value'=>$model->convert_id != '' ? $model->convert_id : '-',
-		),
-		array(
-			'name'=>'publish',
-			'value'=>$model->publish == '1' ? Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
-			//'value'=>$model->publish,
-		),
+		), */
 		array(
 			'name'=>'category_id',
-			'value'=>$model->category_id,
-			//'value'=>$model->category_id != '' ? $model->category_id : '-',
+			'value'=>$model->category_id != 0 ? $model->category->category_name : '-',
 		),
 		array(
 			'name'=>'convert_parent',
-			'value'=>$model->convert_parent,
-			//'value'=>$model->convert_parent != '' ? $model->convert_parent : '-',
+			'value'=>$model->convert_parent != 0 ? $model->convert_parent : '-',
 		),
 		array(
 			'name'=>'convert_title',
 			'value'=>$model->convert_title != '' ? $model->convert_title : '-',
-			//'value'=>$model->convert_title != '' ? CHtml::link($model->convert_title, Yii::app()->request->baseUrl.'/public/visit/'.$model->convert_title, array('target' => '_blank')) : '-',
-			'type'=>'raw',
 		),
 		array(
 			'name'=>'convert_desc',
 			'value'=>$model->convert_desc != '' ? $model->convert_desc : '-',
-			//'value'=>$model->convert_desc != '' ? CHtml::link($model->convert_desc, Yii::app()->request->baseUrl.'/public/visit/'.$model->convert_desc, array('target' => '_blank')) : '-',
+		),
+		array(
+			'name'=>'archive_numbers',
+			'value'=>ArchiveConverts::getDetailItemArchive(unserialize($model->convert_numbers)),
 			'type'=>'raw',
+		),
+		array(
+			'name'=>'convert_total',
+			'value'=>$model->convert_total,
 		),
 		array(
 			'name'=>'creation_date',
@@ -67,8 +58,7 @@ if(Yii::app()->user->hasFlash('success'))
 		),
 		array(
 			'name'=>'creation_id',
-			'value'=>$model->creation_id,
-			//'value'=>$model->creation_id != 0 ? $model->creation_id : '-',
+			'value'=>$model->creation_id != 0 ? $model->creation_relation->displayname : '-',
 		),
 		array(
 			'name'=>'modified_date',
@@ -76,14 +66,12 @@ if(Yii::app()->user->hasFlash('success'))
 		),
 		array(
 			'name'=>'modified_id',
-			'value'=>$model->modified_id,
-			//'value'=>$model->modified_id != 0 ? $model->modified_id : '-',
+			'value'=>$model->modified_id != 0 ? $model->modified_relation->displayname : '-',
+		),
+		array(
+			'name'=>'publish',
+			'value'=>$model->publish == '1' ? Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
+			'type'=>'raw',
 		),
 	),
 )); ?>
-
-<div class="dialog-content">
-</div>
-<div class="dialog-submit">
-	<?php echo CHtml::button(Yii::t('phrase', 'Close'), array('id'=>'closed')); ?>
-</div>

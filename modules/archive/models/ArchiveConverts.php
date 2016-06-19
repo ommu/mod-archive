@@ -25,10 +25,12 @@
  * The followings are the available columns in table 'ommu_archive_converts':
  * @property string $convert_id
  * @property integer $publish
+ * @property integer $location_id
  * @property integer $category_id
  * @property string $convert_parent
  * @property string $convert_title
  * @property string $convert_desc
+ * @property integer $convert_cat_id
  * @property string $convert_numbers
  * @property string $creation_date
  * @property string $creation_id
@@ -42,6 +44,14 @@
 class ArchiveConverts extends CActiveRecord
 {
 	public $defaultColumns = array();
+	public $convert_total;
+	public $back_field;
+	public $convert_number;
+	
+	// Variable Search
+	public $code_search;
+	public $creation_search;
+	public $modified_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -70,13 +80,17 @@ class ArchiveConverts extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('category_id, convert_title, convert_desc, creation_date, creation_id, modified_id', 'required'),
-			array('publish, category_id', 'numerical', 'integerOnly'=>true),
+			array('location_id, category_id, convert_title', 'required'),
+			array('convert_cat_id', 'required', 'on'=>'not_auto_numbering'),
+			array('publish, location_id, category_id, convert_cat_id,
+				back_field', 'numerical', 'integerOnly'=>true),
 			array('convert_parent, creation_id, modified_id', 'length', 'max'=>11),
-			array('convert_numbers', 'safe'),
+			array('convert_desc, convert_numbers,
+				convert_number', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('convert_id, publish, category_id, convert_parent, convert_title, convert_desc, convert_numbers, creation_date, creation_id, modified_date, modified_id', 'safe', 'on'=>'search'),
+			array('convert_id, publish, location_id, category_id, convert_parent, convert_title, convert_desc, convert_cat_id, convert_numbers, creation_date, creation_id, modified_date, modified_id,
+				convert_total, code_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -88,8 +102,11 @@ class ArchiveConverts extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'medias' => array(self::HAS_MANY, 'ArchiveConvertMedia', 'convert_id'),
+			'location' => array(self::BELONGS_TO, 'ArchiveLocation', 'location_id'),
 			'category' => array(self::BELONGS_TO, 'ArchiveConvertCategory', 'category_id'),
+			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
+			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
+			'medias' => array(self::HAS_MANY, 'ArchiveConvertMedia', 'convert_id'),
 		);
 	}
 
@@ -101,15 +118,23 @@ class ArchiveConverts extends CActiveRecord
 		return array(
 			'convert_id' => Yii::t('attribute', 'Convert'),
 			'publish' => Yii::t('attribute', 'Publish'),
+			'location_id' => Yii::t('attribute', 'Location'),
 			'category_id' => Yii::t('attribute', 'Category'),
 			'convert_parent' => Yii::t('attribute', 'Parent'),
 			'convert_title' => Yii::t('attribute', 'Title'),
 			'convert_desc' => Yii::t('attribute', 'Description'),
+			'convert_cat_id' => Yii::t('attribute', 'Convert Category ID'),
 			'convert_numbers' => Yii::t('attribute', 'Numbers'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
+			'convert_total' => Yii::t('attribute', 'Total'),
+			'back_field' => Yii::t('attribute', 'Back to Manage'),
+			'convert_number' => Yii::t('attribute', 'Numbers'),
+			'code_search' => Yii::t('attribute', 'Code'),
+			'creation_search' => Yii::t('attribute', 'Creation'),
+			'modified_search' => Yii::t('attribute', 'Modified'),
 		);
 		/*
 			'Convert' => 'Convert',
@@ -155,6 +180,10 @@ class ArchiveConverts extends CActiveRecord
 			$criteria->addInCondition('t.publish',array(0,1));
 			$criteria->compare('t.publish',$this->publish);
 		}
+		if(isset($_GET['location']))
+			$criteria->compare('t.location_id',$_GET['location']);
+		else
+			$criteria->compare('t.location_id',$this->location_id);
 		if(isset($_GET['category']))
 			$criteria->compare('t.category_id',$_GET['category']);
 		else
@@ -162,6 +191,7 @@ class ArchiveConverts extends CActiveRecord
 		$criteria->compare('t.convert_parent',strtolower($this->convert_parent),true);
 		$criteria->compare('t.convert_title',strtolower($this->convert_title),true);
 		$criteria->compare('t.convert_desc',strtolower($this->convert_desc),true);
+		$criteria->compare('t.convert_cat_id',$this->convert_cat_id);
 		$criteria->compare('t.convert_numbers',strtolower($this->convert_numbers),true);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
@@ -175,6 +205,21 @@ class ArchiveConverts extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
+		$criteria->compare('t.convert_total',$this->convert_total);
+		
+		// Custom Search
+		$criteria->with = array(
+			'creation_relation' => array(
+				'alias'=>'creation_relation',
+				'select'=>'displayname',
+			),
+			'modified_relation' => array(
+				'alias'=>'modified_relation',
+				'select'=>'displayname',
+			),
+		);
+		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
+		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
 
 		if(!isset($_GET['ArchiveConverts_sort']))
 			$criteria->order = 't.convert_id DESC';
@@ -207,10 +252,12 @@ class ArchiveConverts extends CActiveRecord
 		} else {
 			//$this->defaultColumns[] = 'convert_id';
 			$this->defaultColumns[] = 'publish';
+			$this->defaultColumns[] = 'location_id';
 			$this->defaultColumns[] = 'category_id';
 			$this->defaultColumns[] = 'convert_parent';
 			$this->defaultColumns[] = 'convert_title';
 			$this->defaultColumns[] = 'convert_desc';
+			$this->defaultColumns[] = 'convert_cat_id';
 			$this->defaultColumns[] = 'convert_numbers';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
@@ -238,25 +285,45 @@ class ArchiveConverts extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			if(!isset($_GET['type'])) {
-				$this->defaultColumns[] = array(
-					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->convert_id)), $data->publish, 1)',
-					'htmlOptions' => array(
-						'class' => 'center',
-					),
-					'filter'=>array(
-						1=>Yii::t('phrase', 'Yes'),
-						0=>Yii::t('phrase', 'No'),
-					),
-					'type' => 'raw',
-				);
-			}
-			$this->defaultColumns[] = 'category_id';
-			$this->defaultColumns[] = 'convert_parent';
 			$this->defaultColumns[] = 'convert_title';
-			$this->defaultColumns[] = 'convert_desc';
-			$this->defaultColumns[] = 'convert_numbers';
+			$this->defaultColumns[] = array(
+				'name' => 'location_id',
+				'value' => '$data->location->location_name',
+				'filter' => ArchiveLocation::getLocation(),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'category_id',
+				'value' => '$data->category->category_name',
+				'filter' => ArchiveConvertCategory::getCategory(),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'convert_cat_id',
+				'value' => 'ArchiveSettings::getInfo(1, "auto_numbering") == 1 ? 0 : $data->convert_cat_id',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'convert_parent',
+				'value' => '$data->convert_parent != 0 ? $data->convert_parent : "-"',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'convert_total',
+				'value' => '$data->convert_total',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			/*
+			$this->defaultColumns[] = array(
+				'name' => 'creation_search',
+				'value' => '$data->creation_relation->displayname',
+			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
 				'value' => 'Utility::dateFormat($data->creation_date)',
@@ -283,34 +350,21 @@ class ArchiveConverts extends CActiveRecord
 					),
 				), true),
 			);
-			$this->defaultColumns[] = 'creation_id';
-			$this->defaultColumns[] = array(
-				'name' => 'modified_date',
-				'value' => 'Utility::dateFormat($data->modified_date)',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-				'filter' => Yii::app()->controller->widget('zii.widgets.jui.CJuiDatePicker', array(
-					'model'=>$this,
-					'attribute'=>'modified_date',
-					'language' => 'ja',
-					'i18nScriptFile' => 'jquery.ui.datepicker-en.js',
-					//'mode'=>'datetime',
+			*/
+			if(!isset($_GET['type'])) {
+				$this->defaultColumns[] = array(
+					'name' => 'publish',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->convert_id)), $data->publish, 1)',
 					'htmlOptions' => array(
-						'id' => 'modified_date_filter',
+						'class' => 'center',
 					),
-					'options'=>array(
-						'showOn' => 'focus',
-						'dateFormat' => 'dd-mm-yy',
-						'showOtherMonths' => true,
-						'selectOtherMonths' => true,
-						'changeMonth' => true,
-						'changeYear' => true,
-						'showButtonPanel' => true,
+					'filter'=>array(
+						1=>Yii::t('phrase', 'Yes'),
+						0=>Yii::t('phrase', 'No'),
 					),
-				), true),
-			);
-			$this->defaultColumns[] = 'modified_id';
+					'type' => 'raw',
+				);
+			}
 		}
 		parent::afterConstruct();
 	}
@@ -333,70 +387,64 @@ class ArchiveConverts extends CActiveRecord
 	}
 
 	/**
+	 * get Item Archive
+	 */
+	public static function getItemArchive($data)
+	{
+		$convert_number = unserialize($data);
+		if(!empty($convert_number)) {
+			$item = (trim($convert_number['finish'])-trim($convert_number['start']));
+			$return = $item == 0 ? $item : $item+1;
+			
+		} else
+			$return = 0;
+		
+		return $return;
+	}
+
+	/**
+	 * get Detail Item Archive
+	 */
+	public static function getDetailItemArchive($data)
+	{
+		$return = implode('-', $data);		
+		return $return;
+	}
+	
+	protected function afterFind() 
+	{
+		$this->convert_total = self::getItemArchive($this->convert_numbers);
+		
+		parent::afterFind();		
+	}
+
+	/**
 	 * before validate attributes
 	 */
-	/*
 	protected function beforeValidate() {
 		if(parent::beforeValidate()) {
-			// Create action
+			if($this->isNewRecord)
+				$this->creation_id = Yii::app()->user->id;
+			else
+				$this->modified_id = Yii::app()->user->id;
+			
+			if(empty($this->convert_number) || $this->convert_number == null)
+				$this->addError('convert_number', 'Number cannot be blank.');
 		}
 		return true;
 	}
-	*/
-
-	/**
-	 * after validate attributes
-	 */
-	/*
-	protected function afterValidate()
-	{
-		parent::afterValidate();
-			// Create action
-		return true;
-	}
-	*/
 	
 	/**
 	 * before save attributes
 	 */
-	/*
 	protected function beforeSave() {
+		$action = strtolower(Yii::app()->controller->action->id);
+		
 		if(parent::beforeSave()) {
-		}
-		return true;	
-	}
-	*/
-	
-	/**
-	 * After save attributes
-	 */
-	/*
-	protected function afterSave() {
-		parent::afterSave();
-		// Create action
-	}
-	*/
-
-	/**
-	 * Before delete attributes
-	 */
-	/*
-	protected function beforeDelete() {
-		if(parent::beforeDelete()) {
-			// Create action
+			if($action != 'publish')
+				$this->convert_numbers = serialize($this->convert_number);
 		}
 		return true;
 	}
-	*/
-
-	/**
-	 * After delete attributes
-	 */
-	/*
-	protected function afterDelete() {
-		parent::afterDelete();
-		// Create action
-	}
-	*/
 
 }
