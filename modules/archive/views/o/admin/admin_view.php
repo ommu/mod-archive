@@ -29,7 +29,7 @@
 		), */
 		array(
 			'name'=>'archive_code',
-			'value'=>$model->archive_code,
+			'value'=>$model->view->archive_code,
 		),
 		array(
 			'name'=>'location_id',
@@ -67,6 +67,10 @@
 		array(
 			'name'=>'archive_total',
 			'value'=>$model->archive_total,
+		),
+		array(
+			'name'=>'archive_pages',
+			'value'=>$model->archive_pages != 0 ? $model->archive_pages : '-',
 		),
 		array(
 			'name'=>'creation_date',

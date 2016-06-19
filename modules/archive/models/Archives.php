@@ -445,7 +445,7 @@ class Archives extends CActiveRecord
 					$item = (trim($val['finish'])-trim($val['start']));
 					$data_plus = $item == 0 ? $item : $item+1;
 					$return = $return + $data_plus;
-				}				
+				}
 			}
 			
 		} else
@@ -488,6 +488,7 @@ class Archives extends CActiveRecord
 					$return .= strtoupper($val['id']).': '.$val['start'].'-'.$val['finish'];
 			}
 		}
+		
 		return $return;
 	}
 	

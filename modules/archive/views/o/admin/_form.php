@@ -51,7 +51,7 @@ EOP;
 	'id'=>'archives-form',
 	'enableAjaxValidation'=>true,
 	'htmlOptions' => array(
-		'enctype' => 'multipart/form-data',
+		//'enctype' => 'multipart/form-data',
 		'class'=>'hide',
 	),
 )); ?>

@@ -38,7 +38,7 @@
 				<?php if(Yii::app()->user->hasFlash('errorFile')) {
 					echo '<div class="errorMessage">'.Yii::app()->user->getFlash('errorFile').'</div>';
 				}?>
-				<div class="pt-10"><a off_address="" target="_blank" class="template" href="<?php echo Yii::app()->request->baseUrl;?>/externals/recruitment/session_user_bundle.xls" title="User Bundle Template">User Bundle Template</a></div>
+				<div class="pt-10"><a off_address="" target="_blank" class="template" href="<?php echo Yii::app()->request->baseUrl;?>/externals/archive/template/import_template.xlsx" title="Import Template">Import Template</a></div>
 			</div>
 		</div>
 
