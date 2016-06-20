@@ -128,7 +128,7 @@ class Archives extends CActiveRecord
 			'story_id' => Yii::t('attribute', 'Story'),
 			'archive_title' => Yii::t('attribute', 'Title'),
 			'archive_desc' => Yii::t('attribute', 'Description'),
-			'archive_type_id' => Yii::t('attribute', 'Archive Type ID'),
+			'archive_type_id' => Yii::t('attribute', 'Type ID'),
 			'archive_publish_year' => Yii::t('attribute', 'Publish Year'),
 			'archive_multiple' => Yii::t('attribute', 'Is Multiple Archive'),
 			'archive_numbers' => Yii::t('attribute', 'Numbers'),

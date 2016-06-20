@@ -10,6 +10,7 @@
  * TOC :
  *	Index
  *	Manage
+ *	Import
  *	Add
  *	Edit
  *	View
@@ -86,7 +87,7 @@ class ConvertController extends Controller
 				//'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level != 1)',
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('manage','add','edit','view','runaction','delete','publish'),
+				'actions'=>array('manage','import','add','edit','view','runaction','delete','publish'),
 				'users'=>array('@'),
 				'expression'=>'isset(Yii::app()->user->level) && in_array(Yii::app()->user->level, array(1,2))',
 			),
@@ -137,6 +138,131 @@ class ConvertController extends Controller
 			'columns' => $columns,
 		));
 	}	
+	
+	/**
+	 * Creates a new model.
+	 * If creation is successful, the browser will be redirected to the 'view' page.
+	 */
+	public function actionImport() 
+	{
+		ini_set('max_execution_time', 0);
+		ob_start();
+		
+		$path = 'public/archive/import';
+
+		// Generate path directory
+		if(!file_exists($path)) {
+			@mkdir($path, 0755, true);
+
+			// Add File in Article Folder (index.php)
+			$newFile = $path.'/index.php';
+			$FileHandle = fopen($newFile, 'w');
+		} else
+			@chmod($path, 0755, true);
+		
+		$error = array();
+		
+		$convert_multiple = $_POST['convert_multiple'];
+		echo $convert_multiple = $convert_multiple == 1 ? $convert_multiple : 0;
+		
+		if(isset($_FILES['importExcel'])) {
+			$fileName = CUploadedFile::getInstanceByName('importExcel');
+			if(in_array(strtolower($fileName->extensionName), array('xls','xlsx'))) {
+				$file = time().'_convert_'.$fileName->name;
+				if($fileName->saveAs($path.'/'.$file)) {
+					Yii::import('ext.excel_reader.OExcelReader');
+					$xls = new OExcelReader($path.'/'.$file);
+					
+					for ($row = 2; $row <= $xls->sheets[0]['numRows']; $row++) {
+						$convert_code			= strtolower(trim($xls->sheets[0]['cells'][$row][1]));
+						$convert_title			= trim($xls->sheets[0]['cells'][$row][2]);
+						$location_code			= strtolower(trim($xls->sheets[0]['cells'][$row][3]));
+						$category_code			= strtolower(trim($xls->sheets[0]['cells'][$row][4]));
+						$convert_numbers		= trim($xls->sheets[0]['cells'][$row][5]);
+						$convert_pages			= strtolower(trim($xls->sheets[0]['cells'][$row][6]));
+						$convert_copies			= strtolower(trim($xls->sheets[0]['cells'][$row][7]));
+						$convert_publish_year	= strtoupper(trim($xls->sheets[0]['cells'][$row][8]));
+						$convert_desc			= trim($xls->sheets[0]['cells'][$row][9]);
+						
+						$convert_code = explode('.', $convert_code);
+						if($convert_multiple == 0)
+							$convert_numbers = explode('-', $convert_numbers);
+						
+						else {
+							$convert_numbers = explode('#', $convert_numbers);
+							
+							if(!empty($convert_numbers)) {
+								foreach($convert_numbers as $key => $val) {
+									$convert_numbers[$key] = explode('-', trim($val));
+									foreach($convert_numbers[$key] as $key2 => $val2) {
+										if($key2 == 0) {
+											$convert_numbers[$key]['id'] = trim($convert_numbers[$key][0]);
+											unset($convert_numbers[$key][0]);
+										} else if($key2 == 1) {
+											$convert_numbers[$key]['start'] = trim($convert_numbers[$key][1]);
+											unset($convert_numbers[$key][1]);
+										} else if($key2 == 2) {
+											$convert_numbers[$key]['finish'] = trim($convert_numbers[$key][2]);
+											unset($convert_numbers[$key][2]);
+										}
+									}
+								}
+							}
+						}
+						
+						if($convert_code[0] == $location_code) {
+							$location = ArchiveLocation::model()->findByAttributes(array('location_code' => $location_code), array(
+								'select' => 'location_id',
+							));
+							$convert_code_number = preg_replace("/[^0-9]/","",$convert_code[2]);
+							if($convert_code[1] == $category_code) {
+								$category = ArchiveConvertCategory::model()->findByAttributes(array('category_code' => $category_code), array(
+									'select' => 'category_id',
+								));
+								
+								$model=new ArchiveConverts;
+								$model->location_id = $location->location_id;
+								$model->category_id = $category->category_id;
+								$model->convert_title = $convert_title;
+								$model->convert_desc = $convert_desc;
+								$model->convert_cat_id = $convert_code_number;
+								$model->convert_publish_year = $convert_publish_year;
+								$model->convert_multiple = $convert_multiple;
+								if($convert_multiple == 0) {
+									$model->convert_number_single = array(
+										'start'=>$convert_numbers[0],
+										'finish'=>$convert_numbers[1],
+									);
+								} else 
+									$model->convert_number_multiple = $convert_numbers;
+								$model->convert_pages = $convert_pages;
+								$model->convert_copies = $convert_copies;
+								$model->save();
+								
+							}
+						}
+					}
+					
+					Yii::app()->user->setFlash('success', 'Import Convert Success.');
+					$this->redirect(array('manage'));
+					
+				} else
+					Yii::app()->user->setFlash('errorFile', 'Gagal menyimpan file.');
+			} else
+				Yii::app()->user->setFlash('errorFile', 'Hanya file .xls dan .xlsx yang dibolehkan.');
+		}
+
+		ob_end_flush();
+		
+		$this->dialogDetail = true;
+		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+		$this->dialogWidth = 600;
+
+		$this->pageTitle = 'Import Convert';
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_import');
+	}
 	
 	/**
 	 * Creates a new model.

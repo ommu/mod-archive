@@ -11,7 +11,6 @@
  *	Index
  *	Manage
  *	Import
- *	ImportMultiple
  *	Add
  *	Edit
  *	View
@@ -88,7 +87,7 @@ class AdminController extends Controller
 				//'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level != 1)',
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('manage','add','edit','view','runaction','delete','publish'),
+				'actions'=>array('manage','import','add','edit','view','runaction','delete','publish'),
 				'users'=>array('@'),
 				'expression'=>'isset(Yii::app()->user->level) && in_array(Yii::app()->user->level, array(1,2))',
 			),
@@ -164,12 +163,12 @@ class AdminController extends Controller
 		$error = array();
 		
 		$archive_multiple = $_POST['archive_multiple'];
-		echo $archive_multiple = $archive_multiple == 1 ? $archive_multiple : 0;		
+		echo $archive_multiple = $archive_multiple == 1 ? $archive_multiple : 0;
 		
-		if(isset($_FILES['importExcel'])) {			
+		if(isset($_FILES['importExcel'])) {
 			$fileName = CUploadedFile::getInstanceByName('importExcel');
-			if(in_array(strtolower($fileName->extensionName), array('xls','xlsx'))) {				
-				$file = time().'_'.$fileName->name;
+			if(in_array(strtolower($fileName->extensionName), array('xls','xlsx'))) {
+				$file = time().'_archive_'.$fileName->name;
 				if($fileName->saveAs($path.'/'.$file)) {
 					Yii::import('ext.excel_reader.OExcelReader');
 					$xls = new OExcelReader($path.'/'.$file);
@@ -181,7 +180,7 @@ class AdminController extends Controller
 						$story_code				= strtolower(trim($xls->sheets[0]['cells'][$row][4]));
 						$type_name				= strtolower(trim($xls->sheets[0]['cells'][$row][5]));
 						$archive_numbers		= trim($xls->sheets[0]['cells'][$row][6]);
-						$archive_pages			= trim($xls->sheets[0]['cells'][$row][7]);
+						$archive_pages			= strtolower(trim($xls->sheets[0]['cells'][$row][7]));
 						$archive_publish_year	= strtoupper(trim($xls->sheets[0]['cells'][$row][8]));
 						$archive_desc			= trim($xls->sheets[0]['cells'][$row][9]);
 						
@@ -208,7 +207,7 @@ class AdminController extends Controller
 										}
 									}
 								}
-							}						
+							}
 						}
 						
 						if($archive_code[0] == $location_code) {
@@ -233,16 +232,16 @@ class AdminController extends Controller
 										$model->archive_title = $archive_title;
 										$model->archive_desc = $archive_desc;
 										$model->archive_type_id = $archive_code_number;
-										$model->archive_pages = $archive_pages;
 										$model->archive_publish_year = $archive_publish_year;
 										$model->archive_multiple = $archive_multiple;
 										if($archive_multiple == 0) {
 											$model->archive_number_single = array(
 												'start'=>$archive_numbers[0],
 												'finish'=>$archive_numbers[1],
-											);											
+											);
 										} else 
 											$model->archive_number_multiple = $archive_numbers;
+										$model->archive_pages = $archive_pages;
 										$model->save();
 									}
 								}
@@ -262,7 +261,6 @@ class AdminController extends Controller
 										$model->archive_title = $archive_title;
 										$model->archive_desc = $archive_desc;
 										$model->archive_type_id = $archive_code_number;
-										$model->archive_pages = $archive_pages;
 										$model->archive_publish_year = $archive_publish_year;
 										$model->archive_multiple = $archive_multiple;
 										if($archive_multiple == 0) {
@@ -271,9 +269,10 @@ class AdminController extends Controller
 												'finish'=>$archive_numbers[1],
 											);
 										} else
-											$model->archive_number_multiple = $archive_numbers;											
+											$model->archive_number_multiple = $archive_numbers;
+										$model->archive_pages = $archive_pages;
 										$model->save();
-									}									
+									}
 								} else {
 									if($archive_code_type == $archive_code[1]) {
 										$model=new Archives;
@@ -283,7 +282,6 @@ class AdminController extends Controller
 										$model->archive_title = $archive_title;
 										$model->archive_desc = $archive_desc;
 										$model->archive_type_id = $archive_code[1];
-										$model->archive_pages = $archive_pages;
 										$model->archive_publish_year = $archive_publish_year;
 										$model->archive_multiple = $archive_multiple;
 										if($archive_multiple == 0) {
@@ -293,6 +291,7 @@ class AdminController extends Controller
 											);
 										} else
 											$model->archive_number_multiple = $archive_numbers;	
+										$model->archive_pages = $archive_pages;
 										$model->save();
 									}
 								}

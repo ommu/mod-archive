@@ -128,7 +128,7 @@ class ArchiveConverts extends CActiveRecord
 			'category_id' => Yii::t('attribute', 'Category'),
 			'convert_title' => Yii::t('attribute', 'Title'),
 			'convert_desc' => Yii::t('attribute', 'Description'),
-			'convert_cat_id' => Yii::t('attribute', 'Convert Category ID'),
+			'convert_cat_id' => Yii::t('attribute', 'Category ID'),
 			'convert_publish_year' => Yii::t('attribute', 'Publish Year'),
 			'convert_multiple' => Yii::t('attribute', 'Is Multiple Convert'),
 			'convert_numbers' => Yii::t('attribute', 'Numbers'),

@@ -75,6 +75,10 @@ content_menu	:
 		urlRules: {archive, o/convert, manage, siteType: 0,1, userLevel: 1,2}
 		urlPath: {url: add, attr: -, icon: -}
 		
+	- urlTitle: Import Convert
+		urlRules: {archive, o/convert, manage, siteType: 0,1, userLevel: 1,2}
+		urlPath: {url: import, attr: -, icon: -}
+		
 	- urlTitle: Back to Manage
 		urlRules: {archive, o/convert, add,edit,view, siteType: 0,1, userLevel: 1,2}
 		urlPath: {url: manage, attr: -, icon: -}
