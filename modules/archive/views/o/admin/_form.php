@@ -211,7 +211,7 @@ EOP;
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'archive_pages'); ?>
 		<div class="desc">
-			<?php echo $form->textField($model,'archive_pages',array('maxlength'=>4, 'class'=>'span-3')); ?>
+			<?php echo $form->textField($model,'archive_pages',array('maxlength'=>11, 'class'=>'span-3')); ?>
 			<?php echo $form->error($model,'archive_pages'); ?>
 		</div>
 	</div>

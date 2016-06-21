@@ -27,6 +27,7 @@
  * @property string $location_code
  * @property string $category_code
  * @property integer $convert_cat_id
+ * @property integer $parent_convert_cat_id
  */
 class ViewArchiveConverts extends CActiveRecord
 {
@@ -68,13 +69,13 @@ class ViewArchiveConverts extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('convert_cat_id', 'required'),
-			array('convert_cat_id', 'numerical', 'integerOnly'=>true),
+			array('convert_cat_id, parent_convert_cat_id', 'required'),
+			array('convert_cat_id, parent_convert_cat_id', 'numerical', 'integerOnly'=>true),
 			array('convert_id', 'length', 'max'=>11),
 			array('location_code, category_code', 'length', 'max'=>8),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('convert_id, location_code, category_code, convert_cat_id,
+			array('convert_id, location_code, category_code, convert_cat_id, parent_convert_cat_id,
 				convert_code', 'safe', 'on'=>'search'),
 		);
 	}
@@ -100,6 +101,7 @@ class ViewArchiveConverts extends CActiveRecord
 			'location_code' => Yii::t('attribute', 'Location Code'),
 			'category_code' => Yii::t('attribute', 'Category Code'),
 			'convert_cat_id' => Yii::t('attribute', 'Convert Cat ID'),
+			'parent_convert_cat_id' => Yii::t('attribute', 'Parent Convert Cat ID'),
 			'convert_code' => Yii::t('attribute', 'Code'),
 		);
 		/*
@@ -133,6 +135,7 @@ class ViewArchiveConverts extends CActiveRecord
 		$criteria->compare('t.location_code',strtolower($this->location_code),true);
 		$criteria->compare('t.category_code',strtolower($this->category_code),true);
 		$criteria->compare('t.convert_cat_id',$this->convert_cat_id);
+		$criteria->compare('t.parent_convert_cat_id',$this->parent_convert_cat_id);
 		$criteria->compare('t.convert_code',$this->convert_code,true);
 
 		if(!isset($_GET['ViewArchiveConverts_sort']))
@@ -168,6 +171,7 @@ class ViewArchiveConverts extends CActiveRecord
 			$this->defaultColumns[] = 'location_code';
 			$this->defaultColumns[] = 'category_code';
 			$this->defaultColumns[] = 'convert_cat_id';
+			$this->defaultColumns[] = 'parent_convert_cat_id';
 		}
 
 		return $this->defaultColumns;
@@ -186,6 +190,7 @@ class ViewArchiveConverts extends CActiveRecord
 			$this->defaultColumns[] = 'location_code';
 			$this->defaultColumns[] = 'category_code';
 			$this->defaultColumns[] = 'convert_cat_id';
+			$this->defaultColumns[] = 'parent_convert_cat_id';
 		}
 		parent::afterConstruct();
 	}
@@ -210,7 +215,7 @@ class ViewArchiveConverts extends CActiveRecord
 	/**
 	 * get Code/Number Archive
 	 */
-	public static function getCodeArchive($location, $category, $id)
+	public static function getCodeArchive($location, $category, $id, $parent_id)
 	{
 		if(ArchiveSettings::getInfo(1, 'auto_numbering') == 1)
 			$id = 0;
@@ -218,14 +223,17 @@ class ViewArchiveConverts extends CActiveRecord
 			$id = $id;
 		$convert_code = array($location);
 		array_push($convert_code, $category);
-		array_push($convert_code, $id);
+		if($id != 0)
+			array_push($convert_code, $id);
+		else
+			array_push($convert_code, $parent_id);			
 		
 		return implode(".", $convert_code);
 	}
 	
 	protected function afterFind() 
 	{		
-		$this->convert_code = self::getCodeArchive($this->location_code, $this->category_code, $this->convert_cat_id);
+		$this->convert_code = self::getCodeArchive($this->location_code, $this->category_code, $this->convert_cat_id, $this->parent_convert_cat_id);
 		
 		parent::afterFind();		
 	}

@@ -35,5 +35,6 @@ if(Yii::app()->user->hasFlash('success'))
 	<?php echo $this->renderPartial('_form', array(
 		'model'=>$model,
 		'setting'=>$setting,
+		'parent'=>$parent,
 	)); ?>
 </div>
