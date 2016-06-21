@@ -226,7 +226,7 @@ class ViewArchiveConverts extends CActiveRecord
 		if($id != 0)
 			array_push($convert_code, $id);
 		else
-			array_push($convert_code, $parent_id);			
+			array_push($convert_code, $parent_id);
 		
 		return implode(".", $convert_code);
 	}

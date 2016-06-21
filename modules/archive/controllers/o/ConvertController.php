@@ -274,6 +274,13 @@ class ConvertController extends Controller
 			'select' => 'auto_numbering',
 		));
 		
+		$id = $_GET['parent'];
+		if(isset($id)) {
+			$parent = ArchiveConverts::model()->findByPk($id,array(
+				'select' => 'convert_id, location_id, category_id, convert_title, convert_publish_year',
+			));
+		}
+		
 		$model=new ArchiveConverts;
 
 		// Uncomment the following line if AJAX validation is needed
@@ -281,7 +288,7 @@ class ConvertController extends Controller
 
 		if(isset($_POST['ArchiveConverts'])) {
 			$model->attributes=$_POST['ArchiveConverts'];
-			if($setting->auto_numbering == 0)
+			if($setting->auto_numbering == 0 && $model->convert_parent == 0)
 				$model->scenario = 'not_auto_numbering';
 			
 			if($model->save()) {
@@ -289,8 +296,12 @@ class ConvertController extends Controller
 				//$this->redirect(array('view','id'=>$model->convert_id));
 				if($model->back_field == 1)
 					$this->redirect(array('manage'));
-				else
-					$this->redirect(array('add'));
+				else {
+					if($model->convert_parent == 0)
+						$this->redirect(array('add'));
+					else
+						$this->redirect(array('add','parent'=>$model->convert_parent));
+				}
 			}
 		}
 
@@ -300,6 +311,7 @@ class ConvertController extends Controller
 		$this->render('admin_add',array(
 			'model'=>$model,
 			'setting'=>$setting,
+			'parent'=>$parent != null ? $parent : false,
 		));
 	}
 
@@ -314,6 +326,10 @@ class ConvertController extends Controller
 			'select' => 'auto_numbering',
 		));
 		
+		$parent = ArchiveConverts::model()->findByPk($model->convert_parent,array(
+			'select' => 'convert_id, location_id, category_id, convert_title, convert_publish_year',
+		));
+		
 		$model=$this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
@@ -321,7 +337,7 @@ class ConvertController extends Controller
 
 		if(isset($_POST['ArchiveConverts'])) {
 			$model->attributes=$_POST['ArchiveConverts'];
-			if($setting->auto_numbering == 0)
+			if($setting->auto_numbering == 0 && $model->convert_parent == 0)
 				$model->scenario = 'not_auto_numbering';
 			
 			if($model->save()) {
@@ -337,6 +353,7 @@ class ConvertController extends Controller
 		$this->render('admin_edit',array(
 			'model'=>$model,
 			'setting'=>$setting,
+			'parent'=>$parent != null ? $parent : false,
 		));
 	}
 	

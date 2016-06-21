@@ -76,11 +76,27 @@ EOP;
 <?php //begin.Messages ?>
 
 <fieldset>
+	<div class="clearfix">
+		<?php echo $form->labelEx($model,'convert_parent'); ?>
+		<div class="desc">
+			<?php if($parent == false) {
+				echo $form->textField($model,'convert_parent', array('class'=>'span-6'));
+			} else {
+				$model->convert_parent = $parent->convert_id;
+				echo $form->hiddenField($model,'convert_parent');
+				echo '<strong>'.$parent->convert_title.' ('.$parent->view->convert_code.')</strong>';
+			}?>
+			<?php echo $form->error($model,'convert_parent'); ?>
+			<?php /*<div class="small-px silent"></div>*/?>
+		</div>
+	</div>
 
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'location_id'); ?>
 		<div class="desc">
 			<?php 
+			if($parent != false)
+				$model->location_id = $parent->location_id;
 			$location = ArchiveLocation::getLocation(1);
 			if($location != null)
 				echo $form->dropDownList($model,'location_id', $location, array('prompt'=>Yii::t('phrase', 'Pilih salah satu')));
@@ -95,6 +111,8 @@ EOP;
 		<?php echo $form->labelEx($model,'category_id'); ?>
 		<div class="desc">
 			<?php 
+			if($parent != false)
+				$model->category_id = $parent->category_id;
 			$category = ArchiveConvertCategory::getCategory(1);
 			if($category != null)
 				echo $form->dropDownList($model,'category_id', $category, array('prompt'=>Yii::t('phrase', 'Pilih salah satu')));
@@ -119,7 +137,10 @@ EOP;
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'convert_publish_year'); ?>
 		<div class="desc">
-			<?php echo $form->textField($model,'convert_publish_year',array('maxlength'=>4, 'class'=>'span-3')); ?>
+			<?php 
+			if($parent != false)
+				$model->convert_publish_year = $parent->convert_publish_year;
+			echo $form->textField($model,'convert_publish_year',array('maxlength'=>4, 'class'=>'span-3')); ?>
 			<?php echo $form->error($model,'convert_publish_year'); ?>
 			<div class="small-px silent mt-5">example: 2015, 2016</div>
 		</div>
@@ -197,7 +218,7 @@ EOP;
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'convert_pages'); ?>
 		<div class="desc">
-			<?php echo $form->textField($model,'convert_pages',array('maxlength'=>4, 'class'=>'span-3')); ?>
+			<?php echo $form->textField($model,'convert_pages',array('maxlength'=>11, 'class'=>'span-3')); ?>
 			<?php echo $form->error($model,'convert_pages'); ?>
 		</div>
 	</div>
@@ -205,7 +226,7 @@ EOP;
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'convert_copies'); ?>
 		<div class="desc">
-			<?php echo $form->textField($model,'convert_copies',array('maxlength'=>4, 'class'=>'span-3')); ?>
+			<?php echo $form->textField($model,'convert_copies',array('maxlength'=>11, 'class'=>'span-3')); ?>
 			<?php echo $form->error($model,'convert_copies'); ?>
 		</div>
 	</div>

@@ -27,6 +27,7 @@
  * @property integer $publish
  * @property integer $location_id
  * @property integer $category_id
+ * @property string $convert_parent
  * @property string $convert_title
  * @property string $convert_desc
  * @property integer $convert_cat_id
@@ -86,15 +87,15 @@ class ArchiveConverts extends CActiveRecord
 		return array(
 			array('location_id, category_id, convert_title, convert_publish_year', 'required'),
 			array('convert_cat_id', 'required', 'on'=>'not_auto_numbering'),
-			array('publish, location_id, category_id, convert_cat_id, convert_multiple,
+			array('publish, location_id, category_id, convert_parent, convert_cat_id, convert_multiple,
 				back_field', 'numerical', 'integerOnly'=>true),
 			array('convert_publish_year', 'length', 'max'=>4),
 			array('convert_pages, convert_copies, creation_id, modified_id', 'length', 'max'=>11),
-			array('convert_desc, convert_numbers, convert_pages, convert_copies,
+			array('convert_parent, convert_desc, convert_numbers, convert_pages, convert_copies,
 				convert_number_single, convert_number_multiple', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('convert_id, publish, location_id, category_id, convert_title, convert_desc, convert_cat_id, convert_publish_year, convert_multiple, convert_numbers, convert_pages, convert_copies, creation_date, creation_id, modified_date, modified_id,
+			array('convert_id, publish, location_id, category_id, convert_parent, convert_title, convert_desc, convert_cat_id, convert_publish_year, convert_multiple, convert_numbers, convert_pages, convert_copies, creation_date, creation_id, modified_date, modified_id,
 				convert_total, convert_code_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -126,6 +127,7 @@ class ArchiveConverts extends CActiveRecord
 			'publish' => Yii::t('attribute', 'Publish'),
 			'location_id' => Yii::t('attribute', 'Location'),
 			'category_id' => Yii::t('attribute', 'Category'),
+			'convert_parent' => Yii::t('attribute', 'Parent'),
 			'convert_title' => Yii::t('attribute', 'Title'),
 			'convert_desc' => Yii::t('attribute', 'Description'),
 			'convert_cat_id' => Yii::t('attribute', 'Category ID'),
@@ -198,6 +200,7 @@ class ArchiveConverts extends CActiveRecord
 			$criteria->compare('t.category_id',$_GET['category']);
 		else
 			$criteria->compare('t.category_id',$this->category_id);
+		$criteria->compare('t.convert_parent',$this->convert_parent,true);
 		$criteria->compare('t.convert_title',strtolower($this->convert_title),true);
 		$criteria->compare('t.convert_desc',strtolower($this->convert_desc),true);
 		$criteria->compare('t.convert_cat_id',$this->convert_cat_id);
@@ -271,6 +274,7 @@ class ArchiveConverts extends CActiveRecord
 			$this->defaultColumns[] = 'publish';
 			$this->defaultColumns[] = 'location_id';
 			$this->defaultColumns[] = 'category_id';
+			$this->defaultColumns[] = 'convert_parent';
 			$this->defaultColumns[] = 'convert_title';
 			$this->defaultColumns[] = 'convert_desc';
 			$this->defaultColumns[] = 'convert_cat_id';
@@ -324,7 +328,7 @@ class ArchiveConverts extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'convert_cat_id',
-				'value' => 'ArchiveSettings::getInfo(1, "auto_numbering") == 1 ? 0 : $data->convert_cat_id',
+				'value' => 'ArchiveSettings::getInfo(1, "auto_numbering") == 1 ? 0 : ($data->convert_parent != 0 ? $data->view->parent_convert_cat_id : $data->convert_cat_id)',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -410,7 +414,8 @@ class ArchiveConverts extends CActiveRecord
 	{
 		$convert_number = unserialize($data);
 		if(!empty($convert_number)) {
-			if($type == 0) {
+			$count_convert_number = count($convert_number);
+			if($type == 0 || ($count_convert_number == 2 && (array_key_exists('start', $convert_number) && array_key_exists('finish', $convert_number)))) {
 				$item = (trim($convert_number['finish'])-trim($convert_number['start']));
 				$return = $item == 0 ? $item : $item+1;
 			} else {
@@ -501,7 +506,10 @@ class ArchiveConverts extends CActiveRecord
 	 * before save attributes
 	 */
 	protected function beforeSave() {
-		if(parent::beforeSave()) {
+		if(parent::beforeSave()) {			
+			if($this->convert_parent != 0)
+				$this->convert_cat_id = 0;
+			
 			if($this->convert_multiple == 0)
 				$this->convert_numbers = serialize($this->convert_number_single);
 			else
