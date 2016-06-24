@@ -230,8 +230,8 @@ class ConvertController extends Controller
 								$model->convert_multiple = $convert_multiple;
 								if($convert_multiple == 0) {
 									$model->convert_number_single = array(
-										'start'=>$convert_numbers[0],
-										'finish'=>$convert_numbers[1],
+										'start'=>trim($convert_numbers[0]),
+										'finish'=>trim($convert_numbers[1]),
 									);
 								} else 
 									$model->convert_number_multiple = $convert_numbers;

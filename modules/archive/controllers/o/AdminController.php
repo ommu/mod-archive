@@ -236,8 +236,8 @@ class AdminController extends Controller
 										$model->archive_multiple = $archive_multiple;
 										if($archive_multiple == 0) {
 											$model->archive_number_single = array(
-												'start'=>$archive_numbers[0],
-												'finish'=>$archive_numbers[1],
+												'start'=>trim($archive_numbers[0]),
+												'finish'=>trim($archive_numbers[1]),
 											);
 										} else 
 											$model->archive_number_multiple = $archive_numbers;
