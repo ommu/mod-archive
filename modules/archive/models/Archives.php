@@ -422,7 +422,8 @@ class Archives extends CActiveRecord
 	{
 		$archive_number = unserialize($data);
 		if(!empty($archive_number)) {
-			if($type == 0) {
+			$count_archive_number = count($archive_number);
+			if($type == 0 || ($count_archive_number == 2 && (array_key_exists('start', $archive_number) && array_key_exists('finish', $archive_number)))) {
 				$item = (trim($archive_number['finish'])-trim($archive_number['start']));
 				$return = $item == 0 ? $item : $item+1;
 			} else {
