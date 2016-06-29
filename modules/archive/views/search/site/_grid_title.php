@@ -1,0 +1,12 @@
+<a class="title" href="<?php echo Yii::app()->controller->createUrl('view', array('id'=>$data->archive_id,'t'=>Utility::getUrlTitle($data->archive_title)))?>" title="<?php echo $data->archive_title?>"><?php echo Utility::shortText(Utility::hardDecode($data->archive_title),60)?></a>
+<?php echo $data->archive_desc != '' ? Utility::shortText(Utility::hardDecode($data->archive_desc),60) : '';?>
+
+<div class="meta">
+	<a href="" title="<?php echo $data->location->location_name?>"><?php echo $data->location->location_name?></a> <?php echo $data->location->story_enable == '1' || $data->location->type_enable == '1' ? '/' : '';?>
+	<?php if($data->location->story_enable == '1') {?>
+		<a href="" title="<?php echo $data->story->story_name?>"><?php echo $data->story->story_name?></a> <?php echo $data->location->type_enable == '1' ? '/' : '';?>
+	<?php }
+	if($data->location->type_enable == '1') {?>
+		<a href="" title="<?php echo $data->type->type_name?>"><?php echo $data->type->type_name?></a>
+	<?php }?>
+</div>

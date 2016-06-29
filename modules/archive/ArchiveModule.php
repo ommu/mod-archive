@@ -34,7 +34,11 @@ class ArchiveModule extends CWebModule
 			// you may place customized code here
 			//list public controller in this module
 			$publicControllers = array(
+				'blog',
+				'redirect',
 				'site',
+				'search/convert',
+				'search/site',
 			);
 			
 			// pake ini untuk set theme per action di controller..
