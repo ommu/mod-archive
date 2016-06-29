@@ -13,9 +13,9 @@ EOP;
 
 <div class="boxed">
 	<?php if($model != false && !empty($model->data)) {
-		$i = 0;
+		//$i = 0;
 		foreach($model->data as $key => $val) {
-			$i++;
+			//$i++;
 			$title = ucwords(strtolower($val->title));?>
 			<div class="sep">
 				<a href="<?php echo Yii::app()->controller->createUrl('view', array('id'=>$val->id,'t'=>Utility::getUrlTitle($title),'source'=>'standard'));?>" title="<?php echo $title;?>"><?php echo $title;?></a>
@@ -23,11 +23,11 @@ EOP;
 					<?php echo Yii::t('phrase', 'Created').': '.$val->published_date;?> /
 					<?php echo Yii::t('phrase', 'View').': '.$val->view;?>
 				</div>
-				<?php echo $val->intro;?>
+				<?php echo $val->intro != '' && $val->intro != '-' ? '<p>'.$val->intro.'</p>' : '';?>
 			</div>
-			<?php if($i%4 == 0) {?>
+			<?php /* if($i%4 == 0) {?>
 				<div class="clear"></div>
-			<?php }?>
+			<?php } */?>
 	<?php }
 	} else {
 		echo 'kosong';

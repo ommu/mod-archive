@@ -90,13 +90,17 @@ class BlogController extends Controller
 		$category = '6,10';
 		$tag = '';
 		$paging = 'true';
-		$pagesize = 16;
+		$pagesize = 10;
 			
 		$server = Utility::getConnected(Yii::app()->params['server_options']['bpad']);
 		if($server != 'neither-connected') {
-			if(in_array($server, array('http://103.255.15.100','http://localhost','http://127.0.0.1','http://192.168.30.100')))
-				$server = $server.'/bpadportal';			
-			$url = $server.preg_replace('('.Yii::app()->request->baseUrl.')', '', Yii::app()->createUrl('article/api/site/list'));
+			if(!isset($_GET['url'])) {
+				if(in_array($server, array('http://103.255.15.100','http://localhost','http://127.0.0.1','http://192.168.30.100')))
+					$server = $server.'/bpadportal';			
+				$url = $server.preg_replace('('.Yii::app()->request->baseUrl.')', '', Yii::app()->createUrl('article/api/site/list'));
+				
+			} else
+				$url = urldecode($_GET['url']);
 			
 			$item = array(
 				'category' => $category,
@@ -115,8 +119,8 @@ class BlogController extends Controller
 			$output=curl_exec($ch);			
 		}
 		
-		$this->adsSidebar = false;		
-		$this->pageTitle = Yii::t('phrase', 'Blog');
+		$this->pageTitleShow = true;	
+		$this->pageTitle = Yii::t('phrase', 'Blog\'s');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('front_index',array(
@@ -161,6 +165,7 @@ class BlogController extends Controller
 			$output=curl_exec($ch);			
 		}
 		
+		$this->pageTitleShow = true;
 		$this->pageTitle = Yii::t('phrase', 'Standar Kearsipan');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
@@ -206,6 +211,7 @@ class BlogController extends Controller
 			$output=curl_exec($ch);			
 		}
 		
+		$this->pageTitleShow = true;		
 		$this->pageTitle = Yii::t('phrase', 'Daftar Istilah');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
