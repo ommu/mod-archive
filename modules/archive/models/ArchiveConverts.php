@@ -3,7 +3,7 @@
  * ArchiveConverts
  * version: 0.0.1
  *
- * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
+ * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @copyright Copyright (c) 2016 Ommu Platform (ommu.co)
  * @created date 19 June 2016, 01:22 WIB
  * @link http://company.ommu.co
@@ -243,11 +243,13 @@ class ArchiveConverts extends CActiveRecord
 
 		if(!isset($_GET['ArchiveConverts_sort']))
 			$criteria->order = 't.convert_id DESC';
+		
+		$action = strtolower(Yii::app()->controller->action->id);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 			'pagination'=>array(
-				'pageSize'=>30,
+				'pageSize'=>$action == 'manage' ? 30 : 10,
 			),
 		));
 	}

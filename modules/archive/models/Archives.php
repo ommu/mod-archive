@@ -246,11 +246,13 @@ class Archives extends CActiveRecord
 
 		if(!isset($_GET['Archives_sort']))
 			$criteria->order = 't.archive_id DESC';
-
+		
+		$action = strtolower(Yii::app()->controller->action->id);
+		
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 			'pagination'=>array(
-				'pageSize'=>30,
+				'pageSize'=>$action == 'manage' ? 30 : 10,
 			),
 		));
 	}
