@@ -97,7 +97,6 @@ class SiteController extends Controller
 			$model->attributes=$_GET['Archives'];
 		}
 		
-		$this->adsSidebar = true;
 		$this->pageTitle = Yii::t('phrase', 'Archives Manage');
 		$this->pageDescription = $setting->meta_description;
 		$this->pageMeta = $setting->meta_keyword;

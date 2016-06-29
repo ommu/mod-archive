@@ -97,7 +97,6 @@ class ConvertController extends Controller
 			$model->attributes=$_GET['ArchiveConverts'];
 		}
 		
-		$this->adsSidebar = true;
 		$this->pageTitle = Yii::t('phrase', 'Archive Converts Manage');
 		$this->pageDescription = $setting->meta_description;
 		$this->pageMeta = $setting->meta_keyword;
