@@ -208,11 +208,19 @@ EOP;
 		</div>
 	</div>
 
-	<div class="clearfix">
+	<div class="clearfix <?php echo $model->archive_multiple == 0 ? '' :'hide';?>" id="single">
 		<?php echo $form->labelEx($model,'archive_pages'); ?>
 		<div class="desc">
 			<?php echo $form->textField($model,'archive_pages',array('maxlength'=>11, 'class'=>'span-3')); ?>
 			<?php echo $form->error($model,'archive_pages'); ?>
+		</div>
+	</div>
+
+	<div class="clearfix">
+		<?php echo $form->labelEx($model,'archive_copies'); ?>
+		<div class="desc">
+			<?php echo $form->textField($model,'archive_copies',array('maxlength'=>11, 'class'=>'span-3')); ?>
+			<?php echo $form->error($model,'archive_copies'); ?>
 		</div>
 	</div>
 

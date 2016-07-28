@@ -1,30 +1,30 @@
 <?php
 /**
- * RedirectController
- * @var $this RedirectController
+ * SyncController
+ * @var $this SyncController
  * @var $model Archives
+ * @var $model ArchiveConverts
  * @var $form CActiveForm
  * version: 0.0.1
  * Reference start
  *
  * TOC :
  *	Index
- *	List
- *	View
+ *	Indexing
  *
  *	LoadModel
  *	performAjaxValidation
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @copyright Copyright (c) 2016 Ommu Platform (ommu.co)
- * @created date 28 June 2016, 23:54 WIB
+ * @created date 11 July 2016, 07:25 WIB
  * @link http://company.ommu.co
  * @contect (+62)856-299-4114
  *
  *----------------------------------------------------------------------------------------------------------
  */
 
-class RedirectController extends Controller
+class SyncController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -63,7 +63,7 @@ class RedirectController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index'),
+				'actions'=>array('index','indexing'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -87,40 +87,37 @@ class RedirectController extends Controller
 	 */
 	public function actionIndex() 
 	{
-		$criteria = array();
-		if($_GET['category'] == '' || $_GET['category'] == 'senarai') {
-			$url = 'search/site/index';
-			$criteria['title'] = $_GET['keyword'];
-		} else {
-			$url = 'search/convert/index';
-			$criteria['title'] = $_GET['keyword'];
-		}
+		$this->redirect(Yii::app()->createUrl('site/index'));
+	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public function actionIndexing($index='archive') 
+	{
+		ini_set('max_execution_time', 0);
+		ob_start();
 		
-		$this->redirect(Yii::app()->controller->createUrl($url, $criteria));
-	}
-
-	/**
-	 * Returns the data model based on the primary key given in the GET variable.
-	 * If the data model is not found, an HTTP exception will be raised.
-	 * @param integer the ID of the model to be loaded
-	 */
-	public function loadModel($id) 
-	{
-		$model = Archives::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
-		return $model;
-	}
-
-	/**
-	 * Performs the AJAX validation.
-	 * @param CModel the model to be validated
-	 */
-	protected function performAjaxValidation($model) 
-	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='archives-form') {
-			echo CActiveForm::validate($model);
-			Yii::app()->end();
+		$criteria = new CDbCriteria;
+		if($index == 'archive') {
+			$criteria->select = "archive_id, location_id, type_id, story_id, archive_type_id";
+			$model = Archives::model()->findAll($criteria);
+		} else {
+			$criteria->select = "convert_id, location_id, category_id, convert_cat_id";
+			$model = ArchiveConverts::model()->findAll($criteria);			
 		}
+
+		if($model) {
+			foreach($model as $key => $val) {
+				if($index == 'archive') {
+					$data = Archives::model()->findByPk($val->archive_id);
+				} else {
+					$data = ArchiveConverts::model()->findByPk($val->convert_id);
+				}
+				$data->update();
+			}
+		}
+
+		ob_end_flush();
 	}
 }

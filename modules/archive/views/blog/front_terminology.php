@@ -18,7 +18,7 @@ EOP;
 			//$i++;
 			$title = ucwords(strtolower($val->title));?>
 			<div class="sep">
-				<a href="<?php echo Yii::app()->controller->createUrl('view', array('id'=>$val->id,'t'=>Utility::getUrlTitle($title),'source'=>'standard'));?>" title="<?php echo $title;?>"><?php echo $title;?></a>
+				<a href="<?php echo Yii::app()->controller->createUrl('view', array('id'=>$val->id,'t'=>Utility::getUrlTitle($title),'source'=>'terminology'));?>" title="<?php echo $title;?>"><?php echo $title;?></a>
 				<div class="meta">
 					<?php echo Yii::t('phrase', 'Created').': '.$val->published_date;?> /
 					<?php echo Yii::t('phrase', 'View').': '.$val->view;?>

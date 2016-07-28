@@ -24,6 +24,7 @@
  *
  * The followings are the available columns in table '_view_archives':
  * @property string $archive_id
+ * @property integer $converts
  * @property integer $story_enable
  * @property integer $type_enable
  * @property string $location_code
@@ -72,12 +73,12 @@ class ViewArchives extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('archive_type_id', 'required'),
-			array('story_enable, type_enable, archive_type_id', 'numerical', 'integerOnly'=>true),
+			array('converts, story_enable, type_enable, archive_type_id', 'numerical', 'integerOnly'=>true),
 			array('archive_id', 'length', 'max'=>11),
 			array('location_code, story_code, type_code', 'length', 'max'=>8),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('archive_id, story_enable, type_enable, location_code, story_code, type_code, archive_type_id,
+			array('archive_id, converts, story_enable, type_enable, location_code, story_code, type_code, archive_type_id,
 				archive_code', 'safe', 'on'=>'search'),
 		);
 	}
@@ -100,6 +101,7 @@ class ViewArchives extends CActiveRecord
 	{
 		return array(
 			'archive_id' => Yii::t('attribute', 'Archive'),
+			'converts' => Yii::t('attribute', 'Converts'),
 			'story_enable' => Yii::t('attribute', 'Story Enable'),
 			'type_enable' => Yii::t('attribute', 'Type Enable'),
 			'location_code' => Yii::t('attribute', 'Location Code'),
@@ -139,6 +141,7 @@ class ViewArchives extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('t.archive_id',strtolower($this->archive_id),true);
+		$criteria->compare('t.converts',$this->converts);
 		$criteria->compare('t.story_enable',$this->story_enable);
 		$criteria->compare('t.type_enable',$this->type_enable);
 		$criteria->compare('t.location_code',strtolower($this->location_code),true);
@@ -177,6 +180,7 @@ class ViewArchives extends CActiveRecord
 			}
 		} else {
 			$this->defaultColumns[] = 'archive_id';
+			$this->defaultColumns[] = 'converts';
 			$this->defaultColumns[] = 'story_enable';
 			$this->defaultColumns[] = 'type_enable';
 			$this->defaultColumns[] = 'location_code';
@@ -198,6 +202,7 @@ class ViewArchives extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			//$this->defaultColumns[] = 'archive_id';
+			$this->defaultColumns[] = 'converts';
 			$this->defaultColumns[] = 'archive_code';
 			$this->defaultColumns[] = 'story_enable';
 			$this->defaultColumns[] = 'type_enable';
@@ -247,7 +252,7 @@ class ViewArchives extends CActiveRecord
 	}
 	
 	protected function afterFind() 
-	{		
+	{
 		$this->archive_code = self::getCodeArchive(array('story'=>$this->story_enable,'type'=>$this->type_enable), $this->location_code, $this->story_code, $this->type_code, $this->archive_type_id);
 		
 		parent::afterFind();		

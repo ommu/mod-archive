@@ -15,7 +15,7 @@
  *	LoadModel
  *	performAjaxValidation
  *
- * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
+ * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @copyright Copyright (c) 2016 Ommu Platform (ommu.co)
  * @created date 28 June 2016, 23:54 WIB
  * @link http://company.ommu.co
@@ -91,18 +91,18 @@ class SiteController extends Controller
 			'select' => 'meta_description, meta_keyword',
 		));
 		
-		$model=new Archives('search');
+		$model=new Archives('frontSearch');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Archives'])) {
 			$model->attributes=$_GET['Archives'];
 		}
 		
-		$this->pageTitle = Yii::t('phrase', 'Archives Manage');
+		$this->pageTitleShow = true;		
+		$this->pageTitle = Yii::t('phrase', 'Senarai Arsip');
 		$this->pageDescription = $setting->meta_description;
 		$this->pageMeta = $setting->meta_keyword;
 		$this->render('front_index',array(
 			'model'=>$model,
-			'columns' => $columns,
 		));
 	}
 

@@ -38,6 +38,13 @@
 class ArchiveConvertMedia extends CActiveRecord
 {
 	public $defaultColumns = array();
+	public $archive_code;
+	public $convert_code;
+	
+	// Variable Search
+	public $archive_search;
+	public $convert_search;
+	public $creation_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -66,12 +73,16 @@ class ArchiveConvertMedia extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('archive_id, convert_id, media_desc, creation_date, creation_id', 'required'),
+			array('archive_code, convert_code', 'required'),
 			array('publish', 'numerical', 'integerOnly'=>true),
 			array('archive_id, convert_id, creation_id', 'length', 'max'=>11),
+			array('
+				archive_code, convert_code', 'length', 'max'=>32),
+			array('archive_id, convert_id, media_desc', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, publish, archive_id, convert_id, media_desc, creation_date, creation_id', 'safe', 'on'=>'search'),
+			array('id, publish, archive_id, convert_id, media_desc, creation_date, creation_id,
+				archive_code, convert_code, archive_search, convert_search, creation_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -83,8 +94,9 @@ class ArchiveConvertMedia extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'convert' => array(self::BELONGS_TO, 'ArchiveConverts', 'convert_id'),
 			'archive' => array(self::BELONGS_TO, 'Archives', 'archive_id'),
+			'convert' => array(self::BELONGS_TO, 'ArchiveConverts', 'convert_id'),
+			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 		);
 	}
 
@@ -101,6 +113,11 @@ class ArchiveConvertMedia extends CActiveRecord
 			'media_desc' => Yii::t('attribute', 'Media Desc'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
+			'archive_code' => Yii::t('attribute', 'Archive Code'),
+			'convert_code' => Yii::t('attribute', 'Convert Code'),
+			'archive_search' => Yii::t('attribute', 'Archive'),
+			'convert_search' => Yii::t('attribute', 'Convert'),
+			'creation_search' => Yii::t('attribute', 'Creation'),
 		);
 		/*
 			'ID' => 'ID',
@@ -158,6 +175,25 @@ class ArchiveConvertMedia extends CActiveRecord
 			$criteria->compare('t.creation_id',$_GET['creation']);
 		else
 			$criteria->compare('t.creation_id',$this->creation_id);
+		
+		// Custom Search
+		$criteria->with = array(
+			'archive' => array(
+				'alias'=>'archive',
+				'select'=>'archive_title, archive_code',
+			),
+			'convert' => array(
+				'alias'=>'convert',
+				'select'=>'convert_title, convert_code',
+			),
+			'creation_relation' => array(
+				'alias'=>'creation_relation',
+				'select'=>'displayname',
+			),
+		);
+		$criteria->compare('archive.archive_code',strtolower($this->archive_search), true);
+		$criteria->compare('convert.convert_code',strtolower($this->convert_search), true);
+		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
 
 		if(!isset($_GET['ArchiveConvertMedia_sort']))
 			$criteria->order = 't.id DESC';
@@ -217,23 +253,27 @@ class ArchiveConvertMedia extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			if(!isset($_GET['type'])) {
-				$this->defaultColumns[] = array(
-					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->id)), $data->publish, 1)',
-					'htmlOptions' => array(
-						'class' => 'center',
-					),
-					'filter'=>array(
-						1=>Yii::t('phrase', 'Yes'),
-						0=>Yii::t('phrase', 'No'),
-					),
-					'type' => 'raw',
-				);
-			}
-			$this->defaultColumns[] = 'archive_id';
-			$this->defaultColumns[] = 'convert_id';
+			$this->defaultColumns[] = array(
+				'name' => 'archive_search',
+				'value' => 'strtoupper($data->archive->archive_code)."<br/><span>".$data->archive->archive_title."</span>"',
+				'htmlOptions' => array(
+					'class' => 'bold',
+				),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'convert_search',
+				'value' => 'strtoupper($data->convert->convert_code)."<br/><span>".$data->convert->convert_title."</span>"',
+				'htmlOptions' => array(
+					'class' => 'bold',
+				),
+				'type' => 'raw',
+			);
 			$this->defaultColumns[] = 'media_desc';
+			$this->defaultColumns[] = array(
+				'name' => 'creation_search',
+				'value' => '$data->creation_relation->displayname',
+			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
 				'value' => 'Utility::dateFormat($data->creation_date)',
@@ -260,7 +300,20 @@ class ArchiveConvertMedia extends CActiveRecord
 					),
 				), true),
 			);
-			$this->defaultColumns[] = 'creation_id';
+			if(!isset($_GET['type'])) {
+				$this->defaultColumns[] = array(
+					'name' => 'publish',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->id)), $data->publish, 1)',
+					'htmlOptions' => array(
+						'class' => 'center',
+					),
+					'filter'=>array(
+						1=>Yii::t('phrase', 'Yes'),
+						0=>Yii::t('phrase', 'No'),
+					),
+					'type' => 'raw',
+				);
+			}
 		}
 		parent::afterConstruct();
 	}
@@ -285,68 +338,12 @@ class ArchiveConvertMedia extends CActiveRecord
 	/**
 	 * before validate attributes
 	 */
-	/*
 	protected function beforeValidate() {
 		if(parent::beforeValidate()) {
-			// Create action
+			if($this->isNewRecord)
+				$this->creation_id = Yii::app()->user->id;
 		}
 		return true;
 	}
-	*/
-
-	/**
-	 * after validate attributes
-	 */
-	/*
-	protected function afterValidate()
-	{
-		parent::afterValidate();
-			// Create action
-		return true;
-	}
-	*/
-	
-	/**
-	 * before save attributes
-	 */
-	/*
-	protected function beforeSave() {
-		if(parent::beforeSave()) {
-		}
-		return true;	
-	}
-	*/
-	
-	/**
-	 * After save attributes
-	 */
-	/*
-	protected function afterSave() {
-		parent::afterSave();
-		// Create action
-	}
-	*/
-
-	/**
-	 * Before delete attributes
-	 */
-	/*
-	protected function beforeDelete() {
-		if(parent::beforeDelete()) {
-			// Create action
-		}
-		return true;
-	}
-	*/
-
-	/**
-	 * After delete attributes
-	 */
-	/*
-	protected function afterDelete() {
-		parent::afterDelete();
-		// Create action
-	}
-	*/
 
 }

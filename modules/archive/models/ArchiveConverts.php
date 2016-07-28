@@ -36,6 +36,7 @@
  * @property string $convert_numbers
  * @property string $convert_pages
  * @property string $convert_copies
+ * @property string $convert_code
  * @property string $creation_date
  * @property string $creation_id
  * @property string $modified_date
@@ -91,11 +92,12 @@ class ArchiveConverts extends CActiveRecord
 				back_field', 'numerical', 'integerOnly'=>true),
 			array('convert_publish_year', 'length', 'max'=>4),
 			array('convert_pages, convert_copies, creation_id, modified_id', 'length', 'max'=>11),
-			array('convert_parent, convert_desc, convert_numbers, convert_pages, convert_copies,
+			array('convert_code', 'length', 'max'=>32),
+			array('convert_parent, convert_desc, convert_numbers, convert_pages, convert_copies, convert_code,
 				convert_number_single, convert_number_multiple', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('convert_id, publish, location_id, category_id, convert_parent, convert_title, convert_desc, convert_cat_id, convert_publish_year, convert_multiple, convert_numbers, convert_pages, convert_copies, creation_date, creation_id, modified_date, modified_id,
+			array('convert_id, publish, location_id, category_id, convert_parent, convert_title, convert_desc, convert_cat_id, convert_publish_year, convert_multiple, convert_numbers, convert_pages, convert_copies, convert_code, creation_date, creation_id, modified_date, modified_id,
 				convert_total, convert_code_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -136,6 +138,7 @@ class ArchiveConverts extends CActiveRecord
 			'convert_numbers' => Yii::t('attribute', 'Numbers'),
 			'convert_pages' => Yii::t('attribute', 'Pages'),
 			'convert_copies' => Yii::t('attribute', 'Copies'),
+			'convert_code' => Yii::t('attribute', 'Code'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
@@ -209,6 +212,7 @@ class ArchiveConverts extends CActiveRecord
 		$criteria->compare('t.convert_numbers',strtolower($this->convert_numbers),true);
 		$criteria->compare('t.convert_pages',$this->convert_pages);
 		$criteria->compare('t.convert_copies',$this->convert_copies);
+		$criteria->compare('t.convert_code',$this->convert_code,true);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
 		if(isset($_GET['creation']))
@@ -243,17 +247,58 @@ class ArchiveConverts extends CActiveRecord
 
 		if(!isset($_GET['ArchiveConverts_sort']))
 			$criteria->order = 't.convert_id DESC';
-		
-		$action = strtolower(Yii::app()->controller->action->id);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 			'pagination'=>array(
-				'pageSize'=>$action == 'manage' ? 30 : 10,
+				'pageSize'=>30,
 			),
 		));
 	}
 
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function frontSearch()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+
+		if(isset($_GET['location']))
+			$criteria->compare('t.location_id',$_GET['location']);
+		else
+			$criteria->compare('t.location_id',$this->location_id);
+		if(isset($_GET['category']))
+			$criteria->compare('t.category_id',$_GET['category']);
+		else
+			$criteria->compare('t.category_id',$this->category_id);		
+		if(!Yii::app()->request->isAjaxRequest && isset($_GET['title']))
+			$criteria->compare('t.convert_title',strtolower($_GET['title']),true);
+		else
+			$criteria->compare('t.convert_title',strtolower($this->convert_title),true);
+		$criteria->compare('t.convert_desc',strtolower($this->convert_desc),true);
+		$criteria->compare('t.convert_publish_year',strtolower($this->convert_publish_year),true);
+
+		if(!isset($_GET['ArchiveConverts_sort']))
+			$criteria->order = 't.convert_id DESC';
+
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+			'pagination'=>array(
+				'pageSize'=>10,
+			),
+		));
+	}
 
 	/**
 	 * Get column for CGrid View
@@ -285,6 +330,7 @@ class ArchiveConverts extends CActiveRecord
 			$this->defaultColumns[] = 'convert_numbers';
 			$this->defaultColumns[] = 'convert_pages';
 			$this->defaultColumns[] = 'convert_copies';
+			$this->defaultColumns[] = 'convert_code';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
 			$this->defaultColumns[] = 'modified_date';
@@ -312,8 +358,11 @@ class ArchiveConverts extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = array(
-				'header' => 'convert_code_search',
-				'value' => '$data->view->convert_code',
+				'name' => 'convert_code',
+				'value' => 'strtoupper($data->convert_code)',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
 			);
 			$this->defaultColumns[] = 'convert_title';
 			$this->defaultColumns[] = array(
@@ -330,7 +379,7 @@ class ArchiveConverts extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'convert_cat_id',
-				'value' => 'ArchiveSettings::getInfo(1, "auto_numbering") == 1 ? 0 : ($data->convert_parent != 0 ? $data->view->parent_convert_cat_id : $data->convert_cat_id)',
+				'value' => 'ArchiveSettings::getInfo(1, "auto_numbering") == 1 ? 0 : $data->convert_cat_id',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -342,6 +391,29 @@ class ArchiveConverts extends CActiveRecord
 					'class' => 'center',
 				),
 			);
+			/*
+			$this->defaultColumns[] = array(
+				'name' => 'convert_total',
+				'value' => '$data->convert_total',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'convert_pages',
+				'value' => '$data->convert_pages',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'convert_copies',
+				'value' => '$data->convert_copies',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			*/
 			/*
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
@@ -412,7 +484,7 @@ class ArchiveConverts extends CActiveRecord
 	/**
 	 * get Item Archive
 	 */
-	public static function getItemArchive($data, $type=0)
+	public static function getItemArchive($data, $type=0, $convert='item')
 	{
 		$convert_number = unserialize($data);
 		if(!empty($convert_number)) {
@@ -423,9 +495,13 @@ class ArchiveConverts extends CActiveRecord
 			} else {
 				$return = 0;
 				foreach($convert_number as $key => $val) {
-					$item = (trim($val['finish'])-trim($val['start']));
-					$data_plus = $item == 0 ? $item : $item+1;
-					$return = $return + $data_plus;
+					if($convert == 'item') {
+						$item = (trim($val['finish'])-trim($val['start']));
+						$data_plus = $item == 0 ? $item : $item+1;
+						$return = $return + $data_plus;
+					} else {
+						$return = $return + (trim($val['pages']));
+					}
 				}				
 			}
 			
@@ -481,6 +557,10 @@ class ArchiveConverts extends CActiveRecord
 	
 	protected function afterFind() 
 	{
+		if($this->convert_multiple == 1)
+			$this->convert_pages = self::getItemArchive($this->convert_numbers, 1, 'pages');
+		if($this->convert_parent != 0)
+			$this->convert_cat_id = self::model()->findByPk($this->convert_parent)->convert_cat_id;
 		$this->convert_total = self::getItemArchive($this->convert_numbers, $this->convert_multiple);
 		
 		parent::afterFind();		
@@ -508,14 +588,20 @@ class ArchiveConverts extends CActiveRecord
 	 * before save attributes
 	 */
 	protected function beforeSave() {
+		$controller = strtolower(Yii::app()->controller->id);
 		if(parent::beforeSave()) {			
-			if($this->convert_parent != 0)
-				$this->convert_cat_id = 0;
+			$parent_convert_cat_id = $this->convert_parent != 0 ? ArchiveConverts::model()->findByPk($this->convert_parent)->convert_cat_id : 0;
+			$this->convert_code = ViewArchiveConverts::getCodeArchive($this->location->location_code, $this->category->category_code, $this->convert_cat_id, $parent_convert_cat_id);
 			
-			if($this->convert_multiple == 0)
-				$this->convert_numbers = serialize($this->convert_number_single);
-			else
-				$this->convert_numbers = serialize($this->convert_number_multiple);
+			if(in_array($controller, array('o/convert'))) {
+				if($this->convert_parent != 0)
+					$this->convert_cat_id = 0;
+				
+				if($this->convert_multiple == 0)
+					$this->convert_numbers = serialize($this->convert_number_single);
+				else
+					$this->convert_numbers = serialize($this->convert_number_multiple);
+			}
 		}
 		return true;
 	}

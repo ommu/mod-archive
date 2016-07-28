@@ -9,6 +9,7 @@
  *
  * TOC :
  *	Index
+ *	Suggest
  *	Manage
  *	Import
  *	Add
@@ -81,7 +82,7 @@ class ConvertController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array(),
+				'actions'=>array('suggest'),
 				'users'=>array('@'),
 				'expression'=>'isset(Yii::app()->user->level)',
 				//'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level != 1)',
@@ -107,6 +108,30 @@ class ConvertController extends Controller
 	public function actionIndex() 
 	{
 		$this->redirect(array('manage'));
+	}
+
+	/**
+	 * Lists all models.
+	 */
+	public function actionSuggest() 
+	{
+		if(isset($_GET['term'])) {
+			$criteria = new CDbCriteria;
+			$criteria->select = 'convert_id, convert_code';
+			$criteria->compare('t.convert_parent',0);
+			$criteria->compare('t.convert_code',strtolower($_GET['term']), true);
+			$criteria->order = 't.convert_id ASC';
+			$model = ArchiveConverts::model()->findAll($criteria);
+
+			if($model) {
+				foreach($model as $items) {
+					$result[] = array('id' => $items->convert_id, 'value' => strtoupper($items->convert_code));
+				}
+			}
+		}
+		
+		echo CJSON::encode($result);
+		Yii::app()->end();
 	}
 
 	/**

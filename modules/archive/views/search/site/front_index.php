@@ -5,7 +5,7 @@
  * @var $model Archives
  * version: 0.0.1
  *
- * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
+ * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @copyright Copyright (c) 2016 Ommu Platform (ommu.co)
  * @created date 28 June 2016, 23:54 WIB
  * @link http://company.ommu.co
@@ -53,7 +53,7 @@
 <?php //begin.Grid Item ?>
 <?php $this->widget('application.components.system.OGridView', array(
 	'id'=>'archives-grid',
-	'dataProvider'=>$model->search(),
+	'dataProvider'=>$model->frontSearch(),
 	'filter'=>$model,
 	'pager' => array(
 		'header' => '',

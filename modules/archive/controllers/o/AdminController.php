@@ -9,6 +9,7 @@
  *
  * TOC :
  *	Index
+ *	Suggest
  *	Manage
  *	Import
  *	Add
@@ -81,7 +82,7 @@ class AdminController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array(),
+				'actions'=>array('suggest'),
 				'users'=>array('@'),
 				'expression'=>'isset(Yii::app()->user->level)',
 				//'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level != 1)',
@@ -107,6 +108,29 @@ class AdminController extends Controller
 	public function actionIndex() 
 	{
 		$this->redirect(array('manage'));
+	}
+
+	/**
+	 * Lists all models.
+	 */
+	public function actionSuggest() 
+	{
+		if(isset($_GET['term'])) {
+			$criteria = new CDbCriteria;
+			$criteria->select = 'archive_id, archive_code';
+			$criteria->compare('t.archive_code',strtolower($_GET['term']), true);
+			$criteria->order = 'archive_id ASC';
+			$model = Archives::model()->findAll($criteria);
+
+			if($model) {
+				foreach($model as $items) {
+					$result[] = array('id' => $items->archive_id, 'value' => strtoupper($items->archive_code));
+				}
+			}
+		}
+		
+		echo CJSON::encode($result);
+		Yii::app()->end();
 	}
 
 	/**

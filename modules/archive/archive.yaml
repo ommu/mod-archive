@@ -91,6 +91,11 @@ content_menu	:
 		urlRules: {archive, o/convert, view, siteType: 0,1, userLevel: 1,2}
 		urlPath: {url: edit, attr: id=$_GET*id, icon: -}
 		
+# controller o/convertmedia
+	- urlTitle: Add Archive Convert 
+		urlRules: {archive, o/convertmedia, manage, siteType: 0,1, userLevel: 1,2}
+		urlPath: {url: add, attr: -, icon: -}		
+		
 # controller o/location
 	- urlTitle: Add Location
 		urlRules: {archive, o/location, manage, siteType: 0,1, userLevel: 1,2}

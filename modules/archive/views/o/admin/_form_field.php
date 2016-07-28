@@ -19,7 +19,8 @@
 
 <div class="field">
 	<?php echo $form->textField($model,"archive_number_multiple[$key][id]", array('placeholder'=>'Detail Archive', 'class'=>'span-4')); ?>
-	<?php echo $form->textField($model,"archive_number_multiple[$key][start]", array('placeholder'=>'Start', 'class'=>'span-3')); ?>
-	<?php echo $form->textField($model,"archive_number_multiple[$key][finish]", array('placeholder'=>'Finish', 'class'=>'span-3')); ?>
+	<?php echo $form->textField($model,"archive_number_multiple[$key][start]", array('placeholder'=>'Start', 'class'=>'span-2')); ?>
+	<?php echo $form->textField($model,"archive_number_multiple[$key][finish]", array('placeholder'=>'Finish', 'class'=>'span-2')); ?>
+	<?php echo $form->textField($model,"archive_number_multiple[$key][pages]", array('placeholder'=>'Pages', 'class'=>'span-2')); ?>
 	<a class="drop" href="javascript:void(0);" title="<?php echo Yii::t('phrase', 'Drop');?>"><?php echo Yii::t('phrase', 'Drop');?></a>
 </div>

@@ -124,7 +124,7 @@ EOP;
 	</div>
 
 	<?php if($setting->auto_numbering == 0) {?>
-	<div class="clearfix">
+	<div class="clearfix <?php echo ($model->convert_parent != 0) ? 'hide' : ''?>">
 		<?php echo $form->labelEx($model,'convert_cat_id'); ?>
 		<div class="desc">
 			<?php echo $form->textField($model,'convert_cat_id', array('class'=>'span-3')); ?>
@@ -164,7 +164,7 @@ EOP;
 		</div>
 	</div>
 
-	<div class="clearfix publish">
+	<div class="clearfix publish <?php echo ($model->convert_parent != 0) ? 'hide' : ''?>">
 		<?php echo $form->labelEx($model,'convert_multiple'); ?>
 		<div class="desc">
 			<?php echo $form->checkBox($model,'convert_multiple'); ?>
@@ -215,7 +215,7 @@ EOP;
 		</div>
 	</div>
 
-	<div class="clearfix">
+	<div class="clearfix <?php echo $model->convert_multiple == 0 ? '' :'hide';?>" id="single">
 		<?php echo $form->labelEx($model,'convert_pages'); ?>
 		<div class="desc">
 			<?php echo $form->textField($model,'convert_pages',array('maxlength'=>11, 'class'=>'span-3')); ?>
@@ -223,7 +223,7 @@ EOP;
 		</div>
 	</div>
 
-	<div class="clearfix">
+	<div class="clearfix <?php echo ($model->convert_parent != 0) ? 'hide' : ''?>">
 		<?php echo $form->labelEx($model,'convert_copies'); ?>
 		<div class="desc">
 			<?php echo $form->textField($model,'convert_copies',array('maxlength'=>11, 'class'=>'span-3')); ?>

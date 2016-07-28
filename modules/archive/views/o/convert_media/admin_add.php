@@ -20,6 +20,8 @@
 	);
 ?>
 
-<div class="form">
-	<?php echo $this->renderPartial('/o/convert_media/_form', array('model'=>$model)); ?>
-</div>
+<?php echo $this->renderPartial('/o/convert_media/_form', array(
+	'model'=>$model,
+	'archive'=>$archive,
+	'convert'=>$convert,
+)); ?>

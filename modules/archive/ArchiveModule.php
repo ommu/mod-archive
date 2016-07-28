@@ -37,6 +37,7 @@ class ArchiveModule extends CWebModule
 				'blog',
 				'redirect',
 				'site',
+				'sync',
 				'search/convert',
 				'search/site',
 			);

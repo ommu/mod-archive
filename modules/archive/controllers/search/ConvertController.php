@@ -15,7 +15,7 @@
  *	LoadModel
  *	performAjaxValidation
  *
- * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
+ * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @copyright Copyright (c) 2016 Ommu Platform (ommu.co)
  * @created date 28 June 2016, 23:54 WIB
  * @link http://company.ommu.co
@@ -91,18 +91,18 @@ class ConvertController extends Controller
 			'select' => 'meta_description, meta_keyword',
 		));
 		
-		$model=new ArchiveConverts('search');
+		$model=new ArchiveConverts('frontSearch');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['ArchiveConverts'])) {
 			$model->attributes=$_GET['ArchiveConverts'];
 		}
 		
-		$this->pageTitle = Yii::t('phrase', 'Archive Converts Manage');
+		$this->pageTitleShow = true;		
+		$this->pageTitle = Yii::t('phrase', 'Alih Media, Bahasa dan Tulisan');
 		$this->pageDescription = $setting->meta_description;
 		$this->pageMeta = $setting->meta_keyword;
 		$this->render('front_index',array(
 			'model'=>$model,
-			'columns' => $columns,
 		));
 	}
 

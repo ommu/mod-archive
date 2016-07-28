@@ -9,13 +9,15 @@
  *
  * TOC :
  *	Index
+ *	View
+ *	Service
  *	Standard
  *	Terminology
  *
  *	LoadModel
  *	performAjaxValidation
  *
- * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
+ * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @copyright Copyright (c) 2016 Ommu Platform (ommu.co)
  * @created date 28 June 2016, 23:54 WIB
  * @link http://company.ommu.co
@@ -63,7 +65,7 @@ class BlogController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','standard','terminology'),
+				'actions'=>array('index','view','service','standard','terminology'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -95,7 +97,7 @@ class BlogController extends Controller
 		$server = Utility::getConnected(Yii::app()->params['server_options']['bpad']);
 		if($server != 'neither-connected') {
 			if(!isset($_GET['url'])) {
-				if(in_array($server, array('http://103.255.15.100','http://localhost','http://127.0.0.1','http://192.168.30.100')))
+				if(in_array($server, array('http://103.255.15.100','http://192.168.30.100','http://localhost','http://127.0.0.1')))
 					$server = $server.'/bpadportal';			
 				$url = $server.preg_replace('('.Yii::app()->request->baseUrl.')', '', Yii::app()->createUrl('article/api/site/list'));
 				
@@ -131,6 +133,88 @@ class BlogController extends Controller
 	/**
 	 * Lists all models.
 	 */
+	public function actionView($id) 
+	{
+		$server = Utility::getConnected(Yii::app()->params['server_options']['bpad']);
+		if($server != 'neither-connected') {
+			if(!isset($_GET['url'])) {
+				if(in_array($server, array('http://103.255.15.100','http://192.168.30.100','http://localhost','http://127.0.0.1')))
+					$server = $server.'/bpadportal';			
+				$url = $server.preg_replace('('.Yii::app()->request->baseUrl.')', '', Yii::app()->createUrl('article/api/site/detail'));
+				
+			} else
+				$url = urldecode($_GET['url']);
+			
+			$item = array(
+				'id' => $id,
+			);
+			$items = http_build_query($item);
+		
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			//curl_setopt($ch,CURLOPT_HEADER, true);
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $items);
+			$output=curl_exec($ch);	
+
+			$output = json_decode($output);
+		}
+		
+		$this->pageTitleShow = true;	
+		$this->pageTitle = ucfirst(strtolower($output->title));
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('front_service',array(
+			'model'=>$output === false ? false : $output,
+		));
+	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public function actionService() 
+	{
+		$id = '1099';
+			
+		$server = Utility::getConnected(Yii::app()->params['server_options']['bpad']);
+		if($server != 'neither-connected') {
+			if(!isset($_GET['url'])) {
+				if(in_array($server, array('http://103.255.15.100','http://192.168.30.100','http://localhost','http://127.0.0.1')))
+					$server = $server.'/bpadportal';			
+				$url = $server.preg_replace('('.Yii::app()->request->baseUrl.')', '', Yii::app()->createUrl('article/api/site/detail'));
+				
+			} else
+				$url = urldecode($_GET['url']);
+			
+			$item = array(
+				'id' => $id,
+			);
+			$items = http_build_query($item);
+		
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			//curl_setopt($ch,CURLOPT_HEADER, true);
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $items);
+			$output=curl_exec($ch);	
+
+			$output = json_decode($output);
+		}
+		
+		$this->pageTitleShow = true;	
+		$this->pageTitle = ucfirst(strtolower($output->title));
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('front_service',array(
+			'model'=>$output === false ? false : $output,
+		));
+	}
+	
+	/**
+	 * Lists all models.
+	 */
 	public function actionStandard() 
 	{
 		$category = '15';
@@ -141,7 +225,7 @@ class BlogController extends Controller
 		$server = Utility::getConnected(Yii::app()->params['server_options']['bpad']);
 		if($server != 'neither-connected') {
 			if(!isset($_GET['url'])) {
-				if(in_array($server, array('http://103.255.15.100','http://localhost','http://127.0.0.1','http://192.168.30.100')))
+				if(in_array($server, array('http://103.255.15.100','http://192.168.30.100','http://localhost','http://127.0.0.1')))
 					$server = $server.'/bpadportal';			
 				$url = $server.preg_replace('('.Yii::app()->request->baseUrl.')', '', Yii::app()->createUrl('article/api/site/list'));
 				
@@ -187,7 +271,7 @@ class BlogController extends Controller
 		$server = Utility::getConnected(Yii::app()->params['server_options']['bpad']);
 		if($server != 'neither-connected') {
 			if(!isset($_GET['url'])) {
-				if(in_array($server, array('http://103.255.15.100','http://localhost','http://127.0.0.1','http://192.168.30.100')))
+				if(in_array($server, array('http://103.255.15.100','http://192.168.30.100','http://localhost','http://127.0.0.1')))
 					$server = $server.'/bpadportal';			
 				$url = $server.preg_replace('('.Yii::app()->request->baseUrl.')', '', Yii::app()->createUrl('article/api/site/list'));
 				
