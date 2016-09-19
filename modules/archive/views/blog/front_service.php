@@ -1,7 +1,7 @@
 <div class="boxed clearfix">
 	<?php
 		$server = Utility::getConnected(Yii::app()->params['server_options']['bpad']);
-		if(in_array($server, array('http://103.255.15.100','http://192.168.30.100','http://localhost','http://127.0.0.1')))
+		if(in_array($server, Yii::app()->params['server_options']['localhost']))
 			$server = $server.'/bpadportal';
 		
 		$media_file = $model->media_file;

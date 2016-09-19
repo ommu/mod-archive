@@ -97,7 +97,7 @@ class BlogController extends Controller
 		$server = Utility::getConnected(Yii::app()->params['server_options']['bpad']);
 		if($server != 'neither-connected') {
 			if(!isset($_GET['url'])) {
-				if(in_array($server, array('http://103.255.15.100','http://192.168.30.100','http://localhost','http://127.0.0.1')))
+				if(in_array($server, Yii::app()->params['server_options']['localhost']))
 					$server = $server.'/bpadportal';			
 				$url = $server.preg_replace('('.Yii::app()->request->baseUrl.')', '', Yii::app()->createUrl('article/api/site/list'));
 				
@@ -138,7 +138,7 @@ class BlogController extends Controller
 		$server = Utility::getConnected(Yii::app()->params['server_options']['bpad']);
 		if($server != 'neither-connected') {
 			if(!isset($_GET['url'])) {
-				if(in_array($server, array('http://103.255.15.100','http://192.168.30.100','http://localhost','http://127.0.0.1')))
+				if(in_array($server, Yii::app()->params['server_options']['localhost']))
 					$server = $server.'/bpadportal';			
 				$url = $server.preg_replace('('.Yii::app()->request->baseUrl.')', '', Yii::app()->createUrl('article/api/site/detail'));
 				
@@ -180,7 +180,7 @@ class BlogController extends Controller
 		$server = Utility::getConnected(Yii::app()->params['server_options']['bpad']);
 		if($server != 'neither-connected') {
 			if(!isset($_GET['url'])) {
-				if(in_array($server, array('http://103.255.15.100','http://192.168.30.100','http://localhost','http://127.0.0.1')))
+				if(in_array($server, Yii::app()->params['server_options']['localhost']))
 					$server = $server.'/bpadportal';			
 				$url = $server.preg_replace('('.Yii::app()->request->baseUrl.')', '', Yii::app()->createUrl('article/api/site/detail'));
 				
@@ -225,7 +225,7 @@ class BlogController extends Controller
 		$server = Utility::getConnected(Yii::app()->params['server_options']['bpad']);
 		if($server != 'neither-connected') {
 			if(!isset($_GET['url'])) {
-				if(in_array($server, array('http://103.255.15.100','http://192.168.30.100','http://localhost','http://127.0.0.1')))
+				if(in_array($server, Yii::app()->params['server_options']['localhost']))
 					$server = $server.'/bpadportal';			
 				$url = $server.preg_replace('('.Yii::app()->request->baseUrl.')', '', Yii::app()->createUrl('article/api/site/list'));
 				
@@ -271,7 +271,7 @@ class BlogController extends Controller
 		$server = Utility::getConnected(Yii::app()->params['server_options']['bpad']);
 		if($server != 'neither-connected') {
 			if(!isset($_GET['url'])) {
-				if(in_array($server, array('http://103.255.15.100','http://192.168.30.100','http://localhost','http://127.0.0.1')))
+				if(in_array($server, Yii::app()->params['server_options']['localhost']))
 					$server = $server.'/bpadportal';			
 				$url = $server.preg_replace('('.Yii::app()->request->baseUrl.')', '', Yii::app()->createUrl('article/api/site/list'));
 				
