@@ -173,12 +173,11 @@ class AdminController extends Controller
 		ob_start();
 		
 		$path = 'public/archive/import';
-
 		// Generate path directory
 		if(!file_exists($path)) {
 			@mkdir($path, 0755, true);
 
-			// Add File in Article Folder (index.php)
+			// Add file in directory (index.php)
 			$newFile = $path.'/index.php';
 			$FileHandle = fopen($newFile, 'w');
 		} else
