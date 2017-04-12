@@ -38,9 +38,13 @@ class SiteController extends Controller
 	 */
 	public function init() 
 	{
-		$arrThemes = Utility::getCurrentTemplate('public');
-		Yii::app()->theme = $arrThemes['folder'];
-		$this->layout = $arrThemes['layout'];
+		$permission = ArchiveSettings::getInfo('permission');
+		if($permission == 1 || ($permission == 0 && !Yii::app()->user->isGuest)) {
+			$arrThemes = Utility::getCurrentTemplate('public');
+			Yii::app()->theme = $arrThemes['folder'];
+			$this->layout = $arrThemes['layout'];
+		} else
+			$this->redirect(Yii::app()->createUrl('site/login'));
 	}
 
 	/**

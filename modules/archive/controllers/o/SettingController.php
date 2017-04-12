@@ -136,9 +136,7 @@ class SettingController extends Controller
 				if(isset($_GET['enablesave']) && $_GET['enablesave'] == 1) {
 					if($model->save()) {
 						echo CJSON::encode(array(
-							'type' => 5,
-							'get' => Yii::app()->controller->createUrl('manage'),
-							'id' => 'partial-archive-settings',
+							'type' => 0,
 							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveSettings success updated.').'</strong></div>',
 						));
 					} else {
