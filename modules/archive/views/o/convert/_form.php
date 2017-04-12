@@ -77,16 +77,52 @@ EOP;
 
 <fieldset>
 	<div class="clearfix">
-		<?php echo $form->labelEx($model,'convert_parent'); ?>
+		<?php echo $form->labelEx($model,'convert_parent_title_i'); ?>
 		<div class="desc">
-			<?php if($parent == false) {
-				echo $form->textField($model,'convert_parent', array('class'=>'span-6'));
+			<?php if(($model->isNewRecord && $parent == false) || !$model->isNewRecord) {
+				if(!$model->getErrors()) {
+					if($model->isNewRecord)
+						$model->convert_parent = 0;
+					if(!$model->isNewRecord)
+						$model->convert_parent_title_i = $parent->convert_title;					
+				}
+				//echo $form->textField($model,'convert_parent_title_i', array('class'=>'span-6'));
+				$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+					'model' => $model,
+					'attribute' => 'convert_parent_title_i',
+					'source' => Yii::app()->controller->createUrl('suggest'),
+					'options' => array(
+						//'delay '=> 50,
+						'minLength' => 1,
+						'showAnim' => 'fold',
+						'select' => "js:function(event, ui) {
+							$('form #ArchiveConverts_convert_parent_title_i').val(ui.item.value);
+							$('form #ArchiveConverts_convert_parent').val(ui.item.id);
+							$('form #ArchiveConverts_location_id').val(ui.item.location);
+							$('form #ArchiveConverts_category_id').val(ui.item.category);
+							$('form #ArchiveConverts_convert_publish_year').val(ui.item.year);
+							if(ui.item.multiple == 0)
+								$('form #ArchiveConverts_convert_pages').val(ui.item.page);
+							else {
+								$('form #ArchiveConverts_convert_multiple').prop('checked', true);
+								$('div#multiple').slideDown();
+								$('div#single').slideUp();
+							}
+							$('form #ArchiveConverts_convert_copies').val(ui.item.copy);
+						}"
+					),
+					'htmlOptions' => array(
+						'class'	=> 'span-6',
+					),
+				));
+				echo $form->hiddenField($model,'convert_parent');
 			} else {
-				$model->convert_parent = $parent->convert_id;
+				if($model->isNewRecord && !$model->getErrors())
+					$model->convert_parent = $parent->convert_id;
 				echo $form->hiddenField($model,'convert_parent');
 				echo '<strong>'.$parent->convert_title.' ('.$parent->view->convert_code.')</strong>';
 			}?>
-			<?php echo $form->error($model,'convert_parent'); ?>
+			<?php echo $form->error($model,'convert_parent_title_i'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
@@ -95,8 +131,10 @@ EOP;
 		<?php echo $form->labelEx($model,'location_id'); ?>
 		<div class="desc">
 			<?php 
-			if($parent != false)
-				$model->location_id = $parent->location_id;
+			if($parent != false) {
+				if($model->isNewRecord && !$model->getErrors())
+					$model->location_id = $parent->location_id;
+			}
 			$location = ArchiveLocation::getLocation(1);
 			if($location != null)
 				echo $form->dropDownList($model,'location_id', $location, array('prompt'=>Yii::t('phrase', 'Pilih salah satu')));
@@ -111,8 +149,10 @@ EOP;
 		<?php echo $form->labelEx($model,'category_id'); ?>
 		<div class="desc">
 			<?php 
-			if($parent != false)
-				$model->category_id = $parent->category_id;
+			if($parent != false) {
+				if($model->isNewRecord && !$model->getErrors())
+					$model->category_id = $parent->category_id;				
+			}
 			$category = ArchiveConvertCategory::getCategory(1);
 			if($category != null)
 				echo $form->dropDownList($model,'category_id', $category, array('prompt'=>Yii::t('phrase', 'Pilih salah satu')));
@@ -124,7 +164,7 @@ EOP;
 	</div>
 
 	<?php if($setting->auto_numbering == 0) {?>
-	<div class="clearfix <?php echo ($model->convert_parent != 0) ? 'hide' : ''?>">
+	<div class="clearfix">
 		<?php echo $form->labelEx($model,'convert_cat_id'); ?>
 		<div class="desc">
 			<?php echo $form->textField($model,'convert_cat_id', array('class'=>'span-3')); ?>
@@ -138,8 +178,10 @@ EOP;
 		<?php echo $form->labelEx($model,'convert_publish_year'); ?>
 		<div class="desc">
 			<?php 
-			if($parent != false)
-				$model->convert_publish_year = $parent->convert_publish_year;
+			if($parent != false) {
+				if($model->isNewRecord && !$model->getErrors())
+					$model->convert_publish_year = $parent->convert_publish_year;
+			}
 			echo $form->textField($model,'convert_publish_year',array('maxlength'=>4, 'class'=>'span-3')); ?>
 			<?php echo $form->error($model,'convert_publish_year'); ?>
 			<div class="small-px silent mt-5">example: 2015, 2016</div>
@@ -164,7 +206,7 @@ EOP;
 		</div>
 	</div>
 
-	<div class="clearfix publish <?php echo ($model->convert_parent != 0) ? 'hide' : ''?>">
+	<div class="clearfix publish">
 		<?php echo $form->labelEx($model,'convert_multiple'); ?>
 		<div class="desc">
 			<?php echo $form->checkBox($model,'convert_multiple'); ?>
@@ -226,7 +268,12 @@ EOP;
 	<div class="clearfix <?php echo ($model->convert_parent != 0) ? 'hide' : ''?>">
 		<?php echo $form->labelEx($model,'convert_copies'); ?>
 		<div class="desc">
-			<?php echo $form->textField($model,'convert_copies',array('maxlength'=>11, 'class'=>'span-3')); ?>
+			<?php 
+			if($parent != false) {
+				if($model->isNewRecord && !$model->getErrors())
+					$model->convert_copies = $parent->convert_copies;				
+			}
+			echo $form->textField($model,'convert_copies',array('maxlength'=>11, 'class'=>'span-3')); ?>
 			<?php echo $form->error($model,'convert_copies'); ?>
 		</div>
 	</div>

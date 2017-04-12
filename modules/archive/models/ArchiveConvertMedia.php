@@ -110,7 +110,7 @@ class ArchiveConvertMedia extends CActiveRecord
 			'publish' => Yii::t('attribute', 'Publish'),
 			'archive_id' => Yii::t('attribute', 'Archive'),
 			'convert_id' => Yii::t('attribute', 'Convert'),
-			'media_desc' => Yii::t('attribute', 'Media Desc'),
+			'media_desc' => Yii::t('attribute', 'Description'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'archive_code' => Yii::t('attribute', 'Archive Code'),

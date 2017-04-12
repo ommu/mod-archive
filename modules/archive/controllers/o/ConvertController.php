@@ -111,25 +111,39 @@ class ConvertController extends Controller
 	/**
 	 * Lists all models.
 	 */
-	public function actionSuggest() 
+	public function actionSuggest($limit=10) 
 	{
-		if(isset($_GET['term'])) {
-			$criteria = new CDbCriteria;
-			$criteria->select = 'convert_id, convert_code';
-			$criteria->compare('t.convert_parent',0);
-			$criteria->compare('t.convert_code',strtolower($_GET['term']), true);
-			$criteria->order = 't.convert_id ASC';
-			$model = ArchiveConverts::model()->findAll($criteria);
+		if(Yii::app()->request->isAjaxRequest) {
+			if(isset($_GET['term'])) {
+				$criteria = new CDbCriteria;
+				$criteria->select = 'convert_id, location_id, category_id, convert_title, convert_publish_year, convert_multiple, convert_pages, convert_copies, convert_code';
+				//$criteria->compare('convert_parent',0);
+				$criteria->compare('convert_title', strtolower($_GET['term']), true);
+				$criteria->compare('convert_code', strtolower($_GET['term']), true, 'OR');
+				$criteria->order = 'convert_id ASC';
+				$criteria->limit = $limit;
+				$model = ArchiveConverts::model()->findAll($criteria);
 
-			if($model) {
-				foreach($model as $items) {
-					$result[] = array('id' => $items->convert_id, 'value' => strtoupper($items->convert_code));
+				if($model) {
+					foreach($model as $items) {
+						$result[] = array(
+							'id' => $items->convert_id, 
+							'value' => $items->convert_title.' ('.$items->convert_code.')',
+							'location' => $items->location_id, 
+							'category' => $items->category_id, 
+							'year' => $items->convert_publish_year, 
+							'multiple' => $items->convert_multiple, 
+							'page' => $items->convert_pages, 
+							'copy' => $items->convert_copies, 
+						);
+					}
 				}
-			}
-		}
-		
-		echo CJSON::encode($result);
-		Yii::app()->end();
+			}			
+			echo CJSON::encode($result);
+			Yii::app()->end();
+			
+		} else
+			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 	}
 
 	/**
@@ -299,7 +313,7 @@ class ConvertController extends Controller
 		$id = $_GET['parent'];
 		if(isset($id)) {
 			$parent = ArchiveConverts::model()->findByPk($id,array(
-				'select' => 'convert_id, location_id, category_id, convert_title, convert_publish_year',
+				'select' => 'convert_id, location_id, category_id, convert_title, convert_publish_year, convert_pages, convert_copies',
 			));
 		}
 		
@@ -348,11 +362,10 @@ class ConvertController extends Controller
 			'select' => 'auto_numbering',
 		));
 		
+		$model=$this->loadModel($id);		
 		$parent = ArchiveConverts::model()->findByPk($model->convert_parent,array(
-			'select' => 'convert_id, location_id, category_id, convert_title, convert_publish_year',
+			'select' => 'convert_id, location_id, category_id, convert_title, convert_publish_year, convert_pages, convert_copies',
 		));
-		
-		$model=$this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		$this->performAjaxValidation($model);

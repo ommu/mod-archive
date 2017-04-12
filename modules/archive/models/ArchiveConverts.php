@@ -49,6 +49,7 @@
 class ArchiveConverts extends CActiveRecord
 {
 	public $defaultColumns = array();
+	public $convert_parent_title_i;
 	public $convert_total_i;
 	public $back_field;
 	public $convert_number_single;
@@ -94,7 +95,7 @@ class ArchiveConverts extends CActiveRecord
 			array('convert_pages, convert_copies, creation_id, modified_id', 'length', 'max'=>11),
 			array('convert_code', 'length', 'max'=>32),
 			array('convert_parent, convert_desc, convert_numbers, convert_pages, convert_copies, convert_code,
-				convert_number_single, convert_number_multiple', 'safe'),
+				convert_parent_title_i, convert_number_single, convert_number_multiple', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('convert_id, publish, location_id, category_id, convert_parent, convert_title, convert_desc, convert_cat_id, convert_publish_year, convert_multiple, convert_numbers, convert_pages, convert_copies, convert_code, creation_date, creation_id, modified_date, modified_id,
@@ -132,7 +133,7 @@ class ArchiveConverts extends CActiveRecord
 			'convert_parent' => Yii::t('attribute', 'Parent'),
 			'convert_title' => Yii::t('attribute', 'Title'),
 			'convert_desc' => Yii::t('attribute', 'Description'),
-			'convert_cat_id' => Yii::t('attribute', 'Category ID'),
+			'convert_cat_id' => Yii::t('attribute', 'ID (Number)'),
 			'convert_publish_year' => Yii::t('attribute', 'Publish Year'),
 			'convert_multiple' => Yii::t('attribute', 'Is Multiple Convert'),
 			'convert_numbers' => Yii::t('attribute', 'Numbers'),
@@ -143,6 +144,7 @@ class ArchiveConverts extends CActiveRecord
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
+			'convert_parent_title_i' => Yii::t('attribute', 'Parent Title'),
 			'convert_total_i' => Yii::t('attribute', 'Total'),
 			'back_field' => Yii::t('attribute', 'Back to Manage'),
 			'convert_code_search' => Yii::t('attribute', 'Code'),
@@ -203,7 +205,7 @@ class ArchiveConverts extends CActiveRecord
 			$criteria->compare('t.category_id',$_GET['category']);
 		else
 			$criteria->compare('t.category_id',$this->category_id);
-		$criteria->compare('t.convert_parent',$this->convert_parent,true);
+		$criteria->compare('t.convert_parent',$this->convert_parent);
 		$criteria->compare('t.convert_title',strtolower($this->convert_title),true);
 		$criteria->compare('t.convert_desc',strtolower($this->convert_desc),true);
 		$criteria->compare('t.convert_cat_id',$this->convert_cat_id);
@@ -559,8 +561,8 @@ class ArchiveConverts extends CActiveRecord
 	{
 		if($this->convert_multiple == 1)
 			$this->convert_pages = self::getItemArchive($this->convert_numbers, 1, 'pages');
-		if($this->convert_parent != '')
-			$this->convert_cat_id = self::model()->findByPk($this->convert_parent)->convert_cat_id;
+		//if($this->convert_parent != 0)
+		//	$this->convert_cat_id = self::model()->findByPk($this->convert_parent)->convert_cat_id;
 		$this->convert_total_i = self::getItemArchive($this->convert_numbers, $this->convert_multiple);
 		
 		parent::afterFind();		
@@ -590,12 +592,13 @@ class ArchiveConverts extends CActiveRecord
 	protected function beforeSave() 
 	{
 		$controller = strtolower(Yii::app()->controller->id);
-		if(parent::beforeSave()) {			
-			$parent_convert_cat_id = $this->convert_parent != '' ? ArchiveConverts::model()->findByPk($this->convert_parent)->convert_cat_id : '';
+		
+		if(parent::beforeSave()) {
+			$parent_convert_cat_id = $this->convert_parent != 0 ? ArchiveConverts::model()->findByPk($this->convert_parent)->convert_cat_id : '';
 			$this->convert_code = ViewArchiveConverts::getCodeArchive($this->location->location_code, $this->category->category_code, $this->convert_cat_id, $parent_convert_cat_id);
 			
 			if(in_array($controller, array('o/convert'))) {
-				if($this->convert_parent != '')
+				if($this->convert_parent != 0)
 					$this->convert_cat_id = 0;
 				
 				if($this->convert_multiple == 0)

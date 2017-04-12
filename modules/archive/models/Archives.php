@@ -98,7 +98,7 @@ class Archives extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('archive_id, publish, location_id, type_id, story_id, archive_title, archive_desc, archive_type_id, archive_publish_year, archive_multiple, archive_numbers, archive_pages, archive_copies, archive_code, creation_date, creation_id, modified_date, modified_id,
-				archive_total, archive_convert_search, archive_code_search, creation_search, modified_search', 'safe', 'on'=>'search'),
+				archive_total_i, archive_convert_search, archive_code_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -132,7 +132,7 @@ class Archives extends CActiveRecord
 			'story_id' => Yii::t('attribute', 'Story'),
 			'archive_title' => Yii::t('attribute', 'Title'),
 			'archive_desc' => Yii::t('attribute', 'Description'),
-			'archive_type_id' => Yii::t('attribute', 'Type ID'),
+			'archive_type_id' => Yii::t('attribute', 'ID (Number)'),
 			'archive_publish_year' => Yii::t('attribute', 'Publish Year'),
 			'archive_multiple' => Yii::t('attribute', 'Is Multiple Archive'),
 			'archive_numbers' => Yii::t('attribute', 'Numbers'),
@@ -404,6 +404,14 @@ class Archives extends CActiveRecord
 				),
 			);
 			$this->defaultColumns[] = array(
+				'name' => 'convert_search',
+				'value' => 'CHtml::link($data->view->converts, Yii::app()->controller->createUrl("o/convertmedia/manage",array("archive"=>$data->archive_id)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
 				'name' => 'archive_publish_year',
 				'value' => '$data->archive_publish_year',
 				'htmlOptions' => array(
@@ -435,7 +443,7 @@ class Archives extends CActiveRecord
 			*/
 			$this->defaultColumns[] = array(
 				'name' => 'convert_search',
-				'value' => 'CHtml::link($data->view->converts, Yii::app()->controller->createUrl("o/convertmedia/manage",array("archive"=>$data->archive_id)))."<br/>".CHtml::link(Yii::t("phrase", "Add Convert"), Yii::app()->controller->createUrl("o/convertmedia/add",array("archive"=>$data->archive_id)))',
+				'value' => 'CHtml::link(Yii::t("phrase", "Add Convert"), Yii::app()->controller->createUrl("o/convertmedia/add",array("archive"=>$data->archive_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
