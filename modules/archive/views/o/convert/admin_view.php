@@ -61,8 +61,8 @@
 			'type'=>'raw',
 		),
 		array(
-			'name'=>'convert_total',
-			'value'=>$model->convert_total,
+			'name'=>'convert_total_i',
+			'value'=>$model->convert_total_i,
 		),
 		array(
 			'name'=>'convert_pages',
@@ -78,7 +78,7 @@
 		),
 		array(
 			'name'=>'creation_id',
-			'value'=>$model->creation_id != 0 ? $model->creation_relation->displayname : '-',
+			'value'=>$model->creation_id != 0 ? $model->creation->displayname : '-',
 		),
 		array(
 			'name'=>'modified_date',
@@ -86,7 +86,7 @@
 		),
 		array(
 			'name'=>'modified_id',
-			'value'=>$model->modified_id != 0 ? $model->modified_relation->displayname : '-',
+			'value'=>$model->modified_id != 0 ? $model->modified->displayname : '-',
 		),
 		array(
 			'name'=>'publish',

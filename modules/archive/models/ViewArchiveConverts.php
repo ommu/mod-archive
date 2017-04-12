@@ -217,7 +217,7 @@ class ViewArchiveConverts extends CActiveRecord
 	 */
 	public static function getCodeArchive($location, $category, $id, $parent_id)
 	{
-		if(ArchiveSettings::getInfo(1, 'auto_numbering') == 1)
+		if(ArchiveSettings::getInfo('auto_numbering') == 1)
 			$id = 0;
 		else
 			$id = $id;

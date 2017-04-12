@@ -25,8 +25,7 @@
  * The followings are the available columns in table '_view_archive_story':
  * @property integer $story_id
  * @property string $archives
- * @property string $archive_publish
- * @property string $archive_unpublish
+ * @property string $archive_all
  */
 class ViewArchiveStory extends CActiveRecord
 {
@@ -68,10 +67,10 @@ class ViewArchiveStory extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('story_id', 'numerical', 'integerOnly'=>true),
-			array('archives, archive_publish, archive_unpublish', 'length', 'max'=>21),
+			array('archives, archive_all', 'length', 'max'=>21),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('story_id, archives, archive_publish, archive_unpublish', 'safe', 'on'=>'search'),
+			array('story_id, archives, archive_all', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -94,8 +93,7 @@ class ViewArchiveStory extends CActiveRecord
 		return array(
 			'story_id' => Yii::t('attribute', 'Story'),
 			'archives' => Yii::t('attribute', 'Archives'),
-			'archive_publish' => Yii::t('attribute', 'Archive Publish'),
-			'archive_unpublish' => Yii::t('attribute', 'Archive Unpublish'),
+			'archive_all' => Yii::t('attribute', 'Archive Publish'),
 		);
 		/*
 			'Story' => 'Story',
@@ -125,9 +123,8 @@ class ViewArchiveStory extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('t.story_id',$this->story_id);
-		$criteria->compare('t.archives',strtolower($this->archives),true);
-		$criteria->compare('t.archive_publish',strtolower($this->archive_publish),true);
-		$criteria->compare('t.archive_unpublish',strtolower($this->archive_unpublish),true);
+		$criteria->compare('t.archives',$this->archives);
+		$criteria->compare('t.archive_all',$this->archive_all);
 
 		if(!isset($_GET['ViewArchiveStory_sort']))
 			$criteria->order = 't.story_id DESC';
@@ -160,8 +157,7 @@ class ViewArchiveStory extends CActiveRecord
 		} else {
 			$this->defaultColumns[] = 'story_id';
 			$this->defaultColumns[] = 'archives';
-			$this->defaultColumns[] = 'archive_publish';
-			$this->defaultColumns[] = 'archive_unpublish';
+			$this->defaultColumns[] = 'archive_all';
 		}
 
 		return $this->defaultColumns;
@@ -178,8 +174,7 @@ class ViewArchiveStory extends CActiveRecord
 			);
 			//$this->defaultColumns[] = 'story_id';
 			$this->defaultColumns[] = 'archives';
-			$this->defaultColumns[] = 'archive_publish';
-			$this->defaultColumns[] = 'archive_unpublish';
+			$this->defaultColumns[] = 'archive_all';
 		}
 		parent::afterConstruct();
 	}

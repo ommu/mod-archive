@@ -29,8 +29,8 @@
 class ViewArchiveYear extends CActiveRecord
 {
 	public $defaultColumns = array();
-	public $archive_total;
-	public $archive_pages;
+	public $archive_total_i;
+	public $archive_page_i;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -73,7 +73,7 @@ class ViewArchiveYear extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('publish_year, archives,
-				archive_total, archive_pages', 'safe', 'on'=>'search'),
+				archive_total_i, archive_page_i', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -99,8 +99,8 @@ class ViewArchiveYear extends CActiveRecord
 		return array(
 			'publish_year' => Yii::t('attribute', 'Publish Year'),
 			'archives' => Yii::t('attribute', 'Archives'),
-			'archive_total' => Yii::t('attribute', 'Total'),
-			'archive_pages' => Yii::t('attribute', 'Archive Pages'),
+			'archive_total_i' => Yii::t('attribute', 'Total'),
+			'archive_page_i' => Yii::t('attribute', 'Archive Pages'),
 		);
 		/*
 			'Publish Year' => 'Publish Year',
@@ -129,8 +129,8 @@ class ViewArchiveYear extends CActiveRecord
 
 		$criteria->compare('t.publish_year',strtolower($this->publish_year),true);
 		$criteria->compare('t.archives',strtolower($this->archives),true);
-		$criteria->compare('t.archive_total',$this->archive_total, true);
-		$criteria->compare('t.archive_pages',$this->archive_pages, true);
+		$criteria->compare('t.archive_total_i',$this->archive_total_i, true);
+		$criteria->compare('t.archive_page_i',$this->archive_page_i, true);
 
 		if(!isset($_GET['ViewArchiveYear_sort']))
 			$criteria->order = 't.publish_year DESC';
@@ -180,12 +180,12 @@ class ViewArchiveYear extends CActiveRecord
 			$this->defaultColumns[] = 'publish_year';
 			$this->defaultColumns[] = 'archives';
 			$this->defaultColumns[] = array(
-				'header' => 'archive_total',
-				'value' => '$data->archive_total',
+				'header' => 'archive_total_i',
+				'value' => '$data->archive_total_i',
 			);
 			$this->defaultColumns[] = array(
-				'header' => 'archive_pages',
-				'value' => '$data->archive_pages',
+				'header' => 'archive_page_i',
+				'value' => '$data->archive_page_i',
 			);
 		}
 		parent::afterConstruct();
@@ -209,8 +209,8 @@ class ViewArchiveYear extends CActiveRecord
 	}
 	
 	protected function afterFind() {
-		$this->archive_total = Archives::getTotalItemArchive($this->archives());
-		$this->archive_pages = Archives::getTotalItemArchive($this->archives(), 'page');
+		$this->archive_total_i = Archives::getTotalItemArchive($this->archives());
+		$this->archive_page_i = Archives::getTotalItemArchive($this->archives(), 'page');
 		
 		parent::afterFind();		
 	}

@@ -12,41 +12,45 @@ db_table_name	:
 db_sql_filename	: 
 
 plugin_menu		:
-	- urlTitle: Manage
+	- urlTitle: Senarai Arsip
 		urlRules: {siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: o/admin/manage, attr: -, icon: -}
 		
-	- urlTitle: Convert
+	- urlTitle: Alih Media, Bahasa dan Tulis
 		urlRules: {siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: o/convert/manage, attr: -, icon: -}
 		
-	- urlTitle: Statistics
+	- urlTitle: Data
 		urlRules: {siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: -, attr: -, icon: -}
 		submenu :
-			- urlTitle: Archive Years
+			- urlTitle: Categories
 				urlRules: {siteType: "0,1", userLevel: "1,2"}
-				urlPath: {url: statistic/year/manage, attr: -, icon: -}
-			- urlTitle: Convert Years
-				urlRules: {siteType: "0,1", userLevel: "1,2"}
-				urlPath: {url: statistic/convertyear/manage, attr: -, icon: -}
-		
-	- urlTitle: Settings
-		urlRules: {siteType: "0,1", userLevel: "1,2"}
-		urlPath: {url: o/setting/edit, attr: -, icon: -}
-		submenu :
+				urlPath: {url: o/category/manage, attr: -, icon: -}
 			- urlTitle: Locations
 				urlRules: {siteType: "0,1", userLevel: "1,2"}
 				urlPath: {url: o/location/manage, attr: -, icon: -}
 			- urlTitle: Storys
 				urlRules: {siteType: "0,1", userLevel: "1,2"}
 				urlPath: {url: o/story/manage, attr: -, icon: -}
-			- urlTitle: Type
+			- urlTitle: Types
 				urlRules: {siteType: "0,1", userLevel: "1,2"}
 				urlPath: {url: o/type/manage, attr: -, icon: -}
-			- urlTitle: Category
+		
+	- urlTitle: Settings
+		urlRules: {siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: o/setting/edit, attr: -, icon: -}
+		
+	- urlTitle: Statistics
+		urlRules: {siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: -, attr: -, icon: -}
+		submenu :
+			- urlTitle: Senarai Arsip
 				urlRules: {siteType: "0,1", userLevel: "1,2"}
-				urlPath: {url: o/category/manage, attr: -, icon: -}
+				urlPath: {url: statistic/year/manage, attr: -, icon: -}
+			- urlTitle: Alih Media, Bahasa dan Tulis
+				urlRules: {siteType: "0,1", userLevel: "1,2"}
+				urlPath: {url: statistic/convertyear/manage, attr: -, icon: -}
 
 content_menu	:
 # controller o/admin

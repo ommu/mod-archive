@@ -49,28 +49,28 @@
 				'value'=>$model->view->archives,
 			),
 			array(
-				'name'=>'archive_total',
-				'value'=>$model->archive_total,
+				'name'=>'archive_total_i',
+				'value'=>$model->archive_total_i,
 			),
 			array(
-				'name'=>'archive_pages',
-				'value'=>$model->archive_pages,
+				'name'=>'archive_page_i',
+				'value'=>$model->archive_page_i,
 			),
 			array(
 				'name'=>'convert_search',
 				'value'=>$model->view->converts,
 			),
 			array(
-				'name'=>'convert_total',
-				'value'=>$model->convert_total,
+				'name'=>'convert_total_i',
+				'value'=>$model->convert_total_i,
 			),
 			array(
-				'name'=>'convert_pages',
-				'value'=>$model->convert_pages,
+				'name'=>'convert_page_i',
+				'value'=>$model->convert_page_i,
 			),
 			array(
-				'name'=>'convert_copies',
-				'value'=>$model->convert_copies,
+				'name'=>'convert_copy_i',
+				'value'=>$model->convert_copy_i,
 			),
 			array(
 				'name'=>'creation_date',
@@ -78,7 +78,7 @@
 			),
 			array(
 				'name'=>'creation_id',
-				'value'=>$model->creation_id != 0 ? $model->creation_relation->displayname : '-',
+				'value'=>$model->creation_id != 0 ? $model->creation->displayname : '-',
 			),
 			array(
 				'name'=>'modified_date',
@@ -86,7 +86,7 @@
 			),
 			array(
 				'name'=>'modified_id',
-				'value'=>$model->modified_id != 0 ? $model->modified_relation->displayname : '-',
+				'value'=>$model->modified_id != 0 ? $model->modified->displayname : '-',
 			),
 			array(
 				'name'=>'publish',

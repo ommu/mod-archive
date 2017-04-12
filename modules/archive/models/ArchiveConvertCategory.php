@@ -36,9 +36,9 @@
 class ArchiveConvertCategory extends CActiveRecord
 {
 	public $defaultColumns = array();
-	public $convert_total;
-	public $convert_pages;
-	public $convert_copies;
+	public $convert_total_i;
+	public $convert_page_i;
+	public $convert_copy_i;
 	
 	// Variable Search
 	public $convert_search;
@@ -81,7 +81,7 @@ class ArchiveConvertCategory extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('category_id, publish, category_name, category_desc, category_code, creation_date, creation_id, modified_date, modified_id, 
-				convert_total, convert_pages, convert_copies, convert_search, creation_search, modified_search', 'safe', 'on'=>'search'),
+				convert_total_i, convert_page_i, convert_copy_i, convert_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -93,12 +93,12 @@ class ArchiveConvertCategory extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
-			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 			'view' => array(self::BELONGS_TO, 'ViewArchiveConvertCategory', 'category_id'),
-			'converts' => array(self::HAS_MANY, 'ArchiveConverts', 'category_id'),
-			'convert_publish' => array(self::HAS_MANY, 'ArchiveConverts', 'category_id', 'on'=>'convert_publish.publish = 1'),
-			'convert_unpublish' => array(self::HAS_MANY, 'ArchiveConverts', 'category_id', 'on'=>'convert_unpublish.publish = 1'),
+			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
+			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
+			'converts' => array(self::HAS_MANY, 'ArchiveConverts', 'category_id', 'on'=>'converts.publish = 1'),
+			'convert_unpublish' => array(self::HAS_MANY, 'ArchiveConverts', 'category_id', 'on'=>'convert_unpublish.publish = 0'),
+			'convert_all' => array(self::HAS_MANY, 'ArchiveConverts', 'category_id'),
 		);
 	}
 
@@ -110,18 +110,18 @@ class ArchiveConvertCategory extends CActiveRecord
 		return array(
 			'category_id' => Yii::t('attribute', 'Category'),
 			'publish' => Yii::t('attribute', 'Publish'),
-			'category_name' => Yii::t('attribute', 'Category Name'),
-			'category_desc' => Yii::t('attribute', 'Category Desc'),
-			'category_code' => Yii::t('attribute', 'Category Code'),
+			'category_name' => Yii::t('attribute', 'Category'),
+			'category_desc' => Yii::t('attribute', 'Description'),
+			'category_code' => Yii::t('attribute', 'Code'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
-			'convert_total' => Yii::t('attribute', 'Total'),
-			'convert_pages' => Yii::t('attribute', 'Convert Pages'),
-			'convert_copies' => Yii::t('attribute', 'Convert Copies'),
+			'convert_total_i' => Yii::t('attribute', 'Total'),
+			'convert_page_i' => Yii::t('attribute', 'Convert Pages'),
+			'convert_copy_i' => Yii::t('attribute', 'Convert Copies'),
 			'convert_search' => Yii::t('attribute', 'Convert'),
 		);
 		/*
@@ -182,28 +182,28 @@ class ArchiveConvertCategory extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
-		$criteria->compare('t.convert_total',$this->convert_total, true);
-		$criteria->compare('t.convert_pages',$this->convert_pages, true);
-		$criteria->compare('t.convert_copies',$this->convert_copies, true);
+		$criteria->compare('t.convert_total_i',$this->convert_total_i, true);
+		$criteria->compare('t.convert_page_i',$this->convert_page_i, true);
+		$criteria->compare('t.convert_copy_i',$this->convert_copy_i, true);
 		
 		// Custom Search
 		$criteria->with = array(
-			'creation_relation' => array(
-				'alias'=>'creation_relation',
-				'select'=>'displayname',
-			),
-			'modified_relation' => array(
-				'alias'=>'modified_relation',
-				'select'=>'displayname',
-			),
 			'view' => array(
 				'alias'=>'view',
 				'select'=>'converts',
 			),
+			'creation' => array(
+				'alias'=>'creation',
+				'select'=>'displayname',
+			),
+			'modified' => array(
+				'alias'=>'modified',
+				'select'=>'displayname',
+			),
 		);
-		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
-		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
 		$criteria->compare('view.converts',$this->convert_search, true);
+		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
+		$criteria->compare('modified.displayname',strtolower($this->modified_search), true);
 
 		if(!isset($_GET['ArchiveConvertCategory_sort']))
 			$criteria->order = 't.category_id DESC';
@@ -284,7 +284,7 @@ class ArchiveConvertCategory extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
-				'value' => '$data->creation_relation->displayname',
+				'value' => '$data->creation->displayname',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
@@ -372,9 +372,9 @@ class ArchiveConvertCategory extends CActiveRecord
 	}
 	
 	protected function afterFind() {
-		$this->convert_total = ArchiveConverts::getTotalItemArchive($this->converts());
-		$this->convert_pages = ArchiveConverts::getTotalItemArchive($this->converts(), 'page');
-		$this->convert_copies = ArchiveConverts::getTotalItemArchive($this->converts(), 'copy');
+		$this->convert_total_i = ArchiveConverts::getTotalItemArchive($this->converts());
+		$this->convert_page_i = ArchiveConverts::getTotalItemArchive($this->converts(), 'page');
+		$this->convert_copy_i = ArchiveConverts::getTotalItemArchive($this->converts(), 'copy');
 		
 		parent::afterFind();		
 	}

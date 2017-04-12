@@ -25,8 +25,7 @@
  * The followings are the available columns in table '_view_archive_convert_category':
  * @property integer $category_id
  * @property string $converts
- * @property string $convert_publish
- * @property string $convert_unpublish
+ * @property string $convert_all
  */
 class ViewArchiveConvertCategory extends CActiveRecord
 {
@@ -68,10 +67,11 @@ class ViewArchiveConvertCategory extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('category_id', 'numerical', 'integerOnly'=>true),
-			array('converts, convert_publish, convert_unpublish', 'length', 'max'=>21),
+			array('converts', 'length', 'max'=>23),
+			array('convert_all', 'length', 'max'=>21),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('category_id, converts, convert_publish, convert_unpublish', 'safe', 'on'=>'search'),
+			array('category_id, converts, convert_all', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -94,14 +94,12 @@ class ViewArchiveConvertCategory extends CActiveRecord
 		return array(
 			'category_id' => Yii::t('attribute', 'Category'),
 			'converts' => Yii::t('attribute', 'Converts'),
-			'convert_publish' => Yii::t('attribute', 'Convert Publish'),
-			'convert_unpublish' => Yii::t('attribute', 'Convert Unpublish'),
+			'convert_all' => Yii::t('attribute', 'Convert All'),
 		);
 		/*
 			'Category' => 'Category',
 			'Converts' => 'Converts',
 			'Convert Publish' => 'Convert Publish',
-			'Convert Unpublish' => 'Convert Unpublish',
 		
 		*/
 	}
@@ -125,9 +123,8 @@ class ViewArchiveConvertCategory extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('t.category_id',$this->category_id);
-		$criteria->compare('t.converts',strtolower($this->converts),true);
-		$criteria->compare('t.convert_publish',strtolower($this->convert_publish),true);
-		$criteria->compare('t.convert_unpublish',strtolower($this->convert_unpublish),true);
+		$criteria->compare('t.converts',$this->converts);
+		$criteria->compare('t.convert_all',$this->convert_all);
 
 		if(!isset($_GET['ViewArchiveConvertCategory_sort']))
 			$criteria->order = 't.category_id DESC';
@@ -160,8 +157,7 @@ class ViewArchiveConvertCategory extends CActiveRecord
 		} else {
 			$this->defaultColumns[] = 'category_id';
 			$this->defaultColumns[] = 'converts';
-			$this->defaultColumns[] = 'convert_publish';
-			$this->defaultColumns[] = 'convert_unpublish';
+			$this->defaultColumns[] = 'convert_all';
 		}
 
 		return $this->defaultColumns;
@@ -178,8 +174,7 @@ class ViewArchiveConvertCategory extends CActiveRecord
 			);
 			//$this->defaultColumns[] = 'category_id';
 			$this->defaultColumns[] = 'converts';
-			$this->defaultColumns[] = 'convert_publish';
-			$this->defaultColumns[] = 'convert_unpublish';
+			$this->defaultColumns[] = 'convert_all';
 		}
 		parent::afterConstruct();
 	}

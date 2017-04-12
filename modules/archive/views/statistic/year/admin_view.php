@@ -32,12 +32,12 @@
 				'value'=>$model->archives,
 			),
 			array(
-				'name'=>'archive_total',
-				'value'=>$model->archive_total,
+				'name'=>'archive_total_i',
+				'value'=>$model->archive_total_i,
 			),
 			array(
-				'name'=>'archive_pages',
-				'value'=>$model->archive_pages,
+				'name'=>'archive_page_i',
+				'value'=>$model->archive_page_i,
 			),
 		),
 	)); ?>

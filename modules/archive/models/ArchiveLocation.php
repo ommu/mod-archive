@@ -38,11 +38,11 @@
 class ArchiveLocation extends CActiveRecord
 {
 	public $defaultColumns = array();
-	public $archive_total;
-	public $archive_pages;
-	public $convert_total;
-	public $convert_pages;
-	public $convert_copies;
+	public $archive_total_i;
+	public $archive_page_i;
+	public $convert_total_i;
+	public $convert_page_i;
+	public $convert_copy_i;
 	
 	// Variable Search
 	public $archive_search;
@@ -86,7 +86,7 @@ class ArchiveLocation extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('location_id, publish, location_name, location_desc, location_code, story_enable, type_enable, creation_date, creation_id, modified_date, modified_id,
-				archive_total, archive_pages, convert_total, convert_pages, convert_copies, archive_search, convert_search, creation_search, modified_search', 'safe', 'on'=>'search'),
+				archive_total_i, archive_page_i, convert_total_i, convert_page_i, convert_copy_i, archive_search, convert_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -98,13 +98,15 @@ class ArchiveLocation extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'archive_publish' => array(self::HAS_MANY, 'Archives', 'location_id', 'on'=>'archive_publish.publish = 1'),
-			'archive_unpublish' => array(self::HAS_MANY, 'Archives', 'location_id', 'on'=>'archive_unpublish.publish = 1'),
-			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
-			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 			'view' => array(self::BELONGS_TO, 'ViewArchiveLocation', 'location_id'),
-			'archives' => array(self::HAS_MANY, 'Archives', 'location_id'),
-			'converts' => array(self::HAS_MANY, 'ArchiveConverts', 'location_id'),
+			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
+			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
+			'archives' => array(self::HAS_MANY, 'Archives', 'location_id', 'on'=>'archives.publish = 1'),
+			'archive_unpublish' => array(self::HAS_MANY, 'Archives', 'location_id', 'on'=>'archive_unpublish.publish = 0'),
+			'archive_all' => array(self::HAS_MANY, 'Archives', 'location_id'),
+			'converts' => array(self::HAS_MANY, 'ArchiveConverts', 'location_id', 'on'=>'converts.publish = 1'),
+			'convert_unpublish' => array(self::HAS_MANY, 'ArchiveConverts', 'location_id', 'on'=>'convert_unpublish.publish = 0'),
+			'convert_all' => array(self::HAS_MANY, 'ArchiveConverts', 'location_id'),
 		);
 	}
 
@@ -127,11 +129,11 @@ class ArchiveLocation extends CActiveRecord
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
-			'archive_total' => Yii::t('attribute', 'Archive Total'),
-			'archive_pages' => Yii::t('attribute', 'Archive Pages'),
-			'convert_total' => Yii::t('attribute', 'Convert Total'),
-			'convert_pages' => Yii::t('attribute', 'Convert Pages'),
-			'convert_copies' => Yii::t('attribute', 'Convert Copies'),
+			'archive_total_i' => Yii::t('attribute', 'Archive Total'),
+			'archive_page_i' => Yii::t('attribute', 'Archive Pages'),
+			'convert_total_i' => Yii::t('attribute', 'Convert Total'),
+			'convert_page_i' => Yii::t('attribute', 'Convert Pages'),
+			'convert_copy_i' => Yii::t('attribute', 'Convert Copies'),
 			'archive_search' => Yii::t('attribute', 'Archive'),
 			'convert_search' => Yii::t('attribute', 'Convert'),
 		);
@@ -196,20 +198,20 @@ class ArchiveLocation extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
-		$criteria->compare('t.archive_total',$this->archive_total, true);
-		$criteria->compare('t.archive_pages',$this->archive_pages, true);
-		$criteria->compare('t.convert_total',$this->convert_total, true);
-		$criteria->compare('t.convert_pages',$this->convert_pages, true);
-		$criteria->compare('t.convert_copies',$this->convert_copies, true);
+		$criteria->compare('t.archive_total_i',$this->archive_total_i, true);
+		$criteria->compare('t.archive_page_i',$this->archive_page_i, true);
+		$criteria->compare('t.convert_total_i',$this->convert_total_i, true);
+		$criteria->compare('t.convert_page_i',$this->convert_page_i, true);
+		$criteria->compare('t.convert_copy_i',$this->convert_copy_i, true);
 		
 		// Custom Search
 		$criteria->with = array(
-			'creation_relation' => array(
-				'alias'=>'creation_relation',
+			'creation' => array(
+				'alias'=>'creation',
 				'select'=>'displayname',
 			),
-			'modified_relation' => array(
-				'alias'=>'modified_relation',
+			'modified' => array(
+				'alias'=>'modified',
 				'select'=>'displayname',
 			),
 			'view' => array(
@@ -217,8 +219,8 @@ class ArchiveLocation extends CActiveRecord
 				'select'=>'archives, converts',
 			),
 		);
-		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
-		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
+		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
+		$criteria->compare('modified.displayname',strtolower($this->modified_search), true);
 		$criteria->compare('view.archives',$this->archive_search, true);
 		$criteria->compare('view.converts',$this->convert_search, true);
 
@@ -311,7 +313,7 @@ class ArchiveLocation extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
-				'value' => '$data->creation_relation->displayname',
+				'value' => '$data->creation->displayname',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
@@ -427,11 +429,11 @@ class ArchiveLocation extends CActiveRecord
 	}
 	
 	protected function afterFind() {
-		$this->archive_total = Archives::getTotalItemArchive($this->archives());
-		$this->archive_pages = Archives::getTotalItemArchive($this->archives(), 'page');
-		$this->convert_total = ArchiveConverts::getTotalItemArchive($this->converts());
-		$this->convert_pages = ArchiveConverts::getTotalItemArchive($this->converts(), 'page');
-		$this->convert_copies = ArchiveConverts::getTotalItemArchive($this->converts(), 'copy');
+		$this->archive_total_i = Archives::getTotalItemArchive($this->archives());
+		$this->archive_page_i = Archives::getTotalItemArchive($this->archives(), 'page');
+		$this->convert_total_i = ArchiveConverts::getTotalItemArchive($this->converts());
+		$this->convert_page_i = ArchiveConverts::getTotalItemArchive($this->converts(), 'page');
+		$this->convert_copy_i = ArchiveConverts::getTotalItemArchive($this->converts(), 'copy');
 		
 		parent::afterFind();		
 	}

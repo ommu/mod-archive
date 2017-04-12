@@ -65,8 +65,8 @@
 			'type'=>'raw',
 		),
 		array(
-			'name'=>'archive_total',
-			'value'=>$model->archive_total,
+			'name'=>'archive_total_i',
+			'value'=>$model->archive_total_i,
 		),
 		array(
 			'name'=>'archive_pages',
@@ -78,7 +78,7 @@
 		),
 		array(
 			'name'=>'creation_id',
-			'value'=>$model->creation_id != 0 ? $model->creation_relation->displayname : '-',
+			'value'=>$model->creation_id != 0 ? $model->creation->displayname : '-',
 		),
 		array(
 			'name'=>'modified_date',
@@ -86,7 +86,7 @@
 		),
 		array(
 			'name'=>'modified_id',
-			'value'=>$model->modified_id != 0 ? $model->modified_relation->displayname : '-',
+			'value'=>$model->modified_id != 0 ? $model->modified->displayname : '-',
 		),
 		array(
 			'name'=>'publish',

@@ -32,16 +32,16 @@
 				'value'=>$model->converts,
 			),
 			array(
-				'name'=>'convert_total',
-				'value'=>$model->convert_total,
+				'name'=>'convert_total_i',
+				'value'=>$model->convert_total_i,
 			),
 			array(
-				'name'=>'convert_pages',
-				'value'=>$model->convert_pages,
+				'name'=>'convert_page_i',
+				'value'=>$model->convert_page_i,
 			),
 			array(
-				'name'=>'convert_copies',
-				'value'=>$model->convert_copies,
+				'name'=>'convert_copy_i',
+				'value'=>$model->convert_copy_i,
 			),
 		),
 	)); ?>

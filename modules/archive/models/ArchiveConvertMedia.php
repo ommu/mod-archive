@@ -96,7 +96,7 @@ class ArchiveConvertMedia extends CActiveRecord
 		return array(
 			'archive' => array(self::BELONGS_TO, 'Archives', 'archive_id'),
 			'convert' => array(self::BELONGS_TO, 'ArchiveConverts', 'convert_id'),
-			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
+			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 		);
 	}
 
@@ -186,14 +186,14 @@ class ArchiveConvertMedia extends CActiveRecord
 				'alias'=>'convert',
 				'select'=>'convert_title, convert_code',
 			),
-			'creation_relation' => array(
-				'alias'=>'creation_relation',
+			'creation' => array(
+				'alias'=>'creation',
 				'select'=>'displayname',
 			),
 		);
 		$criteria->compare('archive.archive_code',strtolower($this->archive_search), true);
 		$criteria->compare('convert.convert_code',strtolower($this->convert_search), true);
-		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
+		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
 
 		if(!isset($_GET['ArchiveConvertMedia_sort']))
 			$criteria->order = 't.id DESC';
@@ -272,7 +272,7 @@ class ArchiveConvertMedia extends CActiveRecord
 			$this->defaultColumns[] = 'media_desc';
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
-				'value' => '$data->creation_relation->displayname',
+				'value' => '$data->creation->displayname',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',

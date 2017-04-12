@@ -49,7 +49,7 @@
 class ArchiveConverts extends CActiveRecord
 {
 	public $defaultColumns = array();
-	public $convert_total;
+	public $convert_total_i;
 	public $back_field;
 	public $convert_number_single;
 	public $convert_number_multiple;
@@ -110,12 +110,12 @@ class ArchiveConverts extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'view' => array(self::BELONGS_TO, 'ViewArchiveConverts', 'convert_id'),
 			'location' => array(self::BELONGS_TO, 'ArchiveLocation', 'location_id'),
 			'category' => array(self::BELONGS_TO, 'ArchiveConvertCategory', 'category_id'),
-			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
-			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
+			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
+			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 			'medias' => array(self::HAS_MANY, 'ArchiveConvertMedia', 'convert_id'),
-			'view' => array(self::BELONGS_TO, 'ViewArchiveConverts', 'convert_id'),
 		);
 	}
 
@@ -143,7 +143,7 @@ class ArchiveConverts extends CActiveRecord
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
-			'convert_total' => Yii::t('attribute', 'Total'),
+			'convert_total_i' => Yii::t('attribute', 'Total'),
 			'back_field' => Yii::t('attribute', 'Back to Manage'),
 			'convert_code_search' => Yii::t('attribute', 'Code'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
@@ -225,24 +225,24 @@ class ArchiveConverts extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
-		$criteria->compare('t.convert_total',$this->convert_total, true);
+		$criteria->compare('t.convert_total_i',$this->convert_total_i, true);
 		
 		// Custom Search
 		$criteria->with = array(
-			'creation_relation' => array(
-				'alias'=>'creation_relation',
+			'creation' => array(
+				'alias'=>'creation',
 				'select'=>'displayname',
 			),
-			'modified_relation' => array(
-				'alias'=>'modified_relation',
+			'modified' => array(
+				'alias'=>'modified',
 				'select'=>'displayname',
 			),
 			'view' => array(
 				'alias'=>'view',
 			),
 		);
-		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
-		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
+		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
+		$criteria->compare('modified.displayname',strtolower($this->modified_search), true);
 		$criteria->compare('view.convert_code',strtolower($this->convert_code_search), true);
 
 		if(!isset($_GET['ArchiveConverts_sort']))
@@ -379,7 +379,7 @@ class ArchiveConverts extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'convert_cat_id',
-				'value' => 'ArchiveSettings::getInfo(1, "auto_numbering") == 1 ? 0 : $data->convert_cat_id',
+				'value' => 'ArchiveSettings::getInfo(\'auto_numbering\') == 1 ? 0 : $data->convert_cat_id',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -393,8 +393,8 @@ class ArchiveConverts extends CActiveRecord
 			);
 			/*
 			$this->defaultColumns[] = array(
-				'name' => 'convert_total',
-				'value' => '$data->convert_total',
+				'name' => 'convert_total_i',
+				'value' => '$data->convert_total_i',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -417,7 +417,7 @@ class ArchiveConverts extends CActiveRecord
 			/*
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
-				'value' => '$data->creation_relation->displayname',
+				'value' => '$data->creation->displayname',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
@@ -521,7 +521,7 @@ class ArchiveConverts extends CActiveRecord
 			$total = 0;
 			foreach($data as $key => $val) {
 				if($param == 'total')
-					$total = $total + $val->convert_total;
+					$total = $total + $val->convert_total_i;
 				if($param == 'page')
 					$total = $total + $val->convert_pages;
 				if($param == 'copy')
@@ -559,9 +559,9 @@ class ArchiveConverts extends CActiveRecord
 	{
 		if($this->convert_multiple == 1)
 			$this->convert_pages = self::getItemArchive($this->convert_numbers, 1, 'pages');
-		if($this->convert_parent != 0)
+		if($this->convert_parent != '')
 			$this->convert_cat_id = self::model()->findByPk($this->convert_parent)->convert_cat_id;
-		$this->convert_total = self::getItemArchive($this->convert_numbers, $this->convert_multiple);
+		$this->convert_total_i = self::getItemArchive($this->convert_numbers, $this->convert_multiple);
 		
 		parent::afterFind();		
 	}
@@ -587,14 +587,15 @@ class ArchiveConverts extends CActiveRecord
 	/**
 	 * before save attributes
 	 */
-	protected function beforeSave() {
+	protected function beforeSave() 
+	{
 		$controller = strtolower(Yii::app()->controller->id);
 		if(parent::beforeSave()) {			
-			$parent_convert_cat_id = $this->convert_parent != 0 ? ArchiveConverts::model()->findByPk($this->convert_parent)->convert_cat_id : 0;
+			$parent_convert_cat_id = $this->convert_parent != '' ? ArchiveConverts::model()->findByPk($this->convert_parent)->convert_cat_id : '';
 			$this->convert_code = ViewArchiveConverts::getCodeArchive($this->location->location_code, $this->category->category_code, $this->convert_cat_id, $parent_convert_cat_id);
 			
 			if(in_array($controller, array('o/convert'))) {
-				if($this->convert_parent != 0)
+				if($this->convert_parent != '')
 					$this->convert_cat_id = 0;
 				
 				if($this->convert_multiple == 0)
