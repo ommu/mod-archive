@@ -100,7 +100,7 @@ class ViewArchiveYear extends CActiveRecord
 			'publish_year' => Yii::t('attribute', 'Publish Year'),
 			'archives' => Yii::t('attribute', 'Archives'),
 			'archive_total_i' => Yii::t('attribute', 'Total'),
-			'archive_page_i' => Yii::t('attribute', 'Archive Pages'),
+			'archive_page_i' => Yii::t('attribute', 'Pages'),
 		);
 		/*
 			'Publish Year' => 'Publish Year',
@@ -128,9 +128,9 @@ class ViewArchiveYear extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('t.publish_year',strtolower($this->publish_year),true);
-		$criteria->compare('t.archives',strtolower($this->archives),true);
-		$criteria->compare('t.archive_total_i',$this->archive_total_i, true);
-		$criteria->compare('t.archive_page_i',$this->archive_page_i, true);
+		$criteria->compare('t.archives',$this->archives);
+		$criteria->compare('t.archive_total_i',$this->archive_total_i);
+		$criteria->compare('t.archive_page_i',$this->archive_page_i);
 
 		if(!isset($_GET['ViewArchiveYear_sort']))
 			$criteria->order = 't.publish_year DESC';
@@ -180,11 +180,13 @@ class ViewArchiveYear extends CActiveRecord
 			$this->defaultColumns[] = 'publish_year';
 			$this->defaultColumns[] = 'archives';
 			$this->defaultColumns[] = array(
-				'header' => 'archive_total_i',
+				'filter' => false,
+				'name' => 'archive_total_i',
 				'value' => '$data->archive_total_i',
 			);
 			$this->defaultColumns[] = array(
-				'header' => 'archive_page_i',
+				'filter' => false,
+				'name' => 'archive_page_i',
 				'value' => '$data->archive_page_i',
 			);
 		}
@@ -208,7 +210,8 @@ class ViewArchiveYear extends CActiveRecord
 		}
 	}
 	
-	protected function afterFind() {
+	protected function afterFind() 
+	{
 		$this->archive_total_i = Archives::getTotalItemArchive($this->archives());
 		$this->archive_page_i = Archives::getTotalItemArchive($this->archives(), 'page');
 		

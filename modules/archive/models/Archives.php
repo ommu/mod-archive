@@ -98,7 +98,7 @@ class Archives extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('archive_id, publish, location_id, type_id, story_id, archive_title, archive_desc, archive_type_id, archive_publish_year, archive_multiple, archive_numbers, archive_pages, archive_copies, archive_code, creation_date, creation_id, modified_date, modified_id,
-				archive_total_i, archive_convert_search, archive_code_search, creation_search, modified_search', 'safe', 'on'=>'search'),
+				archive_total_i, archive_code_search, convert_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -442,6 +442,7 @@ class Archives extends CActiveRecord
 			);
 			*/
 			$this->defaultColumns[] = array(
+				'filter' => false,
 				'name' => 'convert_search',
 				'value' => 'CHtml::link(Yii::t("phrase", "Add Convert"), Yii::app()->controller->createUrl("o/convertmedia/add",array("archive"=>$data->archive_id)))',
 				'htmlOptions' => array(
@@ -463,8 +464,8 @@ class Archives extends CActiveRecord
 				'filter' => Yii::app()->controller->widget('zii.widgets.jui.CJuiDatePicker', array(
 					'model'=>$this,
 					'attribute'=>'creation_date',
-					'language' => 'ja',
-					'i18nScriptFile' => 'jquery.ui.datepicker-en.js',
+					'language' => 'en',
+					'i18nScriptFile' => 'jquery-ui-i18n.min.js'
 					//'mode'=>'datetime',
 					'htmlOptions' => array(
 						'id' => 'creation_date_filter',

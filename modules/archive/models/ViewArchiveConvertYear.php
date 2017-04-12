@@ -130,10 +130,10 @@ class ViewArchiveConvertYear extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('t.publish_year',strtolower($this->publish_year),true);
-		$criteria->compare('t.converts',strtolower($this->converts),true);
-		$criteria->compare('t.convert_total_i',$this->convert_total_i, true);
-		$criteria->compare('t.convert_page_i',$this->convert_page_i, true);
-		$criteria->compare('t.convert_copy_i',$this->convert_copy_i, true);
+		$criteria->compare('t.converts',$this->converts);
+		$criteria->compare('t.convert_total_i',$this->convert_total_i);
+		$criteria->compare('t.convert_page_i',$this->convert_page_i);
+		$criteria->compare('t.convert_copy_i',$this->convert_copy_i);
 
 		if(!isset($_GET['ViewArchiveConvertYear_sort']))
 			$criteria->order = 't.publish_year DESC';
@@ -183,22 +183,26 @@ class ViewArchiveConvertYear extends CActiveRecord
 			$this->defaultColumns[] = 'publish_year';
 			$this->defaultColumns[] = 'converts';
 			$this->defaultColumns[] = array(
-				'header' => 'convert_total_i',
+				'filter' => false,
+				'name' => 'convert_total_i',
 				'value' => '$data->convert_total_i',
 			);
 			$this->defaultColumns[] = array(
-				'header' => 'convert_page_i',
+				'filter' => false,
+				'name' => 'convert_page_i',
 				'value' => '$data->convert_page_i',
 			);
 			$this->defaultColumns[] = array(
-				'header' => 'convert_copy_i',
+				'filter' => false,
+				'name' => 'convert_copy_i',
 				'value' => '$data->convert_copy_i',
 			);
 		}
 		parent::afterConstruct();
 	}
 	
-	protected function afterFind() {
+	protected function afterFind() 
+	{
 		$this->convert_total_i = ArchiveConverts::getTotalItemArchive($this->converts());
 		$this->convert_page_i = ArchiveConverts::getTotalItemArchive($this->converts(), 'page');
 		$this->convert_copy_i = ArchiveConverts::getTotalItemArchive($this->converts(), 'copy');
