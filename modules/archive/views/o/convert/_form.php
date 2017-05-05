@@ -40,7 +40,7 @@ $js=<<<EOP
 			//alert(prev+' '+next);
 		}
 	});
-	$('a.drop').live('click', function() {
+	$('a.drop').on('click', function() {
 		$(this).parents('div.field').remove();
 	});
 EOP;
