@@ -276,7 +276,7 @@ class ArchiveConvertCategory extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'convert_search',
-				'value' => 'CHtml::link($data->view->converts, Yii::app()->controller->createUrl("o/convert/manage",array("category"=>$data->category_id)))',
+				'value' => 'CHtml::link($data->view->converts ? $data->view->converts : 0, Yii::app()->controller->createUrl("o/convert/manage",array("category"=>$data->category_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),

@@ -405,7 +405,7 @@ class Archives extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'convert_search',
-				'value' => 'CHtml::link($data->view->converts, Yii::app()->controller->createUrl("o/convertmedia/manage",array("archive"=>$data->archive_id)))',
+				'value' => 'CHtml::link($data->view->converts ? $data->view->converts : 0, Yii::app()->controller->createUrl("o/convertmedia/manage",array("archive"=>$data->archive_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),

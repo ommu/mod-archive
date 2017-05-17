@@ -46,7 +46,7 @@
 			),
 			array(
 				'name'=>'archive_search',
-				'value'=>$model->view->archives,
+				'value'=>$model->view->archives ? $model->view->archives : 0,
 			),
 			array(
 				'name'=>'archive_total_i',
@@ -58,7 +58,7 @@
 			),
 			array(
 				'name'=>'convert_search',
-				'value'=>$model->view->converts,
+				'value'=>$model->view->converts ? $model->view->converts : 0,
 			),
 			array(
 				'name'=>'convert_total_i',

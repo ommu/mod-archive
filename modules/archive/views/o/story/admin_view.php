@@ -42,7 +42,7 @@
 			),
 			array(
 				'name'=>'archive_search',
-				'value'=>$model->view->archives,
+				'value'=>$model->view->archives ? $model->view->archives : 0,
 			),
 			array(
 				'name'=>'archive_total_i',

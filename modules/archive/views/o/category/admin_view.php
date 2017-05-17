@@ -42,7 +42,7 @@
 			),
 			array(
 				'name'=>'convert_search',
-				'value'=>$model->view->converts,
+				'value'=>$model->view->converts ? $model->view->converts : 0,
 			),
 			array(
 				'name'=>'convert_total_i',

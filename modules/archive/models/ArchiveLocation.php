@@ -297,7 +297,7 @@ class ArchiveLocation extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'archive_search',
-				'value' => 'CHtml::link($data->view->archives, Yii::app()->controller->createUrl("o/admin/manage",array("location"=>$data->location_id)))',
+				'value' => 'CHtml::link($data->view->archives ? $data->view->archives : 0, Yii::app()->controller->createUrl("o/admin/manage",array("location"=>$data->location_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -305,7 +305,7 @@ class ArchiveLocation extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'convert_search',
-				'value' => 'CHtml::link($data->view->converts, Yii::app()->controller->createUrl("o/convert/manage",array("location"=>$data->location_id)))',
+				'value' => 'CHtml::link($data->view->converts ? $data->view->converts : 0, Yii::app()->controller->createUrl("o/convert/manage",array("location"=>$data->location_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
