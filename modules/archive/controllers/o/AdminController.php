@@ -116,7 +116,7 @@ class AdminController extends Controller
 		if(isset($_GET['term'])) {
 			$criteria = new CDbCriteria;
 			$criteria->select = 'archive_id, archive_code';
-			$criteria->compare('t.archive_code',strtolower($_GET['term']), true);
+			$criteria->compare('archive_code',strtolower($_GET['term']), true);
 			$criteria->order = 'archive_id ASC';
 			$model = Archives::model()->findAll($criteria);
 
