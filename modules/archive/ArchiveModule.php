@@ -1,6 +1,7 @@
 <?php
 /**
  * ArchiveModule
+ * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
