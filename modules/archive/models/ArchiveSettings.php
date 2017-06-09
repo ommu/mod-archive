@@ -134,6 +134,14 @@ class ArchiveSettings extends CActiveRecord
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
+		
+		// Custom Search
+		$criteria->with = array(
+			'modified' => array(
+				'alias'=>'modified',
+				'select'=>'displayname',
+			),
+		);
 
 		$criteria->compare('t.id',$this->id);
 		$criteria->compare('t.license',strtolower($this->license),true);
@@ -148,14 +156,7 @@ class ArchiveSettings extends CActiveRecord
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
 		
-		// Custom Search
-		$criteria->with = array(
-			'modified' => array(
-				'alias'=>'modified',
-				'select'=>'displayname',
-			),
-		);
-		$criteria->compare('modified.displayname',strtolower($this->modified_search), true);
+		$criteria->compare('modified.displayname',strtolower($this->modified_search),true);
 
 		if(!isset($_GET['ArchiveSettings_sort']))
 			$criteria->order = 't.id DESC';
