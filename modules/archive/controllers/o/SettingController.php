@@ -17,7 +17,7 @@
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
  * @created date 13 June 2016, 23:54 WIB
- * @link http://company.ommu.co
+ * @link https://github.com/ommu/mod-archive
  * @contact (+62)856-299-4114
  *
  *----------------------------------------------------------------------------------------------------------
@@ -120,7 +120,7 @@ class SettingController extends Controller
 			$jsonError = CActiveForm::validate($model);
 			if(strlen($jsonError) > 2) {
 				$errors = $model->getErrors();
-				$summary['msg'] = "<div class='errorSummary'><strong>Please fix the following input errors:</strong>";
+				$summary['msg'] = "<div class='errorSummary'><strong>".Yii::t('phrase', 'Please fix the following input errors:')."</strong>";
 				$summary['msg'] .= "<ul>";
 				foreach($errors as $key => $value) {
 					$summary['msg'] .= "<li>{$value[0]}</li>";
