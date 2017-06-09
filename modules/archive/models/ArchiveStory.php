@@ -264,7 +264,6 @@ class ArchiveStory extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = 'story_name';
-			$this->defaultColumns[] = 'story_desc';
 			$this->defaultColumns[] = array(
 				'name' => 'story_code',
 				'value' => 'strtoupper($data->story_code)',

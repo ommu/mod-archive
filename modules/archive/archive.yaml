@@ -51,6 +51,10 @@ plugin_menu		:
 			- urlTitle: Alih Media, Bahasa dan Tulis
 				urlRules: {siteType: "0,1", userLevel: "1,2"}
 				urlPath: {url: statistic/convertyear/manage, attr: -, icon: -}
+                
+	- urlTitle: Archive Manual
+		urlRules: {siteType: "0,1", userLevel: 2}
+		urlPath: {url: o/setting/manual, attr: -, icon: -}
 
 content_menu	:
 # controller o/admin
@@ -111,3 +115,8 @@ content_menu	:
 	- urlTitle: Add Category
 		urlRules: {archive, o/category, manage, siteType: "0,1", userLevel: 1}
 		urlPath: {url: add, attr: -, icon: -}
+
+# controller o/setting
+	- urlTitle: Archive Manual
+		urlRules: {archive, o/setting, edit, siteType: "0,1", userLevel: 1}
+		urlPath: {url: manual, attr: -, icon: -}

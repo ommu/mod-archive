@@ -267,7 +267,6 @@ class ArchiveType extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = 'type_name';
-			$this->defaultColumns[] = 'type_desc';
 			$this->defaultColumns[] = array(
 				'name' => 'type_code',
 				'value' => 'strtoupper($data->type_code)',

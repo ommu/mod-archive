@@ -267,7 +267,6 @@ class ArchiveConvertCategory extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = 'category_name';
-			$this->defaultColumns[] = 'category_desc';
 			$this->defaultColumns[] = array(
 				'name' => 'category_code',
 				'value' => 'strtoupper($data->category_code)',

@@ -288,7 +288,6 @@ class ArchiveLocation extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = 'location_name';
-			$this->defaultColumns[] = 'location_desc';
 			$this->defaultColumns[] = array(
 				'name' => 'location_code',
 				'value' => 'strtoupper($data->location_code)',
