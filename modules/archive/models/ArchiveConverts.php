@@ -185,6 +185,21 @@ class ArchiveConverts extends CActiveRecord
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
+		
+		// Custom Search
+		$criteria->with = array(
+			'creation' => array(
+				'alias'=>'creation',
+				'select'=>'displayname',
+			),
+			'modified' => array(
+				'alias'=>'modified',
+				'select'=>'displayname',
+			),
+			'view' => array(
+				'alias'=>'view',
+			),
+		);
 
 		$criteria->compare('t.convert_id',strtolower($this->convert_id),true);
 		if(isset($_GET['type']) && $_GET['type'] == 'publish')
@@ -227,25 +242,11 @@ class ArchiveConverts extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
-		$criteria->compare('t.convert_total_i',$this->convert_total_i, true);
 		
-		// Custom Search
-		$criteria->with = array(
-			'creation' => array(
-				'alias'=>'creation',
-				'select'=>'displayname',
-			),
-			'modified' => array(
-				'alias'=>'modified',
-				'select'=>'displayname',
-			),
-			'view' => array(
-				'alias'=>'view',
-			),
-		);
-		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
-		$criteria->compare('modified.displayname',strtolower($this->modified_search), true);
-		$criteria->compare('view.convert_code',strtolower($this->convert_code_search), true);
+		$criteria->compare('t.convert_total_i',$this->convert_total_i);
+		$criteria->compare('view.convert_code',strtolower($this->convert_code_search),true);		
+		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
+		$criteria->compare('modified.displayname',strtolower($this->modified_search),true);
 
 		if(!isset($_GET['ArchiveConverts_sort']))
 			$criteria->order = 't.convert_id DESC';

@@ -142,7 +142,7 @@ class ViewArchives extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('t.archive_id',strtolower($this->archive_id),true);
+		$criteria->compare('t.archive_id',$this->archive_id);
 		$criteria->compare('t.converts',$this->converts);
 		$criteria->compare('t.convert_all',$this->convert_all);
 		$criteria->compare('t.story_enable',$this->story_enable);

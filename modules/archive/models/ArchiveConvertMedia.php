@@ -148,6 +148,22 @@ class ArchiveConvertMedia extends CActiveRecord
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
+		
+		// Custom Search
+		$criteria->with = array(
+			'archive' => array(
+				'alias'=>'archive',
+				'select'=>'archive_title, archive_code',
+			),
+			'convert' => array(
+				'alias'=>'convert',
+				'select'=>'convert_title, convert_code',
+			),
+			'creation' => array(
+				'alias'=>'creation',
+				'select'=>'displayname',
+			),
+		);
 
 		$criteria->compare('t.id',strtolower($this->id),true);
 		if(isset($_GET['type']) && $_GET['type'] == 'publish')
@@ -176,24 +192,9 @@ class ArchiveConvertMedia extends CActiveRecord
 		else
 			$criteria->compare('t.creation_id',$this->creation_id);
 		
-		// Custom Search
-		$criteria->with = array(
-			'archive' => array(
-				'alias'=>'archive',
-				'select'=>'archive_title, archive_code',
-			),
-			'convert' => array(
-				'alias'=>'convert',
-				'select'=>'convert_title, convert_code',
-			),
-			'creation' => array(
-				'alias'=>'creation',
-				'select'=>'displayname',
-			),
-		);
-		$criteria->compare('archive.archive_code',strtolower($this->archive_search), true);
-		$criteria->compare('convert.convert_code',strtolower($this->convert_search), true);
-		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
+		$criteria->compare('archive.archive_code',strtolower($this->archive_search),true);
+		$criteria->compare('convert.convert_code',strtolower($this->convert_search),true);
+		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
 
 		if(!isset($_GET['ArchiveConvertMedia_sort']))
 			$criteria->order = 't.id DESC';

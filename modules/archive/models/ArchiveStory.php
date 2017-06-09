@@ -153,6 +153,22 @@ class ArchiveStory extends CActiveRecord
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
+		
+		// Custom Search
+		$criteria->with = array(
+			'creation' => array(
+				'alias'=>'creation',
+				'select'=>'displayname',
+			),
+			'modified' => array(
+				'alias'=>'modified',
+				'select'=>'displayname',
+			),
+			'view' => array(
+				'alias'=>'view',
+				'select'=>'archives',
+			),
+		);
 
 		$criteria->compare('t.story_id',$this->story_id);
 		if(isset($_GET['type']) && $_GET['type'] == 'publish')
@@ -180,27 +196,12 @@ class ArchiveStory extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
-		$criteria->compare('t.archive_total_i',$this->archive_total_i, true);
-		$criteria->compare('t.archive_page_i',$this->archive_page_i, true);
 		
-		// Custom Search
-		$criteria->with = array(
-			'creation' => array(
-				'alias'=>'creation',
-				'select'=>'displayname',
-			),
-			'modified' => array(
-				'alias'=>'modified',
-				'select'=>'displayname',
-			),
-			'view' => array(
-				'alias'=>'view',
-				'select'=>'archives',
-			),
-		);
-		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
-		$criteria->compare('modified.displayname',strtolower($this->modified_search), true);
-		$criteria->compare('view.archives',$this->archive_search, true);
+		$criteria->compare('t.archive_total_i',$this->archive_total_i);
+		$criteria->compare('t.archive_page_i',$this->archive_page_i);		
+		$criteria->compare('view.archives',$this->archive_search);
+		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
+		$criteria->compare('modified.displayname',strtolower($this->modified_search),true);
 
 		if(!isset($_GET['ArchiveStory_sort']))
 			$criteria->order = 't.story_id DESC';

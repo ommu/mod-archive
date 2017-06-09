@@ -131,7 +131,7 @@ class ViewArchiveConverts extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('t.convert_id',strtolower($this->convert_id),true);
+		$criteria->compare('t.convert_id',$this->convert_id);
 		$criteria->compare('t.location_code',strtolower($this->location_code),true);
 		$criteria->compare('t.category_code',strtolower($this->category_code),true);
 		$criteria->compare('t.convert_cat_id',$this->convert_cat_id);
