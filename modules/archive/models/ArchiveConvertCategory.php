@@ -276,14 +276,6 @@ class ArchiveConvertCategory extends CActiveRecord
 				),
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'convert_search',
-				'value' => 'CHtml::link($data->view->converts ? $data->view->converts : 0, Yii::app()->controller->createUrl("o/convert/manage",array("category"=>$data->category_id)))',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-				'type' => 'raw',
-			);
-			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
 				'value' => '$data->creation->displayname',
 			);
@@ -312,6 +304,14 @@ class ArchiveConvertCategory extends CActiveRecord
 						'showButtonPanel' => true,
 					),
 				), true),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'convert_search',
+				'value' => 'CHtml::link($data->view->converts ? $data->view->converts : 0, Yii::app()->controller->createUrl("o/convert/manage",array("category"=>$data->category_id)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'type' => 'raw',
 			);
 			if(!isset($_GET['type'])) {
 				$this->defaultColumns[] = array(

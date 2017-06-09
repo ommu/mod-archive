@@ -405,14 +405,6 @@ class Archives extends CActiveRecord
 				),
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'convert_search',
-				'value' => 'CHtml::link($data->view->converts ? $data->view->converts : 0, Yii::app()->controller->createUrl("o/convertmedia/manage",array("archive"=>$data->archive_id)))',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-				'type' => 'raw',
-			);
-			$this->defaultColumns[] = array(
 				'name' => 'archive_publish_year',
 				'value' => '$data->archive_publish_year',
 				'htmlOptions' => array(
@@ -441,17 +433,6 @@ class Archives extends CActiveRecord
 					'class' => 'center',
 				),
 			);
-			*/
-			$this->defaultColumns[] = array(
-				'filter' => false,
-				'name' => 'convert_search',
-				'value' => 'CHtml::link(Yii::t("phrase", "Add Convert"), Yii::app()->controller->createUrl("o/convertmedia/add",array("archive"=>$data->archive_id)))',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-				'type' => 'raw',
-			);
-			/*
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
 				'value' => '$data->creation->displayname',
@@ -483,6 +464,23 @@ class Archives extends CActiveRecord
 				), true),
 			);
 			*/
+			$this->defaultColumns[] = array(
+				'name' => 'convert_search',
+				'value' => 'CHtml::link($data->view->converts ? $data->view->converts : 0, Yii::app()->controller->createUrl("o/convertmedia/manage",array("archive"=>$data->archive_id)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
+				'filter' => false,
+				'name' => 'convert_search',
+				'value' => 'CHtml::link(Yii::t("phrase", "Add Convert"), Yii::app()->controller->createUrl("o/convertmedia/add",array("archive"=>$data->archive_id)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'type' => 'raw',
+			);
 			if(!isset($_GET['type'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'publish',
