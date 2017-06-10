@@ -46,7 +46,7 @@
 			),
 			array(
 				'name'=>'archive_search',
-				'value'=>$model->view->archives ? $model->view->archives : 0,
+				'value'=>$model->view->lists ? $model->view->lists : 0,
 			),
 			array(
 				'name'=>'archive_total_i',

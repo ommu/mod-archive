@@ -1,6 +1,6 @@
 <?php
 /**
- * Archives (archives)
+ * Archives (lists)
  * @var $this AdminController
  * @var $model Archives
  * @var $form CActiveForm
@@ -16,7 +16,7 @@
 
 	$cs = Yii::app()->getClientScript();
 $js=<<<EOP
-	$('#Archives_archive_multiple').on('change', function() {
+	$('#Archives_list_multiple').on('change', function() {
 		var id = $(this).prop('checked');		
 		if(id == true) {
 			$('div#multiple').slideDown();
@@ -31,10 +31,10 @@ $js=<<<EOP
 	$('input[type="button"]#add-field').on('click', function() {
 		var body = $('form div#show-field').html();
 		if($('#add-field').before(body)) {
-			prev = 'Archives\[archive_number_multiple\]\['+i+'\]';
+			prev = 'Archives\[archive_number_multiple_i\]\['+i+'\]';
 			i = i+1;
-			next = 'Archives\[archive_number_multiple\]\['+i+'\]';
-			$('form div#show-field').find('[id*="Archives_archive_number_multiple_"]').each(function() {
+			next = 'Archives\[archive_number_multiple_i\]\['+i+'\]';
+			$('form div#show-field').find('[id*="Archives_archive_number_multiple_i_"]').each(function() {
 				$(this).attr('name',$(this).attr('name').replace(prev,next));
 			});
 			//alert(prev+' '+next);
@@ -48,7 +48,7 @@ EOP;
 ?>
 
 <?php $form=$this->beginWidget('application.components.system.OActiveForm', array(
-	'id'=>'archives-form',
+	'id'=>'lists-form',
 	'enableAjaxValidation'=>true,
 	'htmlOptions' => array(
 		//'enctype' => 'multipart/form-data',
@@ -64,7 +64,7 @@ EOP;
 <?php $this->endWidget(); ?>
 
 <?php $form=$this->beginWidget('application.components.system.OActiveForm', array(
-	'id'=>'archives-form',
+	'id'=>'lists-form',
 	'enableAjaxValidation'=>true,
 	//'htmlOptions' => array('enctype' => 'multipart/form-data')
 )); ?>
@@ -121,74 +121,74 @@ EOP;
 
 	<?php if($setting->auto_numbering == 0) {?>
 	<div class="clearfix">
-		<?php echo $form->labelEx($model,'archive_type_id'); ?>
+		<?php echo $form->labelEx($model,'list_type_id'); ?>
 		<div class="desc">
-			<?php echo $form->textField($model,'archive_type_id', array('class'=>'span-3')); ?>
-			<?php echo $form->error($model,'archive_type_id'); ?>
+			<?php echo $form->textField($model,'list_type_id', array('class'=>'span-3')); ?>
+			<?php echo $form->error($model,'list_type_id'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
 	<?php }?>
 
 	<div class="clearfix">
-		<?php echo $form->labelEx($model,'archive_publish_year'); ?>
+		<?php echo $form->labelEx($model,'list_publish_year'); ?>
 		<div class="desc">
-			<?php echo $form->textField($model,'archive_publish_year',array('maxlength'=>4, 'class'=>'span-3')); ?>
-			<?php echo $form->error($model,'archive_publish_year'); ?>
+			<?php echo $form->textField($model,'list_publish_year',array('maxlength'=>4, 'class'=>'span-3')); ?>
+			<?php echo $form->error($model,'list_publish_year'); ?>
 			<div class="small-px silent mt-5">example: 2015, 2016</div>
 		</div>
 	</div>
 
 	<div class="clearfix">
-		<?php echo $form->labelEx($model,'archive_title'); ?>
+		<?php echo $form->labelEx($model,'list_title'); ?>
 		<div class="desc">
-			<?php echo $form->textArea($model,'archive_title',array('rows'=>6, 'cols'=>50, 'class'=>'span-10 smaller')); ?>
-			<?php echo $form->error($model,'archive_title'); ?>
+			<?php echo $form->textArea($model,'list_title',array('rows'=>6, 'cols'=>50, 'class'=>'span-10 smaller')); ?>
+			<?php echo $form->error($model,'list_title'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
 
 	<div class="clearfix">
-		<?php echo $form->labelEx($model,'archive_desc'); ?>
+		<?php echo $form->labelEx($model,'list_desc'); ?>
 		<div class="desc">
-			<?php echo $form->textArea($model,'archive_desc',array('rows'=>6, 'cols'=>50, 'class'=>'span-10')); ?>
-			<?php echo $form->error($model,'archive_desc'); ?>
+			<?php echo $form->textArea($model,'list_desc',array('rows'=>6, 'cols'=>50, 'class'=>'span-10')); ?>
+			<?php echo $form->error($model,'list_desc'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
 
 	<div class="clearfix publish">
-		<?php echo $form->labelEx($model,'archive_multiple'); ?>
+		<?php echo $form->labelEx($model,'list_multiple'); ?>
 		<div class="desc">
-			<?php echo $form->checkBox($model,'archive_multiple'); ?>
-			<?php echo $form->error($model,'archive_multiple'); ?>
+			<?php echo $form->checkBox($model,'list_multiple'); ?>
+			<?php echo $form->error($model,'list_multiple'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
 
-	<div class="clearfix <?php echo $model->archive_multiple == 0 ? '' :'hide';?>" id="single">
-		<?php echo $form->labelEx($model,'archive_number_single'); ?>
+	<div class="clearfix <?php echo $model->list_multiple == 0 ? '' :'hide';?>" id="single">
+		<?php echo $form->labelEx($model,'archive_number_single_i'); ?>
 		<div class="desc">
-			<?php if(!$model->isNewRecord && $model->archive_multiple == 0)
-				$model->archive_number_single = unserialize($model->archive_numbers);
+			<?php if(!$model->isNewRecord && $model->list_multiple == 0)
+				$model->archive_number_single_i = unserialize($model->archive_numbers);
 			//echo '<pre>';
-			//print_r($model->archive_number_single);
+			//print_r($model->archive_number_single_i);
 			//echo '<pre>';?>
-			<?php echo $form->textField($model,'archive_number_single[start]', array('placeholder'=>'Start', 'class'=>'span-3')); ?>
-			<?php echo $form->textField($model,'archive_number_single[finish]', array('placeholder'=>'Finish', 'class'=>'span-3')); ?>
-			<?php echo $form->error($model,'archive_number_single'); ?>
+			<?php echo $form->textField($model,'archive_number_single_i[start]', array('placeholder'=>'Start', 'class'=>'span-3')); ?>
+			<?php echo $form->textField($model,'archive_number_single_i[finish]', array('placeholder'=>'Finish', 'class'=>'span-3')); ?>
+			<?php echo $form->error($model,'archive_number_single_i'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
 
-	<div class="clearfix <?php echo $model->archive_multiple == 1 ? '' :'hide';?>" id="multiple">
-		<?php echo $form->labelEx($model,'archive_number_multiple'); ?>
+	<div class="clearfix <?php echo $model->list_multiple == 1 ? '' :'hide';?>" id="multiple">
+		<?php echo $form->labelEx($model,'archive_number_multiple_i'); ?>
 		<div class="desc">
-			<?php if($model->archive_multiple == 1) {
+			<?php if($model->list_multiple == 1) {
 				if(!$model->getErrors())
-					$data = $model->archive_number_multiple = unserialize($model->archive_numbers);
+					$data = $model->archive_number_multiple_i = unserialize($model->archive_numbers);
 				else
-					$data = $model->archive_number_multiple;
+					$data = $model->archive_number_multiple_i;
 			}
 			if(!empty($data)) {
 				foreach($data as $key => $val) {
@@ -200,15 +200,15 @@ EOP;
 				}
 			}
 			//echo '<pre>';
-			//print_r($model->archive_number_multiple);
+			//print_r($model->archive_number_multiple_i);
 			//echo '<pre>';?>
 			<?php echo CHtml::button(Yii::t('phrase', 'Add Field'), array('id'=>'add-field')); ?>
-			<?php echo $form->error($model,'archive_number_multiple'); ?>
+			<?php echo $form->error($model,'archive_number_multiple_i'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
 
-	<div class="clearfix <?php echo $model->archive_multiple == 0 ? '' :'hide';?>" id="single">
+	<div class="clearfix <?php echo $model->list_multiple == 0 ? '' :'hide';?>" id="single">
 		<?php echo $form->labelEx($model,'archive_pages'); ?>
 		<div class="desc">
 			<?php echo $form->textField($model,'archive_pages',array('maxlength'=>11, 'class'=>'span-3')); ?>
@@ -217,10 +217,10 @@ EOP;
 	</div>
 
 	<div class="clearfix">
-		<?php echo $form->labelEx($model,'archive_copies'); ?>
+		<?php echo $form->labelEx($model,'list_copies'); ?>
 		<div class="desc">
-			<?php echo $form->textField($model,'archive_copies',array('maxlength'=>11, 'class'=>'span-3')); ?>
-			<?php echo $form->error($model,'archive_copies'); ?>
+			<?php echo $form->textField($model,'list_copies',array('maxlength'=>11, 'class'=>'span-3')); ?>
+			<?php echo $form->error($model,'list_copies'); ?>
 		</div>
 	</div>
 
@@ -235,16 +235,16 @@ EOP;
 	
 	<?php if($model->isNewRecord) {?>
 	<div class="clearfix">
-		<?php echo $form->labelEx($model,'back_field'); ?>
+		<?php echo $form->labelEx($model,'back_field_i'); ?>
 		<div class="desc">
-			<?php echo $form->checkBox($model,'back_field'); ?>
-			<?php echo $form->error($model,'back_field'); ?>
+			<?php echo $form->checkBox($model,'back_field_i'); ?>
+			<?php echo $form->error($model,'back_field_i'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
 	<?php } else {
-		$model->back_field = 1;
-		echo $form->hiddenField($model,'back_field');
+		$model->back_field_i = 1;
+		echo $form->hiddenField($model,'back_field_i');
 	}?>
 
 	<div class="submit clearfix">

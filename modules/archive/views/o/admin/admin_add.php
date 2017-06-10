@@ -1,6 +1,6 @@
 <?php
 /**
- * Archives (archives)
+ * Archives (lists)
  * @var $this AdminController
  * @var $model Archives
  * @var $form CActiveForm

@@ -1,6 +1,6 @@
 <?php
 /**
- * Archives (archives)
+ * Archives (lists)
  * @var $this AdminController
  * @var $model Archives
  * @var $form CActiveForm
@@ -21,7 +21,7 @@
 ?>
 
 <?php $form=$this->beginWidget('application.components.system.OActiveForm', array(
-	'id'=>'archives-form',
+	'id'=>'lists-form',
 	'enableAjaxValidation'=>true,
 	//'htmlOptions' => array('enctype' => 'multipart/form-data')
 )); ?>

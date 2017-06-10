@@ -40,9 +40,9 @@ if(Yii::app()->user->hasFlash('success'))
 			//'value'=>$model->publish,
 		),
 		array(
-			'name'=>'archive_id',
-			'value'=>$model->archive_id,
-			//'value'=>$model->archive_id != '' ? $model->archive_id : '-',
+			'name'=>'list_id',
+			'value'=>$model->list_id,
+			//'value'=>$model->list_id != '' ? $model->list_id : '-',
 		),
 		array(
 			'name'=>'convert_id',

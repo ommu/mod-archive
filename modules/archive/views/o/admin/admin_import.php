@@ -1,6 +1,6 @@
 <?php
 /**
- * Archives (archives)
+ * Archives (lists)
  * @var $this AdminController
  * @var $model Archives
  * @var $form CActiveForm
@@ -33,7 +33,7 @@
 		<div class="clearfix">
 			<label><?php echo Yii::t('attribute', 'Is Multiple Archive')?> <span class="required">*</span></label>
 			<div class="desc">
-				<?php echo CHtml::checkBox('archive_multiple');?>
+				<?php echo CHtml::checkBox('list_multiple');?>
 			</div>
 		</div>
 		

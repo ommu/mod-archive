@@ -20,10 +20,10 @@
  *
  * --------------------------------------------------------------------------------------
  *
- * This is the model class for table "_view_archives".
+ * This is the model class for table "_view_lists".
  *
- * The followings are the available columns in table '_view_archives':
- * @property string $archive_id
+ * The followings are the available columns in table '_view_lists':
+ * @property string $list_id
  * @property integer $converts
  * @property integer $convert_all
  * @property integer $story_enable
@@ -31,12 +31,12 @@
  * @property string $location_code
  * @property string $story_code
  * @property string $type_code
- * @property integer $archive_type_id
+ * @property integer $list_type_id
  */
 class ViewArchives extends CActiveRecord
 {
 	public $defaultColumns = array();
-	public $archive_code;
+	public $list_code_i;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -62,7 +62,7 @@ class ViewArchives extends CActiveRecord
 	 */
 	public function primaryKey()
 	{
-		return 'archive_id';
+		return 'list_id';
 	}
 
 	/**
@@ -73,14 +73,14 @@ class ViewArchives extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('archive_type_id', 'required'),
-			array('converts, convert_all, story_enable, type_enable, archive_type_id', 'numerical', 'integerOnly'=>true),
-			array('archive_id', 'length', 'max'=>11),
+			array('list_type_id', 'required'),
+			array('converts, convert_all, story_enable, type_enable, list_type_id', 'numerical', 'integerOnly'=>true),
+			array('list_id', 'length', 'max'=>11),
 			array('location_code, story_code, type_code', 'length', 'max'=>8),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('archive_id, converts, convert_all, story_enable, type_enable, location_code, story_code, type_code, archive_type_id,
-				archive_code', 'safe', 'on'=>'search'),
+			array('list_id, converts, convert_all, story_enable, type_enable, location_code, story_code, type_code, list_type_id,
+				list_code_i', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -101,7 +101,7 @@ class ViewArchives extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'archive_id' => Yii::t('attribute', 'Archive'),
+			'list_id' => Yii::t('attribute', 'Archive'),
 			'converts' => Yii::t('attribute', 'Converts'),
 			'convert_all' => Yii::t('attribute', 'Convert All'),
 			'story_enable' => Yii::t('attribute', 'Story Enable'),
@@ -109,8 +109,8 @@ class ViewArchives extends CActiveRecord
 			'location_code' => Yii::t('attribute', 'Location Code'),
 			'story_code' => Yii::t('attribute', 'Story Code'),
 			'type_code' => Yii::t('attribute', 'Type Code'),
-			'archive_type_id' => Yii::t('attribute', 'Archive Type ID'),
-			'archive_code' => Yii::t('attribute', 'Code'),
+			'list_type_id' => Yii::t('attribute', 'Archive Type ID'),
+			'list_code_i' => Yii::t('attribute', 'Code'),
 		);
 		/*
 			'Archive' => 'Archive',
@@ -142,7 +142,7 @@ class ViewArchives extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('t.archive_id',$this->archive_id);
+		$criteria->compare('t.list_id',$this->list_id);
 		$criteria->compare('t.converts',$this->converts);
 		$criteria->compare('t.convert_all',$this->convert_all);
 		$criteria->compare('t.story_enable',$this->story_enable);
@@ -150,11 +150,11 @@ class ViewArchives extends CActiveRecord
 		$criteria->compare('t.location_code',strtolower($this->location_code),true);
 		$criteria->compare('t.story_code',strtolower($this->story_code),true);
 		$criteria->compare('t.type_code',strtolower($this->type_code),true);
-		$criteria->compare('t.archive_type_id',$this->archive_type_id);
-		$criteria->compare('t.archive_code',$this->archive_code,true);
+		$criteria->compare('t.list_type_id',$this->list_type_id);
+		$criteria->compare('t.list_code_i',$this->list_code_i,true);
 
 		if(!isset($_GET['ViewArchives_sort']))
-			$criteria->order = 't.archive_id DESC';
+			$criteria->order = 't.list_id DESC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -182,7 +182,7 @@ class ViewArchives extends CActiveRecord
 				$this->defaultColumns[] = $val;
 			}
 		} else {
-			$this->defaultColumns[] = 'archive_id';
+			$this->defaultColumns[] = 'list_id';
 			$this->defaultColumns[] = 'converts';
 			$this->defaultColumns[] = 'convert_all';
 			$this->defaultColumns[] = 'story_enable';
@@ -190,7 +190,7 @@ class ViewArchives extends CActiveRecord
 			$this->defaultColumns[] = 'location_code';
 			$this->defaultColumns[] = 'story_code';
 			$this->defaultColumns[] = 'type_code';
-			$this->defaultColumns[] = 'archive_type_id';
+			$this->defaultColumns[] = 'list_type_id';
 		}
 
 		return $this->defaultColumns;
@@ -205,16 +205,16 @@ class ViewArchives extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			//$this->defaultColumns[] = 'archive_id';
+			//$this->defaultColumns[] = 'list_id';
 			$this->defaultColumns[] = 'converts';
 			$this->defaultColumns[] = 'convert_all';
-			$this->defaultColumns[] = 'archive_code';
+			$this->defaultColumns[] = 'list_code_i';
 			$this->defaultColumns[] = 'story_enable';
 			$this->defaultColumns[] = 'type_enable';
 			$this->defaultColumns[] = 'location_code';
 			$this->defaultColumns[] = 'story_code';
 			$this->defaultColumns[] = 'type_code';
-			$this->defaultColumns[] = 'archive_type_id';
+			$this->defaultColumns[] = 'list_type_id';
 		}
 		parent::afterConstruct();
 	}
@@ -245,20 +245,20 @@ class ViewArchives extends CActiveRecord
 			$id = 0;
 		else
 			$id = $id;
-		$archive_code = array($location);
+		$list_code = array($location);
 		if($condition['story'] == 1)
-			array_push($archive_code, $story);
+			array_push($list_code, $story);
 		if($condition['type'] == 1)
-			array_push($archive_code, $type.$id);
+			array_push($list_code, $type.$id);
 		else
-			array_push($archive_code, $id);
+			array_push($list_code, $id);
 		
-		return implode(".", $archive_code);
+		return implode(".", $list_code);
 	}
 	
 	protected function afterFind() 
 	{
-		$this->archive_code = self::getCodeArchive(array('story'=>$this->story_enable,'type'=>$this->type_enable), $this->location_code, $this->story_code, $this->type_code, $this->archive_type_id);
+		$this->list_code_i = self::getCodeArchive(array('story'=>$this->story_enable,'type'=>$this->type_enable), $this->location_code, $this->story_code, $this->type_code, $this->list_type_id);
 		
 		parent::afterFind();		
 	}

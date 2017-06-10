@@ -19,79 +19,89 @@
 	);
 ?>
 
-<?php $this->widget('application.components.system.FDetailView', array(
-	'data'=>$model,
-	'attributes'=>array(
-		/* array(
-			'name'=>'convert_id',
-			'value'=>$model->convert_id,
-			//'value'=>$model->convert_id != '' ? $model->convert_id : '-',
-		), */
-		array(
-			'name'=>'convert_code',
-			'value'=>$model->view->convert_code,
+<div class="box">
+	<?php $this->widget('application.components.system.FDetailView', array(
+		'data'=>$model,
+		'attributes'=>array(
+			array(
+				'name'=>'convert_id',
+				'value'=>$model->convert_id,
+			),
+			array(
+				'name'=>'publish',
+				'value'=>$model->publish == '1' ? Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
+				'type'=>'raw',
+			),
+			array(
+				'name'=>'convert_multiple',
+				'value'=>$model->convert_multiple == '1' ? Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
+				'type'=>'raw',
+			),
+			array(
+				'name'=>'convert_code',
+				'value'=>$model->view->convert_code,
+			),
+			array(
+				'name'=>'convert_title',
+				'value'=>$model->convert_title ? $model->convert_title : '-',
+			),
+			array(
+				'name'=>'convert_desc',
+				'value'=>$model->convert_desc ? $model->convert_desc : '-',
+			),
+			array(
+				'name'=>'convert_parent',
+				'value'=>$model->convert_parent != 0 ? $model->convert_parent : '-',
+			),
+			array(
+				'name'=>'location_id',
+				'value'=>$model->location_id ? $model->location->location_name : '-',
+			),
+			array(
+				'name'=>'category_id',
+				'value'=>$model->category_id ? $model->category->category_name : '-',
+			),
+			array(
+				'name'=>'convert_cat_id',
+				'value'=>$model->convert_cat_id ? $model->convert_cat_id : '-',
+			),
+			array(
+				'name'=>'convert_publish_year',
+				'value'=>!in_array($model->convert_publish_year, array('0000','1970')) ? $model->convert_publish_year : '-',
+			),
+			array(
+				'name'=>'convert_copies',
+				'value'=>$model->convert_copies ? Yii::t('phrase', '$convert_copies eks', array('$convert_copies'=>$model->convert_copies)) : '-',
+			),
+			array(
+				'name'=>'archive_numbers',
+				'value'=>ArchiveConverts::getDetailItemArchive(unserialize($model->archive_numbers), $model->convert_multiple),
+				'type'=>'raw',
+			),
+			array(
+				'name'=>'convert_total_i',
+				'value'=>$model->convert_total_i,
+			),
+			array(
+				'name'=>'archive_pages',
+				'value'=>$model->archive_pages ? $model->archive_pages : '-',
+			),
+			array(
+				'name'=>'creation_date',
+				'value'=>!in_array($model->creation_date, array('0000-00-00 00:00:00','1970-01-01 00:00:00')) ? Utility::dateFormat($model->creation_date, true) : '-',
+			),
+			array(
+				'name'=>'creation_id',
+				'value'=>$model->creation_id ? $model->creation->displayname : '-',
+			),
+			array(
+				'name'=>'modified_date',
+				'value'=>!in_array($model->modified_date, array('0000-00-00 00:00:00','1970-01-01 00:00:00')) ? Utility::dateFormat($model->modified_date, true) : '-',
+			),
+			array(
+				'name'=>'modified_id',
+				'value'=>$model->modified_id ? $model->modified->displayname : '-',
+			),
 		),
-		array(
-			'name'=>'location_id',
-			'value'=>$model->location_id != 0 ? $model->location->location_name : '-',
-		),
-		array(
-			'name'=>'category_id',
-			'value'=>$model->category_id != 0 ? $model->category->category_name : '-',
-		),
-		array(
-			'name'=>'convert_cat_id',
-			'value'=>$model->convert_cat_id != 0 ? $model->convert_cat_id : '-',
-		),
-		array(
-			'name'=>'convert_publish_year',
-			'value'=>$model->convert_publish_year != '' ? $model->convert_publish_year : '-',
-		),
-		array(
-			'name'=>'convert_title',
-			'value'=>$model->convert_title != '' ? $model->convert_title : '-',
-		),
-		array(
-			'name'=>'convert_desc',
-			'value'=>$model->convert_desc != '' ? $model->convert_desc : '-',
-		),
-		array(
-			'name'=>'convert_numbers',
-			'value'=>ArchiveConverts::getDetailItemArchive(unserialize($model->convert_numbers), $model->convert_multiple),
-			'type'=>'raw',
-		),
-		array(
-			'name'=>'convert_total_i',
-			'value'=>$model->convert_total_i,
-		),
-		array(
-			'name'=>'convert_pages',
-			'value'=>$model->convert_pages != 0 ? $model->convert_pages : '-',
-		),
-		array(
-			'name'=>'convert_copies',
-			'value'=>$model->convert_copies != 0 ? $model->convert_copies.' eks' : '-',
-		),
-		array(
-			'name'=>'creation_date',
-			'value'=>!in_array($model->creation_date, array('0000-00-00 00:00:00','1970-01-01 00:00:00')) ? Utility::dateFormat($model->creation_date, true) : '-',
-		),
-		array(
-			'name'=>'creation_id',
-			'value'=>$model->creation_id != 0 ? $model->creation->displayname : '-',
-		),
-		array(
-			'name'=>'modified_date',
-			'value'=>!in_array($model->modified_date, array('0000-00-00 00:00:00','1970-01-01 00:00:00')) ? Utility::dateFormat($model->modified_date, true) : '-',
-		),
-		array(
-			'name'=>'modified_id',
-			'value'=>$model->modified_id != 0 ? $model->modified->displayname : '-',
-		),
-		array(
-			'name'=>'publish',
-			'value'=>$model->publish == '1' ? Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
-			'type'=>'raw',
-		),
-	),
-)); ?>
+	)); ?>
+</div>

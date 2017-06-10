@@ -1,6 +1,6 @@
 <?php
 /**
- * Archives (archives)
+ * Archives (lists)
  * @var $this AdminController
  * @var $model Archives
  * version: 0.0.1
@@ -50,7 +50,7 @@
 </div>
 <?php //end.Grid Option ?>
 
-<div id="partial-archives">
+<div id="partial-lists">
 	<?php //begin.Messages ?>
 	<div id="ajax-message">
 	<?php
@@ -96,7 +96,7 @@
 			));
 
 			$this->widget('application.components.system.OGridView', array(
-				'id'=>'archives-grid',
+				'id'=>'lists-grid',
 				'dataProvider'=>$model->search(),
 				'filter'=>$model,
 				'afterAjaxUpdate' => 'reinstallDatePicker',

@@ -1,6 +1,6 @@
 <?php
 /**
- * Archives (archives)
+ * Archives (lists)
  * @var $this SiteController
  * @var $model Archives
  * @var $form CActiveForm
@@ -21,8 +21,8 @@
 )); ?>
 	<ul>
 		<li>
-			<?php echo $model->getAttributeLabel('archive_id'); ?><br/>
-			<?php echo $form->textField($model,'archive_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $model->getAttributeLabel('list_id'); ?><br/>
+			<?php echo $form->textField($model,'list_id',array('size'=>11,'maxlength'=>11)); ?>
 		</li>
 
 		<li>
@@ -46,28 +46,28 @@
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('archive_title'); ?><br/>
-			<?php echo $form->textArea($model,'archive_title',array('rows'=>6, 'cols'=>50)); ?>
+			<?php echo $model->getAttributeLabel('list_title'); ?><br/>
+			<?php echo $form->textArea($model,'list_title',array('rows'=>6, 'cols'=>50)); ?>
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('archive_desc'); ?><br/>
-			<?php echo $form->textArea($model,'archive_desc',array('rows'=>6, 'cols'=>50)); ?>
+			<?php echo $model->getAttributeLabel('list_desc'); ?><br/>
+			<?php echo $form->textArea($model,'list_desc',array('rows'=>6, 'cols'=>50)); ?>
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('archive_type_id'); ?><br/>
-			<?php echo $form->textField($model,'archive_type_id'); ?>
+			<?php echo $model->getAttributeLabel('list_type_id'); ?><br/>
+			<?php echo $form->textField($model,'list_type_id'); ?>
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('archive_publish_year'); ?><br/>
-			<?php echo $form->textField($model,'archive_publish_year',array('size'=>4,'maxlength'=>4)); ?>
+			<?php echo $model->getAttributeLabel('list_publish_year'); ?><br/>
+			<?php echo $form->textField($model,'list_publish_year',array('size'=>4,'maxlength'=>4)); ?>
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('archive_multiple'); ?><br/>
-			<?php echo $form->textField($model,'archive_multiple'); ?>
+			<?php echo $model->getAttributeLabel('list_multiple'); ?><br/>
+			<?php echo $form->textField($model,'list_multiple'); ?>
 		</li>
 
 		<li>

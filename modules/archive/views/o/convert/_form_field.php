@@ -1,6 +1,6 @@
 <?php
 /**
- * Archives (archives)
+ * Archives (lists)
  * @var $this AdminController
  * @var $model Archives
  * @var $form CActiveForm
@@ -14,13 +14,13 @@
  *
  */
 
-	$key = $model->isNewRecord ? '0' : (empty($model->convert_number_multiple) ? '0' : $key);
+	$key = $model->isNewRecord ? '0' : (empty($model->convert_number_multiple_i) ? '0' : $key);
 ?>
 
 <div class="field">
-	<?php echo $form->textField($model,"convert_number_multiple[$key][id]", array('placeholder'=>'Detail Archive', 'class'=>'span-4')); ?>
-	<?php echo $form->textField($model,"convert_number_multiple[$key][start]", array('placeholder'=>'Start', 'class'=>'span-2')); ?>
-	<?php echo $form->textField($model,"convert_number_multiple[$key][finish]", array('placeholder'=>'Finish', 'class'=>'span-2')); ?>
-	<?php echo $form->textField($model,"convert_number_multiple[$key][pages]", array('placeholder'=>'Pages', 'class'=>'span-2')); ?>
+	<?php echo $form->textField($model,"convert_number_multiple_i[$key][id]", array('placeholder'=>'Detail Archive', 'class'=>'span-4')); ?>
+	<?php echo $form->textField($model,"convert_number_multiple_i[$key][start]", array('placeholder'=>'Start', 'class'=>'span-2')); ?>
+	<?php echo $form->textField($model,"convert_number_multiple_i[$key][finish]", array('placeholder'=>'Finish', 'class'=>'span-2')); ?>
+	<?php echo $form->textField($model,"convert_number_multiple_i[$key][pages]", array('placeholder'=>'Pages', 'class'=>'span-2')); ?>
 	<a class="drop" href="javascript:void(0);" title="<?php echo Yii::t('phrase', 'Drop');?>"><?php echo Yii::t('phrase', 'Drop');?></a>
 </div>

@@ -31,8 +31,8 @@
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('archive_id'); ?><br/>
-			<?php echo $form->textField($model,'archive_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $model->getAttributeLabel('list_id'); ?><br/>
+			<?php echo $form->textField($model,'list_id',array('size'=>11,'maxlength'=>11)); ?>
 		</li>
 
 		<li>

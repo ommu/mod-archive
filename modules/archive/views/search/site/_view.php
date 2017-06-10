@@ -1,6 +1,6 @@
 <?php
 /**
- * Archives (archives)
+ * Archives (lists)
  * @var $this SiteController
  * @var $data Archives
  * version: 0.0.1
@@ -16,8 +16,8 @@
 
 <div class="view">
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('archive_id')); ?>:</b>
-	<?php echo CHtml::link(CHtml::encode($data->archive_id), array('view', 'id'=>$data->archive_id)); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('list_id')); ?>:</b>
+	<?php echo CHtml::link(CHtml::encode($data->list_id), array('view', 'id'=>$data->list_id)); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('publish')); ?>:</b>
@@ -36,25 +36,25 @@
 	<?php echo CHtml::encode($data->story_id); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('archive_title')); ?>:</b>
-	<?php echo CHtml::encode($data->archive_title); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('list_title')); ?>:</b>
+	<?php echo CHtml::encode($data->list_title); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('archive_desc')); ?>:</b>
-	<?php echo CHtml::encode($data->archive_desc); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('list_desc')); ?>:</b>
+	<?php echo CHtml::encode($data->list_desc); ?>
 	<br />
 
 	<?php /*
-	<b><?php echo CHtml::encode($data->getAttributeLabel('archive_type_id')); ?>:</b>
-	<?php echo CHtml::encode($data->archive_type_id); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('list_type_id')); ?>:</b>
+	<?php echo CHtml::encode($data->list_type_id); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('archive_publish_year')); ?>:</b>
-	<?php echo CHtml::encode($data->archive_publish_year); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('list_publish_year')); ?>:</b>
+	<?php echo CHtml::encode($data->list_publish_year); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('archive_multiple')); ?>:</b>
-	<?php echo CHtml::encode($data->archive_multiple); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('list_multiple')); ?>:</b>
+	<?php echo CHtml::encode($data->list_multiple); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('archive_numbers')); ?>:</b>

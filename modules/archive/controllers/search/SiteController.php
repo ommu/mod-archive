@@ -192,7 +192,7 @@ class SiteController extends Controller
 	 */
 	protected function performAjaxValidation($model) 
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='archives-form') {
+		if(isset($_POST['ajax']) && $_POST['ajax']==='lists-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

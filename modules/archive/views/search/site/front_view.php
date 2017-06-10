@@ -1,6 +1,6 @@
 <?php
 /**
- * Archives (archives)
+ * Archives (lists)
  * @var $this SiteController
  * @var $model Archives
  * version: 0.0.1
@@ -15,7 +15,7 @@
 
 	$this->breadcrumbs=array(
 		'Archives'=>array('manage'),
-		$model->archive_id,
+		$model->list_id,
 	);
 ?>
 
@@ -30,9 +30,9 @@ if(Yii::app()->user->hasFlash('success'))
 	'data'=>$model,
 	'attributes'=>array(
 		array(
-			'name'=>'archive_id',
-			'value'=>$model->archive_id,
-			//'value'=>$model->archive_id != '' ? $model->archive_id : '-',
+			'name'=>'list_id',
+			'value'=>$model->list_id,
+			//'value'=>$model->list_id != '' ? $model->list_id : '-',
 		),
 		array(
 			'name'=>'publish',
@@ -55,31 +55,31 @@ if(Yii::app()->user->hasFlash('success'))
 			//'value'=>$model->story_id != '' ? $model->story_id : '-',
 		),
 		array(
-			'name'=>'archive_title',
-			'value'=>$model->archive_title != '' ? $model->archive_title : '-',
-			//'value'=>$model->archive_title != '' ? CHtml::link($model->archive_title, Yii::app()->request->baseUrl.'/public/visit/'.$model->archive_title, array('target' => '_blank')) : '-',
+			'name'=>'list_title',
+			'value'=>$model->list_title != '' ? $model->list_title : '-',
+			//'value'=>$model->list_title != '' ? CHtml::link($model->list_title, Yii::app()->request->baseUrl.'/public/visit/'.$model->list_title, array('target' => '_blank')) : '-',
 			'type'=>'raw',
 		),
 		array(
-			'name'=>'archive_desc',
-			'value'=>$model->archive_desc != '' ? $model->archive_desc : '-',
-			//'value'=>$model->archive_desc != '' ? CHtml::link($model->archive_desc, Yii::app()->request->baseUrl.'/public/visit/'.$model->archive_desc, array('target' => '_blank')) : '-',
+			'name'=>'list_desc',
+			'value'=>$model->list_desc != '' ? $model->list_desc : '-',
+			//'value'=>$model->list_desc != '' ? CHtml::link($model->list_desc, Yii::app()->request->baseUrl.'/public/visit/'.$model->list_desc, array('target' => '_blank')) : '-',
 			'type'=>'raw',
 		),
 		array(
-			'name'=>'archive_type_id',
-			'value'=>$model->archive_type_id,
-			//'value'=>$model->archive_type_id != '' ? $model->archive_type_id : '-',
+			'name'=>'list_type_id',
+			'value'=>$model->list_type_id,
+			//'value'=>$model->list_type_id != '' ? $model->list_type_id : '-',
 		),
 		array(
-			'name'=>'archive_publish_year',
-			'value'=>$model->archive_publish_year,
-			//'value'=>$model->archive_publish_year != '' ? $model->archive_publish_year : '-',
+			'name'=>'list_publish_year',
+			'value'=>$model->list_publish_year,
+			//'value'=>$model->list_publish_year != '' ? $model->list_publish_year : '-',
 		),
 		array(
-			'name'=>'archive_multiple',
-			'value'=>$model->archive_multiple,
-			//'value'=>$model->archive_multiple != '' ? $model->archive_multiple : '-',
+			'name'=>'list_multiple',
+			'value'=>$model->list_multiple,
+			//'value'=>$model->list_multiple != '' ? $model->list_multiple : '-',
 		),
 		array(
 			'name'=>'archive_numbers',

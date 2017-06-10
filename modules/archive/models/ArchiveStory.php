@@ -95,9 +95,9 @@ class ArchiveStory extends CActiveRecord
 			'view' => array(self::BELONGS_TO, 'ViewArchiveStory', 'story_id'),
 			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
-			'archives' => array(self::HAS_MANY, 'Archives', 'story_id', 'on'=>'archives.publish = 1'),
+			'lists' => array(self::HAS_MANY, 'Archives', 'story_id', 'on'=>'lists.publish = 1'),
 			'archive_unpublish' => array(self::HAS_MANY, 'Archives', 'story_id', 'on'=>'archive_unpublish.publish = 0'),
-			'archive_all' => array(self::HAS_MANY, 'Archives', 'story_id'),
+			'list_all' => array(self::HAS_MANY, 'Archives', 'story_id'),
 		);
 	}
 
@@ -120,7 +120,7 @@ class ArchiveStory extends CActiveRecord
 			'modified_search' => Yii::t('attribute', 'Modified'),
 			'archive_total_i' => Yii::t('attribute', 'Total'),
 			'archive_page_i' => Yii::t('attribute', 'Archive Pages'),
-			'archive_search' => Yii::t('attribute', 'Archive'),
+			'archive_search' => Yii::t('attribute', 'Senarai'),
 		);
 		/*
 			'Story' => 'Story',
@@ -166,7 +166,7 @@ class ArchiveStory extends CActiveRecord
 			),
 			'view' => array(
 				'alias'=>'view',
-				'select'=>'archives',
+				'select'=>'lists',
 			),
 		);
 
@@ -199,7 +199,7 @@ class ArchiveStory extends CActiveRecord
 		
 		$criteria->compare('t.archive_total_i',$this->archive_total_i);
 		$criteria->compare('t.archive_page_i',$this->archive_page_i);		
-		$criteria->compare('view.archives',$this->archive_search);
+		$criteria->compare('view.lists',$this->archive_search);
 		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
 		$criteria->compare('modified.displayname',strtolower($this->modified_search),true);
 
@@ -303,7 +303,7 @@ class ArchiveStory extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'archive_search',
-				'value' => 'CHtml::link($data->view->archives ? $data->view->archives : 0, Yii::app()->controller->createUrl("o/admin/manage",array("story"=>$data->story_id)))',
+				'value' => 'CHtml::link($data->view->lists ? $data->view->lists : 0, Yii::app()->controller->createUrl("o/admin/manage",array("story"=>$data->story_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -369,8 +369,8 @@ class ArchiveStory extends CActiveRecord
 	}
 	
 	protected function afterFind() {
-		$this->archive_total_i = Archives::getTotalItemArchive($this->archives());
-		$this->archive_page_i = Archives::getTotalItemArchive($this->archives(), 'page');
+		$this->archive_total_i = Archives::getTotalItemArchive($this->lists());
+		$this->archive_page_i = Archives::getTotalItemArchive($this->lists(), 'page');
 		
 		parent::afterFind();		
 	}

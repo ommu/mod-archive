@@ -116,7 +116,7 @@ class ConvertController extends Controller
 		if(Yii::app()->request->isAjaxRequest) {
 			if(isset($_GET['term'])) {
 				$criteria = new CDbCriteria;
-				$criteria->select = 'convert_id, location_id, category_id, convert_title, convert_publish_year, convert_multiple, convert_pages, convert_copies, convert_code';
+				$criteria->select = 'convert_id, location_id, category_id, convert_title, convert_publish_year, convert_multiple, archive_pages, convert_copies, convert_code';
 				//$criteria->compare('convert_parent',0);
 				$criteria->compare('convert_title', strtolower($_GET['term']), true);
 				$criteria->compare('convert_code', strtolower($_GET['term']), true, 'OR');
@@ -133,7 +133,7 @@ class ConvertController extends Controller
 							'category' => $items->category_id, 
 							'year' => $items->convert_publish_year, 
 							'multiple' => $items->convert_multiple, 
-							'page' => $items->convert_pages, 
+							'page' => $items->archive_pages, 
 							'copy' => $items->convert_copies, 
 						);
 					}
@@ -214,32 +214,32 @@ class ConvertController extends Controller
 						$convert_title			= trim($xls->sheets[0]['cells'][$row][2]);
 						$location_code			= strtolower(trim($xls->sheets[0]['cells'][$row][3]));
 						$category_code			= strtolower(trim($xls->sheets[0]['cells'][$row][4]));
-						$convert_numbers		= trim($xls->sheets[0]['cells'][$row][5]);
-						$convert_pages			= strtolower(trim($xls->sheets[0]['cells'][$row][6]));
+						$archive_numbers		= trim($xls->sheets[0]['cells'][$row][5]);
+						$archive_pages			= strtolower(trim($xls->sheets[0]['cells'][$row][6]));
 						$convert_copies			= strtolower(trim($xls->sheets[0]['cells'][$row][7]));
 						$convert_publish_year	= strtoupper(trim($xls->sheets[0]['cells'][$row][8]));
 						$convert_desc			= trim($xls->sheets[0]['cells'][$row][9]);
 						
 						$convert_code = explode('.', $convert_code);
 						if($convert_multiple == 0)
-							$convert_numbers = explode('-', $convert_numbers);
+							$archive_numbers = explode('-', $archive_numbers);
 						
 						else {
-							$convert_numbers = explode('#', $convert_numbers);
+							$archive_numbers = explode('#', $archive_numbers);
 							
-							if(!empty($convert_numbers)) {
-								foreach($convert_numbers as $key => $val) {
-									$convert_numbers[$key] = explode('-', trim($val));
-									foreach($convert_numbers[$key] as $key2 => $val2) {
+							if(!empty($archive_numbers)) {
+								foreach($archive_numbers as $key => $val) {
+									$archive_numbers[$key] = explode('-', trim($val));
+									foreach($archive_numbers[$key] as $key2 => $val2) {
 										if($key2 == 0) {
-											$convert_numbers[$key]['id'] = trim($convert_numbers[$key][0]);
-											unset($convert_numbers[$key][0]);
+											$archive_numbers[$key]['id'] = trim($archive_numbers[$key][0]);
+											unset($archive_numbers[$key][0]);
 										} else if($key2 == 1) {
-											$convert_numbers[$key]['start'] = trim($convert_numbers[$key][1]);
-											unset($convert_numbers[$key][1]);
+											$archive_numbers[$key]['start'] = trim($archive_numbers[$key][1]);
+											unset($archive_numbers[$key][1]);
 										} else if($key2 == 2) {
-											$convert_numbers[$key]['finish'] = trim($convert_numbers[$key][2]);
-											unset($convert_numbers[$key][2]);
+											$archive_numbers[$key]['finish'] = trim($archive_numbers[$key][2]);
+											unset($archive_numbers[$key][2]);
 										}
 									}
 								}
@@ -265,13 +265,13 @@ class ConvertController extends Controller
 								$model->convert_publish_year = $convert_publish_year;
 								$model->convert_multiple = $convert_multiple;
 								if($convert_multiple == 0) {
-									$model->convert_number_single = array(
-										'start'=>trim($convert_numbers[0]),
-										'finish'=>trim($convert_numbers[1]),
+									$model->convert_number_single_i = array(
+										'start'=>trim($archive_numbers[0]),
+										'finish'=>trim($archive_numbers[1]),
 									);
 								} else 
-									$model->convert_number_multiple = $convert_numbers;
-								$model->convert_pages = $convert_pages;
+									$model->convert_number_multiple_i = $archive_numbers;
+								$model->archive_pages = $archive_pages;
 								$model->convert_copies = $convert_copies;
 								$model->save();
 								
@@ -313,7 +313,7 @@ class ConvertController extends Controller
 		$id = $_GET['parent'];
 		if(isset($id)) {
 			$parent = ArchiveConverts::model()->findByPk($id,array(
-				'select' => 'convert_id, location_id, category_id, convert_title, convert_publish_year, convert_pages, convert_copies',
+				'select' => 'convert_id, location_id, category_id, convert_title, convert_publish_year, archive_pages, convert_copies',
 			));
 		}
 		
@@ -330,7 +330,7 @@ class ConvertController extends Controller
 			if($model->save()) {
 				Yii::app()->user->setFlash('success', Yii::t('phrase', 'ArchiveConverts success created.'));
 				//$this->redirect(array('view','id'=>$model->convert_id));
-				if($model->back_field == 1)
+				if($model->back_field_i == 1)
 					$this->redirect(array('manage'));
 				else {
 					if($model->convert_parent == 0)
@@ -364,7 +364,7 @@ class ConvertController extends Controller
 		
 		$model=$this->loadModel($id);		
 		$parent = ArchiveConverts::model()->findByPk($model->convert_parent,array(
-			'select' => 'convert_id, location_id, category_id, convert_title, convert_publish_year, convert_pages, convert_copies',
+			'select' => 'convert_id, location_id, category_id, convert_title, convert_publish_year, archive_pages, convert_copies',
 		));
 
 		// Uncomment the following line if AJAX validation is needed

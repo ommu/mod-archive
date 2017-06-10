@@ -1,6 +1,6 @@
 <?php
 /**
- * Archives (archives)
+ * Archives (lists)
  * @var $this AdminController
  * @var $model Archives
  * @var $form CActiveForm
@@ -16,7 +16,7 @@
 
 	$this->breadcrumbs=array(
 		'Archives'=>array('manage'),
-		$model->archive_id=>array('view','id'=>$model->archive_id),
+		$model->list_id=>array('view','id'=>$model->list_id),
 		'Update',
 	);
 ?>

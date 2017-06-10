@@ -101,9 +101,9 @@ class ArchiveLocation extends CActiveRecord
 			'view' => array(self::BELONGS_TO, 'ViewArchiveLocation', 'location_id'),
 			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
-			'archives' => array(self::HAS_MANY, 'Archives', 'location_id', 'on'=>'archives.publish = 1'),
+			'lists' => array(self::HAS_MANY, 'Archives', 'location_id', 'on'=>'lists.publish = 1'),
 			'archive_unpublish' => array(self::HAS_MANY, 'Archives', 'location_id', 'on'=>'archive_unpublish.publish = 0'),
-			'archive_all' => array(self::HAS_MANY, 'Archives', 'location_id'),
+			'list_all' => array(self::HAS_MANY, 'Archives', 'location_id'),
 			'converts' => array(self::HAS_MANY, 'ArchiveConverts', 'location_id', 'on'=>'converts.publish = 1'),
 			'convert_unpublish' => array(self::HAS_MANY, 'ArchiveConverts', 'location_id', 'on'=>'convert_unpublish.publish = 0'),
 			'convert_all' => array(self::HAS_MANY, 'ArchiveConverts', 'location_id'),
@@ -134,8 +134,8 @@ class ArchiveLocation extends CActiveRecord
 			'convert_total_i' => Yii::t('attribute', 'Convert Total'),
 			'convert_page_i' => Yii::t('attribute', 'Convert Pages'),
 			'convert_copy_i' => Yii::t('attribute', 'Convert Copies'),
-			'archive_search' => Yii::t('attribute', 'Archive'),
-			'convert_search' => Yii::t('attribute', 'Convert'),
+			'archive_search' => Yii::t('attribute', 'Senarai'),
+			'convert_search' => Yii::t('attribute', 'Alih'),
 		);
 		/*
 			'Location' => 'Location',
@@ -182,7 +182,7 @@ class ArchiveLocation extends CActiveRecord
 			),
 			'view' => array(
 				'alias'=>'view',
-				'select'=>'archives, converts',
+				'select'=>'lists, converts',
 			),
 		);
 
@@ -220,7 +220,7 @@ class ArchiveLocation extends CActiveRecord
 		$criteria->compare('t.convert_total_i',$this->convert_total_i);
 		$criteria->compare('t.convert_page_i',$this->convert_page_i);
 		$criteria->compare('t.convert_copy_i',$this->convert_copy_i);
-		$criteria->compare('view.archives',$this->archive_search);
+		$criteria->compare('view.lists',$this->archive_search);
 		$criteria->compare('view.converts',$this->convert_search);		
 		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
 		$criteria->compare('modified.displayname',strtolower($this->modified_search),true);
@@ -327,7 +327,7 @@ class ArchiveLocation extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'archive_search',
-				'value' => 'CHtml::link($data->view->archives ? $data->view->archives : 0, Yii::app()->controller->createUrl("o/admin/manage",array("location"=>$data->location_id)))',
+				'value' => 'CHtml::link($data->view->lists ? $data->view->lists : 0, Yii::app()->controller->createUrl("o/admin/manage",array("location"=>$data->location_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -429,8 +429,8 @@ class ArchiveLocation extends CActiveRecord
 	}
 	
 	protected function afterFind() {
-		$this->archive_total_i = Archives::getTotalItemArchive($this->archives());
-		$this->archive_page_i = Archives::getTotalItemArchive($this->archives(), 'page');
+		$this->archive_total_i = Archives::getTotalItemArchive($this->lists());
+		$this->archive_page_i = Archives::getTotalItemArchive($this->lists(), 'page');
 		$this->convert_total_i = ArchiveConverts::getTotalItemArchive($this->converts());
 		$this->convert_page_i = ArchiveConverts::getTotalItemArchive($this->converts(), 'page');
 		$this->convert_copy_i = ArchiveConverts::getTotalItemArchive($this->converts(), 'copy');

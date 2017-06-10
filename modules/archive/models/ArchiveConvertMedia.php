@@ -25,7 +25,7 @@
  * The followings are the available columns in table 'ommu_archive_convert_media':
  * @property string $id
  * @property integer $publish
- * @property string $archive_id
+ * @property string $list_id
  * @property string $convert_id
  * @property string $media_desc
  * @property string $creation_date
@@ -38,8 +38,8 @@
 class ArchiveConvertMedia extends CActiveRecord
 {
 	public $defaultColumns = array();
-	public $archive_code;
-	public $convert_code;
+	public $list_code_i;
+	public $convert_code_i;
 	
 	// Variable Search
 	public $archive_search;
@@ -73,16 +73,17 @@ class ArchiveConvertMedia extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('archive_code, convert_code', 'required'),
-			array('publish', 'numerical', 'integerOnly'=>true),
-			array('archive_id, convert_id, creation_id', 'length', 'max'=>11),
 			array('
-				archive_code, convert_code', 'length', 'max'=>32),
-			array('archive_id, convert_id, media_desc', 'safe'),
+				list_code_i, convert_code_i', 'required'),
+			array('publish', 'numerical', 'integerOnly'=>true),
+			array('list_id, convert_id, creation_id', 'length', 'max'=>11),
+			array('
+				list_code_i, convert_code_i', 'length', 'max'=>32),
+			array('list_id, convert_id, media_desc', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, publish, archive_id, convert_id, media_desc, creation_date, creation_id,
-				archive_code, convert_code, archive_search, convert_search, creation_search', 'safe', 'on'=>'search'),
+			array('id, publish, list_id, convert_id, media_desc, creation_date, creation_id,
+				list_code_i, convert_code_i, archive_search, convert_search, creation_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -94,7 +95,7 @@ class ArchiveConvertMedia extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'archive' => array(self::BELONGS_TO, 'Archives', 'archive_id'),
+			'archive' => array(self::BELONGS_TO, 'Archives', 'list_id'),
 			'convert' => array(self::BELONGS_TO, 'ArchiveConverts', 'convert_id'),
 			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 		);
@@ -108,15 +109,15 @@ class ArchiveConvertMedia extends CActiveRecord
 		return array(
 			'id' => Yii::t('attribute', 'ID'),
 			'publish' => Yii::t('attribute', 'Publish'),
-			'archive_id' => Yii::t('attribute', 'Archive'),
-			'convert_id' => Yii::t('attribute', 'Convert'),
+			'list_id' => Yii::t('attribute', 'Senarai'),
+			'convert_id' => Yii::t('attribute', 'Alih'),
 			'media_desc' => Yii::t('attribute', 'Description'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
-			'archive_code' => Yii::t('attribute', 'Archive Code'),
-			'convert_code' => Yii::t('attribute', 'Convert Code'),
-			'archive_search' => Yii::t('attribute', 'Archive'),
-			'convert_search' => Yii::t('attribute', 'Convert'),
+			'list_code_i' => Yii::t('attribute', 'Senarai Code'),
+			'convert_code_i' => Yii::t('attribute', 'Alih Code'),
+			'archive_search' => Yii::t('attribute', 'Senarai'),
+			'convert_search' => Yii::t('attribute', 'Alih'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 		);
 		/*
@@ -153,7 +154,7 @@ class ArchiveConvertMedia extends CActiveRecord
 		$criteria->with = array(
 			'archive' => array(
 				'alias'=>'archive',
-				'select'=>'archive_title, archive_code',
+				'select'=>'list_title, list_code',
 			),
 			'convert' => array(
 				'alias'=>'convert',
@@ -177,9 +178,9 @@ class ArchiveConvertMedia extends CActiveRecord
 			$criteria->compare('t.publish',$this->publish);
 		}
 		if(isset($_GET['archive']))
-			$criteria->compare('t.archive_id',$_GET['archive']);
+			$criteria->compare('t.list_id',$_GET['archive']);
 		else
-			$criteria->compare('t.archive_id',$this->archive_id);
+			$criteria->compare('t.list_id',$this->list_id);
 		if(isset($_GET['convert']))
 			$criteria->compare('t.convert_id',$_GET['convert']);
 		else
@@ -192,7 +193,7 @@ class ArchiveConvertMedia extends CActiveRecord
 		else
 			$criteria->compare('t.creation_id',$this->creation_id);
 		
-		$criteria->compare('archive.archive_code',strtolower($this->archive_search),true);
+		$criteria->compare('archive.list_code',strtolower($this->archive_search),true);
 		$criteria->compare('convert.convert_code',strtolower($this->convert_search),true);
 		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
 
@@ -227,7 +228,7 @@ class ArchiveConvertMedia extends CActiveRecord
 		} else {
 			//$this->defaultColumns[] = 'id';
 			$this->defaultColumns[] = 'publish';
-			$this->defaultColumns[] = 'archive_id';
+			$this->defaultColumns[] = 'list_id';
 			$this->defaultColumns[] = 'convert_id';
 			$this->defaultColumns[] = 'media_desc';
 			$this->defaultColumns[] = 'creation_date';
@@ -256,7 +257,7 @@ class ArchiveConvertMedia extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'archive_search',
-				'value' => 'strtoupper($data->archive->archive_code)."<br/><span>".$data->archive->archive_title."</span>"',
+				'value' => 'strtoupper($data->archive->list_code)."<br/><span>".$data->archive->list_title."</span>"',
 				'htmlOptions' => array(
 					'class' => 'bold',
 				),
@@ -270,7 +271,6 @@ class ArchiveConvertMedia extends CActiveRecord
 				),
 				'type' => 'raw',
 			);
-			$this->defaultColumns[] = 'media_desc';
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
 				'value' => '$data->creation->displayname',

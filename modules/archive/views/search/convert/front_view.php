@@ -82,15 +82,15 @@ if(Yii::app()->user->hasFlash('success'))
 			//'value'=>$model->convert_multiple != '' ? $model->convert_multiple : '-',
 		),
 		array(
-			'name'=>'convert_numbers',
-			'value'=>$model->convert_numbers != '' ? $model->convert_numbers : '-',
-			//'value'=>$model->convert_numbers != '' ? CHtml::link($model->convert_numbers, Yii::app()->request->baseUrl.'/public/visit/'.$model->convert_numbers, array('target' => '_blank')) : '-',
+			'name'=>'archive_numbers',
+			'value'=>$model->archive_numbers != '' ? $model->archive_numbers : '-',
+			//'value'=>$model->archive_numbers != '' ? CHtml::link($model->archive_numbers, Yii::app()->request->baseUrl.'/public/visit/'.$model->archive_numbers, array('target' => '_blank')) : '-',
 			'type'=>'raw',
 		),
 		array(
-			'name'=>'convert_pages',
-			'value'=>$model->convert_pages,
-			//'value'=>$model->convert_pages != '' ? $model->convert_pages : '-',
+			'name'=>'archive_pages',
+			'value'=>$model->archive_pages,
+			//'value'=>$model->archive_pages != '' ? $model->archive_pages : '-',
 		),
 		array(
 			'name'=>'convert_copies',

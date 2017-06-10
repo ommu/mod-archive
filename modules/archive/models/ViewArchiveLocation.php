@@ -24,8 +24,8 @@
  *
  * The followings are the available columns in table '_view_archive_location':
  * @property integer $location_id
- * @property string $archives
- * @property string $archive_all
+ * @property string $lists
+ * @property string $list_all
  * @property string $converts
  * @property string $convert_all
  * @property string $convert_unpublish
@@ -70,10 +70,10 @@ class ViewArchiveLocation extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('location_id', 'numerical', 'integerOnly'=>true),
-			array('archives, archive_all, converts, convert_all', 'length', 'max'=>21),
+			array('lists, list_all, converts, convert_all', 'length', 'max'=>21),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('location_id, archives, archive_all, converts, convert_all', 'safe', 'on'=>'search'),
+			array('location_id, lists, list_all, converts, convert_all', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -95,8 +95,8 @@ class ViewArchiveLocation extends CActiveRecord
 	{
 		return array(
 			'location_id' => Yii::t('attribute', 'Location'),
-			'archives' => Yii::t('attribute', 'Archives'),
-			'archive_all' => Yii::t('attribute', 'Archive All'),
+			'lists' => Yii::t('attribute', 'Archives'),
+			'list_all' => Yii::t('attribute', 'Archive All'),
 			'converts' => Yii::t('attribute', 'Converts'),
 			'convert_all' => Yii::t('attribute', 'Convert All'),
 		);
@@ -128,8 +128,8 @@ class ViewArchiveLocation extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('t.location_id',$this->location_id);
-		$criteria->compare('t.archives',$this->archives);
-		$criteria->compare('t.archive_all',$this->archive_all);
+		$criteria->compare('t.lists',$this->lists);
+		$criteria->compare('t.list_all',$this->list_all);
 		$criteria->compare('t.converts',$this->converts);
 		$criteria->compare('t.convert_all',$this->convert_all);
 
@@ -163,8 +163,8 @@ class ViewArchiveLocation extends CActiveRecord
 			}
 		} else {
 			$this->defaultColumns[] = 'location_id';
-			$this->defaultColumns[] = 'archives';
-			$this->defaultColumns[] = 'archive_all';
+			$this->defaultColumns[] = 'lists';
+			$this->defaultColumns[] = 'list_all';
 			$this->defaultColumns[] = 'converts';
 			$this->defaultColumns[] = 'convert_all';
 		}
@@ -182,8 +182,8 @@ class ViewArchiveLocation extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			//$this->defaultColumns[] = 'location_id';
-			$this->defaultColumns[] = 'archives';
-			$this->defaultColumns[] = 'archive_all';
+			$this->defaultColumns[] = 'lists';
+			$this->defaultColumns[] = 'list_all';
 			$this->defaultColumns[] = 'converts';
 			$this->defaultColumns[] = 'convert_all';
 		}

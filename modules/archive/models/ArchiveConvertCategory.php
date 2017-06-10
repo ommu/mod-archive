@@ -122,7 +122,7 @@ class ArchiveConvertCategory extends CActiveRecord
 			'convert_total_i' => Yii::t('attribute', 'Total'),
 			'convert_page_i' => Yii::t('attribute', 'Convert Pages'),
 			'convert_copy_i' => Yii::t('attribute', 'Convert Copies'),
-			'convert_search' => Yii::t('attribute', 'Convert'),
+			'convert_search' => Yii::t('attribute', 'Alih'),
 		);
 		/*
 			'Category' => 'Category',

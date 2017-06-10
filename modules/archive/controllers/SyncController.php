@@ -100,7 +100,7 @@ class SyncController extends Controller
 		
 		$criteria = new CDbCriteria;
 		if($index == 'archive') {
-			$criteria->select = "archive_id, location_id, type_id, story_id, archive_type_id";
+			$criteria->select = "list_id, location_id, type_id, story_id, list_type_id";
 			$model = Archives::model()->findAll($criteria);
 		} else {
 			$criteria->select = "convert_id, location_id, category_id, convert_cat_id";
@@ -110,7 +110,7 @@ class SyncController extends Controller
 		if($model) {
 			foreach($model as $key => $val) {
 				if($index == 'archive') {
-					$data = Archives::model()->findByPk($val->archive_id);
+					$data = Archives::model()->findByPk($val->list_id);
 				} else {
 					$data = ArchiveConverts::model()->findByPk($val->convert_id);
 				}

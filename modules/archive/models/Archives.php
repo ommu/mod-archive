@@ -20,23 +20,23 @@
  *
  * --------------------------------------------------------------------------------------
  *
- * This is the model class for table "ommu_archives".
+ * This is the model class for table "ommu_lists".
  *
- * The followings are the available columns in table 'ommu_archives':
- * @property string $archive_id
+ * The followings are the available columns in table 'ommu_lists':
+ * @property string $list_id
  * @property integer $publish
  * @property integer $location_id
  * @property integer $type_id
  * @property integer $story_id
- * @property string $archive_title
- * @property string $archive_desc
- * @property integer $archive_type_id
- * @property string $archive_publish_year
- * @property integer $archive_multiple
+ * @property string $list_title
+ * @property string $list_desc
+ * @property integer $list_type_id
+ * @property string $list_publish_year
+ * @property integer $list_multiple
+ * @property string $list_copies
+ * @property string $list_code
  * @property string $archive_numbers
  * @property string $archive_pages
- * @property string $archive_copies
- * @property string $archive_code
  * @property string $creation_date
  * @property string $creation_id
  * @property string $modified_date
@@ -49,12 +49,11 @@ class Archives extends CActiveRecord
 {
 	public $defaultColumns = array();
 	public $archive_total_i;
-	public $back_field;
-	public $archive_number_single;
-	public $archive_number_multiple;
+	public $back_field_i;
+	public $archive_number_single_i;
+	public $archive_number_multiple_i;
 	
 	// Variable Search
-	public $archive_code_search;
 	public $convert_search;
 	public $creation_search;
 	public $modified_search;
@@ -86,19 +85,19 @@ class Archives extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('location_id, archive_title, archive_publish_year', 'required'),
-			array('archive_type_id', 'required', 'on'=>'not_auto_numbering'),
-			array('publish, location_id, type_id, story_id, archive_type_id, archive_multiple,
-				back_field', 'numerical', 'integerOnly'=>true),
-			array('archive_publish_year', 'length', 'max'=>4),
-			array('archive_pages, archive_copies, creation_id, modified_id', 'length', 'max'=>11),
-			array('archive_code', 'length', 'max'=>32),
-			array('type_id, story_id, archive_desc, archive_numbers, archive_pages, archive_copies, archive_code,
-				archive_number_single, archive_number_multiple', 'safe'),
+			array('location_id, list_title, list_publish_year', 'required'),
+			array('list_type_id', 'required', 'on'=>'not_auto_numbering'),
+			array('publish, location_id, type_id, story_id, list_type_id, list_multiple,
+				back_field_i', 'numerical', 'integerOnly'=>true),
+			array('list_publish_year', 'length', 'max'=>4),
+			array('archive_pages, list_copies, creation_id, modified_id', 'length', 'max'=>11),
+			array('list_code', 'length', 'max'=>32),
+			array('type_id, story_id, list_desc, list_copies, list_code, archive_numbers, archive_pages,
+				archive_number_single_i, archive_number_multiple_i', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('archive_id, publish, location_id, type_id, story_id, archive_title, archive_desc, archive_type_id, archive_publish_year, archive_multiple, archive_numbers, archive_pages, archive_copies, archive_code, creation_date, creation_id, modified_date, modified_id,
-				archive_total_i, archive_code_search, convert_search, creation_search, modified_search', 'safe', 'on'=>'search'),
+			array('list_id, publish, location_id, type_id, story_id, list_title, list_desc, list_type_id, list_publish_year, list_multiple, list_copies, list_code, archive_numbers, archive_pages, creation_date, creation_id, modified_date, modified_id,
+				archive_total_i, convert_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -110,7 +109,7 @@ class Archives extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'view' => array(self::BELONGS_TO, 'ViewArchives', 'archive_id'),
+			'view' => array(self::BELONGS_TO, 'ViewArchives', 'list_id'),
 			'location' => array(self::BELONGS_TO, 'ArchiveLocation', 'location_id'),
 			'type' => array(self::BELONGS_TO, 'ArchiveType', 'type_id'),
 			'story' => array(self::BELONGS_TO, 'ArchiveStory', 'story_id'),
@@ -125,32 +124,31 @@ class Archives extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'archive_id' => Yii::t('attribute', 'Archive'),
+			'list_id' => Yii::t('attribute', 'Archive'),
 			'publish' => Yii::t('attribute', 'Publish'),
 			'location_id' => Yii::t('attribute', 'Location'),
 			'type_id' => Yii::t('attribute', 'Type'),
 			'story_id' => Yii::t('attribute', 'Story'),
-			'archive_title' => Yii::t('attribute', 'Title'),
-			'archive_desc' => Yii::t('attribute', 'Description'),
-			'archive_type_id' => Yii::t('attribute', 'ID (Number)'),
-			'archive_publish_year' => Yii::t('attribute', 'Publish Year'),
-			'archive_multiple' => Yii::t('attribute', 'Is Multiple Archive'),
-			'archive_numbers' => Yii::t('attribute', 'Numbers'),
-			'archive_pages' => Yii::t('attribute', 'Pages'),
-			'archive_copies' => Yii::t('attribute', 'Copies'),
-			'archive_code' => Yii::t('attribute', 'Code'),
+			'list_title' => Yii::t('attribute', 'Title'),
+			'list_desc' => Yii::t('attribute', 'Description'),
+			'list_type_id' => Yii::t('attribute', 'ID (Number)'),
+			'list_publish_year' => Yii::t('attribute', 'Publish Year'),
+			'list_multiple' => Yii::t('attribute', 'Is Multiple Archive'),
+			'list_copies' => Yii::t('attribute', 'Copies'),
+			'list_code' => Yii::t('attribute', 'Code'),
+			'archive_numbers' => Yii::t('attribute', 'Archive Numbers'),
+			'archive_pages' => Yii::t('attribute', 'Archive Pages'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
-			'archive_total_i' => Yii::t('attribute', 'Total'),
-			'archive_code_search' => Yii::t('attribute', 'Code'),
-			'convert_search' => Yii::t('attribute', 'Convert'),
-			'back_field' => Yii::t('attribute', 'Back to Manage'),
-			'archive_number_single' => Yii::t('attribute', 'Number Single'),
-			'archive_number_multiple' => Yii::t('attribute', 'Number Multiple'),
+			'archive_total_i' => Yii::t('attribute', 'Archives'),
+			'convert_search' => Yii::t('attribute', 'Alih'),
+			'back_field_i' => Yii::t('attribute', 'Back to Manage'),
+			'archive_number_single_i' => Yii::t('attribute', 'Archive Number'),
+			'archive_number_multiple_i' => Yii::t('attribute', 'Archive Number'),
 		);
 		/*
 			'Archive' => 'Archive',
@@ -204,7 +202,7 @@ class Archives extends CActiveRecord
 			),
 		);
 
-		$criteria->compare('t.archive_id',strtolower($this->archive_id),true);
+		$criteria->compare('t.list_id',strtolower($this->list_id),true);
 		if(isset($_GET['type']) && $_GET['type'] == 'publish')
 			$criteria->compare('t.publish',1);
 		elseif(isset($_GET['type']) && $_GET['type'] == 'unpublish')
@@ -227,15 +225,15 @@ class Archives extends CActiveRecord
 			$criteria->compare('t.story_id',$_GET['story']);
 		else
 			$criteria->compare('t.story_id',$this->story_id);
-		$criteria->compare('t.archive_title',strtolower($this->archive_title),true);
-		$criteria->compare('t.archive_desc',strtolower($this->archive_desc),true);
-		$criteria->compare('t.archive_type_id',$this->archive_type_id);
-		$criteria->compare('t.archive_publish_year',strtolower($this->archive_publish_year),true);
-		$criteria->compare('t.archive_multiple',$this->archive_multiple);
+		$criteria->compare('t.list_title',strtolower($this->list_title),true);
+		$criteria->compare('t.list_desc',strtolower($this->list_desc),true);
+		$criteria->compare('t.list_type_id',$this->list_type_id);
+		$criteria->compare('t.list_publish_year',strtolower($this->list_publish_year),true);
+		$criteria->compare('t.list_multiple',$this->list_multiple);
+		$criteria->compare('t.list_copies',$this->list_copies);
+		$criteria->compare('t.list_code',$this->list_code,true);
 		$criteria->compare('t.archive_numbers',strtolower($this->archive_numbers),true);
 		$criteria->compare('t.archive_pages',$this->archive_pages);
-		$criteria->compare('t.archive_copies',$this->archive_copies);
-		$criteria->compare('t.archive_code',$this->archive_code,true);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
 		if(isset($_GET['creation']))
@@ -250,13 +248,12 @@ class Archives extends CActiveRecord
 			$criteria->compare('t.modified_id',$this->modified_id);
 		
 		$criteria->compare('t.archive_total_i',$this->archive_total_i);		
-		$criteria->compare('view.archive_code',strtolower($this->archive_code_search),true);
 		$criteria->compare('view.converts',$this->convert_search);
 		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
 		$criteria->compare('modified.displayname',strtolower($this->modified_search),true);
 
 		if(!isset($_GET['Archives_sort']))
-			$criteria->order = 't.archive_id DESC';
+			$criteria->order = 't.list_id DESC';
 		
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -297,14 +294,14 @@ class Archives extends CActiveRecord
 		else
 			$criteria->compare('t.story_id',$this->story_id);		
 		if(!Yii::app()->request->isAjaxRequest && isset($_GET['title']))
-			$criteria->compare('t.archive_title',strtolower($_GET['title']),true);
+			$criteria->compare('t.list_title',strtolower($_GET['title']),true);
 		else
-			$criteria->compare('t.archive_title',strtolower($this->archive_title),true);
-		$criteria->compare('t.archive_desc',strtolower($this->archive_desc),true);
-		$criteria->compare('t.archive_publish_year',strtolower($this->archive_publish_year),true);
+			$criteria->compare('t.list_title',strtolower($this->list_title),true);
+		$criteria->compare('t.list_desc',strtolower($this->list_desc),true);
+		$criteria->compare('t.list_publish_year',strtolower($this->list_publish_year),true);
 
 		if(!isset($_GET['Archives_sort']))
-			$criteria->order = 't.archive_id DESC';
+			$criteria->order = 't.list_id DESC';
 		
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -331,20 +328,20 @@ class Archives extends CActiveRecord
 				$this->defaultColumns[] = $val;
 			}
 		} else {
-			//$this->defaultColumns[] = 'archive_id';
+			//$this->defaultColumns[] = 'list_id';
 			$this->defaultColumns[] = 'publish';
 			$this->defaultColumns[] = 'location_id';
 			$this->defaultColumns[] = 'type_id';
 			$this->defaultColumns[] = 'story_id';
-			$this->defaultColumns[] = 'archive_title';
-			$this->defaultColumns[] = 'archive_desc';
-			$this->defaultColumns[] = 'archive_type_id';
-			$this->defaultColumns[] = 'archive_publish_year';
-			$this->defaultColumns[] = 'archive_multiple';
+			$this->defaultColumns[] = 'list_title';
+			$this->defaultColumns[] = 'list_desc';
+			$this->defaultColumns[] = 'list_type_id';
+			$this->defaultColumns[] = 'list_publish_year';
+			$this->defaultColumns[] = 'list_multiple';
+			$this->defaultColumns[] = 'list_copies';
+			$this->defaultColumns[] = 'list_code';
 			$this->defaultColumns[] = 'archive_numbers';
 			$this->defaultColumns[] = 'archive_pages';
-			$this->defaultColumns[] = 'archive_copies';
-			$this->defaultColumns[] = 'archive_code';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
 			$this->defaultColumns[] = 'modified_date';
@@ -372,13 +369,13 @@ class Archives extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'archive_code',
-				'value' => 'strtoupper($data->archive_code)',
+				'name' => 'list_code',
+				'value' => 'strtoupper($data->list_code)',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
 			);
-			$this->defaultColumns[] = 'archive_title';
+			$this->defaultColumns[] = 'list_title';
 			$this->defaultColumns[] = array(
 				'name' => 'location_id',
 				'value' => '$data->location->location_name',
@@ -387,26 +384,26 @@ class Archives extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'story_id',
-				'value' => '$data->story_id != "0" ? $data->story->story_name : "-"',
+				'value' => '$data->story_id ? $data->story->story_name : "-"',
 				'filter' => ArchiveStory::getStory(),
 				'type' => 'raw',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'type_id',
-				'value' => '$data->type_id != "0" ? $data->type->type_name : "-"',
+				'value' => '$data->type_id ? $data->type->type_name : "-"',
 				'filter' => ArchiveType::getType(),
 				'type' => 'raw',
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'archive_type_id',
-				'value' => 'ArchiveSettings::getInfo(\'auto_numbering\') == 1 ? 0 : $data->archive_type_id',
+				'name' => 'list_type_id',
+				'value' => 'ArchiveSettings::getInfo(\'auto_numbering\') == 1 ? 0 : $data->list_type_id',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'archive_publish_year',
-				'value' => '$data->archive_publish_year',
+				'name' => 'list_publish_year',
+				'value' => '$data->list_publish_year',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -427,8 +424,8 @@ class Archives extends CActiveRecord
 				),
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'archive_copies',
-				'value' => '$data->archive_copies',
+				'name' => 'list_copies',
+				'value' => '$data->list_copies',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -466,7 +463,7 @@ class Archives extends CActiveRecord
 			*/
 			$this->defaultColumns[] = array(
 				'name' => 'convert_search',
-				'value' => 'CHtml::link($data->view->converts ? $data->view->converts : 0, Yii::app()->controller->createUrl("o/convertmedia/manage",array("archive"=>$data->archive_id)))',
+				'value' => 'CHtml::link($data->view->converts ? $data->view->converts : 0, Yii::app()->controller->createUrl("o/convertmedia/manage",array("archive"=>$data->list_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -475,7 +472,7 @@ class Archives extends CActiveRecord
 			$this->defaultColumns[] = array(
 				'filter' => false,
 				'name' => 'convert_search',
-				'value' => 'CHtml::link(Yii::t("phrase", "Add Convert"), Yii::app()->controller->createUrl("o/convertmedia/add",array("archive"=>$data->archive_id)))',
+				'value' => 'CHtml::link(Yii::t("phrase", "Add Convert"), Yii::app()->controller->createUrl("o/convertmedia/add",array("archive"=>$data->list_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -484,7 +481,7 @@ class Archives extends CActiveRecord
 			if(!isset($_GET['type'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->archive_id)), $data->publish, 1)',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->list_id)), $data->publish, 1)',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
@@ -560,7 +557,7 @@ class Archives extends CActiveRecord
 				if($param == 'page')
 					$total = $total + $val->archive_pages;
 				if($param == 'copy')
-					$total = $total + $val->archive_copies;
+					$total = $total + $val->list_copies;
 			}
 			return $total;
 			
@@ -592,9 +589,9 @@ class Archives extends CActiveRecord
 	
 	protected function afterFind() 
 	{
-		if($this->archive_multiple == 1)
+		if($this->list_multiple == 1)
 			$this->archive_pages = self::getItemArchive($this->archive_numbers, 1, 'pages');
-		$this->archive_total_i = self::getItemArchive($this->archive_numbers, $this->archive_multiple);
+		$this->archive_total_i = self::getItemArchive($this->archive_numbers, $this->list_multiple);
 		
 		parent::afterFind();		
 	}
@@ -613,10 +610,10 @@ class Archives extends CActiveRecord
 				$this->addError('story_id', 'Story cannot be blank.');
 			if($this->location->type_enable == 1 && $this->type_id == '')
 				$this->addError('type_id', 'Type cannot be blank.');
-			if($this->archive_multiple == 0 && (empty($this->archive_number_single) || $this->archive_number_single == null))
-				$this->addError('archive_number_single', 'Number Single cannot be blank.');
-			if($this->archive_multiple == 1 && (empty($this->archive_number_multiple) || $this->archive_number_multiple == null))
-				$this->addError('archive_number_multiple', 'Number Multiple cannot be blank.');
+			if($this->list_multiple == 0 && (empty($this->archive_number_single_i) || $this->archive_number_single_i == null))
+				$this->addError('archive_number_single_i', 'Number Single cannot be blank.');
+			if($this->list_multiple == 1 && (empty($this->archive_number_multiple_i) || $this->archive_number_multiple_i == null))
+				$this->addError('archive_number_multiple_i', 'Number Multiple cannot be blank.');
 		}
 		return true;
 	}
@@ -627,13 +624,13 @@ class Archives extends CActiveRecord
 	protected function beforeSave() {
 		$controller = strtolower(Yii::app()->controller->id);
 		if(parent::beforeSave()) {
-			$this->archive_code = ViewArchives::getCodeArchive(array('story'=>$this->location->story_enable,'type'=>$this->location->type_enable), $this->location->location_code, $this->story->story_code, $this->type->type_code, $this->archive_type_id);
+			$this->list_code = ViewArchives::getCodeArchive(array('story'=>$this->location->story_enable,'type'=>$this->location->type_enable), $this->location->location_code, $this->story->story_code, $this->type->type_code, $this->list_type_id);
 			
 			if(in_array($controller, array('o/admin'))) {
-				if($this->archive_multiple == 0)
-					$this->archive_numbers = serialize($this->archive_number_single);
+				if($this->list_multiple == 0)
+					$this->archive_numbers = serialize($this->archive_number_single_i);
 				else
-					$this->archive_numbers = serialize($this->archive_number_multiple);				
+					$this->archive_numbers = serialize($this->archive_number_multiple_i);				
 			}
 		}
 		return true;

@@ -1,6 +1,6 @@
 <?php
 /**
- * Archives (archives)
+ * Archives (lists)
  * @var $this AdminController
  * @var $model Archives
  * @var $form CActiveForm
@@ -21,8 +21,8 @@
 )); ?>
 	<ul>
 		<li>
-			<?php echo $model->getAttributeLabel('archive_id'); ?><br/>
-			<?php echo $form->textField($model,'archive_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $model->getAttributeLabel('list_id'); ?><br/>
+			<?php echo $form->textField($model,'list_id'); ?>
 		</li>
 
 		<li>
@@ -46,28 +46,48 @@
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('archive_title'); ?><br/>
-			<?php echo $form->textArea($model,'archive_title',array('rows'=>6, 'cols'=>50)); ?>
+			<?php echo $model->getAttributeLabel('list_title'); ?><br/>
+			<?php echo $form->textArea($model,'list_title'); ?>
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('archive_desc'); ?><br/>
-			<?php echo $form->textArea($model,'archive_desc',array('rows'=>6, 'cols'=>50)); ?>
+			<?php echo $model->getAttributeLabel('list_desc'); ?><br/>
+			<?php echo $form->textArea($model,'list_desc'); ?>
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('archive_type_id'); ?><br/>
-			<?php echo $form->textField($model,'archive_type_id'); ?>
+			<?php echo $model->getAttributeLabel('list_type_id'); ?><br/>
+			<?php echo $form->textField($model,'list_type_id'); ?>
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('archive_publish_year'); ?><br/>
-			<?php echo $form->textField($model,'archive_publish_year',array('size'=>4,'maxlength'=>4)); ?>
+			<?php echo $model->getAttributeLabel('list_publish_year'); ?><br/>
+			<?php echo $form->textField($model,'list_publish_year'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('list_multiple'); ?><br/>
+			<?php echo $form->textArea($model,'list_multiple'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('archive_numbers'); ?><br/>
-			<?php echo $form->textArea($model,'archive_numbers',array('rows'=>6, 'cols'=>50)); ?>
+			<?php echo $form->textArea($model,'archive_numbers'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('archive_pages'); ?><br/>
+			<?php echo $form->textArea($model,'archive_pages'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('list_copies'); ?><br/>
+			<?php echo $form->textArea($model,'list_copies'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('list_code'); ?><br/>
+			<?php echo $form->textArea($model,'list_code'); ?>
 		</li>
 
 		<li>
@@ -77,7 +97,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('creation_id'); ?><br/>
-			<?php echo $form->textField($model,'creation_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'creation_id'); ?>
 		</li>
 
 		<li>
@@ -87,7 +107,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('modified_id'); ?><br/>
-			<?php echo $form->textField($model,'modified_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'modified_id'); ?>
 		</li>
 
 		<li class="submit">

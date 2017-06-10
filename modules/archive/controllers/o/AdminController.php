@@ -115,14 +115,14 @@ class AdminController extends Controller
 	{
 		if(isset($_GET['term'])) {
 			$criteria = new CDbCriteria;
-			$criteria->select = 'archive_id, archive_code';
-			$criteria->compare('archive_code',strtolower($_GET['term']), true);
-			$criteria->order = 'archive_id ASC';
+			$criteria->select = 'list_id, list_code';
+			$criteria->compare('list_code',strtolower($_GET['term']), true);
+			$criteria->order = 'list_id ASC';
 			$model = Archives::model()->findAll($criteria);
 
 			if($model) {
 				foreach($model as $items) {
-					$result[] = array('id' => $items->archive_id, 'value' => strtoupper($items->archive_code));
+					$result[] = array('id' => $items->list_id, 'value' => strtoupper($items->list_code));
 				}
 			}
 		}
@@ -183,8 +183,8 @@ class AdminController extends Controller
 		
 		$error = array();
 		
-		$archive_multiple = $_POST['archive_multiple'];
-		echo $archive_multiple = $archive_multiple == 1 ? $archive_multiple : 0;
+		$list_multiple = $_POST['list_multiple'];
+		echo $list_multiple = $list_multiple == 1 ? $list_multiple : 0;
 		
 		if(isset($_FILES['importExcel'])) {
 			$fileName = CUploadedFile::getInstanceByName('importExcel');
@@ -195,18 +195,18 @@ class AdminController extends Controller
 					$xls = new OExcelReader($path.'/'.$file);
 					
 					for ($row = 2; $row <= $xls->sheets[0]['numRows']; $row++) {
-						$archive_code			= strtolower(trim($xls->sheets[0]['cells'][$row][1]));
-						$archive_title			= trim($xls->sheets[0]['cells'][$row][2]);
+						$list_code			= strtolower(trim($xls->sheets[0]['cells'][$row][1]));
+						$list_title			= trim($xls->sheets[0]['cells'][$row][2]);
 						$location_code			= strtolower(trim($xls->sheets[0]['cells'][$row][3]));
 						$story_code				= strtolower(trim($xls->sheets[0]['cells'][$row][4]));
 						$type_name				= strtolower(trim($xls->sheets[0]['cells'][$row][5]));
 						$archive_numbers		= trim($xls->sheets[0]['cells'][$row][6]);
 						$archive_pages			= strtolower(trim($xls->sheets[0]['cells'][$row][7]));
-						$archive_publish_year	= strtoupper(trim($xls->sheets[0]['cells'][$row][8]));
-						$archive_desc			= trim($xls->sheets[0]['cells'][$row][9]);
+						$list_publish_year	= strtoupper(trim($xls->sheets[0]['cells'][$row][8]));
+						$list_desc			= trim($xls->sheets[0]['cells'][$row][9]);
 						
-						$archive_code = explode('.', $archive_code);
-						if($archive_multiple == 0)
+						$list_code = explode('.', $list_code);
+						if($list_multiple == 0)
 							$archive_numbers = explode('-', $archive_numbers);
 						
 						else {
@@ -231,87 +231,87 @@ class AdminController extends Controller
 							}
 						}
 						
-						if($archive_code[0] == $location_code) {
+						if($list_code[0] == $location_code) {
 							$location = ArchiveLocation::model()->findByAttributes(array('location_code' => $location_code), array(
 								'select' => 'location_id, story_enable, type_enable',
 							));
 							if($location->story_enable == 1) {
-								$archive_code_type = preg_replace("/[^a-zA-Z]/","",$archive_code[2]);
-								$archive_code_number = preg_replace("/[^0-9]/","",$archive_code[2]);
-								if($archive_code[1] == $story_code) {
+								$list_code_type = preg_replace("/[^a-zA-Z]/","",$list_code[2]);
+								$list_code_number = preg_replace("/[^0-9]/","",$list_code[2]);
+								if($list_code[1] == $story_code) {
 									$story = ArchiveStory::model()->findByAttributes(array('story_code' => $story_code), array(
 										'select' => 'story_id',
 									));
 									$type = ArchiveType::model()->findByAttributes(array('type_name' => $type_name), array(
 										'select' => 'type_id, type_code',
 									));
-									if($archive_code_type == $type->type_code) {
+									if($list_code_type == $type->type_code) {
 										$model=new Archives;
 										$model->location_id = $location->location_id;
 										$model->type_id = $type->type_id;
 										$model->story_id = $story->story_id;
-										$model->archive_title = $archive_title;
-										$model->archive_desc = $archive_desc;
-										$model->archive_type_id = $archive_code_number;
-										$model->archive_publish_year = $archive_publish_year;
-										$model->archive_multiple = $archive_multiple;
-										if($archive_multiple == 0) {
-											$model->archive_number_single = array(
+										$model->list_title = $list_title;
+										$model->list_desc = $list_desc;
+										$model->list_type_id = $list_code_number;
+										$model->list_publish_year = $list_publish_year;
+										$model->list_multiple = $list_multiple;
+										if($list_multiple == 0) {
+											$model->archive_number_single_i = array(
 												'start'=>trim($archive_numbers[0]),
 												'finish'=>trim($archive_numbers[1]),
 											);
 										} else 
-											$model->archive_number_multiple = $archive_numbers;
+											$model->archive_number_multiple_i = $archive_numbers;
 										$model->archive_pages = $archive_pages;
 										$model->save();
 									}
 								}
 							} else {
 								if($location->type_enable == 1) {
-									$archive_code_type = preg_replace("/[^a-zA-Z]/","",$archive_code[1]);
-									$archive_code_number = preg_replace("/[^0-9]/","",$archive_code[1]);
+									$list_code_type = preg_replace("/[^a-zA-Z]/","",$list_code[1]);
+									$list_code_number = preg_replace("/[^0-9]/","",$list_code[1]);
 									
 									$type = ArchiveType::model()->findByAttributes(array('type_name' => $type_name), array(
 										'select' => 'type_id, type_code',
 									));
-									if($archive_code_type == $type->type_code) {
+									if($list_code_type == $type->type_code) {
 										$model=new Archives;
 										$model->location_id = $location->location_id;
 										$model->type_id = $type->type_id;
 										$model->story_id = 0;
-										$model->archive_title = $archive_title;
-										$model->archive_desc = $archive_desc;
-										$model->archive_type_id = $archive_code_number;
-										$model->archive_publish_year = $archive_publish_year;
-										$model->archive_multiple = $archive_multiple;
-										if($archive_multiple == 0) {
-											$model->archive_number_single = array(
+										$model->list_title = $list_title;
+										$model->list_desc = $list_desc;
+										$model->list_type_id = $list_code_number;
+										$model->list_publish_year = $list_publish_year;
+										$model->list_multiple = $list_multiple;
+										if($list_multiple == 0) {
+											$model->archive_number_single_i = array(
 												'start'=>$archive_numbers[0],
 												'finish'=>$archive_numbers[1],
 											);
 										} else
-											$model->archive_number_multiple = $archive_numbers;
+											$model->archive_number_multiple_i = $archive_numbers;
 										$model->archive_pages = $archive_pages;
 										$model->save();
 									}
 								} else {
-									if($archive_code_type == $archive_code[1]) {
+									if($list_code_type == $list_code[1]) {
 										$model=new Archives;
 										$model->location_id = $location->location_id;
 										$model->type_id = 0;
 										$model->story_id = 0;
-										$model->archive_title = $archive_title;
-										$model->archive_desc = $archive_desc;
-										$model->archive_type_id = $archive_code[1];
-										$model->archive_publish_year = $archive_publish_year;
-										$model->archive_multiple = $archive_multiple;
-										if($archive_multiple == 0) {
-											$model->archive_number_single = array(
+										$model->list_title = $list_title;
+										$model->list_desc = $list_desc;
+										$model->list_type_id = $list_code[1];
+										$model->list_publish_year = $list_publish_year;
+										$model->list_multiple = $list_multiple;
+										if($list_multiple == 0) {
+											$model->archive_number_single_i = array(
 												'start'=>$archive_numbers[0],
 												'finish'=>$archive_numbers[1],
 											);
 										} else
-											$model->archive_number_multiple = $archive_numbers;	
+											$model->archive_number_multiple_i = $archive_numbers;	
 										$model->archive_pages = $archive_pages;
 										$model->save();
 									}
@@ -363,8 +363,8 @@ class AdminController extends Controller
 			
 			if($model->save()) {
 				Yii::app()->user->setFlash('success', Yii::t('phrase', 'Archives success created.'));
-				//$this->redirect(array('view','id'=>$model->archive_id));
-				if($model->back_field == 1)
+				//$this->redirect(array('view','id'=>$model->list_id));
+				if($model->back_field_i == 1)
 					$this->redirect(array('manage'));
 				else
 					$this->redirect(array('add'));
@@ -403,7 +403,7 @@ class AdminController extends Controller
 			
 			if($model->save()) {
 				Yii::app()->user->setFlash('success', Yii::t('phrase', 'Archives success updated.'));
-				//$this->redirect(array('view','id'=>$model->archive_id));
+				//$this->redirect(array('view','id'=>$model->list_id));
 				$this->redirect(array('manage'));
 			}
 		}
@@ -485,7 +485,7 @@ class AdminController extends Controller
 					echo CJSON::encode(array(
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
-						'id' => 'partial-archives',
+						'id' => 'partial-lists',
 						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Archives success deleted.').'</strong></div>',
 					));
 				}
@@ -530,7 +530,7 @@ class AdminController extends Controller
 					echo CJSON::encode(array(
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
-						'id' => 'partial-archives',
+						'id' => 'partial-lists',
 						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Archives success updated.').'</strong></div>',
 					));
 				}
@@ -570,7 +570,7 @@ class AdminController extends Controller
 	 */
 	protected function performAjaxValidation($model) 
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='archives-form') {
+		if(isset($_POST['ajax']) && $_POST['ajax']==='lists-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

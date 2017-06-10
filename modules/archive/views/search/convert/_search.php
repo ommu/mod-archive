@@ -71,13 +71,13 @@
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('convert_numbers'); ?><br/>
-			<?php echo $form->textArea($model,'convert_numbers',array('rows'=>6, 'cols'=>50)); ?>
+			<?php echo $model->getAttributeLabel('archive_numbers'); ?><br/>
+			<?php echo $form->textArea($model,'archive_numbers',array('rows'=>6, 'cols'=>50)); ?>
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('convert_pages'); ?><br/>
-			<?php echo $form->textField($model,'convert_pages'); ?>
+			<?php echo $model->getAttributeLabel('archive_pages'); ?><br/>
+			<?php echo $form->textField($model,'archive_pages'); ?>
 		</li>
 
 		<li>

@@ -31,21 +31,21 @@
 		<?php //begin.Messages ?>
 
 		<div class="clearfix">
-			<?php echo $form->labelEx($model,'archive_code'); ?>
+			<?php echo $form->labelEx($model,'list_code_i'); ?>
 			<div class="desc">
-				<?php //echo $form->textField($model,'archive_code',array('maxlength'=>32));
-				$model->archive_code = strtoupper($archive->archive_code);
+				<?php //echo $form->textField($model,'list_code_i',array('maxlength'=>32));
+				$model->list_code_i = strtoupper($archive->list_code_i);
 				$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					'model' => $model,
-					'attribute' => 'archive_code',
+					'attribute' => 'list_code_i',
 					'source' => Yii::app()->controller->createUrl('o/admin/suggest'),
 					'options' => array(
 						//'delay '=> 50,
 						'minLength' => 1,
 						'showAnim' => 'fold',
 						'select' => "js:function(event, ui) {
-							$('form #ArchiveConvertMedia_archive_code').val(ui.item.value);
-							$('form #ArchiveConvertMedia_archive_id').val(ui.item.id);
+							$('form #ArchiveConvertMedia_list_code_i').val(ui.item.value);
+							$('form #ArchiveConvertMedia_list_id').val(ui.item.id);
 						}"
 					),
 					'htmlOptions' => array(
@@ -53,28 +53,28 @@
 						'maxlength'=>32,
 					),
 				));
-				$model->archive_id = $archive->archive_id;
-				echo $form->hiddenField($model,'archive_id'); ?>
-				<?php echo $form->error($model,'archive_code'); ?>
+				$model->list_id = $archive->list_id;
+				echo $form->hiddenField($model,'list_id'); ?>
+				<?php echo $form->error($model,'list_code_i'); ?>
 				<?php /*<div class="small-px silent"></div>*/?>
 			</div>
 		</div>
 
 		<div class="clearfix">
-			<?php echo $form->labelEx($model,'convert_code'); ?>
+			<?php echo $form->labelEx($model,'convert_code_i'); ?>
 			<div class="desc">
-				<?php //echo $form->textField($model,'convert_code',array('maxlength'=>32));
-				$model->convert_code = strtoupper($convert->convert_code);
+				<?php //echo $form->textField($model,'convert_code_i',array('maxlength'=>32));
+				$model->convert_code_i = strtoupper($convert->convert_code_i);
 				$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					'model' => $model,
-					'attribute' => 'convert_code',
+					'attribute' => 'convert_code_i',
 					'source' => Yii::app()->controller->createUrl('o/convert/suggest'),
 					'options' => array(
 						//'delay '=> 50,
 						'minLength' => 1,
 						'showAnim' => 'fold',
 						'select' => "js:function(event, ui) {
-							$('form #ArchiveConvertMedia_convert_code').val(ui.item.value);
+							$('form #ArchiveConvertMedia_convert_code_i').val(ui.item.value);
 							$('form #ArchiveConvertMedia_convert_id').val(ui.item.id);
 						}"
 					),
@@ -85,7 +85,7 @@
 				));
 				$model->convert_id = $convert->convert_id;
 				echo $form->hiddenField($model,'convert_id'); ?>
-				<?php echo $form->error($model,'convert_code'); ?>
+				<?php echo $form->error($model,'convert_code_i'); ?>
 				<?php /*<div class="small-px silent"></div>*/?>
 			</div>
 		</div>

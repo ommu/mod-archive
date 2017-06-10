@@ -31,10 +31,10 @@ $js=<<<EOP
 	$('input[type="button"]#add-field').on('click', function() {
 		var body = $('form div#show-field').html();
 		if($('#add-field').before(body)) {
-			prev = 'ArchiveConverts\[convert_number_multiple\]\['+i+'\]';
+			prev = 'ArchiveConverts\[convert_number_multiple_i\]\['+i+'\]';
 			i = i+1;
-			next = 'ArchiveConverts\[convert_number_multiple\]\['+i+'\]';
-			$('form div#show-field').find('[id*="ArchiveConverts_convert_number_multiple_"]').each(function() {
+			next = 'ArchiveConverts\[convert_number_multiple_i\]\['+i+'\]';
+			$('form div#show-field').find('[id*="ArchiveConverts_convert_number_multiple_i_"]').each(function() {
 				$(this).attr('name',$(this).attr('name').replace(prev,next));
 			});
 			//alert(prev+' '+next);
@@ -102,7 +102,7 @@ EOP;
 							$('form #ArchiveConverts_category_id').val(ui.item.category);
 							$('form #ArchiveConverts_convert_publish_year').val(ui.item.year);
 							if(ui.item.multiple == 0)
-								$('form #ArchiveConverts_convert_pages').val(ui.item.page);
+								$('form #ArchiveConverts_archive_pages').val(ui.item.page);
 							else {
 								$('form #ArchiveConverts_convert_multiple').prop('checked', true);
 								$('div#multiple').slideDown();
@@ -216,28 +216,28 @@ EOP;
 	</div>
 
 	<div class="clearfix <?php echo $model->convert_multiple == 0 ? '' :'hide';?>" id="single">
-		<?php echo $form->labelEx($model,'convert_number_single'); ?>
+		<?php echo $form->labelEx($model,'convert_number_single_i'); ?>
 		<div class="desc">
 			<?php if($model->convert_multiple == 0 && !$model->getErrors())
-				$model->convert_number_single = unserialize($model->convert_numbers);
+				$model->convert_number_single_i = unserialize($model->archive_numbers);
 			//echo '<pre>';
-			//print_r($model->convert_number_single);
+			//print_r($model->convert_number_single_i);
 			//echo '<pre>';?>
-			<?php echo $form->textField($model,'convert_number_single[start]', array('placeholder'=>'Start', 'class'=>'span-3')); ?>
-			<?php echo $form->textField($model,'convert_number_single[finish]', array('placeholder'=>'Finish', 'class'=>'span-3')); ?>
-			<?php echo $form->error($model,'convert_number_single'); ?>
+			<?php echo $form->textField($model,'convert_number_single_i[start]', array('placeholder'=>'Start', 'class'=>'span-3')); ?>
+			<?php echo $form->textField($model,'convert_number_single_i[finish]', array('placeholder'=>'Finish', 'class'=>'span-3')); ?>
+			<?php echo $form->error($model,'convert_number_single_i'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
 
 	<div class="clearfix <?php echo $model->convert_multiple == 1 ? '' :'hide';?>" id="multiple">
-		<?php echo $form->labelEx($model,'convert_number_multiple'); ?>
+		<?php echo $form->labelEx($model,'convert_number_multiple_i'); ?>
 		<div class="desc">
 			<?php if($model->convert_multiple == 1) {
 				if(!$model->getErrors())
-					$data = $model->convert_number_multiple = unserialize($model->convert_numbers);
+					$data = $model->convert_number_multiple_i = unserialize($model->archive_numbers);
 				else
-					$data = $model->convert_number_multiple;
+					$data = $model->convert_number_multiple_i;
 			}
 			if(!empty($data)) {
 				foreach($data as $key => $val) {
@@ -249,19 +249,19 @@ EOP;
 				}
 			}
 			//echo '<pre>';
-			//print_r($model->convert_number_multiple);
+			//print_r($model->convert_number_multiple_i);
 			//echo '<pre>';?>
 			<?php echo CHtml::button(Yii::t('phrase', 'Add Field'), array('id'=>'add-field')); ?>
-			<?php echo $form->error($model,'convert_number_multiple'); ?>
+			<?php echo $form->error($model,'convert_number_multiple_i'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
 
 	<div class="clearfix <?php echo $model->convert_multiple == 0 ? '' :'hide';?>" id="single">
-		<?php echo $form->labelEx($model,'convert_pages'); ?>
+		<?php echo $form->labelEx($model,'archive_pages'); ?>
 		<div class="desc">
-			<?php echo $form->textField($model,'convert_pages',array('maxlength'=>11, 'class'=>'span-3')); ?>
-			<?php echo $form->error($model,'convert_pages'); ?>
+			<?php echo $form->textField($model,'archive_pages',array('maxlength'=>11, 'class'=>'span-3')); ?>
+			<?php echo $form->error($model,'archive_pages'); ?>
 		</div>
 	</div>
 
@@ -290,16 +290,16 @@ EOP;
 	
 	<?php if($model->isNewRecord) {?>
 	<div class="clearfix">
-		<?php echo $form->labelEx($model,'back_field'); ?>
+		<?php echo $form->labelEx($model,'back_field_i'); ?>
 		<div class="desc">
-			<?php echo $form->checkBox($model,'back_field'); ?>
-			<?php echo $form->error($model,'back_field'); ?>
+			<?php echo $form->checkBox($model,'back_field_i'); ?>
+			<?php echo $form->error($model,'back_field_i'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
 	<?php } else {
-		$model->back_field = 1;
-		echo $form->hiddenField($model,'back_field');
+		$model->back_field_i = 1;
+		echo $form->hiddenField($model,'back_field_i');
 	}?>
 
 	<div class="submit clearfix">

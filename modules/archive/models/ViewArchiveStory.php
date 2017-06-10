@@ -24,8 +24,8 @@
  *
  * The followings are the available columns in table '_view_archive_story':
  * @property integer $story_id
- * @property string $archives
- * @property string $archive_all
+ * @property string $lists
+ * @property string $list_all
  */
 class ViewArchiveStory extends CActiveRecord
 {
@@ -67,10 +67,10 @@ class ViewArchiveStory extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('story_id', 'numerical', 'integerOnly'=>true),
-			array('archives, archive_all', 'length', 'max'=>21),
+			array('lists, list_all', 'length', 'max'=>21),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('story_id, archives, archive_all', 'safe', 'on'=>'search'),
+			array('story_id, lists, list_all', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -92,8 +92,8 @@ class ViewArchiveStory extends CActiveRecord
 	{
 		return array(
 			'story_id' => Yii::t('attribute', 'Story'),
-			'archives' => Yii::t('attribute', 'Archives'),
-			'archive_all' => Yii::t('attribute', 'Archive Publish'),
+			'lists' => Yii::t('attribute', 'Archives'),
+			'list_all' => Yii::t('attribute', 'Archive Publish'),
 		);
 		/*
 			'Story' => 'Story',
@@ -123,8 +123,8 @@ class ViewArchiveStory extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('t.story_id',$this->story_id);
-		$criteria->compare('t.archives',$this->archives);
-		$criteria->compare('t.archive_all',$this->archive_all);
+		$criteria->compare('t.lists',$this->lists);
+		$criteria->compare('t.list_all',$this->list_all);
 
 		if(!isset($_GET['ViewArchiveStory_sort']))
 			$criteria->order = 't.story_id DESC';
@@ -156,8 +156,8 @@ class ViewArchiveStory extends CActiveRecord
 			}
 		} else {
 			$this->defaultColumns[] = 'story_id';
-			$this->defaultColumns[] = 'archives';
-			$this->defaultColumns[] = 'archive_all';
+			$this->defaultColumns[] = 'lists';
+			$this->defaultColumns[] = 'list_all';
 		}
 
 		return $this->defaultColumns;
@@ -173,8 +173,8 @@ class ViewArchiveStory extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			//$this->defaultColumns[] = 'story_id';
-			$this->defaultColumns[] = 'archives';
-			$this->defaultColumns[] = 'archive_all';
+			$this->defaultColumns[] = 'lists';
+			$this->defaultColumns[] = 'list_all';
 		}
 		parent::afterConstruct();
 	}

@@ -1,6 +1,6 @@
 <?php
 /**
- * Archives (archives)
+ * Archives (lists)
  * @var $this SiteController
  * @var $model Archives
  * version: 0.0.1
@@ -52,7 +52,7 @@
 
 <?php //begin.Grid Item ?>
 <?php $this->widget('application.components.system.OGridView', array(
-	'id'=>'archives-grid',
+	'id'=>'lists-grid',
 	'dataProvider'=>$model->frontSearch(),
 	'filter'=>$model,
 	'pager' => array(
@@ -61,19 +61,19 @@
 	'summaryText' => '',
 	'columns' => array(
 		array(
-			'name' => 'archive_title',
+			'name' => 'list_title',
 			'value' => array($this, 'gridTitle'),
 			'type' => 'raw',
 		),
 		array(
-			'name' => 'archive_desc',
+			'name' => 'list_desc',
 			'value' => array($this, 'gridInformation'),
 			'type' => 'raw',
 		),
 		array(
 			'header' => Yii::t("phrase", "Year"),
-			'name' => 'archive_publish_year',
-			'value' => '$data->archive_publish_year',
+			'name' => 'list_publish_year',
+			'value' => '$data->list_publish_year',
 			'type' => 'raw',
 			'htmlOptions' => array(
 				'class'=>'year center',
