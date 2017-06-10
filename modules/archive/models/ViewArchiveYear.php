@@ -24,13 +24,17 @@
  *
  * The followings are the available columns in table '_view_archive_year':
  * @property string $publish_year
- * @property string $archives
+ * @property string $lists
+ * @property string $list_all
+ * @property string $list_copies
+ * @property string $list_copy_all
+ * @property string $archive_pages
+ * @property string $archive_page_all
  */
 class ViewArchiveYear extends CActiveRecord
 {
 	public $defaultColumns = array();
 	public $archive_total_i;
-	public $archive_page_i;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -69,11 +73,13 @@ class ViewArchiveYear extends CActiveRecord
 		return array(
 			array('publish_year', 'required'),
 			array('publish_year', 'length', 'max'=>4),
-			array('archives', 'length', 'max'=>21),
+			array('list_all', 'length', 'max'=>21),
+			array('lists', 'length', 'max'=>23),
+			array('list_copies, list_copy_all, archive_pages, archive_page_all', 'length', 'max'=>32),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('publish_year, archives,
-				archive_total_i, archive_page_i', 'safe', 'on'=>'search'),
+			array('publish_year, lists, list_all, archive_pages, archive_page_all,
+				archive_total_i', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -85,7 +91,7 @@ class ViewArchiveYear extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'archives' => array(self::HAS_MANY, 'Archives', 'archive_publish_year'),
+			'lists' => array(self::HAS_MANY, 'Archives', 'archive_publish_year'),
 			'archive_publish' => array(self::HAS_MANY, 'Archives', 'archive_publish_year', 'on'=>'archive_publish.publish = 1'),
 			'archive_unpublish' => array(self::HAS_MANY, 'Archives', 'archive_publish_year', 'on'=>'archive_unpublish.publish = 1'),
 		);
@@ -98,9 +104,13 @@ class ViewArchiveYear extends CActiveRecord
 	{
 		return array(
 			'publish_year' => Yii::t('attribute', 'Publish Year'),
-			'archives' => Yii::t('attribute', 'Archives'),
-			'archive_total_i' => Yii::t('attribute', 'Total'),
-			'archive_page_i' => Yii::t('attribute', 'Pages'),
+			'lists' => Yii::t('attribute', 'Senarai'),
+			'list_all' => Yii::t('attribute', 'Senarai All'),
+			'list_copies' => Yii::t('attribute', 'Copies'),
+			'list_copy_all' => Yii::t('attribute', 'Copy All'),
+			'archive_pages' => Yii::t('attribute', 'Archive Pages'),
+			'archive_page_all' => Yii::t('attribute', 'Archive Pages All'),
+			'archive_total_i' => Yii::t('attribute', 'Archive'),
 		);
 		/*
 			'Publish Year' => 'Publish Year',
@@ -128,9 +138,13 @@ class ViewArchiveYear extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('t.publish_year',strtolower($this->publish_year),true);
-		$criteria->compare('t.archives',$this->archives);
+		$criteria->compare('t.lists',$this->lists);
+		$criteria->compare('t.list_all',$this->list_all);
+		$criteria->compare('t.list_copies',$this->list_copies);
+		$criteria->compare('t.list_copy_all',$this->list_copy_all);
+		$criteria->compare('t.archive_pages',$this->archive_pages);
+		$criteria->compare('t.archive_page_all',$this->archive_page_all);
 		$criteria->compare('t.archive_total_i',$this->archive_total_i);
-		$criteria->compare('t.archive_page_i',$this->archive_page_i);
 
 		if(!isset($_GET['ViewArchiveYear_sort']))
 			$criteria->order = 't.publish_year DESC';
@@ -162,7 +176,12 @@ class ViewArchiveYear extends CActiveRecord
 			}
 		} else {
 			$this->defaultColumns[] = 'publish_year';
-			$this->defaultColumns[] = 'archives';
+			$this->defaultColumns[] = 'lists';
+			$this->defaultColumns[] = 'list_all';
+			$this->defaultColumns[] = 'list_copies';
+			$this->defaultColumns[] = 'list_copy_all';
+			$this->defaultColumns[] = 'archive_pages';
+			$this->defaultColumns[] = 'archive_page_all';
 		}
 
 		return $this->defaultColumns;
@@ -178,16 +197,34 @@ class ViewArchiveYear extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = 'publish_year';
-			$this->defaultColumns[] = 'archives';
 			$this->defaultColumns[] = array(
-				'filter' => false,
+				'name' => 'lists',
+				'value' => '$data->lists',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'list_copies',
+				'value' => '$data->list_copies',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
 				'name' => 'archive_total_i',
 				'value' => '$data->archive_total_i',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
 			);
 			$this->defaultColumns[] = array(
 				'filter' => false,
-				'name' => 'archive_page_i',
-				'value' => '$data->archive_page_i',
+				'name' => 'archive_pages',
+				'value' => '$data->archive_pages',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
 			);
 		}
 		parent::afterConstruct();
@@ -212,8 +249,7 @@ class ViewArchiveYear extends CActiveRecord
 	
 	protected function afterFind() 
 	{
-		$this->archive_total_i = Archives::getTotalItemArchive($this->archives());
-		$this->archive_page_i = Archives::getTotalItemArchive($this->archives(), 'page');
+		$this->archive_total_i = Archives::getTotalItemArchive($this->lists());
 		
 		parent::afterFind();		
 	}

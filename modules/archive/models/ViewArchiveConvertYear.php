@@ -25,13 +25,16 @@
  * The followings are the available columns in table '_view_archive_convert_year':
  * @property string $publish_year
  * @property string $converts
+ * @property string $convert_all
+ * @property string $convert_copies
+ * @property string $convert_copy_all
+ * @property string $archive_pages
+ * @property string $archive_page_all
  */
 class ViewArchiveConvertYear extends CActiveRecord
 {
 	public $defaultColumns = array();
 	public $convert_total_i;
-	public $convert_page_i;
-	public $convert_copy_i;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -70,11 +73,13 @@ class ViewArchiveConvertYear extends CActiveRecord
 		return array(
 			array('publish_year', 'required'),
 			array('publish_year', 'length', 'max'=>4),
-			array('converts', 'length', 'max'=>21),
+			array('converts', 'length', 'max'=>23),
+			array('convert_all', 'length', 'max'=>21),
+			array('convert_copies, convert_copy_all, archive_pages, archive_page_all', 'length', 'max'=>32),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('publish_year, converts, 
-				convert_total_i, convert_page_i, convert_copy_i', 'safe', 'on'=>'search'),
+			array('publish_year, converts, convert_all, convert_copies, convert_copy_all, archive_pages, archive_page_all,
+				convert_total_i', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -99,10 +104,13 @@ class ViewArchiveConvertYear extends CActiveRecord
 	{
 		return array(
 			'publish_year' => Yii::t('attribute', 'Publish Year'),
-			'converts' => Yii::t('attribute', 'Converts'),
-			'convert_total_i' => Yii::t('attribute', 'Total'),
-			'convert_page_i' => Yii::t('attribute', 'Pages'),
-			'convert_copy_i' => Yii::t('attribute', 'Copies'),
+			'converts' => Yii::t('attribute', 'Alih'),
+			'convert_all' => Yii::t('attribute', 'Alih All'),
+			'convert_copies' => Yii::t('attribute', 'Copies'),
+			'convert_copy_all' => Yii::t('attribute', 'Copy All'),
+			'archive_pages' => Yii::t('attribute', 'Archive Pages'),
+			'archive_page_all' => Yii::t('attribute', 'Archive Pages All'),
+			'convert_total_i' => Yii::t('attribute', 'Archive'),
 		);
 		/*
 			'Publish Year' => 'Publish Year',
@@ -131,9 +139,12 @@ class ViewArchiveConvertYear extends CActiveRecord
 
 		$criteria->compare('t.publish_year',strtolower($this->publish_year),true);
 		$criteria->compare('t.converts',$this->converts);
+		$criteria->compare('t.convert_all',$this->convert_all);
+		$criteria->compare('t.convert_copies',$this->convert_copies);
+		$criteria->compare('t.convert_copy_all',$this->convert_copy_all);
+		$criteria->compare('t.archive_pages',$this->archive_pages);
+		$criteria->compare('t.archive_page_all',$this->archive_page_all);
 		$criteria->compare('t.convert_total_i',$this->convert_total_i);
-		$criteria->compare('t.convert_page_i',$this->convert_page_i);
-		$criteria->compare('t.convert_copy_i',$this->convert_copy_i);
 
 		if(!isset($_GET['ViewArchiveConvertYear_sort']))
 			$criteria->order = 't.publish_year DESC';
@@ -166,6 +177,11 @@ class ViewArchiveConvertYear extends CActiveRecord
 		} else {
 			$this->defaultColumns[] = 'publish_year';
 			$this->defaultColumns[] = 'converts';
+			$this->defaultColumns[] = 'convert_all';
+			$this->defaultColumns[] = 'convert_copies';
+			$this->defaultColumns[] = 'convert_copy_all';
+			$this->defaultColumns[] = 'archive_pages';
+			$this->defaultColumns[] = 'archive_page_all';
 		}
 
 		return $this->defaultColumns;
@@ -181,21 +197,34 @@ class ViewArchiveConvertYear extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = 'publish_year';
-			$this->defaultColumns[] = 'converts';
+			$this->defaultColumns[] = array(
+				'name' => 'converts',
+				'value' => '$data->converts',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'convert_copies',
+				'value' => '$data->convert_copies',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
 			$this->defaultColumns[] = array(
 				'filter' => false,
 				'name' => 'convert_total_i',
 				'value' => '$data->convert_total_i',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
 			);
 			$this->defaultColumns[] = array(
-				'filter' => false,
-				'name' => 'convert_page_i',
-				'value' => '$data->convert_page_i',
-			);
-			$this->defaultColumns[] = array(
-				'filter' => false,
-				'name' => 'convert_copy_i',
-				'value' => '$data->convert_copy_i',
+				'name' => 'archive_pages',
+				'value' => '$data->archive_pages',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
 			);
 		}
 		parent::afterConstruct();
@@ -204,8 +233,6 @@ class ViewArchiveConvertYear extends CActiveRecord
 	protected function afterFind() 
 	{
 		$this->convert_total_i = ArchiveConverts::getTotalItemArchive($this->converts());
-		$this->convert_page_i = ArchiveConverts::getTotalItemArchive($this->converts(), 'page');
-		$this->convert_copy_i = ArchiveConverts::getTotalItemArchive($this->converts(), 'copy');
 		
 		parent::afterFind();		
 	}
