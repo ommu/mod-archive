@@ -101,9 +101,9 @@ class ArchiveLocation extends CActiveRecord
 			'view' => array(self::BELONGS_TO, 'ViewArchiveLocation', 'location_id'),
 			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
-			'lists' => array(self::HAS_MANY, 'Archives', 'location_id', 'on'=>'lists.publish = 1'),
-			'archive_unpublish' => array(self::HAS_MANY, 'Archives', 'location_id', 'on'=>'archive_unpublish.publish = 0'),
-			'list_all' => array(self::HAS_MANY, 'Archives', 'location_id'),
+			'lists' => array(self::HAS_MANY, 'ArchiveLists', 'location_id', 'on'=>'lists.publish = 1'),
+			'archive_unpublish' => array(self::HAS_MANY, 'ArchiveLists', 'location_id', 'on'=>'archive_unpublish.publish = 0'),
+			'list_all' => array(self::HAS_MANY, 'ArchiveLists', 'location_id'),
 			'converts' => array(self::HAS_MANY, 'ArchiveConverts', 'location_id', 'on'=>'converts.publish = 1'),
 			'convert_unpublish' => array(self::HAS_MANY, 'ArchiveConverts', 'location_id', 'on'=>'convert_unpublish.publish = 0'),
 			'convert_all' => array(self::HAS_MANY, 'ArchiveConverts', 'location_id'),
@@ -429,8 +429,8 @@ class ArchiveLocation extends CActiveRecord
 	}
 	
 	protected function afterFind() {
-		$this->archive_total_i = Archives::getTotalItemArchive($this->lists());
-		$this->archive_page_i = Archives::getTotalItemArchive($this->lists(), 'page');
+		$this->archive_total_i = ArchiveLists::getTotalItemArchive($this->lists());
+		$this->archive_page_i = ArchiveLists::getTotalItemArchive($this->lists(), 'page');
 		$this->convert_total_i = ArchiveConverts::getTotalItemArchive($this->converts());
 		$this->convert_page_i = ArchiveConverts::getTotalItemArchive($this->converts(), 'page');
 		$this->convert_copy_i = ArchiveConverts::getTotalItemArchive($this->converts(), 'copy');

@@ -1,8 +1,8 @@
 <?php
 /**
- * Archives (lists)
+ * ArchiveLists (archive-lists)
  * @var $this AdminController
- * @var $model Archives
+ * @var $model ArchiveLists
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
@@ -14,7 +14,7 @@
  */
 
 	$this->breadcrumbs=array(
-		'Archives'=>array('manage'),
+		'ArchiveLists'=>array('manage'),
 		'Manage',
 	);
 	$this->menu=array(
@@ -50,7 +50,7 @@
 </div>
 <?php //end.Grid Option ?>
 
-<div id="partial-lists">
+<div id="partial-archive-lists">
 	<?php //begin.Messages ?>
 	<div id="ajax-message">
 	<?php
@@ -96,7 +96,7 @@
 			));
 
 			$this->widget('application.components.system.OGridView', array(
-				'id'=>'lists-grid',
+				'id'=>'archive-lists-grid',
 				'dataProvider'=>$model->search(),
 				'filter'=>$model,
 				'afterAjaxUpdate' => 'reinstallDatePicker',

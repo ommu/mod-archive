@@ -1,8 +1,8 @@
 <?php
 /**
- * Archives (lists)
+ * ArchiveLists (archive-lists)
  * @var $this SiteController
- * @var $data Archives
+ * @var $data ArchiveLists
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>

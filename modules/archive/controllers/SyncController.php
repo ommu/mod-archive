@@ -2,7 +2,7 @@
 /**
  * SyncController
  * @var $this SyncController
- * @var $model Archives
+ * @var $model ArchiveLists
  * @var $model ArchiveConverts
  * @var $form CActiveForm
  * version: 0.0.1
@@ -101,7 +101,7 @@ class SyncController extends Controller
 		$criteria = new CDbCriteria;
 		if($index == 'archive') {
 			$criteria->select = "list_id, location_id, type_id, story_id, list_type_id";
-			$model = Archives::model()->findAll($criteria);
+			$model = ArchiveLists::model()->findAll($criteria);
 		} else {
 			$criteria->select = "convert_id, location_id, category_id, convert_cat_id";
 			$model = ArchiveConverts::model()->findAll($criteria);			
@@ -110,7 +110,7 @@ class SyncController extends Controller
 		if($model) {
 			foreach($model as $key => $val) {
 				if($index == 'archive') {
-					$data = Archives::model()->findByPk($val->list_id);
+					$data = ArchiveLists::model()->findByPk($val->list_id);
 				} else {
 					$data = ArchiveConverts::model()->findByPk($val->convert_id);
 				}

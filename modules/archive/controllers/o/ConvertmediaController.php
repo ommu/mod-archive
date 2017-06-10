@@ -146,7 +146,7 @@ class ConvertmediaController extends Controller
 		$convert_id = $_GET['convert'];
 		
 		$model=new ArchiveConvertMedia;
-		$archive = Archives::model()->findByPk($list_id);
+		$archive = ArchiveLists::model()->findByPk($list_id);
 		$convert = ArchiveConverts::model()->findByPk($convert_id);
 
 		// Uncomment the following line if AJAX validation is needed
@@ -198,7 +198,7 @@ class ConvertmediaController extends Controller
 	public function actionEdit($id) 
 	{
 		$model=$this->loadModel($id);
-		$archive = Archives::model()->findByPk($model->list_id);
+		$archive = ArchiveLists::model()->findByPk($model->list_id);
 		$convert = ArchiveConverts::model()->findByPk($model->convert_id);
 
 		// Uncomment the following line if AJAX validation is needed

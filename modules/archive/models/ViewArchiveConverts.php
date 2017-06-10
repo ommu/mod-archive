@@ -32,7 +32,6 @@
 class ViewArchiveConverts extends CActiveRecord
 {
 	public $defaultColumns = array();
-	public $convert_code;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -75,8 +74,7 @@ class ViewArchiveConverts extends CActiveRecord
 			array('location_code, category_code', 'length', 'max'=>8),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('convert_id, location_code, category_code, convert_cat_id, parent_convert_cat_id,
-				convert_code', 'safe', 'on'=>'search'),
+			array('convert_id, location_code, category_code, convert_cat_id, parent_convert_cat_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -102,7 +100,6 @@ class ViewArchiveConverts extends CActiveRecord
 			'category_code' => Yii::t('attribute', 'Category Code'),
 			'convert_cat_id' => Yii::t('attribute', 'Convert Cat ID'),
 			'parent_convert_cat_id' => Yii::t('attribute', 'Parent Convert Cat ID'),
-			'convert_code' => Yii::t('attribute', 'Code'),
 		);
 		/*
 			'Convert' => 'Convert',
@@ -136,7 +133,6 @@ class ViewArchiveConverts extends CActiveRecord
 		$criteria->compare('t.category_code',strtolower($this->category_code),true);
 		$criteria->compare('t.convert_cat_id',$this->convert_cat_id);
 		$criteria->compare('t.parent_convert_cat_id',$this->parent_convert_cat_id);
-		$criteria->compare('t.convert_code',$this->convert_code,true);
 
 		if(!isset($_GET['ViewArchiveConverts_sort']))
 			$criteria->order = 't.convert_id DESC';
@@ -210,32 +206,6 @@ class ViewArchiveConverts extends CActiveRecord
 			$model = self::model()->findByPk($id);
 			return $model;			
 		}
-	}
-
-	/**
-	 * get Code/Number Archive
-	 */
-	public static function getCodeArchive($location, $category, $id, $parent_id)
-	{
-		if(ArchiveSettings::getInfo('auto_numbering') == 1)
-			$id = 0;
-		else
-			$id = $id;
-		$convert_code = array($location);
-		array_push($convert_code, $category);
-		if($id != 0)
-			array_push($convert_code, $id);
-		else
-			array_push($convert_code, $parent_id);
-		
-		return implode(".", $convert_code);
-	}
-	
-	protected function afterFind() 
-	{		
-		$this->convert_code = self::getCodeArchive($this->location_code, $this->category_code, $this->convert_cat_id, $this->parent_convert_cat_id);
-		
-		parent::afterFind();		
 	}
 
 }

@@ -1,8 +1,8 @@
 <?php
 /**
- * Archives (lists)
+ * ArchiveLists (archive-lists)
  * @var $this SiteController
- * @var $model Archives
+ * @var $model ArchiveLists
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
@@ -14,7 +14,7 @@
  */
 
 	$this->breadcrumbs=array(
-		'Archives'=>array('manage'),
+		'ArchiveLists'=>array('manage'),
 		'Manage',
 	);
 	$this->menu=array(
@@ -52,7 +52,7 @@
 
 <?php //begin.Grid Item ?>
 <?php $this->widget('application.components.system.OGridView', array(
-	'id'=>'lists-grid',
+	'id'=>'archive-lists-grid',
 	'dataProvider'=>$model->frontSearch(),
 	'filter'=>$model,
 	'pager' => array(

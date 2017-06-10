@@ -1,8 +1,8 @@
 <?php
 /**
- * Archives (lists)
+ * ArchiveLists (archive-lists)
  * @var $this AdminController
- * @var $model Archives
+ * @var $model ArchiveLists
  * @var $form CActiveForm
  * version: 0.0.1
  *
@@ -16,7 +16,7 @@
 
 	$cs = Yii::app()->getClientScript();
 $js=<<<EOP
-	$('#Archives_list_multiple').on('change', function() {
+	$('#ArchiveLists_list_multiple').on('change', function() {
 		var id = $(this).prop('checked');		
 		if(id == true) {
 			$('div#multiple').slideDown();
@@ -31,10 +31,10 @@ $js=<<<EOP
 	$('input[type="button"]#add-field').on('click', function() {
 		var body = $('form div#show-field').html();
 		if($('#add-field').before(body)) {
-			prev = 'Archives\[archive_number_multiple_i\]\['+i+'\]';
+			prev = 'ArchiveLists\[archive_number_multiple_i\]\['+i+'\]';
 			i = i+1;
-			next = 'Archives\[archive_number_multiple_i\]\['+i+'\]';
-			$('form div#show-field').find('[id*="Archives_archive_number_multiple_i_"]').each(function() {
+			next = 'ArchiveLists\[archive_number_multiple_i\]\['+i+'\]';
+			$('form div#show-field').find('[id*="ArchiveLists_archive_number_multiple_i_"]').each(function() {
 				$(this).attr('name',$(this).attr('name').replace(prev,next));
 			});
 			//alert(prev+' '+next);
@@ -48,7 +48,7 @@ EOP;
 ?>
 
 <?php $form=$this->beginWidget('application.components.system.OActiveForm', array(
-	'id'=>'lists-form',
+	'id'=>'archive-lists-form',
 	'enableAjaxValidation'=>true,
 	'htmlOptions' => array(
 		//'enctype' => 'multipart/form-data',
@@ -64,7 +64,7 @@ EOP;
 <?php $this->endWidget(); ?>
 
 <?php $form=$this->beginWidget('application.components.system.OActiveForm', array(
-	'id'=>'lists-form',
+	'id'=>'archive-lists-form',
 	'enableAjaxValidation'=>true,
 	//'htmlOptions' => array('enctype' => 'multipart/form-data')
 )); ?>

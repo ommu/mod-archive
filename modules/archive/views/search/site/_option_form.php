@@ -1,8 +1,8 @@
 <?php
 /**
- * Archives (lists)
+ * ArchiveLists (archive-lists)
  * @var $this SiteController
- * @var $model Archives
+ * @var $model ArchiveLists
  * @var $form CActiveForm
  * version: 0.0.1
  *

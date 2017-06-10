@@ -95,14 +95,14 @@ class ViewArchiveLocation extends CActiveRecord
 	{
 		return array(
 			'location_id' => Yii::t('attribute', 'Location'),
-			'lists' => Yii::t('attribute', 'Archives'),
+			'lists' => Yii::t('attribute', 'ArchiveLists'),
 			'list_all' => Yii::t('attribute', 'Archive All'),
 			'converts' => Yii::t('attribute', 'Converts'),
 			'convert_all' => Yii::t('attribute', 'Convert All'),
 		);
 		/*
 			'Location' => 'Location',
-			'Archives' => 'Archives',
+			'ArchiveLists' => 'ArchiveLists',
 			'Archive Publish' => 'Archive Publish',
 			'Archive Unpublish' => 'Archive Unpublish',
 		

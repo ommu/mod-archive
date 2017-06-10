@@ -91,9 +91,9 @@ class ViewArchiveYear extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'lists' => array(self::HAS_MANY, 'Archives', 'list_publish_year'),
-			'archive_publish' => array(self::HAS_MANY, 'Archives', 'list_publish_year', 'on'=>'archive_publish.publish = 1'),
-			'archive_unpublish' => array(self::HAS_MANY, 'Archives', 'list_publish_year', 'on'=>'archive_unpublish.publish = 1'),
+			'lists' => array(self::HAS_MANY, 'ArchiveLists', 'list_publish_year'),
+			'archive_publish' => array(self::HAS_MANY, 'ArchiveLists', 'list_publish_year', 'on'=>'archive_publish.publish = 1'),
+			'archive_unpublish' => array(self::HAS_MANY, 'ArchiveLists', 'list_publish_year', 'on'=>'archive_unpublish.publish = 1'),
 		);
 	}
 
@@ -114,7 +114,7 @@ class ViewArchiveYear extends CActiveRecord
 		);
 		/*
 			'Publish Year' => 'Publish Year',
-			'Archives' => 'Archives',
+			'ArchiveLists' => 'ArchiveLists',
 		
 		*/
 	}
@@ -249,7 +249,7 @@ class ViewArchiveYear extends CActiveRecord
 	
 	protected function afterFind() 
 	{
-		$this->archive_total_i = Archives::getTotalItemArchive($this->lists());
+		$this->archive_total_i = ArchiveLists::getTotalItemArchive($this->lists());
 		
 		parent::afterFind();		
 	}

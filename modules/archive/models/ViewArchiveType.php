@@ -92,12 +92,12 @@ class ViewArchiveType extends CActiveRecord
 	{
 		return array(
 			'type_id' => Yii::t('attribute', 'Type'),
-			'lists' => Yii::t('attribute', 'Archives'),
+			'lists' => Yii::t('attribute', 'ArchiveLists'),
 			'list_all' => Yii::t('attribute', 'Archive Publish'),
 		);
 		/*
 			'Type' => 'Type',
-			'Archives' => 'Archives',
+			'ArchiveLists' => 'ArchiveLists',
 			'Archive Publish' => 'Archive Publish',
 			'Archive Unpublish' => 'Archive Unpublish',
 		

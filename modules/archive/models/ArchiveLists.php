@@ -1,6 +1,6 @@
 <?php
 /**
- * Archives
+ * ArchiveLists
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
@@ -20,9 +20,9 @@
  *
  * --------------------------------------------------------------------------------------
  *
- * This is the model class for table "ommu_lists".
+ * This is the model class for table "ommu_archive_lists".
  *
- * The followings are the available columns in table 'ommu_lists':
+ * The followings are the available columns in table 'ommu_archive_lists':
  * @property string $list_id
  * @property integer $publish
  * @property integer $location_id
@@ -45,7 +45,7 @@
  * The followings are the available model relations:
  * @property OmmuArchiveType $type
  */
-class Archives extends CActiveRecord
+class ArchiveLists extends CActiveRecord
 {
 	public $defaultColumns = array();
 	public $archive_total_i;
@@ -62,7 +62,7 @@ class Archives extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Archives the static model class
+	 * @return ArchiveLists the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -74,7 +74,7 @@ class Archives extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'ommu_archives';
+		return 'ommu_archive_lists';
 	}
 
 	/**
@@ -109,7 +109,7 @@ class Archives extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'view' => array(self::BELONGS_TO, 'ViewArchives', 'list_id'),
+			'view' => array(self::BELONGS_TO, 'ViewArchiveLists', 'list_id'),
 			'location' => array(self::BELONGS_TO, 'ArchiveLocation', 'location_id'),
 			'type' => array(self::BELONGS_TO, 'ArchiveType', 'type_id'),
 			'story' => array(self::BELONGS_TO, 'ArchiveStory', 'story_id'),
@@ -144,7 +144,7 @@ class Archives extends CActiveRecord
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
-			'archive_total_i' => Yii::t('attribute', 'Archives'),
+			'archive_total_i' => Yii::t('attribute', 'ArchiveLists'),
 			'convert_search' => Yii::t('attribute', 'Alih'),
 			'back_field_i' => Yii::t('attribute', 'Back to Manage'),
 			'archive_number_single_i' => Yii::t('attribute', 'Archive Number'),
@@ -252,7 +252,7 @@ class Archives extends CActiveRecord
 		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
 		$criteria->compare('modified.displayname',strtolower($this->modified_search),true);
 
-		if(!isset($_GET['Archives_sort']))
+		if(!isset($_GET['ArchiveLists_sort']))
 			$criteria->order = 't.list_id DESC';
 		
 		return new CActiveDataProvider($this, array(
@@ -300,7 +300,7 @@ class Archives extends CActiveRecord
 		$criteria->compare('t.list_desc',strtolower($this->list_desc),true);
 		$criteria->compare('t.list_publish_year',strtolower($this->list_publish_year),true);
 
-		if(!isset($_GET['Archives_sort']))
+		if(!isset($_GET['ArchiveLists_sort']))
 			$criteria->order = 't.list_id DESC';
 		
 		return new CActiveDataProvider($this, array(
@@ -551,9 +551,8 @@ class Archives extends CActiveRecord
 						$item = (trim($val['finish'])-trim($val['start']));
 						$data_plus = $item == 0 ? $item : $item+1;
 						$return = $return + $data_plus;						
-					} else {
+					} else
 						$return = $return + (trim($val['pages']));
-					}
 				}
 			}
 			

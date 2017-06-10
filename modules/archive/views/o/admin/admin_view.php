@@ -1,8 +1,8 @@
 <?php
 /**
- * Archives (lists)
+ * ArchiveLists (archive-lists)
  * @var $this AdminController
- * @var $model Archives
+ * @var $model ArchiveLists
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
@@ -14,7 +14,7 @@
  */
 
 	$this->breadcrumbs=array(
-		'Archives'=>array('manage'),
+		'ArchiveLists'=>array('manage'),
 		$model->list_id,
 	);
 ?>
@@ -75,7 +75,7 @@
 			),
 			array(
 				'name'=>'archive_numbers',
-				'value'=>Archives::getDetailItemArchive(unserialize($model->archive_numbers), $model->list_multiple),
+				'value'=>ArchiveLists::getDetailItemArchive(unserialize($model->archive_numbers), $model->list_multiple),
 				'type'=>'raw',
 			),
 			array(

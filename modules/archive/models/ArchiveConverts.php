@@ -145,7 +145,7 @@ class ArchiveConverts extends CActiveRecord
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'convert_parent_title_i' => Yii::t('attribute', 'Parent Title'),
-			'convert_total_i' => Yii::t('attribute', 'Archives'),
+			'convert_total_i' => Yii::t('attribute', 'ArchiveLists'),
 			'back_field_i' => Yii::t('attribute', 'Back to Manage'),
 			'convert_code_search' => Yii::t('attribute', 'Code'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
@@ -485,6 +485,25 @@ class ArchiveConverts extends CActiveRecord
 	}
 
 	/**
+	 * get Code/Number Archive
+	 */
+	public static function getConvertCode($location, $category, $id, $parent_id)
+	{
+		if(ArchiveSettings::getInfo('auto_numbering') == 1)
+			$id = 0;
+		else
+			$id = $id;
+		$convert_code = array($location);
+		array_push($convert_code, $category);
+		if($id != 0)
+			array_push($convert_code, $id);
+		else
+			array_push($convert_code, $parent_id);
+		
+		return implode(".", $convert_code);
+	}
+
+	/**
 	 * get Item Archive
 	 */
 	public static function getItemArchive($data, $type=0, $convert='item')
@@ -596,7 +615,7 @@ class ArchiveConverts extends CActiveRecord
 		
 		if(parent::beforeSave()) {
 			$parent_convert_cat_id = $this->convert_parent != 0 ? ArchiveConverts::model()->findByPk($this->convert_parent)->convert_cat_id : '';
-			$this->convert_code = ViewArchiveConverts::getCodeArchive($this->location->location_code, $this->category->category_code, $this->convert_cat_id, $parent_convert_cat_id);
+			$this->convert_code = self::getConvertCode($this->location->location_code, $this->category->category_code, $this->convert_cat_id, $parent_convert_cat_id);
 			
 			if(in_array($controller, array('o/convert'))) {
 				if($this->convert_parent != 0)

@@ -39,7 +39,7 @@
 			),
 			array(
 				'name'=>'convert_code',
-				'value'=>$model->view->convert_code,
+				'value'=>$model->convert_code,
 			),
 			array(
 				'name'=>'convert_title',

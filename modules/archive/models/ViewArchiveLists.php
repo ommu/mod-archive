@@ -1,6 +1,6 @@
 <?php
 /**
- * ViewArchives
+ * ViewArchiveLists
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
@@ -20,9 +20,9 @@
  *
  * --------------------------------------------------------------------------------------
  *
- * This is the model class for table "_view_lists".
+ * This is the model class for table "_view_archive_lists".
  *
- * The followings are the available columns in table '_view_lists':
+ * The followings are the available columns in table '_view_archive_lists':
  * @property string $list_id
  * @property integer $converts
  * @property integer $convert_all
@@ -33,7 +33,7 @@
  * @property string $type_code
  * @property integer $list_type_id
  */
-class ViewArchives extends CActiveRecord
+class ViewArchiveLists extends CActiveRecord
 {
 	public $defaultColumns = array();
 
@@ -41,7 +41,7 @@ class ViewArchives extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return ViewArchives the static model class
+	 * @return ViewArchiveLists the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -53,7 +53,7 @@ class ViewArchives extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return '_view_archives';
+		return '_view_archive_lists';
 	}
 
 	/**
@@ -149,7 +149,7 @@ class ViewArchives extends CActiveRecord
 		$criteria->compare('t.type_code',strtolower($this->type_code),true);
 		$criteria->compare('t.list_type_id',$this->list_type_id);
 
-		if(!isset($_GET['ViewArchives_sort']))
+		if(!isset($_GET['ViewArchiveLists_sort']))
 			$criteria->order = 't.list_id DESC';
 
 		return new CActiveDataProvider($this, array(

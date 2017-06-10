@@ -120,7 +120,7 @@ EOP;
 				if($model->isNewRecord && !$model->getErrors())
 					$model->convert_parent = $parent->convert_id;
 				echo $form->hiddenField($model,'convert_parent');
-				echo '<strong>'.$parent->convert_title.' ('.$parent->view->convert_code.')</strong>';
+				echo '<strong>'.$parent->convert_title.' ('.$parent->convert_code.')</strong>';
 			}?>
 			<?php echo $form->error($model,'convert_parent_title_i'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>

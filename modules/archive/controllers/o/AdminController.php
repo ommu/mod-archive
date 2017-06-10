@@ -2,7 +2,7 @@
 /**
  * AdminController
  * @var $this AdminController
- * @var $model Archives
+ * @var $model ArchiveLists
  * @var $form CActiveForm
  * version: 0.0.1
  * Reference start
@@ -118,7 +118,7 @@ class AdminController extends Controller
 			$criteria->select = 'list_id, list_code';
 			$criteria->compare('list_code',strtolower($_GET['term']), true);
 			$criteria->order = 'list_id ASC';
-			$model = Archives::model()->findAll($criteria);
+			$model = ArchiveLists::model()->findAll($criteria);
 
 			if($model) {
 				foreach($model as $items) {
@@ -136,10 +136,10 @@ class AdminController extends Controller
 	 */
 	public function actionManage() 
 	{
-		$model=new Archives('search');
+		$model=new ArchiveLists('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Archives'])) {
-			$model->attributes=$_GET['Archives'];
+		if(isset($_GET['ArchiveLists'])) {
+			$model->attributes=$_GET['ArchiveLists'];
 		}
 
 		$columnTemp = array();
@@ -152,7 +152,7 @@ class AdminController extends Controller
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
-		$this->pageTitle = Yii::t('phrase', 'Archives Manage');
+		$this->pageTitle = Yii::t('phrase', 'ArchiveLists Manage');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_manage',array(
@@ -246,7 +246,7 @@ class AdminController extends Controller
 										'select' => 'type_id, type_code',
 									));
 									if($list_code_type == $type->type_code) {
-										$model=new Archives;
+										$model=new ArchiveLists;
 										$model->location_id = $location->location_id;
 										$model->type_id = $type->type_id;
 										$model->story_id = $story->story_id;
@@ -275,7 +275,7 @@ class AdminController extends Controller
 										'select' => 'type_id, type_code',
 									));
 									if($list_code_type == $type->type_code) {
-										$model=new Archives;
+										$model=new ArchiveLists;
 										$model->location_id = $location->location_id;
 										$model->type_id = $type->type_id;
 										$model->story_id = 0;
@@ -296,7 +296,7 @@ class AdminController extends Controller
 									}
 								} else {
 									if($list_code_type == $list_code[1]) {
-										$model=new Archives;
+										$model=new ArchiveLists;
 										$model->location_id = $location->location_id;
 										$model->type_id = 0;
 										$model->story_id = 0;
@@ -351,18 +351,18 @@ class AdminController extends Controller
 			'select' => 'auto_numbering',
 		));
 		
-		$model=new Archives;
+		$model=new ArchiveLists;
 
 		// Uncomment the following line if AJAX validation is needed
 		$this->performAjaxValidation($model);
 
-		if(isset($_POST['Archives'])) {
-			$model->attributes=$_POST['Archives'];
+		if(isset($_POST['ArchiveLists'])) {
+			$model->attributes=$_POST['ArchiveLists'];
 			if($setting->auto_numbering == 0)
 				$model->scenario = 'not_auto_numbering';
 			
 			if($model->save()) {
-				Yii::app()->user->setFlash('success', Yii::t('phrase', 'Archives success created.'));
+				Yii::app()->user->setFlash('success', Yii::t('phrase', 'ArchiveLists success created.'));
 				//$this->redirect(array('view','id'=>$model->list_id));
 				if($model->back_field_i == 1)
 					$this->redirect(array('manage'));
@@ -371,7 +371,7 @@ class AdminController extends Controller
 			}
 		}
 
-		$this->pageTitle = Yii::t('phrase', 'Create Archives');
+		$this->pageTitle = Yii::t('phrase', 'Create ArchiveLists');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_add',array(
@@ -396,19 +396,19 @@ class AdminController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		$this->performAjaxValidation($model);
 
-		if(isset($_POST['Archives'])) {
-			$model->attributes=$_POST['Archives'];
+		if(isset($_POST['ArchiveLists'])) {
+			$model->attributes=$_POST['ArchiveLists'];
 			if($setting->auto_numbering == 0)
 				$model->scenario = 'not_auto_numbering';
 			
 			if($model->save()) {
-				Yii::app()->user->setFlash('success', Yii::t('phrase', 'Archives success updated.'));
+				Yii::app()->user->setFlash('success', Yii::t('phrase', 'ArchiveLists success updated.'));
 				//$this->redirect(array('view','id'=>$model->list_id));
 				$this->redirect(array('manage'));
 			}
 		}
 
-		$this->pageTitle = Yii::t('phrase', 'Update Archives');
+		$this->pageTitle = Yii::t('phrase', 'Update ArchiveLists');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_edit',array(
@@ -425,7 +425,7 @@ class AdminController extends Controller
 	{
 		$model=$this->loadModel($id);
 
-		$this->pageTitle = Yii::t('phrase', 'View Archives');
+		$this->pageTitle = Yii::t('phrase', 'View ArchiveLists');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_view',array(
@@ -447,19 +447,19 @@ class AdminController extends Controller
 			$criteria->addInCondition('id', $id);
 
 			if($actions == 'publish') {
-				Archives::model()->updateAll(array(
+				ArchiveLists::model()->updateAll(array(
 					'publish' => 1,
 				),$criteria);
 			} elseif($actions == 'unpublish') {
-				Archives::model()->updateAll(array(
+				ArchiveLists::model()->updateAll(array(
 					'publish' => 0,
 				),$criteria);
 			} elseif($actions == 'trash') {
-				Archives::model()->updateAll(array(
+				ArchiveLists::model()->updateAll(array(
 					'publish' => 2,
 				),$criteria);
 			} elseif($actions == 'delete') {
-				Archives::model()->deleteAll($criteria);
+				ArchiveLists::model()->deleteAll($criteria);
 			}
 		}
 
@@ -485,8 +485,8 @@ class AdminController extends Controller
 					echo CJSON::encode(array(
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
-						'id' => 'partial-lists',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Archives success deleted.').'</strong></div>',
+						'id' => 'partial-archive-lists',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveLists success deleted.').'</strong></div>',
 					));
 				}
 			}
@@ -496,7 +496,7 @@ class AdminController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Yii::t('phrase', 'Archives Delete.');
+			$this->pageTitle = Yii::t('phrase', 'ArchiveLists Delete.');
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');
@@ -530,8 +530,8 @@ class AdminController extends Controller
 					echo CJSON::encode(array(
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
-						'id' => 'partial-lists',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Archives success updated.').'</strong></div>',
+						'id' => 'partial-archive-lists',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveLists success updated.').'</strong></div>',
 					));
 				}
 			}
@@ -558,7 +558,7 @@ class AdminController extends Controller
 	 */
 	public function loadModel($id) 
 	{
-		$model = Archives::model()->findByPk($id);
+		$model = ArchiveLists::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 		return $model;
@@ -570,7 +570,7 @@ class AdminController extends Controller
 	 */
 	protected function performAjaxValidation($model) 
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='lists-form') {
+		if(isset($_POST['ajax']) && $_POST['ajax']==='archive-lists-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

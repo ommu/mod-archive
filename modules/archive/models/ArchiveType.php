@@ -34,7 +34,7 @@
  * @property string $modified_id
  *
  * The followings are the available model relations:
- * @property OmmuArchives[] $ommuArchives
+ * @property OmmuArchiveLists[] $ommuArchiveLists
  */
 class ArchiveType extends CActiveRecord
 {
@@ -98,9 +98,9 @@ class ArchiveType extends CActiveRecord
 			'view' => array(self::BELONGS_TO, 'ViewArchiveType', 'type_id'),
 			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
-			'lists' => array(self::HAS_MANY, 'Archives', 'type_id'),
-			'archive_publish' => array(self::HAS_MANY, 'Archives', 'type_id', 'on'=>'archive_publish.publish = 1'),
-			'archive_unpublish' => array(self::HAS_MANY, 'Archives', 'type_id', 'on'=>'archive_unpublish.publish = 1'),
+			'lists' => array(self::HAS_MANY, 'ArchiveLists', 'type_id'),
+			'archive_publish' => array(self::HAS_MANY, 'ArchiveLists', 'type_id', 'on'=>'archive_publish.publish = 1'),
+			'archive_unpublish' => array(self::HAS_MANY, 'ArchiveLists', 'type_id', 'on'=>'archive_unpublish.publish = 1'),
 		);
 	}
 
@@ -372,8 +372,8 @@ class ArchiveType extends CActiveRecord
 	}
 	
 	protected function afterFind() {
-		$this->archive_total_i = Archives::getTotalItemArchive($this->lists());
-		$this->archive_page_i = Archives::getTotalItemArchive($this->lists(), 'page');
+		$this->archive_total_i = ArchiveLists::getTotalItemArchive($this->lists());
+		$this->archive_page_i = ArchiveLists::getTotalItemArchive($this->lists(), 'page');
 		
 		parent::afterFind();		
 	}

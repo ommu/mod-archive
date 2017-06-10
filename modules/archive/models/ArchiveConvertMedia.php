@@ -33,7 +33,7 @@
  *
  * The followings are the available model relations:
  * @property OmmuArchiveConverts $convert
- * @property OmmuArchives $archive
+ * @property OmmuArchiveLists $archive
  */
 class ArchiveConvertMedia extends CActiveRecord
 {
@@ -95,7 +95,7 @@ class ArchiveConvertMedia extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'archive' => array(self::BELONGS_TO, 'Archives', 'list_id'),
+			'archive' => array(self::BELONGS_TO, 'ArchiveLists', 'list_id'),
 			'convert' => array(self::BELONGS_TO, 'ArchiveConverts', 'convert_id'),
 			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 		);

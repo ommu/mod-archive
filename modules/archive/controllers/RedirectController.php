@@ -2,7 +2,7 @@
 /**
  * RedirectController
  * @var $this RedirectController
- * @var $model Archives
+ * @var $model ArchiveLists
  * @var $form CActiveForm
  * version: 0.0.1
  * Reference start
@@ -106,7 +106,7 @@ class RedirectController extends Controller
 	 */
 	public function loadModel($id) 
 	{
-		$model = Archives::model()->findByPk($id);
+		$model = ArchiveLists::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 		return $model;
@@ -118,7 +118,7 @@ class RedirectController extends Controller
 	 */
 	protected function performAjaxValidation($model) 
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='lists-form') {
+		if(isset($_POST['ajax']) && $_POST['ajax']==='archive-lists-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

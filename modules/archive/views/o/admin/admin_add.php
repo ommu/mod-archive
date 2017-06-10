@@ -1,8 +1,8 @@
 <?php
 /**
- * Archives (lists)
+ * ArchiveLists (archive-lists)
  * @var $this AdminController
- * @var $model Archives
+ * @var $model ArchiveLists
  * @var $form CActiveForm
  * version: 0.0.1
  *
@@ -15,7 +15,7 @@
  */
 
 	$this->breadcrumbs=array(
-		'Archives'=>array('manage'),
+		'ArchiveLists'=>array('manage'),
 		'Create',
 	);
 ?>

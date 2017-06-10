@@ -95,9 +95,9 @@ class ArchiveStory extends CActiveRecord
 			'view' => array(self::BELONGS_TO, 'ViewArchiveStory', 'story_id'),
 			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
-			'lists' => array(self::HAS_MANY, 'Archives', 'story_id', 'on'=>'lists.publish = 1'),
-			'archive_unpublish' => array(self::HAS_MANY, 'Archives', 'story_id', 'on'=>'archive_unpublish.publish = 0'),
-			'list_all' => array(self::HAS_MANY, 'Archives', 'story_id'),
+			'lists' => array(self::HAS_MANY, 'ArchiveLists', 'story_id', 'on'=>'lists.publish = 1'),
+			'archive_unpublish' => array(self::HAS_MANY, 'ArchiveLists', 'story_id', 'on'=>'archive_unpublish.publish = 0'),
+			'list_all' => array(self::HAS_MANY, 'ArchiveLists', 'story_id'),
 		);
 	}
 
@@ -369,8 +369,8 @@ class ArchiveStory extends CActiveRecord
 	}
 	
 	protected function afterFind() {
-		$this->archive_total_i = Archives::getTotalItemArchive($this->lists());
-		$this->archive_page_i = Archives::getTotalItemArchive($this->lists(), 'page');
+		$this->archive_total_i = ArchiveLists::getTotalItemArchive($this->lists());
+		$this->archive_page_i = ArchiveLists::getTotalItemArchive($this->lists(), 'page');
 		
 		parent::afterFind();		
 	}

@@ -2,7 +2,7 @@
 /**
  * SiteController
  * @var $this SiteController
- * @var $model Archives
+ * @var $model ArchiveLists
  * @var $form CActiveForm
  * version: 0.0.1
  * Reference start
@@ -95,10 +95,10 @@ class SiteController extends Controller
 			'select' => 'meta_description, meta_keyword',
 		));
 		
-		$model=new Archives('frontSearch');
+		$model=new ArchiveLists('frontSearch');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Archives'])) {
-			$model->attributes=$_GET['Archives'];
+		if(isset($_GET['ArchiveLists'])) {
+			$model->attributes=$_GET['ArchiveLists'];
 		}
 		
 		$this->pageTitleShow = true;		
@@ -124,14 +124,14 @@ class SiteController extends Controller
 		$criteria->params = array(':publish'=>1);
 		$criteria->order = 'creation_date DESC';
 
-		$dataProvider = new CActiveDataProvider('Archives', array(
+		$dataProvider = new CActiveDataProvider('ArchiveLists', array(
 			'criteria'=>$criteria,
 			'pagination'=>array(
 				'pageSize'=>10,
 			),
 		));
 
-		$this->pageTitle = Yii::t('phrase', 'Archives');
+		$this->pageTitle = Yii::t('phrase', 'ArchiveLists');
 		$this->pageDescription = $setting->meta_description;
 		$this->pageMeta = $setting->meta_keyword;
 		$this->render('front_list',array(
@@ -151,7 +151,7 @@ class SiteController extends Controller
 
 		$model=$this->loadModel($id);
 
-		$this->pageTitle = Yii::t('phrase', 'View Archives');
+		$this->pageTitle = Yii::t('phrase', 'View ArchiveLists');
 		$this->pageDescription = '';
 		$this->pageMeta = $setting->meta_keyword;
 		$this->render('front_view',array(
@@ -180,7 +180,7 @@ class SiteController extends Controller
 	 */
 	public function loadModel($id) 
 	{
-		$model = Archives::model()->findByPk($id);
+		$model = ArchiveLists::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 		return $model;
@@ -192,7 +192,7 @@ class SiteController extends Controller
 	 */
 	protected function performAjaxValidation($model) 
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='lists-form') {
+		if(isset($_POST['ajax']) && $_POST['ajax']==='archive-lists-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

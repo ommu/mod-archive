@@ -92,12 +92,12 @@ class ViewArchiveStory extends CActiveRecord
 	{
 		return array(
 			'story_id' => Yii::t('attribute', 'Story'),
-			'lists' => Yii::t('attribute', 'Archives'),
+			'lists' => Yii::t('attribute', 'ArchiveLists'),
 			'list_all' => Yii::t('attribute', 'Archive Publish'),
 		);
 		/*
 			'Story' => 'Story',
-			'Archives' => 'Archives',
+			'ArchiveLists' => 'ArchiveLists',
 			'Archive Publish' => 'Archive Publish',
 			'Archive Unpublish' => 'Archive Unpublish',
 		
