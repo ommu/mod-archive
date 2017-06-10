@@ -514,6 +514,26 @@ class Archives extends CActiveRecord
 	}
 
 	/**
+	 * get Code/Number Archive
+	 */
+	public static function getListCode($condition, $location, $story, $type, $id)
+	{
+		if(ArchiveSettings::getInfo('auto_numbering') == 1)
+			$id = 0;
+		else
+			$id = $id;
+		$list_code = array($location);
+		if($condition['story'] == 1)
+			array_push($list_code, $story);
+		if($condition['type'] == 1)
+			array_push($list_code, $type.$id);
+		else
+			array_push($list_code, $id);
+		
+		return implode(".", $list_code);
+	}
+
+	/**
 	 * get Item Archive
 	 */
 	public static function getItemArchive($data, $type=0, $archive='item')
@@ -624,7 +644,7 @@ class Archives extends CActiveRecord
 	protected function beforeSave() {
 		$controller = strtolower(Yii::app()->controller->id);
 		if(parent::beforeSave()) {
-			$this->list_code = ViewArchives::getCodeArchive(array('story'=>$this->location->story_enable,'type'=>$this->location->type_enable), $this->location->location_code, $this->story->story_code, $this->type->type_code, $this->list_type_id);
+			$this->list_code = self::getListCode(array('story'=>$this->location->story_enable,'type'=>$this->location->type_enable), $this->location->location_code, $this->story->story_code, $this->type->type_code, $this->list_type_id);
 			
 			if(in_array($controller, array('o/admin'))) {
 				if($this->list_multiple == 0)

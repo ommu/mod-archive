@@ -36,7 +36,6 @@
 class ViewArchives extends CActiveRecord
 {
 	public $defaultColumns = array();
-	public $list_code_i;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -79,8 +78,7 @@ class ViewArchives extends CActiveRecord
 			array('location_code, story_code, type_code', 'length', 'max'=>8),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('list_id, converts, convert_all, story_enable, type_enable, location_code, story_code, type_code, list_type_id,
-				list_code_i', 'safe', 'on'=>'search'),
+			array('list_id, converts, convert_all, story_enable, type_enable, location_code, story_code, type_code, list_type_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -110,7 +108,6 @@ class ViewArchives extends CActiveRecord
 			'story_code' => Yii::t('attribute', 'Story Code'),
 			'type_code' => Yii::t('attribute', 'Type Code'),
 			'list_type_id' => Yii::t('attribute', 'Archive Type ID'),
-			'list_code_i' => Yii::t('attribute', 'Code'),
 		);
 		/*
 			'Archive' => 'Archive',
@@ -151,7 +148,6 @@ class ViewArchives extends CActiveRecord
 		$criteria->compare('t.story_code',strtolower($this->story_code),true);
 		$criteria->compare('t.type_code',strtolower($this->type_code),true);
 		$criteria->compare('t.list_type_id',$this->list_type_id);
-		$criteria->compare('t.list_code_i',$this->list_code_i,true);
 
 		if(!isset($_GET['ViewArchives_sort']))
 			$criteria->order = 't.list_id DESC';
@@ -208,7 +204,6 @@ class ViewArchives extends CActiveRecord
 			//$this->defaultColumns[] = 'list_id';
 			$this->defaultColumns[] = 'converts';
 			$this->defaultColumns[] = 'convert_all';
-			$this->defaultColumns[] = 'list_code_i';
 			$this->defaultColumns[] = 'story_enable';
 			$this->defaultColumns[] = 'type_enable';
 			$this->defaultColumns[] = 'location_code';
@@ -234,33 +229,6 @@ class ViewArchives extends CActiveRecord
 			$model = self::model()->findByPk($id);
 			return $model;			
 		}
-	}
-
-	/**
-	 * get Code/Number Archive
-	 */
-	public static function getCodeArchive($condition, $location, $story, $type, $id)
-	{
-		if(ArchiveSettings::getInfo('auto_numbering') == 1)
-			$id = 0;
-		else
-			$id = $id;
-		$list_code = array($location);
-		if($condition['story'] == 1)
-			array_push($list_code, $story);
-		if($condition['type'] == 1)
-			array_push($list_code, $type.$id);
-		else
-			array_push($list_code, $id);
-		
-		return implode(".", $list_code);
-	}
-	
-	protected function afterFind() 
-	{
-		$this->list_code_i = self::getCodeArchive(array('story'=>$this->story_enable,'type'=>$this->type_enable), $this->location_code, $this->story_code, $this->type_code, $this->list_type_id);
-		
-		parent::afterFind();		
 	}
 
 }
