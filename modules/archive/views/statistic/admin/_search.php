@@ -2,7 +2,7 @@
 /**
  * View Archive Years (view-archive-year)
  * @var $this AdminController
- * @var $model ViewArchiveYear
+ * @var $model ViewArchiveListYear
  * @var $form CActiveForm
  * version: 0.0.1
  *

@@ -265,12 +265,12 @@ class ConvertController extends Controller
 								$model->convert_publish_year = $convert_publish_year;
 								$model->convert_multiple = $convert_multiple;
 								if($convert_multiple == 0) {
-									$model->convert_number_single_i = array(
+									$model->archive_number_single_i = array(
 										'start'=>trim($archive_numbers[0]),
 										'finish'=>trim($archive_numbers[1]),
 									);
 								} else 
-									$model->convert_number_multiple_i = $archive_numbers;
+									$model->archive_number_multiple_i = $archive_numbers;
 								$model->archive_pages = $archive_pages;
 								$model->convert_copies = $convert_copies;
 								$model->save();

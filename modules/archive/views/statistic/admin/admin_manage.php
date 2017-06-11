@@ -2,7 +2,7 @@
 /**
  * View Archive Years (view-archive-year)
  * @var $this AdminController
- * @var $model ViewArchiveYear
+ * @var $model ViewArchiveListYear
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>

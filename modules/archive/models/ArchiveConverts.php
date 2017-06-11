@@ -36,6 +36,7 @@
  * @property string $convert_copies
  * @property string $convert_code
  * @property string $archive_numbers
+ * @property string $archive_total
  * @property string $archive_pages
  * @property string $creation_date
  * @property string $creation_id
@@ -52,8 +53,8 @@ class ArchiveConverts extends CActiveRecord
 	public $convert_parent_title_i;
 	public $convert_total_i;
 	public $back_field_i;
-	public $convert_number_single_i;
-	public $convert_number_multiple_i;
+	public $archive_number_single_i;
+	public $archive_number_multiple_i;
 	
 	// Variable Search
 	public $convert_code_search;
@@ -92,13 +93,13 @@ class ArchiveConverts extends CActiveRecord
 			array('publish, location_id, category_id, convert_parent, convert_cat_id, convert_multiple,
 				back_field_i', 'numerical', 'integerOnly'=>true),
 			array('convert_publish_year', 'length', 'max'=>4),
-			array('archive_pages, convert_copies, creation_id, modified_id', 'length', 'max'=>11),
+			array('archive_total, archive_pages, convert_copies, creation_id, modified_id', 'length', 'max'=>11),
 			array('convert_code', 'length', 'max'=>32),
-			array('convert_parent, convert_desc, convert_copies, convert_code, archive_numbers, archive_pages,
-				convert_parent_title_i, convert_number_single_i, convert_number_multiple_i', 'safe'),
+			array('convert_parent, convert_desc, convert_copies, convert_code, archive_numbers, archive_total, archive_pages,
+				convert_parent_title_i, archive_number_single_i, archive_number_multiple_i', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('convert_id, publish, location_id, category_id, convert_parent, convert_title, convert_desc, convert_cat_id, convert_publish_year, convert_multiple, convert_copies, convert_code, archive_numbers, archive_pages, creation_date, creation_id, modified_date, modified_id,
+			array('convert_id, publish, location_id, category_id, convert_parent, convert_title, convert_desc, convert_cat_id, convert_publish_year, convert_multiple, convert_copies, convert_code, archive_numbers, archive_total, archive_pages, creation_date, creation_id, modified_date, modified_id,
 				convert_total, convert_code_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -139,19 +140,20 @@ class ArchiveConverts extends CActiveRecord
 			'convert_copies' => Yii::t('attribute', 'Copies'),
 			'convert_code' => Yii::t('attribute', 'Code'),
 			'archive_numbers' => Yii::t('attribute', 'Archive Numbers'),
+			'archive_total' => Yii::t('attribute', 'Archives'),
 			'archive_pages' => Yii::t('attribute', 'Archive Pages'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'convert_parent_title_i' => Yii::t('attribute', 'Parent Title'),
-			'convert_total_i' => Yii::t('attribute', 'ArchiveLists'),
+			'convert_total_i' => Yii::t('attribute', 'Archives'),
 			'back_field_i' => Yii::t('attribute', 'Back to Manage'),
 			'convert_code_search' => Yii::t('attribute', 'Code'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
-			'convert_number_single_i' => Yii::t('attribute', 'Archive Number'),
-			'convert_number_multiple_i' => Yii::t('attribute', 'Archive Number'),
+			'archive_number_single_i' => Yii::t('attribute', 'Archive Number'),
+			'archive_number_multiple_i' => Yii::t('attribute', 'Archive Number'),
 		);
 		/*
 			'Convert' => 'Convert',
@@ -229,6 +231,7 @@ class ArchiveConverts extends CActiveRecord
 		$criteria->compare('t.convert_copies',$this->convert_copies);
 		$criteria->compare('t.convert_code',$this->convert_code,true);
 		$criteria->compare('t.archive_numbers',strtolower($this->archive_numbers),true);
+		$criteria->compare('t.archive_total',$this->archive_total);
 		$criteria->compare('t.archive_pages',$this->archive_pages);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
@@ -333,6 +336,7 @@ class ArchiveConverts extends CActiveRecord
 			$this->defaultColumns[] = 'convert_copies';
 			$this->defaultColumns[] = 'convert_code';
 			$this->defaultColumns[] = 'archive_numbers';
+			$this->defaultColumns[] = 'archive_total';
 			$this->defaultColumns[] = 'archive_pages';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
@@ -396,8 +400,8 @@ class ArchiveConverts extends CActiveRecord
 			);
 			/*
 			$this->defaultColumns[] = array(
-				'name' => 'convert_total_i',
-				'value' => '$data->convert_total_i',
+				'name' => 'archive_total',
+				'value' => '$data->archive_total',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -598,10 +602,10 @@ class ArchiveConverts extends CActiveRecord
 			else
 				$this->modified_id = Yii::app()->user->id;
 			
-			if($this->convert_multiple == 0 && (empty($this->convert_number_single_i) || $this->convert_number_single_i == null))
-				$this->addError('convert_number_single_i', 'Number Single cannot be blank.');
-			if($this->convert_multiple == 1 && (empty($this->convert_number_multiple_i) || $this->convert_number_multiple_i == null))
-				$this->addError('convert_number_multiple_i', 'Number Multiple cannot be blank.');
+			if($this->convert_multiple == 0 && (empty($this->archive_number_single_i) || $this->archive_number_single_i == null))
+				$this->addError('archive_number_single_i', 'Number Single cannot be blank.');
+			if($this->convert_multiple == 1 && (empty($this->archive_number_multiple_i) || $this->archive_number_multiple_i == null))
+				$this->addError('archive_number_multiple_i', 'Number Multiple cannot be blank.');
 		}
 		return true;
 	}
@@ -622,9 +626,9 @@ class ArchiveConverts extends CActiveRecord
 					$this->convert_cat_id = 0;
 				
 				if($this->convert_multiple == 0)
-					$this->archive_numbers = serialize($this->convert_number_single_i);
+					$this->archive_numbers = serialize($this->archive_number_single_i);
 				else
-					$this->archive_numbers = serialize($this->convert_number_multiple_i);
+					$this->archive_numbers = serialize($this->archive_number_multiple_i);
 			}
 		}
 		return true;

@@ -71,16 +71,6 @@
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('archive_numbers'); ?><br/>
-			<?php echo $form->textField($model,'archive_numbers'); ?>
-		</li>
-
-		<li>
-			<?php echo $model->getAttributeLabel('archive_pages'); ?><br/>
-			<?php echo $form->textField($model,'archive_pages'); ?>
-		</li>
-
-		<li>
 			<?php echo $model->getAttributeLabel('convert_copies'); ?><br/>
 			<?php echo $form->textField($model,'convert_copies'); ?>
 		</li>
@@ -88,6 +78,21 @@
 		<li>
 			<?php echo $model->getAttributeLabel('convert_code'); ?><br/>
 			<?php echo $form->textField($model,'convert_code'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('archive_numbers'); ?><br/>
+			<?php echo $form->textField($model,'archive_numbers'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('archive_total'); ?><br/>
+			<?php echo $form->textArea($model,'archive_total'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('archive_pages'); ?><br/>
+			<?php echo $form->textField($model,'archive_pages'); ?>
 		</li>
 
 		<li>

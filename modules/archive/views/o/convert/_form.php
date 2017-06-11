@@ -31,10 +31,10 @@ $js=<<<EOP
 	$('input[type="button"]#add-field').on('click', function() {
 		var body = $('form div#show-field').html();
 		if($('#add-field').before(body)) {
-			prev = 'ArchiveConverts\[convert_number_multiple_i\]\['+i+'\]';
+			prev = 'ArchiveConverts\[archive_number_multiple_i\]\['+i+'\]';
 			i = i+1;
-			next = 'ArchiveConverts\[convert_number_multiple_i\]\['+i+'\]';
-			$('form div#show-field').find('[id*="ArchiveConverts_convert_number_multiple_i_"]').each(function() {
+			next = 'ArchiveConverts\[archive_number_multiple_i\]\['+i+'\]';
+			$('form div#show-field').find('[id*="ArchiveConverts_archive_number_multiple_i_"]').each(function() {
 				$(this).attr('name',$(this).attr('name').replace(prev,next));
 			});
 			//alert(prev+' '+next);
@@ -216,28 +216,28 @@ EOP;
 	</div>
 
 	<div class="clearfix <?php echo $model->convert_multiple == 0 ? '' :'hide';?>" id="single">
-		<?php echo $form->labelEx($model,'convert_number_single_i'); ?>
+		<?php echo $form->labelEx($model,'archive_number_single_i'); ?>
 		<div class="desc">
 			<?php if($model->convert_multiple == 0 && !$model->getErrors())
-				$model->convert_number_single_i = unserialize($model->archive_numbers);
+				$model->archive_number_single_i = unserialize($model->archive_numbers);
 			//echo '<pre>';
-			//print_r($model->convert_number_single_i);
+			//print_r($model->archive_number_single_i);
 			//echo '<pre>';?>
-			<?php echo $form->textField($model,'convert_number_single_i[start]', array('placeholder'=>'Start', 'class'=>'span-3')); ?>
-			<?php echo $form->textField($model,'convert_number_single_i[finish]', array('placeholder'=>'Finish', 'class'=>'span-3')); ?>
-			<?php echo $form->error($model,'convert_number_single_i'); ?>
+			<?php echo $form->textField($model,'archive_number_single_i[start]', array('placeholder'=>'Start', 'class'=>'span-3')); ?>
+			<?php echo $form->textField($model,'archive_number_single_i[finish]', array('placeholder'=>'Finish', 'class'=>'span-3')); ?>
+			<?php echo $form->error($model,'archive_number_single_i'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
 
 	<div class="clearfix <?php echo $model->convert_multiple == 1 ? '' :'hide';?>" id="multiple">
-		<?php echo $form->labelEx($model,'convert_number_multiple_i'); ?>
+		<?php echo $form->labelEx($model,'archive_number_multiple_i'); ?>
 		<div class="desc">
 			<?php if($model->convert_multiple == 1) {
 				if(!$model->getErrors())
-					$data = $model->convert_number_multiple_i = unserialize($model->archive_numbers);
+					$data = $model->archive_number_multiple_i = unserialize($model->archive_numbers);
 				else
-					$data = $model->convert_number_multiple_i;
+					$data = $model->archive_number_multiple_i;
 			}
 			if(!empty($data)) {
 				foreach($data as $key => $val) {
@@ -249,10 +249,10 @@ EOP;
 				}
 			}
 			//echo '<pre>';
-			//print_r($model->convert_number_multiple_i);
+			//print_r($model->archive_number_multiple_i);
 			//echo '<pre>';?>
 			<?php echo CHtml::button(Yii::t('phrase', 'Add Field'), array('id'=>'add-field')); ?>
-			<?php echo $form->error($model,'convert_number_multiple_i'); ?>
+			<?php echo $form->error($model,'archive_number_multiple_i'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>

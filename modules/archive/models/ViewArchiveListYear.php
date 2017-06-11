@@ -1,6 +1,6 @@
 <?php
 /**
- * ViewArchiveYear
+ * ViewArchiveListYear
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
@@ -31,7 +31,7 @@
  * @property string $archive_pages
  * @property string $archive_page_all
  */
-class ViewArchiveYear extends CActiveRecord
+class ViewArchiveListYear extends CActiveRecord
 {
 	public $defaultColumns = array();
 	public $archive_total_i;
@@ -40,7 +40,7 @@ class ViewArchiveYear extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return ViewArchiveYear the static model class
+	 * @return ViewArchiveListYear the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -52,7 +52,7 @@ class ViewArchiveYear extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return '_view_archive_year';
+		return '_view_archive_list_year';
 	}
 
 	/**
@@ -146,7 +146,7 @@ class ViewArchiveYear extends CActiveRecord
 		$criteria->compare('t.archive_page_all',$this->archive_page_all);
 		$criteria->compare('t.archive_total_i',$this->archive_total_i);
 
-		if(!isset($_GET['ViewArchiveYear_sort']))
+		if(!isset($_GET['ViewArchiveListYear_sort']))
 			$criteria->order = 't.publish_year DESC';
 
 		return new CActiveDataProvider($this, array(

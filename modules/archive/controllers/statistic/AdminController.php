@@ -2,7 +2,7 @@
 /**
  * AdminController
  * @var $this AdminController
- * @var $model ViewArchiveYear
+ * @var $model ViewArchiveListYear
  * @var $form CActiveForm
  * version: 0.0.1
  * Reference start
@@ -108,10 +108,10 @@ class AdminController extends Controller
 	 */
 	public function actionManage() 
 	{
-		$model=new ViewArchiveYear('search');
+		$model=new ViewArchiveListYear('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['ViewArchiveYear'])) {
-			$model->attributes=$_GET['ViewArchiveYear'];
+		if(isset($_GET['ViewArchiveListYear'])) {
+			$model->attributes=$_GET['ViewArchiveListYear'];
 		}
 
 		$columnTemp = array();
@@ -160,7 +160,7 @@ class AdminController extends Controller
 	 */
 	public function loadModel($id) 
 	{
-		$model = ViewArchiveYear::model()->findByPk($id);
+		$model = ViewArchiveListYear::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 		return $model;

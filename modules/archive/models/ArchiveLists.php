@@ -36,6 +36,7 @@
  * @property string $list_copies
  * @property string $list_code
  * @property string $archive_numbers
+ * @property string $archive_total
  * @property string $archive_pages
  * @property string $creation_date
  * @property string $creation_id
@@ -90,13 +91,13 @@ class ArchiveLists extends CActiveRecord
 			array('publish, location_id, type_id, story_id, list_type_id, list_multiple,
 				back_field_i', 'numerical', 'integerOnly'=>true),
 			array('list_publish_year', 'length', 'max'=>4),
-			array('archive_pages, list_copies, creation_id, modified_id', 'length', 'max'=>11),
+			array('archive_total, archive_pages, list_copies, creation_id, modified_id', 'length', 'max'=>11),
 			array('list_code', 'length', 'max'=>32),
-			array('type_id, story_id, list_desc, list_copies, list_code, archive_numbers, archive_pages,
+			array('type_id, story_id, list_desc, list_copies, list_code, archive_numbers, archive_total, archive_pages,
 				archive_number_single_i, archive_number_multiple_i', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('list_id, publish, location_id, type_id, story_id, list_title, list_desc, list_type_id, list_publish_year, list_multiple, list_copies, list_code, archive_numbers, archive_pages, creation_date, creation_id, modified_date, modified_id,
+			array('list_id, publish, location_id, type_id, story_id, list_title, list_desc, list_type_id, list_publish_year, list_multiple, list_copies, list_code, archive_numbers, archive_total, archive_pages, creation_date, creation_id, modified_date, modified_id,
 				archive_total_i, convert_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -137,6 +138,7 @@ class ArchiveLists extends CActiveRecord
 			'list_copies' => Yii::t('attribute', 'Copies'),
 			'list_code' => Yii::t('attribute', 'Code'),
 			'archive_numbers' => Yii::t('attribute', 'Archive Numbers'),
+			'archive_total' => Yii::t('attribute', 'Archives'),
 			'archive_pages' => Yii::t('attribute', 'Archive Pages'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
@@ -144,7 +146,7 @@ class ArchiveLists extends CActiveRecord
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
-			'archive_total_i' => Yii::t('attribute', 'ArchiveLists'),
+			'archive_total_i' => Yii::t('attribute', 'Archives'),
 			'convert_search' => Yii::t('attribute', 'Alih'),
 			'back_field_i' => Yii::t('attribute', 'Back to Manage'),
 			'archive_number_single_i' => Yii::t('attribute', 'Archive Number'),
@@ -233,6 +235,7 @@ class ArchiveLists extends CActiveRecord
 		$criteria->compare('t.list_copies',$this->list_copies);
 		$criteria->compare('t.list_code',$this->list_code,true);
 		$criteria->compare('t.archive_numbers',strtolower($this->archive_numbers),true);
+		$criteria->compare('t.archive_total',$this->archive_total);
 		$criteria->compare('t.archive_pages',$this->archive_pages);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
@@ -341,6 +344,7 @@ class ArchiveLists extends CActiveRecord
 			$this->defaultColumns[] = 'list_copies';
 			$this->defaultColumns[] = 'list_code';
 			$this->defaultColumns[] = 'archive_numbers';
+			$this->defaultColumns[] = 'archive_total';
 			$this->defaultColumns[] = 'archive_pages';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
@@ -410,8 +414,8 @@ class ArchiveLists extends CActiveRecord
 			);
 			/*
 			$this->defaultColumns[] = array(
-				'name' => 'archive_total_i',
-				'value' => '$data->archive_total_i',
+				'name' => 'archive_total',
+				'value' => '$data->archive_total',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
