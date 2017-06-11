@@ -1,8 +1,8 @@
 <?php
 /**
- * Archive Convert Medias (archive-convert-media)
- * @var $this ConvertmediaController
- * @var $model ArchiveConvertMedia
+ * Archive Convert Medias (archive-list-convert)
+ * @var $this MediaController
+ * @var $model ArchiveListConvert
  * @var $form CActiveForm
  * version: 0.0.1
  *
@@ -16,7 +16,7 @@
 ?>
 
 <?php $form=$this->beginWidget('application.components.system.OActiveForm', array(
-	'id'=>'archive-convert-media-form',
+	'id'=>'archive-list-convert-form',
 	'enableAjaxValidation'=>true,
 	//'htmlOptions' => array('enctype' => 'multipart/form-data')
 )); ?>
@@ -44,8 +44,8 @@
 						'minLength' => 1,
 						'showAnim' => 'fold',
 						'select' => "js:function(event, ui) {
-							$('form #ArchiveConvertMedia_list_code_i').val(ui.item.value);
-							$('form #ArchiveConvertMedia_list_id').val(ui.item.id);
+							$('form #ArchiveListConvert_list_code_i').val(ui.item.value);
+							$('form #ArchiveListConvert_list_id').val(ui.item.id);
 						}"
 					),
 					'htmlOptions' => array(
@@ -74,8 +74,8 @@
 						'minLength' => 1,
 						'showAnim' => 'fold',
 						'select' => "js:function(event, ui) {
-							$('form #ArchiveConvertMedia_convert_code_i').val(ui.item.value);
-							$('form #ArchiveConvertMedia_convert_id').val(ui.item.id);
+							$('form #ArchiveListConvert_convert_code_i').val(ui.item.value);
+							$('form #ArchiveListConvert_convert_id').val(ui.item.id);
 						}"
 					),
 					'htmlOptions' => array(

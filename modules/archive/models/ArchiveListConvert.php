@@ -1,6 +1,6 @@
 <?php
 /**
- * ArchiveConvertMedia
+ * ArchiveListConvert
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
@@ -20,9 +20,9 @@
  *
  * --------------------------------------------------------------------------------------
  *
- * This is the model class for table "ommu_archive_convert_media".
+ * This is the model class for table "ommu_archive_list_convert".
  *
- * The followings are the available columns in table 'ommu_archive_convert_media':
+ * The followings are the available columns in table 'ommu_archive_list_convert':
  * @property string $id
  * @property integer $publish
  * @property string $list_id
@@ -35,7 +35,7 @@
  * @property OmmuArchiveConverts $convert
  * @property OmmuArchiveLists $archive
  */
-class ArchiveConvertMedia extends CActiveRecord
+class ArchiveListConvert extends CActiveRecord
 {
 	public $defaultColumns = array();
 	public $list_code_i;
@@ -50,7 +50,7 @@ class ArchiveConvertMedia extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return ArchiveConvertMedia the static model class
+	 * @return ArchiveListConvert the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -62,7 +62,7 @@ class ArchiveConvertMedia extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'ommu_archive_convert_media';
+		return 'ommu_archive_list_convert';
 	}
 
 	/**
@@ -197,7 +197,7 @@ class ArchiveConvertMedia extends CActiveRecord
 		$criteria->compare('convert.convert_code',strtolower($this->convert_search),true);
 		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
 
-		if(!isset($_GET['ArchiveConvertMedia_sort']))
+		if(!isset($_GET['ArchiveListConvert_sort']))
 			$criteria->order = 't.id DESC';
 
 		return new CActiveDataProvider($this, array(

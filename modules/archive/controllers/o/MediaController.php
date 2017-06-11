@@ -1,8 +1,8 @@
 <?php
 /**
- * ConvertmediaController
- * @var $this ConvertmediaController
- * @var $model ArchiveConvertMedia
+ * MediaController
+ * @var $this MediaController
+ * @var $model ArchiveListConvert
  * @var $form CActiveForm
  * version: 0.0.1
  * Reference start
@@ -29,7 +29,7 @@
  *----------------------------------------------------------------------------------------------------------
  */
 
-class ConvertmediaController extends Controller
+class MediaController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -111,10 +111,10 @@ class ConvertmediaController extends Controller
 	 */
 	public function actionManage() 
 	{
-		$model=new ArchiveConvertMedia('search');
+		$model=new ArchiveListConvert('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['ArchiveConvertMedia'])) {
-			$model->attributes=$_GET['ArchiveConvertMedia'];
+		if(isset($_GET['ArchiveListConvert'])) {
+			$model->attributes=$_GET['ArchiveListConvert'];
 		}
 
 		$columnTemp = array();
@@ -130,7 +130,7 @@ class ConvertmediaController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Archive Convert Medias Manage');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('/o/convert_media/admin_manage',array(
+		$this->render('admin_manage',array(
 			'model'=>$model,
 			'columns' => $columns,
 		));
@@ -145,15 +145,15 @@ class ConvertmediaController extends Controller
 		$list_id = $_GET['archive'];
 		$convert_id = $_GET['convert'];
 		
-		$model=new ArchiveConvertMedia;
+		$model=new ArchiveListConvert;
 		$archive = ArchiveLists::model()->findByPk($list_id);
 		$convert = ArchiveConverts::model()->findByPk($convert_id);
 
 		// Uncomment the following line if AJAX validation is needed
 		$this->performAjaxValidation($model);
 
-		if(isset($_POST['ArchiveConvertMedia'])) {
-			$model->attributes=$_POST['ArchiveConvertMedia'];
+		if(isset($_POST['ArchiveListConvert'])) {
+			$model->attributes=$_POST['ArchiveListConvert'];
 			
 			$jsonError = CActiveForm::validate($model);
 			if(strlen($jsonError) > 2) {
@@ -165,8 +165,8 @@ class ConvertmediaController extends Controller
 						echo CJSON::encode(array(
 							'type' => 5,
 							'get' => Yii::app()->controller->createUrl('manage'),
-							'id' => 'partial-archive-convert-media',
-							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveConvertMedia success created.').'</strong></div>',
+							'id' => 'partial-archive-list-convert',
+							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveListConvert success created.').'</strong></div>',
 						));
 					} else {
 						print_r($model->getErrors());
@@ -183,7 +183,7 @@ class ConvertmediaController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Create Archive Convert Medias');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('/o/convert_media/admin_add',array(
+		$this->render('admin_add',array(
 			'model'=>$model,
 			'archive'=>$archive,
 			'convert'=>$convert,
@@ -204,8 +204,8 @@ class ConvertmediaController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		$this->performAjaxValidation($model);
 
-		if(isset($_POST['ArchiveConvertMedia'])) {
-			$model->attributes=$_POST['ArchiveConvertMedia'];
+		if(isset($_POST['ArchiveListConvert'])) {
+			$model->attributes=$_POST['ArchiveListConvert'];
 			
 			$jsonError = CActiveForm::validate($model);
 			if(strlen($jsonError) > 2) {
@@ -217,8 +217,8 @@ class ConvertmediaController extends Controller
 						echo CJSON::encode(array(
 							'type' => 5,
 							'get' => Yii::app()->controller->createUrl('manage'),
-							'id' => 'partial-archive-convert-media',
-							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveConvertMedia success updated.').'</strong></div>',
+							'id' => 'partial-archive-list-convert',
+							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveListConvert success updated.').'</strong></div>',
 						));
 					} else {
 						print_r($model->getErrors());
@@ -235,7 +235,7 @@ class ConvertmediaController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Update Archive Convert Medias');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('/o/convert_media/admin_edit',array(
+		$this->render('admin_edit',array(
 			'model'=>$model,
 			'archive'=>$archive,
 			'convert'=>$convert,
@@ -257,7 +257,7 @@ class ConvertmediaController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'View Archive Convert Medias');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('/o/convert_media/admin_view',array(
+		$this->render('admin_view',array(
 			'model'=>$model,
 		));
 	}	
@@ -276,19 +276,19 @@ class ConvertmediaController extends Controller
 			$criteria->addInCondition('id', $id);
 
 			if($actions == 'publish') {
-				ArchiveConvertMedia::model()->updateAll(array(
+				ArchiveListConvert::model()->updateAll(array(
 					'publish' => 1,
 				),$criteria);
 			} elseif($actions == 'unpublish') {
-				ArchiveConvertMedia::model()->updateAll(array(
+				ArchiveListConvert::model()->updateAll(array(
 					'publish' => 0,
 				),$criteria);
 			} elseif($actions == 'trash') {
-				ArchiveConvertMedia::model()->updateAll(array(
+				ArchiveListConvert::model()->updateAll(array(
 					'publish' => 2,
 				),$criteria);
 			} elseif($actions == 'delete') {
-				ArchiveConvertMedia::model()->deleteAll($criteria);
+				ArchiveListConvert::model()->deleteAll($criteria);
 			}
 		}
 
@@ -314,8 +314,8 @@ class ConvertmediaController extends Controller
 					echo CJSON::encode(array(
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
-						'id' => 'partial-archive-convert-media',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveConvertMedia success deleted.').'</strong></div>',
+						'id' => 'partial-archive-list-convert',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveListConvert success deleted.').'</strong></div>',
 					));
 				}
 			}
@@ -325,10 +325,10 @@ class ConvertmediaController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Yii::t('phrase', 'ArchiveConvertMedia Delete.');
+			$this->pageTitle = Yii::t('phrase', 'ArchiveListConvert Delete.');
 			$this->pageDescription = '';
 			$this->pageMeta = '';
-			$this->render('/o/convert_media/admin_delete');
+			$this->render('admin_delete');
 		}
 	}
 
@@ -359,8 +359,8 @@ class ConvertmediaController extends Controller
 					echo CJSON::encode(array(
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
-						'id' => 'partial-archive-convert-media',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveConvertMedia success updated.').'</strong></div>',
+						'id' => 'partial-archive-list-convert',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveListConvert success updated.').'</strong></div>',
 					));
 				}
 			}
@@ -373,7 +373,7 @@ class ConvertmediaController extends Controller
 			$this->pageTitle = $title;
 			$this->pageDescription = '';
 			$this->pageMeta = '';
-			$this->render('/o/convert_media/admin_publish',array(
+			$this->render('admin_publish',array(
 				'title'=>$title,
 				'model'=>$model,
 			));
@@ -387,7 +387,7 @@ class ConvertmediaController extends Controller
 	 */
 	public function loadModel($id) 
 	{
-		$model = ArchiveConvertMedia::model()->findByPk($id);
+		$model = ArchiveListConvert::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 		return $model;
@@ -399,7 +399,7 @@ class ConvertmediaController extends Controller
 	 */
 	protected function performAjaxValidation($model) 
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='archive-convert-media-form') {
+		if(isset($_POST['ajax']) && $_POST['ajax']==='archive-list-convert-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

@@ -1,8 +1,8 @@
 <?php
 /**
- * Archive Convert Medias (archive-convert-media)
- * @var $this ConvertmediaController
- * @var $model ArchiveConvertMedia
+ * Archive Convert Medias (archive-list-convert)
+ * @var $this MediaController
+ * @var $model ArchiveListConvert
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>

@@ -1,8 +1,8 @@
 <?php
 /**
- * Archive Convert Medias (archive-convert-media)
- * @var $this ConvertmediaController
- * @var $model ArchiveConvertMedia
+ * Archive Convert Medias (archive-list-convert)
+ * @var $this MediaController
+ * @var $model ArchiveListConvert
  * @var $form CActiveForm
  * version: 0.0.1
  *

@@ -1,8 +1,8 @@
 <?php
 /**
- * Archive Convert Medias (archive-convert-media)
- * @var $this ConvertmediaController
- * @var $model ArchiveConvertMedia
+ * Archive Convert Medias (archive-list-convert)
+ * @var $this MediaController
+ * @var $model ArchiveListConvert
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
@@ -36,7 +36,7 @@
 
 <?php //begin.Search ?>
 <div class="search-form">
-<?php $this->renderPartial('/o/convert_media/_search',array(
+<?php $this->renderPartial('_search',array(
 	'model'=>$model,
 )); ?>
 </div>
@@ -44,13 +44,13 @@
 
 <?php //begin.Grid Option ?>
 <div class="grid-form">
-<?php $this->renderPartial('/o/convert_media/_option_form',array(
+<?php $this->renderPartial('_option_form',array(
 	'model'=>$model,
 )); ?>
 </div>
 <?php //end.Grid Option ?>
 
-<div id="partial-archive-convert-media">
+<div id="partial-archive-list-convert">
 	<?php //begin.Messages ?>
 	<div id="ajax-message">
 	<?php
@@ -96,7 +96,7 @@
 			));
 
 			$this->widget('application.components.system.OGridView', array(
-				'id'=>'archive-convert-media-grid',
+				'id'=>'archive-list-convert-grid',
 				'dataProvider'=>$model->search(),
 				'filter'=>$model,
 				'afterAjaxUpdate' => 'reinstallDatePicker',

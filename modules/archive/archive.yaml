@@ -20,6 +20,10 @@ plugin_menu		:
 		urlRules: {siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: o/convert/manage, attr: -, icon: -}
 		
+	- urlTitle: Medias
+		urlRules: {siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: o/media/manage, attr: -, icon: -}
+		
 	- urlTitle: Data
 		urlRules: {siteType: "0,1", userLevel: 1}
 		urlPath: {url: -, attr: -, icon: -}

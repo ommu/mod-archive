@@ -1,8 +1,8 @@
 <?php
 /**
- * Archive Convert Medias (archive-convert-media)
- * @var $this ConvertmediaController
- * @var $model ArchiveConvertMedia
+ * Archive Convert Medias (archive-list-convert)
+ * @var $this MediaController
+ * @var $model ArchiveListConvert
  * @var $form CActiveForm
  * version: 0.0.1
  *
@@ -16,12 +16,11 @@
 
 	$this->breadcrumbs=array(
 		'Archive Convert Medias'=>array('manage'),
-		$model->id=>array('view','id'=>$model->id),
-		'Update',
+		'Create',
 	);
 ?>
 
-<?php echo $this->renderPartial('/o/convert_media/_form', array(
+<?php echo $this->renderPartial('_form', array(
 	'model'=>$model,
 	'archive'=>$archive,
 	'convert'=>$convert,

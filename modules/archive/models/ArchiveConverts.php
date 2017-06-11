@@ -43,7 +43,7 @@
  * @property string $modified_id
  *
  * The followings are the available model relations:
- * @property OmmuArchiveConvertMedia[] $ommuArchiveConvertMedias
+ * @property OmmuArchiveListConvert[] $ommuArchiveListConverts
  * @property OmmuArchiveConvertCategory $category
  */
 class ArchiveConverts extends CActiveRecord
@@ -116,7 +116,7 @@ class ArchiveConverts extends CActiveRecord
 			'category' => array(self::BELONGS_TO, 'ArchiveConvertCategory', 'category_id'),
 			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
-			'medias' => array(self::HAS_MANY, 'ArchiveConvertMedia', 'convert_id'),
+			'medias' => array(self::HAS_MANY, 'ArchiveListConvert', 'convert_id'),
 		);
 	}
 
