@@ -150,23 +150,6 @@ class ArchiveLists extends CActiveRecord
 			'archive_number_single_i' => Yii::t('attribute', 'Archive Number'),
 			'archive_number_multiple_i' => Yii::t('attribute', 'Archive Number'),
 		);
-		/*
-			'Archive' => 'Archive',
-			'Publish' => 'Publish',
-			'Location' => 'Location',
-			'Type' => 'Type',
-			'Story' => 'Story',
-			'Archive Title' => 'Archive Title',
-			'Archive Desc' => 'Archive Desc',
-			'Archive Type Number' => 'Archive Type Number',
-			'Archive Publish Year' => 'Archive Publish Year',
-			'Archive Numbers' => 'Archive Numbers',
-			'Creation Date' => 'Creation Date',
-			'Creation' => 'Creation',
-			'Modified Date' => 'Modified Date',
-			'Modified' => 'Modified',
-		
-		*/
 	}
 
 	/**

@@ -107,13 +107,6 @@ class ViewArchiveStory extends CActiveRecord
 			'archive_pages' => Yii::t('attribute', 'Archive Pages'),
 			'archive_page_all' => Yii::t('attribute', 'Archive Page All'),
 		);
-		/*
-			'Story' => 'Story',
-			'ArchiveLists' => 'ArchiveLists',
-			'Archive Publish' => 'Archive Publish',
-			'Archive Unpublish' => 'Archive Unpublish',
-		
-		*/
 	}
 
 	/**

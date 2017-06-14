@@ -124,18 +124,6 @@ class ArchiveConvertCategory extends CActiveRecord
 			'archive_search' => Yii::t('attribute', 'Archives'),
 			'archive_page_search' => Yii::t('attribute', 'Archive Page'),
 		);
-		/*
-			'Category' => 'Category',
-			'Publish' => 'Publish',
-			'Category Name' => 'Category Name',
-			'Category Desc' => 'Category Desc',
-			'Category Code' => 'Category Code',
-			'Creation Date' => 'Creation Date',
-			'Creation' => 'Creation',
-			'Modified Date' => 'Modified Date',
-			'Modified' => 'Modified',
-		
-		*/
 	}
 
 	/**

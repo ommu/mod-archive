@@ -113,11 +113,6 @@ class ViewArchiveListYear extends CActiveRecord
 			'archive_pages' => Yii::t('attribute', 'Archive Pages'),
 			'archive_page_all' => Yii::t('attribute', 'Archive Pages All'),
 		);
-		/*
-			'Publish Year' => 'Publish Year',
-			'ArchiveLists' => 'ArchiveLists',
-		
-		*/
 	}
 
 	/**

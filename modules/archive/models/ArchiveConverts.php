@@ -153,19 +153,6 @@ class ArchiveConverts extends CActiveRecord
 			'archive_number_single_i' => Yii::t('attribute', 'Archive Number'),
 			'archive_number_multiple_i' => Yii::t('attribute', 'Archive Number'),
 		);
-		/*
-			'Convert' => 'Convert',
-			'Publish' => 'Publish',
-			'Category' => 'Category',
-			'Convert Parent' => 'Convert Parent',
-			'Convert Title' => 'Convert Title',
-			'Convert Desc' => 'Convert Desc',
-			'Creation Date' => 'Creation Date',
-			'Creation' => 'Creation',
-			'Modified Date' => 'Modified Date',
-			'Modified' => 'Modified',
-		
-		*/
 	}
 
 	/**

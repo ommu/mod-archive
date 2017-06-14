@@ -108,12 +108,6 @@ class ViewArchiveConvertCategory extends CActiveRecord
 			'archive_pages' => Yii::t('attribute', 'Archive Pages'),
 			'archive_page_all' => Yii::t('attribute', 'Archive Page All'),
 		);
-		/*
-			'Category' => 'Category',
-			'Converts' => 'Converts',
-			'Convert Publish' => 'Convert Publish',
-		
-		*/
 	}
 
 	/**

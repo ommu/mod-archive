@@ -126,13 +126,6 @@ class ViewArchiveLocation extends CActiveRecord
 			'convert_archive_pages' => Yii::t('attribute', 'Alih Archive Pages'),
 			'convert_archive_page_all' => Yii::t('attribute', 'Alih Archive Page All'),
 		);
-		/*
-			'Location' => 'Location',
-			'ArchiveLists' => 'ArchiveLists',
-			'Archive Publish' => 'Archive Publish',
-			'Archive Unpublish' => 'Archive Unpublish',
-		
-		*/
 	}
 
 	/**

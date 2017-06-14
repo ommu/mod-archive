@@ -120,16 +120,6 @@ class ArchiveListConvert extends CActiveRecord
 			'convert_search' => Yii::t('attribute', 'Alih'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 		);
-		/*
-			'ID' => 'ID',
-			'Publish' => 'Publish',
-			'Archive' => 'Archive',
-			'Convert' => 'Convert',
-			'Media Desc' => 'Media Desc',
-			'Creation Date' => 'Creation Date',
-			'Creation' => 'Creation',
-		
-		*/
 	}
 
 	/**

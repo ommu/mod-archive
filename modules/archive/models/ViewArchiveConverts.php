@@ -101,13 +101,6 @@ class ViewArchiveConverts extends CActiveRecord
 			'convert_cat_id' => Yii::t('attribute', 'Convert Cat ID'),
 			'parent_convert_cat_id' => Yii::t('attribute', 'Parent Convert Cat ID'),
 		);
-		/*
-			'Convert' => 'Convert',
-			'Location Code' => 'Location Code',
-			'Category Code' => 'Category Code',
-			'Convert Cat' => 'Convert Cat',
-		
-		*/
 	}
 
 	/**

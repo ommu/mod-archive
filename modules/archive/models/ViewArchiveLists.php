@@ -109,16 +109,6 @@ class ViewArchiveLists extends CActiveRecord
 			'type_code' => Yii::t('attribute', 'Type Code'),
 			'list_type_id' => Yii::t('attribute', 'Archive Type ID'),
 		);
-		/*
-			'Archive' => 'Archive',
-			'Story Enable' => 'Story Enable',
-			'Type Enable' => 'Type Enable',
-			'Location Code' => 'Location Code',
-			'Story Code' => 'Story Code',
-			'Type Code' => 'Type Code',
-			'Archive Type' => 'Archive Type',
-		
-		*/
 	}
 
 	/**
