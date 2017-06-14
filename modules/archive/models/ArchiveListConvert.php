@@ -42,7 +42,7 @@ class ArchiveListConvert extends CActiveRecord
 	public $convert_code_i;
 	
 	// Variable Search
-	public $archive_search;
+	public $list_search;
 	public $convert_search;
 	public $creation_search;
 
@@ -83,7 +83,7 @@ class ArchiveListConvert extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, publish, list_id, convert_id, media_desc, creation_date, creation_id,
-				list_code_i, convert_code_i, archive_search, convert_search, creation_search', 'safe', 'on'=>'search'),
+				list_code_i, convert_code_i, list_search, convert_search, creation_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -116,7 +116,7 @@ class ArchiveListConvert extends CActiveRecord
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'list_code_i' => Yii::t('attribute', 'Senarai Code'),
 			'convert_code_i' => Yii::t('attribute', 'Alih Code'),
-			'archive_search' => Yii::t('attribute', 'Senarai'),
+			'list_search' => Yii::t('attribute', 'Senarai'),
 			'convert_search' => Yii::t('attribute', 'Alih'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 		);
@@ -193,7 +193,7 @@ class ArchiveListConvert extends CActiveRecord
 		else
 			$criteria->compare('t.creation_id',$this->creation_id);
 		
-		$criteria->compare('archive.list_code',strtolower($this->archive_search),true);
+		$criteria->compare('archive.list_code',strtolower($this->list_search),true);
 		$criteria->compare('convert.convert_code',strtolower($this->convert_search),true);
 		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
 
@@ -256,7 +256,7 @@ class ArchiveListConvert extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'archive_search',
+				'name' => 'list_search',
 				'value' => 'strtoupper($data->archive->list_code)."<br/><span>".$data->archive->list_title."</span>"',
 				'htmlOptions' => array(
 					'class' => 'bold',

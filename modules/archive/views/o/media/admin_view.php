@@ -32,27 +32,23 @@ if(Yii::app()->user->hasFlash('success'))
 		array(
 			'name'=>'id',
 			'value'=>$model->id,
-			//'value'=>$model->id != '' ? $model->id : '-',
 		),
 		array(
 			'name'=>'publish',
 			'value'=>$model->publish == '1' ? Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
-			//'value'=>$model->publish,
+			'value'=>$model->publish,
 		),
 		array(
 			'name'=>'list_id',
-			'value'=>$model->list_id,
-			//'value'=>$model->list_id != '' ? $model->list_id : '-',
+			'value'=>$model->list_id ? $model->list_id : '-',
 		),
 		array(
 			'name'=>'convert_id',
-			'value'=>$model->convert_id,
-			//'value'=>$model->convert_id != '' ? $model->convert_id : '-',
+			'value'=>$model->convert_id ? $model->convert_id : '-',
 		),
 		array(
 			'name'=>'media_desc',
-			'value'=>$model->media_desc != '' ? $model->media_desc : '-',
-			//'value'=>$model->media_desc != '' ? CHtml::link($model->media_desc, Yii::app()->request->baseUrl.'/public/visit/'.$model->media_desc, array('target' => '_blank')) : '-',
+			'value'=>$model->media_desc ? $model->media_desc : '-',
 			'type'=>'raw',
 		),
 		array(
@@ -62,7 +58,7 @@ if(Yii::app()->user->hasFlash('success'))
 		array(
 			'name'=>'creation_id',
 			'value'=>$model->creation_id,
-			//'value'=>$model->creation_id != 0 ? $model->creation_id : '-',
+				'value'=>$model->creation_id ? $model->creation->displayname : '-',
 		),
 	),
 )); ?>

@@ -49,7 +49,6 @@
 class ArchiveLists extends CActiveRecord
 {
 	public $defaultColumns = array();
-	public $archive_total_i;
 	public $back_field_i;
 	public $archive_number_single_i;
 	public $archive_number_multiple_i;
@@ -93,12 +92,12 @@ class ArchiveLists extends CActiveRecord
 			array('list_publish_year', 'length', 'max'=>4),
 			array('archive_total, archive_pages, list_copies, creation_id, modified_id', 'length', 'max'=>11),
 			array('list_code', 'length', 'max'=>32),
-			array('type_id, story_id, list_desc, list_copies, list_code, archive_numbers, archive_total, archive_pages,
+			array('type_id, story_id, list_desc, list_multiple, list_copies, list_code, archive_numbers, archive_total, archive_pages,
 				archive_number_single_i, archive_number_multiple_i', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('list_id, publish, location_id, type_id, story_id, list_title, list_desc, list_type_id, list_publish_year, list_multiple, list_copies, list_code, archive_numbers, archive_total, archive_pages, creation_date, creation_id, modified_date, modified_id,
-				archive_total_i, convert_search, creation_search, modified_search', 'safe', 'on'=>'search'),
+				convert_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -146,7 +145,6 @@ class ArchiveLists extends CActiveRecord
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
-			'archive_total_i' => Yii::t('attribute', 'Archives'),
 			'convert_search' => Yii::t('attribute', 'Alih'),
 			'back_field_i' => Yii::t('attribute', 'Back to Manage'),
 			'archive_number_single_i' => Yii::t('attribute', 'Archive Number'),
@@ -249,8 +247,7 @@ class ArchiveLists extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
-		
-		$criteria->compare('t.archive_total_i',$this->archive_total_i);		
+			
 		$criteria->compare('view.converts',$this->convert_search);
 		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
 		$criteria->compare('modified.displayname',strtolower($this->modified_search),true);
@@ -567,28 +564,6 @@ class ArchiveLists extends CActiveRecord
 	}
 
 	/**
-	 * get Total Item Archive
-	 * $param = total, page
-	 */
-	public static function getTotalItemArchive($data, $param='total')
-	{
-		if($data != null) {
-			$total = 0;
-			foreach($data as $key => $val) {
-				if($param == 'total')
-					$total = $total + $val->archive_total_i;
-				if($param == 'page')
-					$total = $total + $val->archive_pages;
-				if($param == 'copy')
-					$total = $total + $val->list_copies;
-			}
-			return $total;
-			
-		} else
-			return 0;
-	}
-
-	/**
 	 * get Detail Item Archive
 	 */
 	public static function getDetailItemArchive($data, $multiple=0)
@@ -608,15 +583,6 @@ class ArchiveLists extends CActiveRecord
 		}
 		
 		return $return;
-	}
-	
-	protected function afterFind() 
-	{
-		if($this->list_multiple == 1)
-			$this->archive_pages = self::getItemArchive($this->archive_numbers, 1, 'pages');
-		$this->archive_total_i = self::getItemArchive($this->archive_numbers, $this->list_multiple);
-		
-		parent::afterFind();		
 	}
 
 	/**
@@ -644,16 +610,24 @@ class ArchiveLists extends CActiveRecord
 	/**
 	 * before save attributes
 	 */
-	protected function beforeSave() {
+	protected function beforeSave() 
+	{
 		$controller = strtolower(Yii::app()->controller->id);
+	
 		if(parent::beforeSave()) {
 			$this->list_code = self::getListCode(array('story'=>$this->location->story_enable,'type'=>$this->location->type_enable), $this->location->location_code, $this->story->story_code, $this->type->type_code, $this->list_type_id);
 			
 			if(in_array($controller, array('o/admin'))) {
 				if($this->list_multiple == 0)
-					$this->archive_numbers = serialize($this->archive_number_single_i);
+					$this->archive_numbers = serialize($this->archive_number_single_i);				
 				else
-					$this->archive_numbers = serialize($this->archive_number_multiple_i);				
+					$this->archive_numbers = serialize($this->archive_number_multiple_i);
+			}
+			
+			if(in_array($controller, array('o/admin','sync'))) {
+				if($this->list_multiple == 1)
+					$this->archive_pages = self::getItemArchive($this->archive_numbers, $this->list_multiple, 'pages');	
+				$this->archive_total = self::getItemArchive($this->archive_numbers, $this->list_multiple);				
 			}
 		}
 		return true;

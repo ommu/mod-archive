@@ -26,8 +26,20 @@
  * @property integer $location_id
  * @property string $lists
  * @property string $list_all
+ * @property string $list_copies
+ * @property string $list_copy_all
+ * @property string $list_archives
+ * @property string $list_archive_all
+ * @property string $list_archive_pages
+ * @property string $list_archive_page_all
  * @property string $converts
  * @property string $convert_all
+ * @property string $convert_copies
+ * @property string $convert_copy_all
+ * @property string $convert_archives
+ * @property string $convert_archive_all
+ * @property string $convert_archive_pages
+ * @property string $convert_archive_page_all
  * @property string $convert_unpublish
  */
 class ViewArchiveLocation extends CActiveRecord
@@ -70,10 +82,12 @@ class ViewArchiveLocation extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('location_id', 'numerical', 'integerOnly'=>true),
-			array('lists, list_all, converts, convert_all', 'length', 'max'=>21),
+			array('list_all, convert_all', 'length', 'max'=>21),
+			array('lists, converts', 'length', 'max'=>23),
+			array('list_copies, list_copy_all, list_archives, list_archive_all, list_archive_pages, list_archive_page_all, convert_copies, convert_copy_all, convert_archives, convert_archive_all, convert_archive_pages, convert_archive_page_all', 'length', 'max'=>32),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('location_id, lists, list_all, converts, convert_all', 'safe', 'on'=>'search'),
+			array('location_id, lists, list_all, list_copies, list_copy_all, list_archives, list_archive_all, list_archive_pages, list_archive_page_all, converts, convert_all, convert_copies, convert_copy_all, convert_archives, convert_archive_all, convert_archive_pages, convert_archive_page_all', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -95,10 +109,22 @@ class ViewArchiveLocation extends CActiveRecord
 	{
 		return array(
 			'location_id' => Yii::t('attribute', 'Location'),
-			'lists' => Yii::t('attribute', 'ArchiveLists'),
-			'list_all' => Yii::t('attribute', 'Archive All'),
-			'converts' => Yii::t('attribute', 'Converts'),
-			'convert_all' => Yii::t('attribute', 'Convert All'),
+			'lists' => Yii::t('attribute', 'Senarai'),
+			'list_all' => Yii::t('attribute', 'Senarai All'),
+			'list_copies' => Yii::t('attribute', 'Senarai Copies'),
+			'list_copy_all' => Yii::t('attribute', 'Senarai Copy All'),
+			'list_archives' => Yii::t('attribute', 'Senarai Archives'),
+			'list_archive_all' => Yii::t('attribute', 'Senarai Archive All'),
+			'list_archive_pages' => Yii::t('attribute', 'Senarai Archive Pages'),
+			'list_archive_page_all' => Yii::t('attribute', 'Senarai Archive Page All'),
+			'converts' => Yii::t('attribute', 'Alih'),
+			'convert_all' => Yii::t('attribute', 'Alih All'),
+			'convert_copies' => Yii::t('attribute', 'Alih Copies'),
+			'convert_copy_all' => Yii::t('attribute', 'Alih Copy All'),
+			'convert_archives' => Yii::t('attribute', 'Alih Archives'),
+			'convert_archive_all' => Yii::t('attribute', 'Alih Archive All'),
+			'convert_archive_pages' => Yii::t('attribute', 'Alih Archive Pages'),
+			'convert_archive_page_all' => Yii::t('attribute', 'Alih Archive Page All'),
 		);
 		/*
 			'Location' => 'Location',
@@ -130,8 +156,20 @@ class ViewArchiveLocation extends CActiveRecord
 		$criteria->compare('t.location_id',$this->location_id);
 		$criteria->compare('t.lists',$this->lists);
 		$criteria->compare('t.list_all',$this->list_all);
+		$criteria->compare('t.list_copies',$this->list_copies);
+		$criteria->compare('t.list_copy_all',$this->list_copy_all);
+		$criteria->compare('t.list_archives',$this->list_archives);
+		$criteria->compare('t.list_archive_all',$this->list_archive_all);
+		$criteria->compare('t.list_archive_pages',$this->list_archive_pages);
+		$criteria->compare('t.list_archive_page_all',$this->list_archive_page_all);
 		$criteria->compare('t.converts',$this->converts);
 		$criteria->compare('t.convert_all',$this->convert_all);
+		$criteria->compare('t.convert_copies',$this->convert_copies);
+		$criteria->compare('t.convert_copy_all',$this->convert_copy_all);
+		$criteria->compare('t.convert_archives',$this->convert_archives);
+		$criteria->compare('t.convert_archive_all',$this->convert_archive_all);
+		$criteria->compare('t.convert_archive_pages',$this->convert_archive_pages);
+		$criteria->compare('t.convert_archive_page_all',$this->convert_archive_page_all);
 
 		if(!isset($_GET['ViewArchiveLocation_sort']))
 			$criteria->order = 't.location_id DESC';
@@ -165,8 +203,20 @@ class ViewArchiveLocation extends CActiveRecord
 			$this->defaultColumns[] = 'location_id';
 			$this->defaultColumns[] = 'lists';
 			$this->defaultColumns[] = 'list_all';
+			$this->defaultColumns[] = 'list_copies';
+			$this->defaultColumns[] = 'list_copy_all';
+			$this->defaultColumns[] = 'list_archives';
+			$this->defaultColumns[] = 'list_archive_all';
+			$this->defaultColumns[] = 'list_archive_pages';
+			$this->defaultColumns[] = 'list_archive_page_all';
 			$this->defaultColumns[] = 'converts';
 			$this->defaultColumns[] = 'convert_all';
+			$this->defaultColumns[] = 'convert_copies';
+			$this->defaultColumns[] = 'convert_copy_all';
+			$this->defaultColumns[] = 'convert_archives';
+			$this->defaultColumns[] = 'convert_archive_all';
+			$this->defaultColumns[] = 'convert_archive_pages';
+			$this->defaultColumns[] = 'convert_archive_page_all';
 		}
 
 		return $this->defaultColumns;
@@ -184,8 +234,20 @@ class ViewArchiveLocation extends CActiveRecord
 			//$this->defaultColumns[] = 'location_id';
 			$this->defaultColumns[] = 'lists';
 			$this->defaultColumns[] = 'list_all';
+			$this->defaultColumns[] = 'list_copies';
+			$this->defaultColumns[] = 'list_copy_all';
+			$this->defaultColumns[] = 'list_archives';
+			$this->defaultColumns[] = 'list_archive_all';
+			$this->defaultColumns[] = 'list_archive_pages';
+			$this->defaultColumns[] = 'list_archive_page_all';
 			$this->defaultColumns[] = 'converts';
 			$this->defaultColumns[] = 'convert_all';
+			$this->defaultColumns[] = 'convert_copies';
+			$this->defaultColumns[] = 'convert_copy_all';
+			$this->defaultColumns[] = 'convert_archives';
+			$this->defaultColumns[] = 'convert_archive_all';
+			$this->defaultColumns[] = 'convert_archive_pages';
+			$this->defaultColumns[] = 'convert_archive_page_all';
 		}
 		parent::afterConstruct();
 	}

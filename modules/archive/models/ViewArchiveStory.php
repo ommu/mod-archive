@@ -26,6 +26,12 @@
  * @property integer $story_id
  * @property string $lists
  * @property string $list_all
+ * @property string $copies
+ * @property string $copy_all
+ * @property string $archives
+ * @property string $archive_all
+ * @property string $archive_pages
+ * @property string $archive_page_all
  */
 class ViewArchiveStory extends CActiveRecord
 {
@@ -70,7 +76,7 @@ class ViewArchiveStory extends CActiveRecord
 			array('lists, list_all', 'length', 'max'=>21),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('story_id, lists, list_all', 'safe', 'on'=>'search'),
+			array('story_id, lists, list_all, copies, copy_all, archives, archive_all, archive_pages, archive_page_all', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -92,8 +98,14 @@ class ViewArchiveStory extends CActiveRecord
 	{
 		return array(
 			'story_id' => Yii::t('attribute', 'Story'),
-			'lists' => Yii::t('attribute', 'ArchiveLists'),
-			'list_all' => Yii::t('attribute', 'Archive Publish'),
+			'lists' => Yii::t('attribute', 'Senarai'),
+			'list_all' => Yii::t('attribute', 'Senarai All'),
+			'copies' => Yii::t('attribute', 'Copies'),
+			'copy_all' => Yii::t('attribute', 'Copy All'),
+			'archives' => Yii::t('attribute', 'Archives'),
+			'archive_all' => Yii::t('attribute', 'Archive All'),
+			'archive_pages' => Yii::t('attribute', 'Archive Pages'),
+			'archive_page_all' => Yii::t('attribute', 'Archive Page All'),
 		);
 		/*
 			'Story' => 'Story',
@@ -125,6 +137,12 @@ class ViewArchiveStory extends CActiveRecord
 		$criteria->compare('t.story_id',$this->story_id);
 		$criteria->compare('t.lists',$this->lists);
 		$criteria->compare('t.list_all',$this->list_all);
+		$criteria->compare('t.copies',$this->copies);
+		$criteria->compare('t.copy_all',$this->copy_all);
+		$criteria->compare('t.archives',$this->archives);
+		$criteria->compare('t.archive_all',$this->archive_all);
+		$criteria->compare('t.archive_pages',$this->archive_pages);
+		$criteria->compare('t.archive_page_all',$this->archive_page_all);
 
 		if(!isset($_GET['ViewArchiveStory_sort']))
 			$criteria->order = 't.story_id DESC';
@@ -158,6 +176,12 @@ class ViewArchiveStory extends CActiveRecord
 			$this->defaultColumns[] = 'story_id';
 			$this->defaultColumns[] = 'lists';
 			$this->defaultColumns[] = 'list_all';
+			$this->defaultColumns[] = 'copies';
+			$this->defaultColumns[] = 'copy_all';
+			$this->defaultColumns[] = 'archives';
+			$this->defaultColumns[] = 'archive_all';
+			$this->defaultColumns[] = 'archive_pages';
+			$this->defaultColumns[] = 'archive_page_all';
 		}
 
 		return $this->defaultColumns;
@@ -175,6 +199,12 @@ class ViewArchiveStory extends CActiveRecord
 			//$this->defaultColumns[] = 'story_id';
 			$this->defaultColumns[] = 'lists';
 			$this->defaultColumns[] = 'list_all';
+			$this->defaultColumns[] = 'copies';
+			$this->defaultColumns[] = 'copy_all';
+			$this->defaultColumns[] = 'archives';
+			$this->defaultColumns[] = 'archive_all';
+			$this->defaultColumns[] = 'archive_pages';
+			$this->defaultColumns[] = 'archive_page_all';
 		}
 		parent::afterConstruct();
 	}

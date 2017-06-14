@@ -29,19 +29,19 @@
 			),
 			array(
 				'name'=>'lists',
-				'value'=>$model->lists ? $model->lists : '-',
+				'value'=>$model->lists ? $model->lists : 0,
 			),
 			array(
-				'name'=>'list_copies',
-				'value'=>$model->list_copies ? Yii::t('phrase', '$list_copies eks', array('$list_copies'=>$model->list_copies)) : '-',
+				'name'=>'copies',
+				'value'=>$model->copies ? Yii::t('phrase', '$copies eks', array('$copies'=>$model->copies)) : 0,
 			),
 			array(
-				'name'=>'archive_total_i',
-				'value'=>$model->archive_total_i ? $model->archive_total_i : '-',
+				'name'=>'archives',
+				'value'=>$model->archives ? $model->archives : 0,
 			),
 			array(
 				'name'=>'archive_pages',
-				'value'=>$model->archive_pages ? $model->archive_pages : '-',
+				'value'=>$model->archive_pages ? $model->archive_pages : 0,
 			),
 		),
 	)); ?>

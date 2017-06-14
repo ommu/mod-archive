@@ -22,7 +22,7 @@
 	<ul>
 		<li>
 			<?php echo $model->getAttributeLabel('convert_id'); ?><br/>
-			<?php echo $form->textField($model,'convert_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'convert_id'); ?>
 		</li>
 
 		<li>
@@ -42,17 +42,17 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('convert_parent'); ?><br/>
-			<?php echo $form->textField($model,'convert_parent',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'convert_parent'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('convert_title'); ?><br/>
-			<?php echo $form->textArea($model,'convert_title',array('rows'=>6, 'cols'=>50)); ?>
+			<?php echo $form->textArea($model,'convert_title'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('convert_desc'); ?><br/>
-			<?php echo $form->textArea($model,'convert_desc',array('rows'=>6, 'cols'=>50)); ?>
+			<?php echo $form->textArea($model,'convert_desc'); ?>
 		</li>
 
 		<li>
@@ -62,7 +62,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('convert_publish_year'); ?><br/>
-			<?php echo $form->textField($model,'convert_publish_year',array('size'=>4,'maxlength'=>4)); ?>
+			<?php echo $form->textField($model,'convert_publish_year'); ?>
 		</li>
 
 		<li>
@@ -71,18 +71,28 @@
 		</li>
 
 		<li>
+			<?php echo $model->getAttributeLabel('convert_copies'); ?><br/>
+			<?php echo $form->textField($model,'convert_copies'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('convert_code'); ?><br/>
+			<?php echo $form->textField($model,'convert_code'); ?>
+		</li>
+
+		<li>
 			<?php echo $model->getAttributeLabel('archive_numbers'); ?><br/>
-			<?php echo $form->textArea($model,'archive_numbers',array('rows'=>6, 'cols'=>50)); ?>
+			<?php echo $form->textField($model,'archive_numbers'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('archive_total'); ?><br/>
+			<?php echo $form->textArea($model,'archive_total'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('archive_pages'); ?><br/>
 			<?php echo $form->textField($model,'archive_pages'); ?>
-		</li>
-
-		<li>
-			<?php echo $model->getAttributeLabel('convert_copies'); ?><br/>
-			<?php echo $form->textField($model,'convert_copies'); ?>
 		</li>
 
 		<li>
@@ -92,7 +102,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('creation_id'); ?><br/>
-			<?php echo $form->textField($model,'creation_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'creation_id'); ?>
 		</li>
 
 		<li>
@@ -102,7 +112,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('modified_id'); ?><br/>
-			<?php echo $form->textField($model,'modified_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'modified_id'); ?>
 		</li>
 
 		<li class="submit">

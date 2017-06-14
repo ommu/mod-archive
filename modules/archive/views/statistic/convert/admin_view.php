@@ -29,19 +29,19 @@
 			),
 			array(
 				'name'=>'converts',
-				'value'=>$model->converts ? $model->converts : '-',
+				'value'=>$model->converts ? $model->converts : 0,
 			),
 			array(
-				'name'=>'convert_copies',
-				'value'=>$model->convert_copies ? Yii::t('phrase', '$convert_copies eks', array('$convert_copies'=>$model->convert_copies)) : '-',
+				'name'=>'copies',
+				'value'=>$model->copies ? Yii::t('phrase', '$copies eks', array('$copies'=>$model->copies)) : 0,
 			),
 			array(
-				'name'=>'convert_total_i',
-				'value'=>$model->convert_total_i,
+				'name'=>'archives',
+				'value'=>$model->archives ? $model->archives : 0,
 			),
 			array(
 				'name'=>'archive_pages',
-				'value'=>$model->archive_pages ? $model->archive_pages : '-',
+				'value'=>$model->archive_pages ? $model->archive_pages : 0,
 			),
 		),
 	)); ?>

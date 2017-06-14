@@ -38,15 +38,16 @@
 class ArchiveLocation extends CActiveRecord
 {
 	public $defaultColumns = array();
-	public $archive_total_i;
-	public $archive_page_i;
-	public $convert_total_i;
-	public $convert_page_i;
-	public $convert_copy_i;
 	
 	// Variable Search
-	public $archive_search;
+	public $list_search;
+	public $list_copy_search;
+	public $list_archive_search;
+	public $list_archive_page_search;
 	public $convert_search;
+	public $convert_copy_search;
+	public $convert_archive_search;
+	public $convert_archive_page_search;
 	public $creation_search;
 	public $modified_search;
 
@@ -86,7 +87,7 @@ class ArchiveLocation extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('location_id, publish, location_name, location_desc, location_code, story_enable, type_enable, creation_date, creation_id, modified_date, modified_id,
-				archive_total_i, archive_page_i, convert_total_i, convert_page_i, convert_copy_i, archive_search, convert_search, creation_search, modified_search', 'safe', 'on'=>'search'),
+				list_search, list_copy_search, list_archive_search, list_archive_page_search, convert_search, convert_copy_search, convert_archive_search, convert_archive_page_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -102,7 +103,7 @@ class ArchiveLocation extends CActiveRecord
 			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 			'lists' => array(self::HAS_MANY, 'ArchiveLists', 'location_id', 'on'=>'lists.publish = 1'),
-			'archive_unpublish' => array(self::HAS_MANY, 'ArchiveLists', 'location_id', 'on'=>'archive_unpublish.publish = 0'),
+			'list_unpublish' => array(self::HAS_MANY, 'ArchiveLists', 'location_id', 'on'=>'list_unpublish.publish = 0'),
 			'list_all' => array(self::HAS_MANY, 'ArchiveLists', 'location_id'),
 			'converts' => array(self::HAS_MANY, 'ArchiveConverts', 'location_id', 'on'=>'converts.publish = 1'),
 			'convert_unpublish' => array(self::HAS_MANY, 'ArchiveConverts', 'location_id', 'on'=>'convert_unpublish.publish = 0'),
@@ -129,27 +130,15 @@ class ArchiveLocation extends CActiveRecord
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
-			'archive_total_i' => Yii::t('attribute', 'Archive Total'),
-			'archive_page_i' => Yii::t('attribute', 'Archive Pages'),
-			'convert_total_i' => Yii::t('attribute', 'Convert Total'),
-			'convert_page_i' => Yii::t('attribute', 'Convert Pages'),
-			'convert_copy_i' => Yii::t('attribute', 'Convert Copies'),
-			'archive_search' => Yii::t('attribute', 'Senarai'),
+			'list_search' => Yii::t('attribute', 'Senarai'),
+			'list_copy_search' => Yii::t('attribute', 'Copyies'),
+			'list_archive_search' => Yii::t('attribute', 'Archives'),
+			'list_archive_page_search' => Yii::t('attribute', 'Archive Page'),
 			'convert_search' => Yii::t('attribute', 'Alih'),
+			'convert_copy_search' => Yii::t('attribute', 'Copies'),
+			'convert_archive_search' => Yii::t('attribute', 'Archives'),
+			'convert_archive_page_search' => Yii::t('attribute', 'Archive Page'),
 		);
-		/*
-			'Location' => 'Location',
-			'Publish' => 'Publish',
-			'Location Name' => 'Location Name',
-			'Location Desc' => 'Location Desc',
-			'Location Code' => 'Location Code',
-			'Story Enable' => 'Story Enable',
-			'Creation Date' => 'Creation Date',
-			'Creation' => 'Creation',
-			'Modified Date' => 'Modified Date',
-			'Modified' => 'Modified',
-		
-		*/
 	}
 
 	/**
@@ -172,6 +161,9 @@ class ArchiveLocation extends CActiveRecord
 		
 		// Custom Search
 		$criteria->with = array(
+			'view' => array(
+				'alias'=>'view',
+			),
 			'creation' => array(
 				'alias'=>'creation',
 				'select'=>'displayname',
@@ -179,10 +171,6 @@ class ArchiveLocation extends CActiveRecord
 			'modified' => array(
 				'alias'=>'modified',
 				'select'=>'displayname',
-			),
-			'view' => array(
-				'alias'=>'view',
-				'select'=>'lists, converts',
 			),
 		);
 
@@ -215,13 +203,14 @@ class ArchiveLocation extends CActiveRecord
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
 		
-		$criteria->compare('t.archive_total_i',$this->archive_total_i);
-		$criteria->compare('t.archive_page_i',$this->archive_page_i);
-		$criteria->compare('t.convert_total_i',$this->convert_total_i);
-		$criteria->compare('t.convert_page_i',$this->convert_page_i);
-		$criteria->compare('t.convert_copy_i',$this->convert_copy_i);
-		$criteria->compare('view.lists',$this->archive_search);
-		$criteria->compare('view.converts',$this->convert_search);		
+		$criteria->compare('view.lists',$this->list_search);
+		$criteria->compare('view.list_copies',$this->list_copy_search);
+		$criteria->compare('view.list_archives',$this->list_archive_search);
+		$criteria->compare('view.list_archive_pages',$this->list_archive_page_search);
+		$criteria->compare('view.converts',$this->convert_search);
+		$criteria->compare('view.convert_copies',$this->convert_copy_search);
+		$criteria->compare('view.convert_archives',$this->convert_archive_search);
+		$criteria->compare('view.convert_archive_pages',$this->convert_archive_page_search);
 		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
 		$criteria->compare('modified.displayname',strtolower($this->modified_search),true);
 
@@ -287,7 +276,10 @@ class ArchiveLocation extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			$this->defaultColumns[] = 'location_name';
+			$this->defaultColumns[] = array(
+				'name' => 'location_name',
+				'value' => '$data->location_name',
+			);
 			$this->defaultColumns[] = array(
 				'name' => 'location_code',
 				'value' => 'strtoupper($data->location_code)',
@@ -326,7 +318,7 @@ class ArchiveLocation extends CActiveRecord
 				), true),
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'archive_search',
+				'name' => 'list_search',
 				'value' => 'CHtml::link($data->view->lists ? $data->view->lists : 0, Yii::app()->controller->createUrl("o/admin/manage",array("location"=>$data->location_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
@@ -341,34 +333,30 @@ class ArchiveLocation extends CActiveRecord
 				),
 				'type' => 'raw',
 			);
-			if(!isset($_GET['type'])) {
-				$this->defaultColumns[] = array(
-					'name' => 'story_enable',
-					'value' => '$data->story_enable == 1 ? Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/unpublish.png\')',
-					'htmlOptions' => array(
-						'class' => 'center',
-					),
-					'filter'=>array(
-						1=>Yii::t('phrase', 'Yes'),
-						0=>Yii::t('phrase', 'No'),
-					),
-					'type' => 'raw',
-				);
-			}
-			if(!isset($_GET['type'])) {
-				$this->defaultColumns[] = array(
-					'name' => 'type_enable',
-					'value' => '$data->type_enable == 1 ? Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/unpublish.png\')',
-					'htmlOptions' => array(
-						'class' => 'center',
-					),
-					'filter'=>array(
-						1=>Yii::t('phrase', 'Yes'),
-						0=>Yii::t('phrase', 'No'),
-					),
-					'type' => 'raw',
-				);
-			}
+			$this->defaultColumns[] = array(
+				'name' => 'story_enable',
+				'value' => '$data->story_enable == 1 ? Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/unpublish.png\')',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter'=>array(
+					1=>Yii::t('phrase', 'Yes'),
+					0=>Yii::t('phrase', 'No'),
+				),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'type_enable',
+				'value' => '$data->type_enable == 1 ? Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/unpublish.png\')',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter'=>array(
+					1=>Yii::t('phrase', 'Yes'),
+					0=>Yii::t('phrase', 'No'),
+				),
+				'type' => 'raw',
+			);
 			if(!isset($_GET['type'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'publish',
@@ -426,16 +414,6 @@ class ArchiveLocation extends CActiveRecord
 			
 		} else
 			return $model;
-	}
-	
-	protected function afterFind() {
-		$this->archive_total_i = ArchiveLists::getTotalItemArchive($this->lists());
-		$this->archive_page_i = ArchiveLists::getTotalItemArchive($this->lists(), 'page');
-		$this->convert_total_i = ArchiveConverts::getTotalItemArchive($this->converts());
-		$this->convert_page_i = ArchiveConverts::getTotalItemArchive($this->converts(), 'page');
-		$this->convert_copy_i = ArchiveConverts::getTotalItemArchive($this->converts(), 'copy');
-		
-		parent::afterFind();		
 	}
 
 	/**

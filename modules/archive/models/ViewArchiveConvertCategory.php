@@ -26,6 +26,12 @@
  * @property integer $category_id
  * @property string $converts
  * @property string $convert_all
+ * @property string $copies
+ * @property string $copy_all
+ * @property string $archives
+ * @property string $archive_all
+ * @property string $archive_pages
+ * @property string $archive_page_all
  */
 class ViewArchiveConvertCategory extends CActiveRecord
 {
@@ -71,7 +77,7 @@ class ViewArchiveConvertCategory extends CActiveRecord
 			array('convert_all', 'length', 'max'=>21),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('category_id, converts, convert_all', 'safe', 'on'=>'search'),
+			array('category_id, converts, convert_all, copies, copy_all, archives, archive_all, archive_pages, archive_page_all', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -95,6 +101,12 @@ class ViewArchiveConvertCategory extends CActiveRecord
 			'category_id' => Yii::t('attribute', 'Category'),
 			'converts' => Yii::t('attribute', 'Converts'),
 			'convert_all' => Yii::t('attribute', 'Convert All'),
+			'copies' => Yii::t('attribute', 'Copies'),
+			'copy_all' => Yii::t('attribute', 'Copy All'),
+			'archives' => Yii::t('attribute', 'Archives'),
+			'archive_all' => Yii::t('attribute', 'Archive All'),
+			'archive_pages' => Yii::t('attribute', 'Archive Pages'),
+			'archive_page_all' => Yii::t('attribute', 'Archive Page All'),
 		);
 		/*
 			'Category' => 'Category',
@@ -125,6 +137,12 @@ class ViewArchiveConvertCategory extends CActiveRecord
 		$criteria->compare('t.category_id',$this->category_id);
 		$criteria->compare('t.converts',$this->converts);
 		$criteria->compare('t.convert_all',$this->convert_all);
+		$criteria->compare('t.copies',$this->copies);
+		$criteria->compare('t.copy_all',$this->copy_all);
+		$criteria->compare('t.archives',$this->archives);
+		$criteria->compare('t.archive_all',$this->archive_all);
+		$criteria->compare('t.archive_pages',$this->archive_pages);
+		$criteria->compare('t.archive_page_all',$this->archive_page_all);
 
 		if(!isset($_GET['ViewArchiveConvertCategory_sort']))
 			$criteria->order = 't.category_id DESC';
@@ -158,6 +176,12 @@ class ViewArchiveConvertCategory extends CActiveRecord
 			$this->defaultColumns[] = 'category_id';
 			$this->defaultColumns[] = 'converts';
 			$this->defaultColumns[] = 'convert_all';
+			$this->defaultColumns[] = 'copies';
+			$this->defaultColumns[] = 'copy_all';
+			$this->defaultColumns[] = 'archives';
+			$this->defaultColumns[] = 'archive_all';
+			$this->defaultColumns[] = 'archive_pages';
+			$this->defaultColumns[] = 'archive_page_all';
 		}
 
 		return $this->defaultColumns;
@@ -175,6 +199,12 @@ class ViewArchiveConvertCategory extends CActiveRecord
 			//$this->defaultColumns[] = 'category_id';
 			$this->defaultColumns[] = 'converts';
 			$this->defaultColumns[] = 'convert_all';
+			$this->defaultColumns[] = 'copies';
+			$this->defaultColumns[] = 'copy_all';
+			$this->defaultColumns[] = 'archives';
+			$this->defaultColumns[] = 'archive_all';
+			$this->defaultColumns[] = 'archive_pages';
+			$this->defaultColumns[] = 'archive_page_all';
 		}
 		parent::afterConstruct();
 	}

@@ -31,8 +31,8 @@
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('convert_copies'); ?><br/>
-			<?php echo $form->textField($model,'convert_copies'); ?>
+			<?php echo $model->getAttributeLabel('copies'); ?><br/>
+			<?php echo $form->textField($model,'copies'); ?>
 		</li>
 
 		<li>

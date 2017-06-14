@@ -79,8 +79,8 @@
 				'type'=>'raw',
 			),
 			array(
-				'name'=>'convert_total_i',
-				'value'=>$model->convert_total_i,
+				'name'=>'archive_total',
+				'value'=>$model->archive_total ? $model->archive_total : '-',
 			),
 			array(
 				'name'=>'archive_pages',

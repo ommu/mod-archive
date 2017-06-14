@@ -38,20 +38,15 @@ class SyncController extends Controller
 	 */
 	public function init() 
 	{
-		$arrThemes = Utility::getCurrentTemplate('public');
-		Yii::app()->theme = $arrThemes['folder'];
-		$this->layout = $arrThemes['layout'];
-	}
-
-	/**
-	 * @return array action filters
-	 */
-	public function filters() 
-	{
-		return array(
-			'accessControl', // perform access control for CRUD operations
-			//'postOnly + delete', // we only allow deletion via POST request
-		);
+		if(!Yii::app()->user->isGuest) {
+			if(Yii::app()->user->level == 1) {
+				$arrThemes = Utility::getCurrentTemplate('admin');
+				Yii::app()->theme = $arrThemes['folder'];
+				$this->layout = $arrThemes['layout'];
+			} else
+				throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
+		} else
+			$this->redirect(Yii::app()->createUrl('site/login'));
 	}
 
 	/**
@@ -63,7 +58,7 @@ class SyncController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','indexing'),
+				'actions'=>array('index'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -71,6 +66,11 @@ class SyncController extends Controller
 				'users'=>array('@'),
 				'expression'=>'isset(Yii::app()->user->level)',
 				//'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level != 1)',
+			),
+			array('allow', // allow authenticated user to perform 'create' and 'update' actions
+				'actions'=>array('indexing'),
+				'users'=>array('@'),
+				'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level == 1)',
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions'=>array(),
@@ -99,21 +99,17 @@ class SyncController extends Controller
 		ob_start();
 		
 		$criteria = new CDbCriteria;
-		if($index == 'archive') {
-			$criteria->select = "list_id, location_id, type_id, story_id, list_type_id";
+		if($index == 'archive')
 			$model = ArchiveLists::model()->findAll($criteria);
-		} else {
-			$criteria->select = "convert_id, location_id, category_id, convert_cat_id";
-			$model = ArchiveConverts::model()->findAll($criteria);			
-		}
+		else
+			$model = ArchiveConverts::model()->findAll($criteria);
 
 		if($model) {
 			foreach($model as $key => $val) {
-				if($index == 'archive') {
+				if($index == 'archive')
 					$data = ArchiveLists::model()->findByPk($val->list_id);
-				} else {
+				else
 					$data = ArchiveConverts::model()->findByPk($val->convert_id);
-				}
 				$data->update();
 			}
 		}

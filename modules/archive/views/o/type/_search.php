@@ -32,17 +32,17 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('type_name'); ?><br/>
-			<?php echo $form->textField($model,'type_name',array('size'=>32,'maxlength'=>32)); ?>
+			<?php echo $form->textField($model,'type_name'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('type_desc'); ?><br/>
-			<?php echo $form->textArea($model,'type_desc',array('rows'=>6, 'cols'=>50)); ?>
+			<?php echo $form->textArea($model,'type_desc'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('type_code'); ?><br/>
-			<?php echo $form->textField($model,'type_code',array('size'=>8,'maxlength'=>8)); ?>
+			<?php echo $form->textField($model,'type_code'); ?>
 		</li>
 
 		<li>
@@ -52,7 +52,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('creation_id'); ?><br/>
-			<?php echo $form->textField($model,'creation_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'creation_id'); ?>
 		</li>
 
 		<li>
@@ -62,7 +62,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('modified_id'); ?><br/>
-			<?php echo $form->textField($model,'modified_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'modified_id'); ?>
 		</li>
 
 		<li class="submit">

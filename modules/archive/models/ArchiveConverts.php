@@ -51,7 +51,6 @@ class ArchiveConverts extends CActiveRecord
 {
 	public $defaultColumns = array();
 	public $convert_parent_title_i;
-	public $convert_total_i;
 	public $back_field_i;
 	public $archive_number_single_i;
 	public $archive_number_multiple_i;
@@ -95,7 +94,7 @@ class ArchiveConverts extends CActiveRecord
 			array('convert_publish_year', 'length', 'max'=>4),
 			array('archive_total, archive_pages, convert_copies, creation_id, modified_id', 'length', 'max'=>11),
 			array('convert_code', 'length', 'max'=>32),
-			array('convert_parent, convert_desc, convert_copies, convert_code, archive_numbers, archive_total, archive_pages,
+			array('convert_parent, convert_desc, convert_multiple, convert_copies, convert_code, archive_numbers, archive_total, archive_pages,
 				convert_parent_title_i, archive_number_single_i, archive_number_multiple_i', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -147,7 +146,6 @@ class ArchiveConverts extends CActiveRecord
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'convert_parent_title_i' => Yii::t('attribute', 'Parent Title'),
-			'convert_total_i' => Yii::t('attribute', 'Archives'),
 			'back_field_i' => Yii::t('attribute', 'Back to Manage'),
 			'convert_code_search' => Yii::t('attribute', 'Code'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
@@ -246,7 +244,6 @@ class ArchiveConverts extends CActiveRecord
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
 		
-		$criteria->compare('t.convert_total_i',$this->convert_total_i);
 		$criteria->compare('view.convert_code',strtolower($this->convert_code_search),true);		
 		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
 		$criteria->compare('modified.displayname',strtolower($this->modified_search),true);
@@ -510,17 +507,17 @@ class ArchiveConverts extends CActiveRecord
 	/**
 	 * get Item Archive
 	 */
-	public static function getItemArchive($data, $type=0, $convert='item')
+	public static function getItemArchive($data, $type=0, $archive='item')
 	{
-		$convert_number = unserialize($data);
-		if(!empty($convert_number)) {
-			$count_convert_number = count($convert_number);
-			if($type == 0 || ($count_convert_number == 2 && (array_key_exists('start', $convert_number) && array_key_exists('finish', $convert_number)))) {
-				$item = (trim($convert_number['finish'])-trim($convert_number['start']));
+		$archive_number = unserialize($data);
+		if(!empty($archive_number)) {
+			$count_archive_number = count($archive_number);
+			if($type == 0 || ($count_archive_number == 2 && (array_key_exists('start', $archive_number) && array_key_exists('finish', $archive_number)))) {
+				$item = (trim($archive_number['finish'])-trim($archive_number['start']));
 				$return = $item == 0 ? $item : $item+1;
 			} else {
 				$return = 0;
-				foreach($convert_number as $key => $val) {
+				foreach($archive_number as $key => $val) {
 					if($convert == 'item') {
 						$item = (trim($val['finish'])-trim($val['start']));
 						$data_plus = $item == 0 ? $item : $item+1;
@@ -535,28 +532,6 @@ class ArchiveConverts extends CActiveRecord
 			$return = 0;
 		
 		return $return;
-	}
-
-	/**
-	 * get Total Item Archive
-	 * $param = total, page, copy
-	 */
-	public static function getTotalItemArchive($data, $param='total')
-	{
-		if($data != null) {
-			$total = 0;
-			foreach($data as $key => $val) {
-				if($param == 'total')
-					$total = $total + $val->convert_total_i;
-				if($param == 'page')
-					$total = $total + $val->archive_pages;
-				if($param == 'copy')
-					$total = $total + $val->convert_copies;
-			}
-			return $total;
-			
-		} else
-			return 0;
 	}
 
 	/**
@@ -583,11 +558,8 @@ class ArchiveConverts extends CActiveRecord
 	
 	protected function afterFind() 
 	{
-		if($this->convert_multiple == 1)
-			$this->archive_pages = self::getItemArchive($this->archive_numbers, 1, 'pages');
 		//if($this->convert_parent != 0)
 		//	$this->convert_cat_id = self::model()->findByPk($this->convert_parent)->convert_cat_id;
-		$this->convert_total_i = self::getItemArchive($this->archive_numbers, $this->convert_multiple);
 		
 		parent::afterFind();		
 	}
@@ -623,12 +595,18 @@ class ArchiveConverts extends CActiveRecord
 			
 			if(in_array($controller, array('o/convert'))) {
 				if($this->convert_parent != 0)
-					$this->convert_cat_id = 0;
+					$this->convert_cat_id = 0;				
 				
 				if($this->convert_multiple == 0)
-					$this->archive_numbers = serialize($this->archive_number_single_i);
+					$this->archive_numbers = serialize($this->archive_number_single_i);				
 				else
-					$this->archive_numbers = serialize($this->archive_number_multiple_i);
+					$this->archive_numbers = serialize($this->archive_number_multiple_i);				
+			}
+			
+			if(in_array($controller, array('o/convert','sync'))) {				
+				if($this->convert_multiple == 1)
+					$this->archive_pages = self::getItemArchive($this->archive_numbers, $this->convert_multiple, 'pages');	
+				$this->archive_total = self::getItemArchive($this->archive_numbers, $this->convert_multiple);				
 			}
 		}
 		return true;

@@ -36,12 +36,12 @@
 class ArchiveConvertCategory extends CActiveRecord
 {
 	public $defaultColumns = array();
-	public $convert_total_i;
-	public $convert_page_i;
-	public $convert_copy_i;
 	
 	// Variable Search
 	public $convert_search;
+	public $copy_search;
+	public $archive_search;
+	public $archive_page_search;
 	public $creation_search;
 	public $modified_search;
 
@@ -81,7 +81,7 @@ class ArchiveConvertCategory extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('category_id, publish, category_name, category_desc, category_code, creation_date, creation_id, modified_date, modified_id, 
-				convert_total_i, convert_page_i, convert_copy_i, convert_search, creation_search, modified_search', 'safe', 'on'=>'search'),
+				convert_search, copy_search, archive_search, archive_page_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -119,10 +119,10 @@ class ArchiveConvertCategory extends CActiveRecord
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
-			'convert_total_i' => Yii::t('attribute', 'Total'),
-			'convert_page_i' => Yii::t('attribute', 'Convert Pages'),
-			'convert_copy_i' => Yii::t('attribute', 'Convert Copies'),
 			'convert_search' => Yii::t('attribute', 'Alih'),
+			'copy_search' => Yii::t('attribute', 'Copies'),
+			'archive_search' => Yii::t('attribute', 'Archives'),
+			'archive_page_search' => Yii::t('attribute', 'Archive Page'),
 		);
 		/*
 			'Category' => 'Category',
@@ -160,7 +160,6 @@ class ArchiveConvertCategory extends CActiveRecord
 		$criteria->with = array(
 			'view' => array(
 				'alias'=>'view',
-				'select'=>'converts',
 			),
 			'creation' => array(
 				'alias'=>'creation',
@@ -199,10 +198,10 @@ class ArchiveConvertCategory extends CActiveRecord
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
 		
-		$criteria->compare('t.convert_total_i',$this->convert_total_i);
-		$criteria->compare('t.convert_page_i',$this->convert_page_i);
-		$criteria->compare('t.convert_copy_i',$this->convert_copy_i);
 		$criteria->compare('view.converts',$this->convert_search);
+		$criteria->compare('view.copies',$this->copy_search);
+		$criteria->compare('view.archives',$this->archive_search);
+		$criteria->compare('view.archive_pages',$this->archive_page_search);
 		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
 		$criteria->compare('modified.displayname',strtolower($this->modified_search),true);
 
@@ -266,7 +265,10 @@ class ArchiveConvertCategory extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			$this->defaultColumns[] = 'category_name';
+			$this->defaultColumns[] = array(
+				'name' => 'category_name',
+				'value' => '$data->category_name',
+			);
 			$this->defaultColumns[] = array(
 				'name' => 'category_code',
 				'value' => 'strtoupper($data->category_code)',
@@ -369,14 +371,6 @@ class ArchiveConvertCategory extends CActiveRecord
 			
 		} else
 			return $model;
-	}
-	
-	protected function afterFind() {
-		$this->convert_total_i = ArchiveConverts::getTotalItemArchive($this->converts());
-		$this->convert_page_i = ArchiveConverts::getTotalItemArchive($this->converts(), 'page');
-		$this->convert_copy_i = ArchiveConverts::getTotalItemArchive($this->converts(), 'copy');
-		
-		parent::afterFind();		
 	}
 
 	/**

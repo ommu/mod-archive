@@ -23,34 +23,31 @@
 	<?php $this->widget('application.components.system.FDetailView', array(
 		'data'=>$model,
 		'attributes'=>array(
-			/* array(
+			array(
 				'name'=>'type_id',
 				'value'=>$model->type_id,
-				//'value'=>$model->type_id != '' ? $model->type_id : '-',
-			), */
+			),
+			array(
+				'name'=>'publish',
+				'value'=>$model->publish == '1' ? Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
+				'type'=>'raw',
+			),
 			array(
 				'name'=>'type_name',
-				'value'=>$model->type_name != '' ? $model->type_name : '-',
+				'value'=>$model->type_name ? $model->type_name : '-',
 			),
 			array(
 				'name'=>'type_desc',
-				'value'=>$model->type_desc != '' ? $model->type_desc : '-',
+				'value'=>$model->type_desc ? $model->type_desc : '-',
 			),
 			array(
 				'name'=>'type_code',
-				'value'=>$model->type_code != '' ? strtoupper($model->type_code) : '-',
+				'value'=>$model->type_code ? strtoupper($model->type_code) : '-',
 			),
 			array(
-				'name'=>'archive_search',
-				'value'=>$model->view->lists ? $model->view->lists : 0,
-			),
-			array(
-				'name'=>'archive_total_i',
-				'value'=>$model->archive_total_i,
-			),
-			array(
-				'name'=>'archive_page_i',
-				'value'=>$model->archive_page_i,
+				'name'=>'list_search',
+				'value'=>$model->view->lists ? $this->renderPartial('_view_list', array('model'=>$model), true, false) : '-',
+				'type'=>'raw',
 			),
 			array(
 				'name'=>'creation_date',
@@ -58,7 +55,7 @@
 			),
 			array(
 				'name'=>'creation_id',
-				'value'=>$model->creation_id != 0 ? $model->creation->displayname : '-',
+				'value'=>$model->creation_id ? $model->creation->displayname : '-',
 			),
 			array(
 				'name'=>'modified_date',
@@ -66,12 +63,7 @@
 			),
 			array(
 				'name'=>'modified_id',
-				'value'=>$model->modified_id != 0 ? $model->modified->displayname : '-',
-			),
-			array(
-				'name'=>'publish',
-				'value'=>$model->publish == '1' ? Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : Chtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
-				'type'=>'raw',
+				'value'=>$model->modified_id ? $model->modified->displayname : '-',
 			),
 		),
 	)); ?>

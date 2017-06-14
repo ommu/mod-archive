@@ -22,7 +22,7 @@
 	<ul>
 		<li>
 			<?php echo $model->getAttributeLabel('id'); ?><br/>
-			<?php echo $form->textField($model,'id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'id'); ?>
 		</li>
 
 		<li>
@@ -32,17 +32,17 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('list_id'); ?><br/>
-			<?php echo $form->textField($model,'list_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'list_id'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('convert_id'); ?><br/>
-			<?php echo $form->textField($model,'convert_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'convert_id'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('media_desc'); ?><br/>
-			<?php echo $form->textArea($model,'media_desc',array('rows'=>6, 'cols'=>50)); ?>
+			<?php echo $form->textArea($model,'media_desc'); ?>
 		</li>
 
 		<li>
@@ -52,7 +52,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('creation_id'); ?><br/>
-			<?php echo $form->textField($model,'creation_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'creation_id'); ?>
 		</li>
 
 		<li class="submit">

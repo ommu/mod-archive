@@ -36,11 +36,12 @@
 class ArchiveStory extends CActiveRecord
 {
 	public $defaultColumns = array();
-	public $archive_total_i;
-	public $archive_page_i;
 	
 	// Variable Search
+	public $list_search;
+	public $copy_search;
 	public $archive_search;
+	public $archive_page_search;
 	public $creation_search;
 	public $modified_search;
 
@@ -80,7 +81,7 @@ class ArchiveStory extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('story_id, publish, story_name, story_desc, story_code, creation_date, creation_id, modified_date, modified_id,
-				archive_total_i, archive_page_i, archive_search, creation_search, modified_search', 'safe', 'on'=>'search'),
+				list_search, copy_search, archive_search, archive_page_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -96,7 +97,7 @@ class ArchiveStory extends CActiveRecord
 			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 			'lists' => array(self::HAS_MANY, 'ArchiveLists', 'story_id', 'on'=>'lists.publish = 1'),
-			'archive_unpublish' => array(self::HAS_MANY, 'ArchiveLists', 'story_id', 'on'=>'archive_unpublish.publish = 0'),
+			'list_unpublish' => array(self::HAS_MANY, 'ArchiveLists', 'story_id', 'on'=>'list_unpublish.publish = 0'),
 			'list_all' => array(self::HAS_MANY, 'ArchiveLists', 'story_id'),
 		);
 	}
@@ -118,22 +119,11 @@ class ArchiveStory extends CActiveRecord
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
-			'archive_total_i' => Yii::t('attribute', 'Total'),
-			'archive_page_i' => Yii::t('attribute', 'Archive Pages'),
-			'archive_search' => Yii::t('attribute', 'Senarai'),
+			'list_search' => Yii::t('attribute', 'Senarai'),
+			'copy_search' => Yii::t('attribute', 'Copies'),
+			'archive_search' => Yii::t('attribute', 'Archives'),
+			'archive_page_search' => Yii::t('attribute', 'Archive Page'),
 		);
-		/*
-			'Story' => 'Story',
-			'Publish' => 'Publish',
-			'Story Name' => 'Story Name',
-			'Story Desc' => 'Story Desc',
-			'Story Code' => 'Story Code',
-			'Creation Date' => 'Creation Date',
-			'Creation' => 'Creation',
-			'Modified Date' => 'Modified Date',
-			'Modified' => 'Modified',
-		
-		*/
 	}
 
 	/**
@@ -156,6 +146,9 @@ class ArchiveStory extends CActiveRecord
 		
 		// Custom Search
 		$criteria->with = array(
+			'view' => array(
+				'alias'=>'view',
+			),
 			'creation' => array(
 				'alias'=>'creation',
 				'select'=>'displayname',
@@ -163,10 +156,6 @@ class ArchiveStory extends CActiveRecord
 			'modified' => array(
 				'alias'=>'modified',
 				'select'=>'displayname',
-			),
-			'view' => array(
-				'alias'=>'view',
-				'select'=>'lists',
 			),
 		);
 
@@ -196,10 +185,11 @@ class ArchiveStory extends CActiveRecord
 			$criteria->compare('t.modified_id',$_GET['modified']);
 		else
 			$criteria->compare('t.modified_id',$this->modified_id);
-		
-		$criteria->compare('t.archive_total_i',$this->archive_total_i);
-		$criteria->compare('t.archive_page_i',$this->archive_page_i);		
-		$criteria->compare('view.lists',$this->archive_search);
+			
+		$criteria->compare('view.lists',$this->list_search);
+		$criteria->compare('view.copies',$this->copy_search);
+		$criteria->compare('view.archives',$this->archive_search);
+		$criteria->compare('view.archive_pages',$this->archive_page_search);
 		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
 		$criteria->compare('modified.displayname',strtolower($this->modified_search),true);
 
@@ -263,7 +253,10 @@ class ArchiveStory extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			$this->defaultColumns[] = 'story_name';
+			$this->defaultColumns[] = array(
+				'name' => 'story_name',
+				'value' => '$data->story_name',
+			);
 			$this->defaultColumns[] = array(
 				'name' => 'story_code',
 				'value' => 'strtoupper($data->story_code)',
@@ -302,7 +295,7 @@ class ArchiveStory extends CActiveRecord
 				), true),
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'archive_search',
+				'name' => 'list_search',
 				'value' => 'CHtml::link($data->view->lists ? $data->view->lists : 0, Yii::app()->controller->createUrl("o/admin/manage",array("story"=>$data->story_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
@@ -366,13 +359,6 @@ class ArchiveStory extends CActiveRecord
 			
 		} else
 			return $model;
-	}
-	
-	protected function afterFind() {
-		$this->archive_total_i = ArchiveLists::getTotalItemArchive($this->lists());
-		$this->archive_page_i = ArchiveLists::getTotalItemArchive($this->lists(), 'page');
-		
-		parent::afterFind();		
 	}
 
 	/**
