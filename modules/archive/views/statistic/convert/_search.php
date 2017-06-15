@@ -36,6 +36,11 @@
 		</li>
 
 		<li>
+			<?php echo $model->getAttributeLabel('archives'); ?><br/>
+			<?php echo $form->textField($model,'archives'); ?>
+		</li>
+
+		<li>
 			<?php echo $model->getAttributeLabel('archive_pages'); ?><br/>
 			<?php echo $form->textField($model,'archive_pages'); ?>
 		</li>

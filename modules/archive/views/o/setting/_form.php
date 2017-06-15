@@ -59,14 +59,6 @@
 	</div>
 
 	<div class="clearfix">
-		<?php echo $form->labelEx($model,'meta_keyword'); ?>
-		<div class="desc">
-			<?php echo $form->textArea($model,'meta_keyword',array('rows'=>6, 'cols'=>50, 'class'=>'span-7 smaller')); ?>
-			<?php echo $form->error($model,'meta_keyword'); ?>
-		</div>
-	</div>
-
-	<div class="clearfix">
 		<?php echo $form->labelEx($model,'meta_description'); ?>
 		<div class="desc">
 			<?php echo $form->textArea($model,'meta_description',array('rows'=>6, 'cols'=>50, 'class'=>'span-7 smaller')); ?>
@@ -75,11 +67,18 @@
 	</div>
 
 	<div class="clearfix">
+		<?php echo $form->labelEx($model,'meta_keyword'); ?>
+		<div class="desc">
+			<?php echo $form->textArea($model,'meta_keyword',array('rows'=>6, 'cols'=>50, 'class'=>'span-7 smaller')); ?>
+			<?php echo $form->error($model,'meta_keyword'); ?>
+		</div>
+	</div>
+
+	<div class="clearfix">
 		<?php echo $form->labelEx($model,'auto_numbering'); ?>
 		<div class="desc">
 			<?php echo $form->checkBox($model,'auto_numbering'); ?>
 			<?php echo $form->error($model,'auto_numbering'); ?>
-			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
 	</div>
 

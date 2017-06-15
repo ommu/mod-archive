@@ -57,16 +57,24 @@
 	<?php echo CHtml::encode($data->convert_multiple); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('convert_copies')); ?>:</b>
+	<?php echo CHtml::encode($data->convert_copies); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('convert_code')); ?>:</b>
+	<?php echo CHtml::encode($data->convert_code); ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('archive_numbers')); ?>:</b>
 	<?php echo CHtml::encode($data->archive_numbers); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('archive_pages')); ?>:</b>
-	<?php echo CHtml::encode($data->archive_pages); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('archive_total')); ?>:</b>
+	<?php echo CHtml::encode($data->archive_total); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('convert_copies')); ?>:</b>
-	<?php echo CHtml::encode($data->convert_copies); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('archive_pages')); ?>:</b>
+	<?php echo CHtml::encode($data->archive_pages); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('creation_date')); ?>:</b>

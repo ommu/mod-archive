@@ -19,7 +19,8 @@
 	'action'=>Yii::app()->createUrl($this->route),
 	'method'=>'get',
 )); ?>
-	<ul>		<li>
+	<ul>
+		<li>
 			<?php echo $model->getAttributeLabel('list_id'); ?><br/>
 			<?php echo $form->textField($model,'list_id'); ?>
 		</li>

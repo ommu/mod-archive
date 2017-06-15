@@ -57,8 +57,20 @@
 	<?php echo CHtml::encode($data->list_multiple); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('list_copies')); ?>:</b>
+	<?php echo CHtml::encode($data->list_copies); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('list_code')); ?>:</b>
+	<?php echo CHtml::encode($data->list_code); ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('archive_numbers')); ?>:</b>
 	<?php echo CHtml::encode($data->archive_numbers); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('archive_total')); ?>:</b>
+	<?php echo CHtml::encode($data->archive_total); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('archive_pages')); ?>:</b>
