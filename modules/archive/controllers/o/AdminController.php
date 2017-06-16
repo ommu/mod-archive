@@ -113,29 +113,47 @@ class AdminController extends Controller
 	 */
 	public function actionSuggest() 
 	{
-		if(isset($_GET['term'])) {
-			$criteria = new CDbCriteria;
-			$criteria->select = 'list_id, list_code';
-			$criteria->compare('list_code',strtolower($_GET['term']), true);
-			$criteria->order = 'list_id ASC';
-			$model = ArchiveLists::model()->findAll($criteria);
+		if(Yii::app()->request->isAjaxRequest) {
+			if(isset($_GET['term'])) {
+				$criteria = new CDbCriteria;
+				$criteria->select = 'list_id, list_code';
+				$criteria->compare('list_code',strtolower($_GET['term']), true);
+				$criteria->order = 'list_id ASC';
+				$model = ArchiveLists::model()->findAll($criteria);
 
-			if($model) {
-				foreach($model as $items) {
-					$result[] = array('id' => $items->list_id, 'value' => strtoupper($items->list_code));
+				if($model) {
+					foreach($model as $items) {
+						$result[] = array('id' => $items->list_id, 'value' => strtoupper($items->list_code));
+					}
 				}
 			}
-		}
-		
-		echo CJSON::encode($result);
-		Yii::app()->end();
+			
+			echo CJSON::encode($result);
+			Yii::app()->end();
+			
+		} else
+			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 	}
 
 	/**
 	 * Manages all models.
 	 */
-	public function actionManage() 
+	public function actionManage($location=null, $story=null, $type=null) 
 	{
+		$pageTitle = Yii::t('phrase', 'Senarai Arsip');
+		if($location != null) {
+			$data = ArchiveLocation::model()->findByPk($location);
+			$pageTitle = Yii::t('phrase', 'Senarai Arsip: location $location_name', array ('$location_name'=>$data->location_name));
+		}
+		if($story != null) {
+			$data = ArchiveStory::model()->findByPk($story);
+			$pageTitle = Yii::t('phrase', 'Senarai Arsip: story $story_name', array ('$story_name'=>$data->story_name));
+		}
+		if($type != null) {
+			$data = ArchiveType::model()->findByPk($type);
+			$pageTitle = Yii::t('phrase', 'Senarai Arsip: type $type_name', array ('$type_name'=>$data->type_name));
+		}
+		
 		$model=new ArchiveLists('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['ArchiveLists'])) {
@@ -152,7 +170,7 @@ class AdminController extends Controller
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
-		$this->pageTitle = Yii::t('phrase', 'ArchiveLists Manage');
+		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_manage',array(
@@ -335,7 +353,7 @@ class AdminController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 600;
 
-		$this->pageTitle = 'Import Archive';
+		$this->pageTitle = Yii::t('phrase', 'Import Senarai Arsip');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_import');
@@ -362,7 +380,7 @@ class AdminController extends Controller
 				$model->scenario = 'not_auto_numbering';
 			
 			if($model->save()) {
-				Yii::app()->user->setFlash('success', Yii::t('phrase', 'ArchiveLists success created.'));
+				Yii::app()->user->setFlash('success', Yii::t('phrase', 'Senarai arsip success created.'));
 				//$this->redirect(array('view','id'=>$model->list_id));
 				if($model->back_field_i == 1)
 					$this->redirect(array('manage'));
@@ -371,7 +389,7 @@ class AdminController extends Controller
 			}
 		}
 
-		$this->pageTitle = Yii::t('phrase', 'Create ArchiveLists');
+		$this->pageTitle = Yii::t('phrase', 'Create Senarai Arsip');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_add',array(
@@ -402,13 +420,13 @@ class AdminController extends Controller
 				$model->scenario = 'not_auto_numbering';
 			
 			if($model->save()) {
-				Yii::app()->user->setFlash('success', Yii::t('phrase', 'ArchiveLists success updated.'));
+				Yii::app()->user->setFlash('success', Yii::t('phrase', 'Senarai arsip success updated.'));
 				//$this->redirect(array('view','id'=>$model->list_id));
 				$this->redirect(array('manage'));
 			}
 		}
 
-		$this->pageTitle = Yii::t('phrase', 'Update ArchiveLists');
+		$this->pageTitle = Yii::t('phrase', 'Update Senarai: $list_title', array('$list_title'=>$model->list_title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_edit',array(
@@ -425,7 +443,7 @@ class AdminController extends Controller
 	{
 		$model=$this->loadModel($id);
 
-		$this->pageTitle = Yii::t('phrase', 'View ArchiveLists');
+		$this->pageTitle = Yii::t('phrase', 'View Senarai: $list_title', array('$list_title'=>$model->list_title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_view',array(
@@ -486,7 +504,7 @@ class AdminController extends Controller
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
 						'id' => 'partial-archive-lists',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveLists success deleted.').'</strong></div>',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Senarai arsip success deleted.').'</strong></div>',
 					));
 				}
 			}
@@ -496,7 +514,7 @@ class AdminController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Yii::t('phrase', 'ArchiveLists Delete.');
+			$this->pageTitle = Yii::t('phrase', 'Delete Senarai: $list_title', array('$list_title'=>$model->list_title));
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');
@@ -519,6 +537,7 @@ class AdminController extends Controller
 			$title = Yii::t('phrase', 'Publish');
 			$replace = 1;
 		}
+		$pageTitle = Yii::t('phrase', '$title Senarai: $list_title', array('$title'=>$title, '$list_title'=>$model->list_title));
 
 		if(Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
@@ -531,7 +550,7 @@ class AdminController extends Controller
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
 						'id' => 'partial-archive-lists',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveLists success updated.').'</strong></div>',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Senarai arsip success updated.').'</strong></div>',
 					));
 				}
 			}
@@ -541,7 +560,7 @@ class AdminController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = $title;
+			$this->pageTitle = $pageTitle;
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_publish',array(
