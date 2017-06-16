@@ -34,26 +34,31 @@
 			<?php echo $form->labelEx($model,'list_code_i'); ?>
 			<div class="desc">
 				<?php //echo $form->textField($model,'list_code_i',array('maxlength'=>32));
-				$model->list_code_i = strtoupper($archive->list_code_i);
-				$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-					'model' => $model,
-					'attribute' => 'list_code_i',
-					'source' => Yii::app()->controller->createUrl('o/admin/suggest'),
-					'options' => array(
-						//'delay '=> 50,
-						'minLength' => 1,
-						'showAnim' => 'fold',
-						'select' => "js:function(event, ui) {
-							$('form #ArchiveListConvert_list_code_i').val(ui.item.value);
-							$('form #ArchiveListConvert_list_id').val(ui.item.id);
-						}"
-					),
-					'htmlOptions' => array(
-						'class'	=> 'span-7',
-						'maxlength'=>32,
-					),
-				));
-				$model->list_id = $archive->list_id;
+				if(!$model->getErrors())
+					$model->list_code_i = strtoupper($archive->list_code);
+				if($model->isNewRecord) {
+					$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+						'model' => $model,
+						'attribute' => 'list_code_i',
+						'source' => Yii::app()->controller->createUrl('o/admin/suggest'),
+						'options' => array(
+							//'delay '=> 50,
+							'minLength' => 1,
+							'showAnim' => 'fold',
+							'select' => "js:function(event, ui) {
+								$('form #ArchiveListConvert_list_code_i').val(ui.item.value);
+								$('form #ArchiveListConvert_list_id').val(ui.item.id);
+							}"
+						),
+						'htmlOptions' => array(
+							'class'	=> 'span-7',
+							'maxlength'=>32,
+						),
+					));
+					$model->list_id = $archive->list_id;
+				} else
+					echo $form->textField($model,'list_code_i',array('maxlength'=>32, 'class'=>'span-7', 'disabled'=>'disabled'));
+				
 				echo $form->hiddenField($model,'list_id'); ?>
 				<?php echo $form->error($model,'list_code_i'); ?>
 				<?php /*<div class="small-px silent"></div>*/?>
@@ -64,26 +69,31 @@
 			<?php echo $form->labelEx($model,'convert_code_i'); ?>
 			<div class="desc">
 				<?php //echo $form->textField($model,'convert_code_i',array('maxlength'=>32));
-				$model->convert_code_i = strtoupper($convert->convert_code_i);
-				$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-					'model' => $model,
-					'attribute' => 'convert_code_i',
-					'source' => Yii::app()->controller->createUrl('o/convert/suggest'),
-					'options' => array(
-						//'delay '=> 50,
-						'minLength' => 1,
-						'showAnim' => 'fold',
-						'select' => "js:function(event, ui) {
-							$('form #ArchiveListConvert_convert_code_i').val(ui.item.value);
-							$('form #ArchiveListConvert_convert_id').val(ui.item.id);
-						}"
-					),
-					'htmlOptions' => array(
-						'class'	=> 'span-7',
-						'maxlength'=>32,
-					),
-				));
-				$model->convert_id = $convert->convert_id;
+				if(!$model->getErrors())
+					$model->convert_code_i = strtoupper($convert->convert_code);
+				if($model->isNewRecord) {
+					$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+						'model' => $model,
+						'attribute' => 'convert_code_i',
+						'source' => Yii::app()->controller->createUrl('o/convert/suggest'),
+						'options' => array(
+							//'delay '=> 50,
+							'minLength' => 1,
+							'showAnim' => 'fold',
+							'select' => "js:function(event, ui) {
+								$('form #ArchiveListConvert_convert_code_i').val(ui.item.value);
+								$('form #ArchiveListConvert_convert_id').val(ui.item.id);
+							}"
+						),
+						'htmlOptions' => array(
+							'class'	=> 'span-7',
+							'maxlength'=>32,
+						),
+					));
+					$model->convert_id = $convert->convert_id;
+				} else
+					echo $form->textField($model,'convert_code_i',array('maxlength'=>32, 'class'=>'span-7', 'disabled'=>'disabled'));
+				
 				echo $form->hiddenField($model,'convert_id'); ?>
 				<?php echo $form->error($model,'convert_code_i'); ?>
 				<?php /*<div class="small-px silent"></div>*/?>
@@ -93,7 +103,7 @@
 		<div class="clearfix">
 			<?php echo $form->labelEx($model,'media_desc'); ?>
 			<div class="desc">
-				<?php echo $form->textArea($model,'media_desc',array('rows'=>6, 'cols'=>50)); ?>
+				<?php echo $form->textArea($model,'media_desc',array('rows'=>6, 'cols'=>50, 'class'=>'span-11 smaller')); ?>
 				<?php echo $form->error($model,'media_desc'); ?>
 				<?php /*<div class="small-px silent"></div>*/?>
 			</div>

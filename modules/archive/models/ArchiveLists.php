@@ -456,7 +456,7 @@ class ArchiveLists extends CActiveRecord
 			$this->defaultColumns[] = array(
 				'filter' => false,
 				'name' => 'convert_search',
-				'value' => 'CHtml::link(Yii::t("phrase", "Add Convert"), Yii::app()->controller->createUrl("o/convertmedia/add",array("archive"=>$data->list_id)))',
+				'value' => 'CHtml::link(Yii::t("phrase", "Add Convert"), Yii::app()->controller->createUrl("o/media/add",array("archive"=>$data->list_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),

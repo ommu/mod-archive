@@ -30,6 +30,8 @@
  * @property string $media_desc
  * @property string $creation_date
  * @property string $creation_id
+ * @property string $modified_date
+ * @property string $modified_id
  *
  * The followings are the available model relations:
  * @property OmmuArchiveConverts $convert
@@ -45,6 +47,7 @@ class ArchiveListConvert extends CActiveRecord
 	public $list_search;
 	public $convert_search;
 	public $creation_search;
+	public $modified_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -76,14 +79,14 @@ class ArchiveListConvert extends CActiveRecord
 			array('
 				list_code_i, convert_code_i', 'required'),
 			array('publish', 'numerical', 'integerOnly'=>true),
-			array('list_id, convert_id, creation_id', 'length', 'max'=>11),
+			array('list_id, convert_id, creation_id, modified_id', 'length', 'max'=>11),
 			array('
 				list_code_i, convert_code_i', 'length', 'max'=>32),
 			array('list_id, convert_id, media_desc', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, publish, list_id, convert_id, media_desc, creation_date, creation_id,
-				list_code_i, convert_code_i, list_search, convert_search, creation_search', 'safe', 'on'=>'search'),
+			array('id, publish, list_id, convert_id, media_desc, creation_date, creation_id, modified_date, modified_id,
+				list_code_i, convert_code_i, list_search, convert_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -95,9 +98,10 @@ class ArchiveListConvert extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'archive' => array(self::BELONGS_TO, 'ArchiveLists', 'list_id'),
+			'list' => array(self::BELONGS_TO, 'ArchiveLists', 'list_id'),
 			'convert' => array(self::BELONGS_TO, 'ArchiveConverts', 'convert_id'),
 			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
+			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 		);
 	}
 
@@ -114,11 +118,14 @@ class ArchiveListConvert extends CActiveRecord
 			'media_desc' => Yii::t('attribute', 'Description'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
+			'modified_date' => Yii::t('attribute', 'Modified Date'),
+			'modified_id' => Yii::t('attribute', 'Modified'),
 			'list_code_i' => Yii::t('attribute', 'Senarai Code'),
 			'convert_code_i' => Yii::t('attribute', 'Alih Code'),
 			'list_search' => Yii::t('attribute', 'Senarai'),
 			'convert_search' => Yii::t('attribute', 'Alih'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
+			'modified_search' => Yii::t('attribute', 'Modified'),
 		);
 	}
 
@@ -142,8 +149,8 @@ class ArchiveListConvert extends CActiveRecord
 		
 		// Custom Search
 		$criteria->with = array(
-			'archive' => array(
-				'alias'=>'archive',
+			'list' => array(
+				'alias'=>'list',
 				'select'=>'list_title, list_code',
 			),
 			'convert' => array(
@@ -182,10 +189,17 @@ class ArchiveListConvert extends CActiveRecord
 			$criteria->compare('t.creation_id',$_GET['creation']);
 		else
 			$criteria->compare('t.creation_id',$this->creation_id);
+		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00', '0000-00-00')))
+			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
+		if(isset($_GET['modified']))
+			$criteria->compare('t.modified_id',$_GET['modified']);
+		else
+			$criteria->compare('t.modified_id',$this->modified_id);
 		
-		$criteria->compare('archive.list_code',strtolower($this->list_search),true);
+		$criteria->compare('list.list_code',strtolower($this->list_search),true);
 		$criteria->compare('convert.convert_code',strtolower($this->convert_search),true);
 		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
+		$criteria->compare('modified.displayname',strtolower($this->modified_search),true);
 
 		if(!isset($_GET['ArchiveListConvert_sort']))
 			$criteria->order = 't.id DESC';
@@ -223,6 +237,8 @@ class ArchiveListConvert extends CActiveRecord
 			$this->defaultColumns[] = 'media_desc';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
+			$this->defaultColumns[] = 'modified_date';
+			$this->defaultColumns[] = 'modified_id';
 		}
 
 		return $this->defaultColumns;
@@ -247,7 +263,7 @@ class ArchiveListConvert extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'list_search',
-				'value' => 'strtoupper($data->archive->list_code)."<br/><span>".$data->archive->list_title."</span>"',
+				'value' => 'strtoupper($data->list->list_code)."<br/><span>".$data->list->list_title."</span>"',
 				'htmlOptions' => array(
 					'class' => 'bold',
 				),
@@ -333,6 +349,8 @@ class ArchiveListConvert extends CActiveRecord
 		if(parent::beforeValidate()) {
 			if($this->isNewRecord)
 				$this->creation_id = Yii::app()->user->id;
+			else
+				$this->modified_id = Yii::app()->user->id;
 		}
 		return true;
 	}

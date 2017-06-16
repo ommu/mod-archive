@@ -31,7 +31,7 @@ plugin_menu		:
 			- urlTitle: Locations
 				urlRules: {siteType: "0,1", userLevel: 1}
 				urlPath: {url: o/location/manage, attr: -, icon: -}
-			- urlTitle: Storys
+			- urlTitle: Stories
 				urlRules: {siteType: "0,1", userLevel: 1}
 				urlPath: {url: o/story/manage, attr: -, icon: -}
 			- urlTitle: Types
