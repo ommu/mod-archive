@@ -120,7 +120,7 @@ class ArchiveLocation extends CActiveRecord
 			'location_id' => Yii::t('attribute', 'Location'),
 			'publish' => Yii::t('attribute', 'Publish'),
 			'location_name' => Yii::t('attribute', 'Name'),
-			'location_desc' => Yii::t('attribute', 'Descripstion'),
+			'location_desc' => Yii::t('attribute', 'Description'),
 			'location_code' => Yii::t('attribute', 'Code'),
 			'story_enable' => Yii::t('attribute', 'Story'),
 			'type_enable' => Yii::t('attribute', 'Type'),

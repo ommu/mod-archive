@@ -127,7 +127,7 @@ class LocationController extends Controller
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
-		$this->pageTitle = Yii::t('phrase', 'Archive Locations Manage');
+		$this->pageTitle = Yii::t('phrase', 'Locations');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_manage',array(
@@ -161,7 +161,7 @@ class LocationController extends Controller
 							'type' => 5,
 							'get' => Yii::app()->controller->createUrl('manage'),
 							'id' => 'partial-archive-location',
-							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveLocation success created.').'</strong></div>',
+							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Location success created.').'</strong></div>',
 						));
 					} else {
 						print_r($model->getErrors());
@@ -175,7 +175,7 @@ class LocationController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 600;
 
-		$this->pageTitle = Yii::t('phrase', 'Create Archive Locations');
+		$this->pageTitle = Yii::t('phrase', 'Create Location');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_add',array(
@@ -209,7 +209,7 @@ class LocationController extends Controller
 							'type' => 5,
 							'get' => Yii::app()->controller->createUrl('manage'),
 							'id' => 'partial-archive-location',
-							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveLocation success updated.').'</strong></div>',
+							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Location success updated.').'</strong></div>',
 						));
 					} else {
 						print_r($model->getErrors());
@@ -223,7 +223,7 @@ class LocationController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 600;
 
-		$this->pageTitle = Yii::t('phrase', 'Update Archive Locations');
+		$this->pageTitle = Yii::t('phrase', 'Update Location: $location_name', array('$location_name'=>$model->location_name));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_edit',array(
@@ -243,7 +243,7 @@ class LocationController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 600;
 
-		$this->pageTitle = Yii::t('phrase', 'View Archive Locations');
+		$this->pageTitle = Yii::t('phrase', 'View Location: $location_name', array('$location_name'=>$model->location_name));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_view',array(
@@ -304,7 +304,7 @@ class LocationController extends Controller
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
 						'id' => 'partial-archive-location',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveLocation success deleted.').'</strong></div>',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Location success deleted.').'</strong></div>',
 					));
 				}
 			}
@@ -314,7 +314,7 @@ class LocationController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Yii::t('phrase', 'ArchiveLocation Delete.');
+			$this->pageTitle = Yii::t('phrase', 'Delete Location: $location_name', array('$location_name'=>$model->location_name));
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');
@@ -337,6 +337,7 @@ class LocationController extends Controller
 			$title = Yii::t('phrase', 'Publish');
 			$replace = 1;
 		}
+		$pageTitle = Yii::t('phrase', '$title Location: $location_name', array('$title'=>$title, '$location_name'=>$model->location_name));
 
 		if(Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
@@ -349,7 +350,7 @@ class LocationController extends Controller
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
 						'id' => 'partial-archive-location',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveLocation success updated.').'</strong></div>',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Location success updated.').'</strong></div>',
 					));
 				}
 			}
@@ -359,7 +360,7 @@ class LocationController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = $title;
+			$this->pageTitle = $pageTitle;
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_publish',array(
