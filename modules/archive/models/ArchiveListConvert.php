@@ -174,8 +174,8 @@ class ArchiveListConvert extends CActiveRecord
 			$criteria->addInCondition('t.publish',array(0,1));
 			$criteria->compare('t.publish',$this->publish);
 		}
-		if(isset($_GET['archive']))
-			$criteria->compare('t.list_id',$_GET['archive']);
+		if(isset($_GET['list']))
+			$criteria->compare('t.list_id',$_GET['list']);
 		else
 			$criteria->compare('t.list_id',$this->list_id);
 		if(isset($_GET['convert']))

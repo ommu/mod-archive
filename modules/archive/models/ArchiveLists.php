@@ -447,7 +447,7 @@ class ArchiveLists extends CActiveRecord
 			*/
 			$this->defaultColumns[] = array(
 				'name' => 'convert_search',
-				'value' => 'CHtml::link($data->view->converts ? $data->view->converts : 0, Yii::app()->controller->createUrl("o/convertmedia/manage",array("archive"=>$data->list_id)))',
+				'value' => 'CHtml::link($data->view->converts ? $data->view->converts : 0, Yii::app()->controller->createUrl("o/media/manage",array("list"=>$data->list_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -456,7 +456,7 @@ class ArchiveLists extends CActiveRecord
 			$this->defaultColumns[] = array(
 				'filter' => false,
 				'name' => 'convert_search',
-				'value' => 'CHtml::link(Yii::t("phrase", "Add Convert"), Yii::app()->controller->createUrl("o/media/add",array("archive"=>$data->list_id)))',
+				'value' => 'CHtml::link(Yii::t("phrase", "Add Convert"), Yii::app()->controller->createUrl("o/media/add",array("list"=>$data->list_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),

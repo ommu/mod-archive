@@ -160,6 +160,7 @@ class ConvertController extends Controller
 			$data = ArchiveConvertCategory::model()->findByPk($story);
 			$pageTitle = Yii::t('phrase', 'Senarai Alih: category $category_name', array ('$category_name'=>$data->category_name));
 		}
+		
 		$model=new ArchiveConverts('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['ArchiveConverts'])) {

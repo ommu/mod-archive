@@ -109,8 +109,18 @@ class MediaController extends Controller
 	/**
 	 * Manages all models.
 	 */
-	public function actionManage() 
+	public function actionManage($list=null, $convert=null) 
 	{
+		$pageTitle = Yii::t('phrase', 'Media Converts');
+		if($list != null) {
+			$data = ArchiveLists::model()->findByPk($list);
+			$pageTitle = Yii::t('phrase', 'Media Converts: senarai $list_title ($list_code)', array ('$list_title'=>$data->list_title,'$list_code'=>$data->list_code));
+		}
+		if($convert != null) {
+			$data = ArchiveConverts::model()->findByPk($convert);
+			$pageTitle = Yii::t('phrase', 'Media Converts: senarai alih $convert_title ($convert_code)', array ('$convert_title'=>$data->convert_title,'$convert_code'=>$data->convert_code));
+		}
+		
 		$model=new ArchiveListConvert('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['ArchiveListConvert'])) {
@@ -127,7 +137,7 @@ class MediaController extends Controller
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
-		$this->pageTitle = Yii::t('phrase', 'Archive Convert Medias Manage');
+		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_manage',array(
@@ -142,7 +152,7 @@ class MediaController extends Controller
 	 */
 	public function actionAdd() 
 	{
-		$list_id = $_GET['archive'];
+		$list_id = $_GET['list'];
 		$convert_id = $_GET['convert'];
 		
 		$model=new ArchiveListConvert;
@@ -166,7 +176,7 @@ class MediaController extends Controller
 							'type' => 5,
 							'get' => Yii::app()->controller->createUrl('manage'),
 							'id' => 'partial-archive-list-convert',
-							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveListConvert success created.').'</strong></div>',
+							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Media convert success created.').'</strong></div>',
 						));
 					} else {
 						print_r($model->getErrors());
@@ -180,7 +190,7 @@ class MediaController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 550;
 
-		$this->pageTitle = Yii::t('phrase', 'Create Archive Convert Medias');
+		$this->pageTitle = Yii::t('phrase', 'Create Media Convert');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_add',array(
@@ -218,7 +228,7 @@ class MediaController extends Controller
 							'type' => 5,
 							'get' => Yii::app()->controller->createUrl('manage'),
 							'id' => 'partial-archive-list-convert',
-							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveListConvert success updated.').'</strong></div>',
+							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Media convert success updated.').'</strong></div>',
 						));
 					} else {
 						print_r($model->getErrors());
@@ -232,7 +242,7 @@ class MediaController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 550;
 
-		$this->pageTitle = Yii::t('phrase', 'Update Archive Convert Medias');
+		$this->pageTitle = Yii::t('phrase', 'Update Media Convert: $list_title and $convert_title', array('$list_title'=>$model->list->list_title, '$convert_title'=>$model->convert->convert_title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_edit',array(
@@ -254,7 +264,7 @@ class MediaController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 550;
 
-		$this->pageTitle = Yii::t('phrase', 'View Archive Convert Medias');
+		$this->pageTitle = Yii::t('phrase', 'View Media Convert: $list_title and $convert_title', array('$list_title'=>$model->list->list_title, '$convert_title'=>$model->convert->convert_title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_view',array(
@@ -315,7 +325,7 @@ class MediaController extends Controller
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
 						'id' => 'partial-archive-list-convert',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveListConvert success deleted.').'</strong></div>',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Media convert success deleted.').'</strong></div>',
 					));
 				}
 			}
@@ -325,7 +335,7 @@ class MediaController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Yii::t('phrase', 'ArchiveListConvert Delete.');
+			$this->pageTitle = Yii::t('phrase', 'Delete Media Convert: $list_title and $convert_title', array('$list_title'=>$model->list->list_title, '$convert_title'=>$model->convert->convert_title));
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');
@@ -348,6 +358,7 @@ class MediaController extends Controller
 			$title = Yii::t('phrase', 'Publish');
 			$replace = 1;
 		}
+		$pageTitle = Yii::t('phrase', '$title Media Convert: $list_title and $convert_title', array('$title'=>$title, '$list_title'=>$model->list->list_title, '$convert_title'=>$model->convert->convert_title));
 
 		if(Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
@@ -360,7 +371,7 @@ class MediaController extends Controller
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
 						'id' => 'partial-archive-list-convert',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveListConvert success updated.').'</strong></div>',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Media convert success updated.').'</strong></div>',
 					));
 				}
 			}
@@ -370,7 +381,7 @@ class MediaController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = $title;
+			$this->pageTitle = $pageTitle;
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_publish',array(
