@@ -149,8 +149,17 @@ class ConvertController extends Controller
 	/**
 	 * Manages all models.
 	 */
-	public function actionManage() 
+	public function actionManage($location=null, $category=null) 
 	{
+		$pageTitle = Yii::t('phrase', 'Senarai Alih');
+		if($location != null) {
+			$data = ArchiveLocation::model()->findByPk($location);
+			$pageTitle = Yii::t('phrase', 'Senarai Alih: location $location_name', array ('$location_name'=>$data->location_name));
+		}
+		if($story != null) {
+			$data = ArchiveConvertCategory::model()->findByPk($story);
+			$pageTitle = Yii::t('phrase', 'Senarai Alih: category $category_name', array ('$category_name'=>$data->category_name));
+		}
 		$model=new ArchiveConverts('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['ArchiveConverts'])) {
@@ -167,7 +176,7 @@ class ConvertController extends Controller
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
-		$this->pageTitle = Yii::t('phrase', 'Archive Converts Manage');
+		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_manage',array(
@@ -294,7 +303,7 @@ class ConvertController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 600;
 
-		$this->pageTitle = 'Import Convert';
+		$this->pageTitle = Yii::t('phrase', 'Import Senarai Alih');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_import');
@@ -328,7 +337,7 @@ class ConvertController extends Controller
 				$model->scenario = 'not_auto_numbering';
 			
 			if($model->save()) {
-				Yii::app()->user->setFlash('success', Yii::t('phrase', 'ArchiveConverts success created.'));
+				Yii::app()->user->setFlash('success', Yii::t('phrase', 'Senarai alih success created.'));
 				//$this->redirect(array('view','id'=>$model->convert_id));
 				if($model->back_field_i == 1)
 					$this->redirect(array('manage'));
@@ -341,7 +350,7 @@ class ConvertController extends Controller
 			}
 		}
 
-		$this->pageTitle = Yii::t('phrase', 'Create Archive Converts');
+		$this->pageTitle = Yii::t('phrase', 'Create Senarai Alih');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_add',array(
@@ -376,13 +385,13 @@ class ConvertController extends Controller
 				$model->scenario = 'not_auto_numbering';
 			
 			if($model->save()) {
-				Yii::app()->user->setFlash('success', Yii::t('phrase', 'ArchiveConverts success updated.'));
+				Yii::app()->user->setFlash('success', Yii::t('phrase', 'Senarai alih success updated.'));
 				//$this->redirect(array('view','id'=>$model->convert_id));
 				$this->redirect(array('manage'));
 			}
 		}
 
-		$this->pageTitle = Yii::t('phrase', 'Update Archive Converts');
+		$this->pageTitle = Yii::t('phrase', 'Update Senarai Alih: $convert_title', array('$convert_title'=>$model->convert_title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_edit',array(
@@ -400,7 +409,7 @@ class ConvertController extends Controller
 	{
 		$model=$this->loadModel($id);
 
-		$this->pageTitle = Yii::t('phrase', 'View Archive Converts');
+		$this->pageTitle = Yii::t('phrase', 'View Senarai Alih: $convert_title', array('$convert_title'=>$model->convert_title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_view',array(
@@ -461,7 +470,7 @@ class ConvertController extends Controller
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
 						'id' => 'partial-archive-converts',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveConverts success deleted.').'</strong></div>',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Senarai alih success deleted.').'</strong></div>',
 					));
 				}
 			}
@@ -471,7 +480,7 @@ class ConvertController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Yii::t('phrase', 'ArchiveConverts Delete.');
+			$this->pageTitle = Yii::t('phrase', 'Delete Senarai Alih: $convert_title', array('$convert_title'=>$model->convert_title));
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');
@@ -494,6 +503,7 @@ class ConvertController extends Controller
 			$title = Yii::t('phrase', 'Publish');
 			$replace = 1;
 		}
+		$pageTitle = Yii::t('phrase', '$title Senarai Alih: $convert_title', array('$title'=>$title, '$convert_title'=>$model->convert_title));
 
 		if(Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
@@ -506,7 +516,7 @@ class ConvertController extends Controller
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
 						'id' => 'partial-archive-converts',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveConverts success updated.').'</strong></div>',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Senarai alih success updated.').'</strong></div>',
 					));
 				}
 			}
@@ -516,7 +526,7 @@ class ConvertController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = $title;
+			$this->pageTitle = $pageTitle;
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_publish',array(
