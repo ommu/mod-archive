@@ -127,7 +127,7 @@ class TypeController extends Controller
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
-		$this->pageTitle = Yii::t('phrase', 'Archive Types Manage');
+		$this->pageTitle = Yii::t('phrase', 'Types');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_manage',array(
@@ -161,7 +161,7 @@ class TypeController extends Controller
 							'type' => 5,
 							'get' => Yii::app()->controller->createUrl('manage'),
 							'id' => 'partial-archive-type',
-							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveType success created.').'</strong></div>',
+							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Type success created.').'</strong></div>',
 						));
 					} else {
 						print_r($model->getErrors());
@@ -175,7 +175,7 @@ class TypeController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 600;
 
-		$this->pageTitle = Yii::t('phrase', 'Create Archive Types');
+		$this->pageTitle = Yii::t('phrase', 'Create Type');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_add',array(
@@ -208,7 +208,7 @@ class TypeController extends Controller
 							'type' => 5,
 							'get' => Yii::app()->controller->createUrl('manage'),
 							'id' => 'partial-archive-type',
-							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveType success updated.').'</strong></div>',
+							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Type success updated.').'</strong></div>',
 						));
 					} else {
 						print_r($model->getErrors());
@@ -222,7 +222,7 @@ class TypeController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 600;
 
-		$this->pageTitle = Yii::t('phrase', 'Update Archive Types');
+		$this->pageTitle = Yii::t('phrase', 'Update Type: $type_name', array('$type_name'=>$model->type_name));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_edit',array(
@@ -242,7 +242,7 @@ class TypeController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 600;
 
-		$this->pageTitle = Yii::t('phrase', 'View Archive Types');
+		$this->pageTitle = Yii::t('phrase', 'View Type: $type_name', array('$type_name'=>$model->type_name));
 		$this->pageDescription = '';
 		$this->pageMeta = $setting->meta_keyword;
 		$this->render('admin_view',array(
@@ -303,7 +303,7 @@ class TypeController extends Controller
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
 						'id' => 'partial-archive-type',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveType success deleted.').'</strong></div>',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Type success deleted.').'</strong></div>',
 					));
 				}
 			}
@@ -313,7 +313,7 @@ class TypeController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Yii::t('phrase', 'ArchiveType Delete.');
+			$this->pageTitle = Yii::t('phrase', 'Delete Type: $type_name', array('$type_name'=>$model->type_name));
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');
@@ -336,6 +336,7 @@ class TypeController extends Controller
 			$title = Yii::t('phrase', 'Publish');
 			$replace = 1;
 		}
+		$pageTitle = Yii::t('phrase', '$title Type: $type_name', array('$title'=>$title, '$type_name'=>$model->type_name));
 
 		if(Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
@@ -348,7 +349,7 @@ class TypeController extends Controller
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
 						'id' => 'partial-archive-type',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveType success updated.').'</strong></div>',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Type success updated.').'</strong></div>',
 					));
 				}
 			}
@@ -358,7 +359,7 @@ class TypeController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = $title;
+			$this->pageTitle = $pageTitle;
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_publish',array(

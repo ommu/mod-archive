@@ -111,7 +111,7 @@ content_menu	:
 		urlPath: {url: add, attr: -, icon: -}
 		
 # controller o/type
-	- urlTitle: Add Types
+	- urlTitle: Add Type
 		urlRules: {archive, o/type, manage, siteType: "0,1", userLevel: 1}
 		urlPath: {url: add, attr: -, icon: -}
 		
