@@ -124,7 +124,7 @@ class AdminController extends Controller
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
-		$this->pageTitle = Yii::t('phrase', 'View Archive Years Manage');
+		$this->pageTitle = Yii::t('phrase', 'Senarai Arsip Statistics');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_manage',array(
@@ -145,7 +145,7 @@ class AdminController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 600;
 
-		$this->pageTitle = Yii::t('phrase', 'View View Archive Years');
+		$this->pageTitle = Yii::t('phrase', 'Senarai Arsip Statistic: year $publish_year', array('$publish_year'=>$model->publish_year));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_view',array(
