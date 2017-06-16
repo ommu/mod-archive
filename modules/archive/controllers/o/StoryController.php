@@ -127,7 +127,7 @@ class StoryController extends Controller
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
-		$this->pageTitle = Yii::t('phrase', 'Archive Stories Manage');
+		$this->pageTitle = Yii::t('phrase', 'Stories');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_manage',array(
@@ -161,7 +161,7 @@ class StoryController extends Controller
 							'type' => 5,
 							'get' => Yii::app()->controller->createUrl('manage'),
 							'id' => 'partial-archive-story',
-							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveStory success created.').'</strong></div>',
+							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Story success created.').'</strong></div>',
 						));
 					} else {
 						print_r($model->getErrors());
@@ -175,7 +175,7 @@ class StoryController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 600;
 
-		$this->pageTitle = Yii::t('phrase', 'Create Archive Stories');
+		$this->pageTitle = Yii::t('phrase', 'Create Story');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_add',array(
@@ -209,7 +209,7 @@ class StoryController extends Controller
 							'type' => 5,
 							'get' => Yii::app()->controller->createUrl('manage'),
 							'id' => 'partial-archive-story',
-							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveStory success updated.').'</strong></div>',
+							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Story success updated.').'</strong></div>',
 						));
 					} else {
 						print_r($model->getErrors());
@@ -223,7 +223,7 @@ class StoryController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 600;
 
-		$this->pageTitle = Yii::t('phrase', 'Update Archive Stories');
+		$this->pageTitle = Yii::t('phrase', 'Update Story: $story_name', array('$story_name'=>$model->story_name));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_edit',array(
@@ -243,7 +243,7 @@ class StoryController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 600;
 
-		$this->pageTitle = Yii::t('phrase', 'View Archive Stories');
+		$this->pageTitle = Yii::t('phrase', 'View Story: $story_name', array('$story_name'=>$model->story_name));
 		$this->pageDescription = '';
 		$this->pageMeta ='';
 		$this->render('admin_view',array(
@@ -304,7 +304,7 @@ class StoryController extends Controller
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
 						'id' => 'partial-archive-story',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveStory success deleted.').'</strong></div>',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Story success deleted.').'</strong></div>',
 					));
 				}
 			}
@@ -314,7 +314,7 @@ class StoryController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Yii::t('phrase', 'ArchiveStory Delete.');
+			$this->pageTitle = Yii::t('phrase', 'Delete Story: $story_name', array('$story_name'=>$model->story_name));
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');
@@ -337,6 +337,7 @@ class StoryController extends Controller
 			$title = Yii::t('phrase', 'Publish');
 			$replace = 1;
 		}
+		$pageTitle = Yii::t('phrase', '$title Location: $story_name', array('$title'=>$title, '$story_name'=>$model->story_name));
 
 		if(Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
@@ -349,7 +350,7 @@ class StoryController extends Controller
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
 						'id' => 'partial-archive-story',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArchiveStory success updated.').'</strong></div>',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Story success updated.').'</strong></div>',
 					));
 				}
 			}

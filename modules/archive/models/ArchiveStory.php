@@ -111,7 +111,7 @@ class ArchiveStory extends CActiveRecord
 			'story_id' => Yii::t('attribute', 'Story'),
 			'publish' => Yii::t('attribute', 'Publish'),
 			'story_name' => Yii::t('attribute', 'Name'),
-			'story_desc' => Yii::t('attribute', 'Descripstion'),
+			'story_desc' => Yii::t('attribute', 'Description'),
 			'story_code' => Yii::t('attribute', 'Code'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
