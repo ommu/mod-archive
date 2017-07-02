@@ -34,8 +34,8 @@
  * @property string $modified_id
  *
  * The followings are the available model relations:
- * @property OmmuArchiveConverts $convert
- * @property OmmuArchiveLists $archive
+ * @property ArchiveConverts $convert
+ * @property ArchiveLists $archive
  */
 class ArchiveListConvert extends CActiveRecord
 {
