@@ -95,7 +95,7 @@
 				'template' => '{view}|{update}|{delete}',
 			));
 
-			$this->widget('application.components.system.OGridView', array(
+			$this->widget('application.libraries.core.components.system.OGridView', array(
 				'id'=>'archive-list-convert-grid',
 				'dataProvider'=>$model->search(),
 				'filter'=>$model,

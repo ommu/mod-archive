@@ -51,7 +51,7 @@
 <?php //end.Grid Option ?>
 
 <?php //begin.Grid Item ?>
-<?php $this->widget('application.components.system.OGridView', array(
+<?php $this->widget('application.libraries.core.components.system.OGridView', array(
 	'id'=>'archive-lists-grid',
 	'dataProvider'=>$model->frontSearch(),
 	'filter'=>$model,
