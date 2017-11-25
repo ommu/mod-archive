@@ -25,7 +25,7 @@
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
  * @created date 13 June 2016, 23:54 WIB
- * @link https://github.com/ommu/mod-archive
+ * @link https://github.com/ommu/ommu-archive
  * @contact (+62)856-299-4114
  *
  *----------------------------------------------------------------------------------------------------------
@@ -209,7 +209,7 @@ class AdminController extends Controller
 			if(in_array(strtolower($fileName->extensionName), array('xls','xlsx'))) {
 				$file = time().'_archive_'.$fileName->name;
 				if($fileName->saveAs($path.'/'.$file)) {
-					Yii::import('ext.excel_reader.OExcelReader');
+					Yii::import('ext.php-excel-reader.OExcelReader');
 					$xls = new OExcelReader($path.'/'.$file);
 					
 					for ($row = 2; $row <= $xls->sheets[0]['numRows']; $row++) {
