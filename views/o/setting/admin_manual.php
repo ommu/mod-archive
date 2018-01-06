@@ -3,13 +3,12 @@
  * Archive Settings (archive-settings)
  * @var $this SettingController
  * @var $model ArchiveSettings
- * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
+ * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 Ommu Platform (opensource.ommu.co)
  * @created date 20 July 2017, 12:36 WIB
  * @link https://github.com/ommu/ommu-archive
- * @contact (+62)856-299-4114
  *
  */
 
