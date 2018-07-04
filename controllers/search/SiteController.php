@@ -16,7 +16,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
  * @created date 28 June 2016, 23:54 WIB
  * @link https://github.com/ommu/ommu-archive
  *
@@ -90,7 +90,7 @@ class SiteController extends Controller
 	 */
 	public function actionIndex() 
 	{
-		$setting = ArchiveSettings::model()->findByPk(1,array(
+		$setting = ArchiveSettings::model()->findByPk(1, array(
 			'select' => 'meta_description, meta_keyword',
 		));
 		
@@ -104,7 +104,7 @@ class SiteController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Senarai Arsip');
 		$this->pageDescription = $setting->meta_description;
 		$this->pageMeta = $setting->meta_keyword;
-		$this->render('front_index',array(
+		$this->render('front_index', array(
 			'model'=>$model,
 		));
 	}
@@ -114,7 +114,7 @@ class SiteController extends Controller
 	 */
 	public function actionList() 
 	{
-		$setting = ArchiveSettings::model()->findByPk(1,array(
+		$setting = ArchiveSettings::model()->findByPk(1, array(
 			'select' => 'meta_description, meta_keyword',
 		));
 
@@ -133,7 +133,7 @@ class SiteController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'ArchiveLists');
 		$this->pageDescription = $setting->meta_description;
 		$this->pageMeta = $setting->meta_keyword;
-		$this->render('front_list',array(
+		$this->render('front_list', array(
 			'dataProvider'=>$dataProvider,
 		));
 	}	
@@ -144,7 +144,7 @@ class SiteController extends Controller
 	 */
 	public function actionView($id) 
 	{
-		$setting = ArchiveSettings::model()->findByPk(1,array(
+		$setting = ArchiveSettings::model()->findByPk(1, array(
 			'select' => 'meta_keyword',
 		));
 
@@ -153,7 +153,7 @@ class SiteController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'View ArchiveLists');
 		$this->pageDescription = '';
 		$this->pageMeta = $setting->meta_keyword;
-		$this->render('front_view',array(
+		$this->render('front_view', array(
 			'model'=>$model,
 		));
 	}	

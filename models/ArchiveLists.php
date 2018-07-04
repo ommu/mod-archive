@@ -4,7 +4,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
  * @created date 13 June 2016, 23:51 WIB
  * @link https://github.com/ommu/ommu-archive
  *
@@ -184,57 +184,57 @@ class ArchiveLists extends CActiveRecord
 			),
 		);
 
-		$criteria->compare('t.list_id',strtolower($this->list_id),true);
-		if(isset($_GET['type']) && $_GET['type'] == 'publish')
-			$criteria->compare('t.publish',1);
-		elseif(isset($_GET['type']) && $_GET['type'] == 'unpublish')
-			$criteria->compare('t.publish',0);
-		elseif(isset($_GET['type']) && $_GET['type'] == 'trash')
-			$criteria->compare('t.publish',2);
+		$criteria->compare('t.list_id', strtolower($this->list_id), true);
+		if(Yii::app()->getRequest()->getParam('type') == 'publish')
+			$criteria->compare('t.publish', 1);
+		elseif(Yii::app()->getRequest()->getParam('type') == 'unpublish')
+			$criteria->compare('t.publish', 0);
+		elseif(Yii::app()->getRequest()->getParam('type') == 'trash')
+			$criteria->compare('t.publish', 2);
 		else {
-			$criteria->addInCondition('t.publish',array(0,1));
-			$criteria->compare('t.publish',$this->publish);
+			$criteria->addInCondition('t.publish', array(0,1));
+			$criteria->compare('t.publish', $this->publish);
 		}
-		if(isset($_GET['location']))
-			$criteria->compare('t.location_id',$_GET['location']);
+		if(Yii::app()->getRequest()->getParam('location'))
+			$criteria->compare('t.location_id', Yii::app()->getRequest()->getParam('location'));
 		else
-			$criteria->compare('t.location_id',$this->location_id);
-		if(isset($_GET['type']))
-			$criteria->compare('t.type_id',$_GET['type']);
+			$criteria->compare('t.location_id', $this->location_id);
+		if(Yii::app()->getRequest()->getParam('type'))
+			$criteria->compare('t.type_id', Yii::app()->getRequest()->getParam('type'));
 		else
-			$criteria->compare('t.type_id',$this->type_id);
-		if(isset($_GET['story']))
-			$criteria->compare('t.story_id',$_GET['story']);
+			$criteria->compare('t.type_id', $this->type_id);
+		if(Yii::app()->getRequest()->getParam('story'))
+			$criteria->compare('t.story_id', Yii::app()->getRequest()->getParam('story'));
 		else
-			$criteria->compare('t.story_id',$this->story_id);
-		$criteria->compare('t.list_title',strtolower($this->list_title),true);
-		$criteria->compare('t.list_desc',strtolower($this->list_desc),true);
-		$criteria->compare('t.list_type_id',$this->list_type_id);
-		$criteria->compare('t.list_publish_year',strtolower($this->list_publish_year),true);
-		$criteria->compare('t.list_multiple',$this->list_multiple);
-		$criteria->compare('t.list_copies',$this->list_copies);
-		$criteria->compare('t.list_code',$this->list_code,true);
-		$criteria->compare('t.archive_numbers',strtolower($this->archive_numbers),true);
-		$criteria->compare('t.archive_total',$this->archive_total);
-		$criteria->compare('t.archive_pages',$this->archive_pages);
-		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
-			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
-		if(isset($_GET['creation']))
-			$criteria->compare('t.creation_id',$_GET['creation']);
+			$criteria->compare('t.story_id', $this->story_id);
+		$criteria->compare('t.list_title', strtolower($this->list_title), true);
+		$criteria->compare('t.list_desc', strtolower($this->list_desc), true);
+		$criteria->compare('t.list_type_id', $this->list_type_id);
+		$criteria->compare('t.list_publish_year', strtolower($this->list_publish_year), true);
+		$criteria->compare('t.list_multiple', $this->list_multiple);
+		$criteria->compare('t.list_copies', $this->list_copies);
+		$criteria->compare('t.list_code', $this->list_code,true);
+		$criteria->compare('t.archive_numbers', strtolower($this->archive_numbers), true);
+		$criteria->compare('t.archive_total', $this->archive_total);
+		$criteria->compare('t.archive_pages', $this->archive_pages);
+		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00','1970-01-01 00:00:00','0002-12-02 07:07:12','-0001-11-30 00:00:00')))
+			$criteria->compare('date(t.creation_date)', date('Y-m-d', strtotime($this->creation_date)));
+		if(Yii::app()->getRequest()->getParam('creation'))
+			$criteria->compare('t.creation_id', Yii::app()->getRequest()->getParam('creation'));
 		else
-			$criteria->compare('t.creation_id',$this->creation_id);
-		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00', '0000-00-00')))
-			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
-		if(isset($_GET['modified']))
-			$criteria->compare('t.modified_id',$_GET['modified']);
+			$criteria->compare('t.creation_id', $this->creation_id);
+		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00','1970-01-01 00:00:00','0002-12-02 07:07:12','-0001-11-30 00:00:00')))
+			$criteria->compare('date(t.modified_date)', date('Y-m-d', strtotime($this->modified_date)));
+		if(Yii::app()->getRequest()->getParam('modified'))
+			$criteria->compare('t.modified_id', Yii::app()->getRequest()->getParam('modified'));
 		else
-			$criteria->compare('t.modified_id',$this->modified_id);
+			$criteria->compare('t.modified_id', $this->modified_id);
 			
-		$criteria->compare('view.converts',$this->convert_search);
-		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
-		$criteria->compare('modified.displayname',strtolower($this->modified_search),true);
+		$criteria->compare('view.converts', $this->convert_search);
+		$criteria->compare('creation.displayname', strtolower($this->creation_search), true);
+		$criteria->compare('modified.displayname', strtolower($this->modified_search), true);
 
-		if(!isset($_GET['ArchiveLists_sort']))
+		if(!Yii::app()->getRequest()->getParam('ArchiveLists_sort'))
 			$criteria->order = 't.list_id DESC';
 		
 		return new CActiveDataProvider($this, array(
@@ -263,26 +263,26 @@ class ArchiveLists extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		if(isset($_GET['location']))
-			$criteria->compare('t.location_id',$_GET['location']);
+		if(Yii::app()->getRequest()->getParam('location'))
+			$criteria->compare('t.location_id', Yii::app()->getRequest()->getParam('location'));
 		else
-			$criteria->compare('t.location_id',$this->location_id);
-		if(isset($_GET['type']))
-			$criteria->compare('t.type_id',$_GET['type']);
+			$criteria->compare('t.location_id', $this->location_id);
+		if(Yii::app()->getRequest()->getParam('type'))
+			$criteria->compare('t.type_id', Yii::app()->getRequest()->getParam('type'));
 		else
-			$criteria->compare('t.type_id',$this->type_id);
-		if(isset($_GET['story']))
-			$criteria->compare('t.story_id',$_GET['story']);
+			$criteria->compare('t.type_id', $this->type_id);
+		if(Yii::app()->getRequest()->getParam('story'))
+			$criteria->compare('t.story_id', Yii::app()->getRequest()->getParam('story'));
 		else
-			$criteria->compare('t.story_id',$this->story_id);		
-		if(!Yii::app()->request->isAjaxRequest && isset($_GET['title']))
-			$criteria->compare('t.list_title',strtolower($_GET['title']),true);
+			$criteria->compare('t.story_id', $this->story_id);		
+		if(!Yii::app()->request->isAjaxRequest && Yii::app()->getRequest()->getParam('title'))
+			$criteria->compare('t.list_title', strtolower(Yii::app()->getRequest()->getParam('title')), true);
 		else
-			$criteria->compare('t.list_title',strtolower($this->list_title),true);
-		$criteria->compare('t.list_desc',strtolower($this->list_desc),true);
-		$criteria->compare('t.list_publish_year',strtolower($this->list_publish_year),true);
+			$criteria->compare('t.list_title', strtolower($this->list_title), true);
+		$criteria->compare('t.list_desc', strtolower($this->list_desc), true);
+		$criteria->compare('t.list_publish_year', strtolower($this->list_publish_year), true);
 
-		if(!isset($_GET['ArchiveLists_sort']))
+		if(!Yii::app()->getRequest()->getParam('ArchiveLists_sort'))
 			$criteria->order = 't.list_id DESC';
 		
 		return new CActiveDataProvider($this, array(
@@ -434,7 +434,7 @@ class ArchiveLists extends CActiveRecord
 					),
 					'options'=>array(
 						'showOn' => 'focus',
-						'dateFormat' => 'dd-mm-yy',
+						'dateFormat' => 'yy-mm-dd',
 						'showOtherMonths' => true,
 						'selectOtherMonths' => true,
 						'changeMonth' => true,
@@ -446,7 +446,7 @@ class ArchiveLists extends CActiveRecord
 			*/
 			$this->defaultColumns[] = array(
 				'name' => 'convert_search',
-				'value' => 'CHtml::link($data->view->converts ? $data->view->converts : 0, Yii::app()->controller->createUrl("o/media/manage",array("list"=>$data->list_id)))',
+				'value' => 'CHtml::link($data->view->converts ? $data->view->converts : 0, Yii::app()->controller->createUrl("o/media/manage", array("list"=>$data->list_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -455,16 +455,16 @@ class ArchiveLists extends CActiveRecord
 			$this->defaultColumns[] = array(
 				'filter' => false,
 				'name' => 'convert_search',
-				'value' => 'CHtml::link(Yii::t("phrase", "Add Convert"), Yii::app()->controller->createUrl("o/media/add",array("list"=>$data->list_id)))',
+				'value' => 'CHtml::link(Yii::t("phrase", "Add Convert"), Yii::app()->controller->createUrl("o/media/add", array("list"=>$data->list_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
 				'type' => 'raw',
 			);
-			if(!isset($_GET['type'])) {
+			if(!Yii::app()->getRequest()->getParam('type')) {
 				$this->defaultColumns[] = array(
 					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->list_id)), $data->publish, 1)',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish", array("id"=>$data->list_id)), $data->publish, 1)',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
@@ -485,7 +485,7 @@ class ArchiveLists extends CActiveRecord
 	public static function getInfo($id, $column=null)
 	{
 		if($column != null) {
-			$model = self::model()->findByPk($id,array(
+			$model = self::model()->findByPk($id, array(
 				'select' => $column,
 			));
 			if(count(explode(',', $column)) == 1)

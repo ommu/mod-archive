@@ -23,7 +23,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
  * @created date 13 June 2016, 23:54 WIB
  * @link https://github.com/ommu/ommu-archive
  *
@@ -113,10 +113,10 @@ class AdminController extends Controller
 	public function actionSuggest() 
 	{
 		if(Yii::app()->request->isAjaxRequest) {
-			if(isset($_GET['term'])) {
+			if(Yii::app()->getRequest()->getParam('term')) {
 				$criteria = new CDbCriteria;
 				$criteria->select = 'list_id, list_code';
-				$criteria->compare('list_code',strtolower($_GET['term']), true);
+				$criteria->compare('list_code', strtolower(Yii::app()->getRequest()->getParam('term')), true);
 				$criteria->order = 'list_id ASC';
 				$model = ArchiveLists::model()->findAll($criteria);
 
@@ -172,7 +172,7 @@ class AdminController extends Controller
 		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_manage',array(
+		$this->render('admin_manage', array(
 			'model'=>$model,
 			'columns' => $columns,
 		));
@@ -364,7 +364,7 @@ class AdminController extends Controller
 	 */
 	public function actionAdd() 
 	{
-		$setting = ArchiveSettings::model()->findByPk(1,array(
+		$setting = ArchiveSettings::model()->findByPk(1, array(
 			'select' => 'auto_numbering',
 		));
 		
@@ -391,7 +391,7 @@ class AdminController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Create Senarai Arsip');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_add',array(
+		$this->render('admin_add', array(
 			'model'=>$model,
 			'setting'=>$setting,
 		));
@@ -404,7 +404,7 @@ class AdminController extends Controller
 	 */
 	public function actionEdit($id) 
 	{
-		$setting = ArchiveSettings::model()->findByPk(1,array(
+		$setting = ArchiveSettings::model()->findByPk(1, array(
 			'select' => 'auto_numbering',
 		));
 		
@@ -428,7 +428,7 @@ class AdminController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Update Senarai: $list_title', array('$list_title'=>$model->list_title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_edit',array(
+		$this->render('admin_edit', array(
 			'model'=>$model,
 			'setting'=>$setting,
 		));
@@ -445,7 +445,7 @@ class AdminController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'View Senarai: $list_title', array('$list_title'=>$model->list_title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_view',array(
+		$this->render('admin_view', array(
 			'model'=>$model,
 		));
 	}	
@@ -457,7 +457,7 @@ class AdminController extends Controller
 	public function actionRunAction() {
 		$id       = $_POST['trash_id'];
 		$criteria = null;
-		$actions  = $_GET['action'];
+		$actions  = Yii::app()->getRequest()->getParam('action');
 
 		if(count($id) > 0) {
 			$criteria = new CDbCriteria;
@@ -481,7 +481,7 @@ class AdminController extends Controller
 		}
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax'])) {
+		if(!Yii::app()->getRequest()->getParam('ajax')) {
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('manage'));
 		}
 	}
@@ -562,7 +562,7 @@ class AdminController extends Controller
 			$this->pageTitle = $pageTitle;
 			$this->pageDescription = '';
 			$this->pageMeta = '';
-			$this->render('admin_publish',array(
+			$this->render('admin_publish', array(
 				'title'=>$title,
 				'model'=>$model,
 			));

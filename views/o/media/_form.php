@@ -7,7 +7,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
  * @created date 19 June 2016, 01:23 WIB
  * @link https://github.com/ommu/ommu-archive
  *
@@ -32,7 +32,7 @@
 		<div class="clearfix">
 			<?php echo $form->labelEx($model,'list_code_i'); ?>
 			<div class="desc">
-				<?php //echo $form->textField($model,'list_code_i',array('maxlength'=>32));
+				<?php //echo $form->textField($model,'list_code_i', array('maxlength'=>32));
 				if(!$model->getErrors())
 					$model->list_code_i = strtoupper($archive->list_code);
 				if($model->isNewRecord) {
@@ -56,7 +56,7 @@
 					));
 					$model->list_id = $archive->list_id;
 				} else
-					echo $form->textField($model,'list_code_i',array('maxlength'=>32, 'class'=>'span-7', 'disabled'=>'disabled'));
+					echo $form->textField($model,'list_code_i', array('maxlength'=>32, 'class'=>'span-7', 'disabled'=>'disabled'));
 				
 				echo $form->hiddenField($model,'list_id'); ?>
 				<?php echo $form->error($model,'list_code_i'); ?>
@@ -67,7 +67,7 @@
 		<div class="clearfix">
 			<?php echo $form->labelEx($model,'convert_code_i'); ?>
 			<div class="desc">
-				<?php //echo $form->textField($model,'convert_code_i',array('maxlength'=>32));
+				<?php //echo $form->textField($model,'convert_code_i', array('maxlength'=>32));
 				if(!$model->getErrors())
 					$model->convert_code_i = strtoupper($convert->convert_code);
 				if($model->isNewRecord) {
@@ -91,7 +91,7 @@
 					));
 					$model->convert_id = $convert->convert_id;
 				} else
-					echo $form->textField($model,'convert_code_i',array('maxlength'=>32, 'class'=>'span-7', 'disabled'=>'disabled'));
+					echo $form->textField($model,'convert_code_i', array('maxlength'=>32, 'class'=>'span-7', 'disabled'=>'disabled'));
 				
 				echo $form->hiddenField($model,'convert_id'); ?>
 				<?php echo $form->error($model,'convert_code_i'); ?>
@@ -102,7 +102,7 @@
 		<div class="clearfix">
 			<?php echo $form->labelEx($model,'media_desc'); ?>
 			<div class="desc">
-				<?php echo $form->textArea($model,'media_desc',array('rows'=>6, 'cols'=>50, 'class'=>'span-11 smaller')); ?>
+				<?php echo $form->textArea($model,'media_desc', array('rows'=>6, 'cols'=>50, 'class'=>'span-11 smaller')); ?>
 				<?php echo $form->error($model,'media_desc'); ?>
 				<?php /*<div class="small-px silent"></div>*/?>
 			</div>
@@ -121,7 +121,7 @@
 	</fieldset>
 </div>
 <div class="dialog-submit">
-	<?php echo CHtml::submitButton($model->isNewRecord ? Yii::t('phrase', 'Create') : Yii::t('phrase', 'Save') ,array('onclick' => 'setEnableSave()')); ?>
+	<?php echo CHtml::submitButton($model->isNewRecord ? Yii::t('phrase', 'Create') : Yii::t('phrase', 'Save') , array('onclick' => 'setEnableSave()')); ?>
 	<?php echo CHtml::button(Yii::t('phrase', 'Cancel'), array('id'=>'closed')); ?>
 </div>
 <?php $this->endWidget(); ?>

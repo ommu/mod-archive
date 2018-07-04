@@ -4,7 +4,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
  * @created date 17 June 2016, 05:42 WIB
  * @link https://github.com/ommu/ommu-archive
  *
@@ -128,17 +128,17 @@ class ViewArchiveLists extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('t.list_id',$this->list_id);
-		$criteria->compare('t.converts',$this->converts);
-		$criteria->compare('t.convert_all',$this->convert_all);
-		$criteria->compare('t.story_enable',$this->story_enable);
-		$criteria->compare('t.type_enable',$this->type_enable);
-		$criteria->compare('t.location_code',strtolower($this->location_code),true);
-		$criteria->compare('t.story_code',strtolower($this->story_code),true);
-		$criteria->compare('t.type_code',strtolower($this->type_code),true);
-		$criteria->compare('t.list_type_id',$this->list_type_id);
+		$criteria->compare('t.list_id', $this->list_id);
+		$criteria->compare('t.converts', $this->converts);
+		$criteria->compare('t.convert_all', $this->convert_all);
+		$criteria->compare('t.story_enable', $this->story_enable);
+		$criteria->compare('t.type_enable', $this->type_enable);
+		$criteria->compare('t.location_code', strtolower($this->location_code), true);
+		$criteria->compare('t.story_code', strtolower($this->story_code), true);
+		$criteria->compare('t.type_code', strtolower($this->type_code), true);
+		$criteria->compare('t.list_type_id', $this->list_type_id);
 
-		if(!isset($_GET['ViewArchiveLists_sort']))
+		if(!Yii::app()->getRequest()->getParam('ViewArchiveLists_sort'))
 			$criteria->order = 't.list_id DESC';
 
 		return new CActiveDataProvider($this, array(
@@ -209,7 +209,7 @@ class ViewArchiveLists extends CActiveRecord
 	public static function getInfo($id, $column=null)
 	{
 		if($column != null) {
-			$model = self::model()->findByPk($id,array(
+			$model = self::model()->findByPk($id, array(
 				'select' => $column,
 			));
 			if(count(explode(',', $column)) == 1)

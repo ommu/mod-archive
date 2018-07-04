@@ -7,7 +7,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
  * @created date 13 June 2016, 23:54 WIB
  * @link https://github.com/ommu/ommu-archive
  *
@@ -132,7 +132,7 @@ EOP;
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'list_publish_year'); ?>
 		<div class="desc">
-			<?php echo $form->textField($model,'list_publish_year',array('maxlength'=>4, 'class'=>'span-3')); ?>
+			<?php echo $form->textField($model,'list_publish_year', array('maxlength'=>4, 'class'=>'span-3')); ?>
 			<?php echo $form->error($model,'list_publish_year'); ?>
 			<div class="small-px silent mt-5">example: 2015, 2016</div>
 		</div>
@@ -141,7 +141,7 @@ EOP;
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'list_title'); ?>
 		<div class="desc">
-			<?php echo $form->textArea($model,'list_title',array('rows'=>6, 'cols'=>50, 'class'=>'span-10 smaller')); ?>
+			<?php echo $form->textArea($model,'list_title', array('rows'=>6, 'cols'=>50, 'class'=>'span-10 smaller')); ?>
 			<?php echo $form->error($model,'list_title'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
@@ -150,7 +150,7 @@ EOP;
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'list_desc'); ?>
 		<div class="desc">
-			<?php echo $form->textArea($model,'list_desc',array('rows'=>6, 'cols'=>50, 'class'=>'span-10')); ?>
+			<?php echo $form->textArea($model,'list_desc', array('rows'=>6, 'cols'=>50, 'class'=>'span-10')); ?>
 			<?php echo $form->error($model,'list_desc'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
@@ -210,7 +210,7 @@ EOP;
 	<div class="clearfix <?php echo $model->list_multiple == 0 ? '' :'hide';?>" id="single">
 		<?php echo $form->labelEx($model,'archive_pages'); ?>
 		<div class="desc">
-			<?php echo $form->textField($model,'archive_pages',array('maxlength'=>11, 'class'=>'span-3')); ?>
+			<?php echo $form->textField($model,'archive_pages', array('maxlength'=>11, 'class'=>'span-3')); ?>
 			<?php echo $form->error($model,'archive_pages'); ?>
 		</div>
 	</div>
@@ -218,7 +218,7 @@ EOP;
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'list_copies'); ?>
 		<div class="desc">
-			<?php echo $form->textField($model,'list_copies',array('maxlength'=>11, 'class'=>'span-3')); ?>
+			<?php echo $form->textField($model,'list_copies', array('maxlength'=>11, 'class'=>'span-3')); ?>
 			<?php echo $form->error($model,'list_copies'); ?>
 		</div>
 	</div>

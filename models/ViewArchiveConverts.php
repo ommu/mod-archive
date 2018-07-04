@@ -4,7 +4,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
  * @created date 19 June 2016, 10:39 WIB
  * @link https://github.com/ommu/ommu-archive
  *
@@ -120,13 +120,13 @@ class ViewArchiveConverts extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('t.convert_id',$this->convert_id);
-		$criteria->compare('t.location_code',strtolower($this->location_code),true);
-		$criteria->compare('t.category_code',strtolower($this->category_code),true);
-		$criteria->compare('t.convert_cat_id',$this->convert_cat_id);
-		$criteria->compare('t.parent_convert_cat_id',$this->parent_convert_cat_id);
+		$criteria->compare('t.convert_id', $this->convert_id);
+		$criteria->compare('t.location_code', strtolower($this->location_code), true);
+		$criteria->compare('t.category_code', strtolower($this->category_code), true);
+		$criteria->compare('t.convert_cat_id', $this->convert_cat_id);
+		$criteria->compare('t.parent_convert_cat_id', $this->parent_convert_cat_id);
 
-		if(!isset($_GET['ViewArchiveConverts_sort']))
+		if(!Yii::app()->getRequest()->getParam('ViewArchiveConverts_sort'))
 			$criteria->order = 't.convert_id DESC';
 
 		return new CActiveDataProvider($this, array(
@@ -189,7 +189,7 @@ class ViewArchiveConverts extends CActiveRecord
 	public static function getInfo($id, $column=null)
 	{
 		if($column != null) {
-			$model = self::model()->findByPk($id,array(
+			$model = self::model()->findByPk($id, array(
 				'select' => $column,
 			));
 			if(count(explode(',', $column)) == 1)

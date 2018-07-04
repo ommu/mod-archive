@@ -4,7 +4,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
  * @created date 16 June 2016, 13:44 WIB
  * @link https://github.com/ommu/ommu-archive
  *
@@ -145,25 +145,25 @@ class ViewArchiveLocation extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('t.location_id',$this->location_id);
-		$criteria->compare('t.lists',$this->lists);
-		$criteria->compare('t.list_all',$this->list_all);
-		$criteria->compare('t.list_copies',$this->list_copies);
-		$criteria->compare('t.list_copy_all',$this->list_copy_all);
-		$criteria->compare('t.list_archives',$this->list_archives);
-		$criteria->compare('t.list_archive_all',$this->list_archive_all);
-		$criteria->compare('t.list_archive_pages',$this->list_archive_pages);
-		$criteria->compare('t.list_archive_page_all',$this->list_archive_page_all);
-		$criteria->compare('t.converts',$this->converts);
-		$criteria->compare('t.convert_all',$this->convert_all);
-		$criteria->compare('t.convert_copies',$this->convert_copies);
-		$criteria->compare('t.convert_copy_all',$this->convert_copy_all);
-		$criteria->compare('t.convert_archives',$this->convert_archives);
-		$criteria->compare('t.convert_archive_all',$this->convert_archive_all);
-		$criteria->compare('t.convert_archive_pages',$this->convert_archive_pages);
-		$criteria->compare('t.convert_archive_page_all',$this->convert_archive_page_all);
+		$criteria->compare('t.location_id', $this->location_id);
+		$criteria->compare('t.lists', $this->lists);
+		$criteria->compare('t.list_all', $this->list_all);
+		$criteria->compare('t.list_copies', $this->list_copies);
+		$criteria->compare('t.list_copy_all', $this->list_copy_all);
+		$criteria->compare('t.list_archives', $this->list_archives);
+		$criteria->compare('t.list_archive_all', $this->list_archive_all);
+		$criteria->compare('t.list_archive_pages', $this->list_archive_pages);
+		$criteria->compare('t.list_archive_page_all', $this->list_archive_page_all);
+		$criteria->compare('t.converts', $this->converts);
+		$criteria->compare('t.convert_all', $this->convert_all);
+		$criteria->compare('t.convert_copies', $this->convert_copies);
+		$criteria->compare('t.convert_copy_all', $this->convert_copy_all);
+		$criteria->compare('t.convert_archives', $this->convert_archives);
+		$criteria->compare('t.convert_archive_all', $this->convert_archive_all);
+		$criteria->compare('t.convert_archive_pages', $this->convert_archive_pages);
+		$criteria->compare('t.convert_archive_page_all', $this->convert_archive_page_all);
 
-		if(!isset($_GET['ViewArchiveLocation_sort']))
+		if(!Yii::app()->getRequest()->getParam('ViewArchiveLocation_sort'))
 			$criteria->order = 't.location_id DESC';
 
 		return new CActiveDataProvider($this, array(
@@ -250,7 +250,7 @@ class ViewArchiveLocation extends CActiveRecord
 	public static function getInfo($id, $column=null)
 	{
 		if($column != null) {
-			$model = self::model()->findByPk($id,array(
+			$model = self::model()->findByPk($id, array(
 				'select' => $column,
 			));
 			if(count(explode(',', $column)) == 1)

@@ -4,7 +4,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
  * @created date 19 June 2016, 01:22 WIB
  * @link https://github.com/ommu/ommu-archive
  *
@@ -187,54 +187,54 @@ class ArchiveConverts extends CActiveRecord
 			),
 		);
 
-		$criteria->compare('t.convert_id',strtolower($this->convert_id),true);
-		if(isset($_GET['type']) && $_GET['type'] == 'publish')
-			$criteria->compare('t.publish',1);
-		elseif(isset($_GET['type']) && $_GET['type'] == 'unpublish')
-			$criteria->compare('t.publish',0);
-		elseif(isset($_GET['type']) && $_GET['type'] == 'trash')
-			$criteria->compare('t.publish',2);
+		$criteria->compare('t.convert_id', strtolower($this->convert_id), true);
+		if(Yii::app()->getRequest()->getParam('type') == 'publish')
+			$criteria->compare('t.publish', 1);
+		elseif(Yii::app()->getRequest()->getParam('type') == 'unpublish')
+			$criteria->compare('t.publish', 0);
+		elseif(Yii::app()->getRequest()->getParam('type') == 'trash')
+			$criteria->compare('t.publish', 2);
 		else {
-			$criteria->addInCondition('t.publish',array(0,1));
-			$criteria->compare('t.publish',$this->publish);
+			$criteria->addInCondition('t.publish', array(0,1));
+			$criteria->compare('t.publish', $this->publish);
 		}
-		if(isset($_GET['location']))
-			$criteria->compare('t.location_id',$_GET['location']);
+		if(Yii::app()->getRequest()->getParam('location'))
+			$criteria->compare('t.location_id', Yii::app()->getRequest()->getParam('location'));
 		else
-			$criteria->compare('t.location_id',$this->location_id);
-		if(isset($_GET['category']))
-			$criteria->compare('t.category_id',$_GET['category']);
+			$criteria->compare('t.location_id', $this->location_id);
+		if(Yii::app()->getRequest()->getParam('category'))
+			$criteria->compare('t.category_id', Yii::app()->getRequest()->getParam('category'));
 		else
-			$criteria->compare('t.category_id',$this->category_id);
-		$criteria->compare('t.convert_parent',$this->convert_parent);
-		$criteria->compare('t.convert_title',strtolower($this->convert_title),true);
-		$criteria->compare('t.convert_desc',strtolower($this->convert_desc),true);
-		$criteria->compare('t.convert_cat_id',$this->convert_cat_id);
-		$criteria->compare('t.convert_publish_year',strtolower($this->convert_publish_year),true);
-		$criteria->compare('t.convert_multiple',$this->convert_multiple);
-		$criteria->compare('t.convert_copies',$this->convert_copies);
-		$criteria->compare('t.convert_code',$this->convert_code,true);
-		$criteria->compare('t.archive_numbers',strtolower($this->archive_numbers),true);
-		$criteria->compare('t.archive_total',$this->archive_total);
-		$criteria->compare('t.archive_pages',$this->archive_pages);
-		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
-			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
-		if(isset($_GET['creation']))
-			$criteria->compare('t.creation_id',$_GET['creation']);
+			$criteria->compare('t.category_id', $this->category_id);
+		$criteria->compare('t.convert_parent', $this->convert_parent);
+		$criteria->compare('t.convert_title', strtolower($this->convert_title), true);
+		$criteria->compare('t.convert_desc', strtolower($this->convert_desc), true);
+		$criteria->compare('t.convert_cat_id', $this->convert_cat_id);
+		$criteria->compare('t.convert_publish_year', strtolower($this->convert_publish_year), true);
+		$criteria->compare('t.convert_multiple', $this->convert_multiple);
+		$criteria->compare('t.convert_copies', $this->convert_copies);
+		$criteria->compare('t.convert_code', $this->convert_code,true);
+		$criteria->compare('t.archive_numbers', strtolower($this->archive_numbers), true);
+		$criteria->compare('t.archive_total', $this->archive_total);
+		$criteria->compare('t.archive_pages', $this->archive_pages);
+		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00','1970-01-01 00:00:00','0002-12-02 07:07:12','-0001-11-30 00:00:00')))
+			$criteria->compare('date(t.creation_date)', date('Y-m-d', strtotime($this->creation_date)));
+		if(Yii::app()->getRequest()->getParam('creation'))
+			$criteria->compare('t.creation_id', Yii::app()->getRequest()->getParam('creation'));
 		else
-			$criteria->compare('t.creation_id',$this->creation_id);
-		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00', '0000-00-00')))
-			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
-		if(isset($_GET['modified']))
-			$criteria->compare('t.modified_id',$_GET['modified']);
+			$criteria->compare('t.creation_id', $this->creation_id);
+		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00','1970-01-01 00:00:00','0002-12-02 07:07:12','-0001-11-30 00:00:00')))
+			$criteria->compare('date(t.modified_date)', date('Y-m-d', strtotime($this->modified_date)));
+		if(Yii::app()->getRequest()->getParam('modified'))
+			$criteria->compare('t.modified_id', Yii::app()->getRequest()->getParam('modified'));
 		else
-			$criteria->compare('t.modified_id',$this->modified_id);
+			$criteria->compare('t.modified_id', $this->modified_id);
 		
-		$criteria->compare('view.convert_code',strtolower($this->convert_code_search),true);		
-		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
-		$criteria->compare('modified.displayname',strtolower($this->modified_search),true);
+		$criteria->compare('view.convert_code', strtolower($this->convert_code_search), true);		
+		$criteria->compare('creation.displayname', strtolower($this->creation_search), true);
+		$criteria->compare('modified.displayname', strtolower($this->modified_search), true);
 
-		if(!isset($_GET['ArchiveConverts_sort']))
+		if(!Yii::app()->getRequest()->getParam('ArchiveConverts_sort'))
 			$criteria->order = 't.convert_id DESC';
 
 		return new CActiveDataProvider($this, array(
@@ -263,22 +263,22 @@ class ArchiveConverts extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		if(isset($_GET['location']))
-			$criteria->compare('t.location_id',$_GET['location']);
+		if(Yii::app()->getRequest()->getParam('location'))
+			$criteria->compare('t.location_id', Yii::app()->getRequest()->getParam('location'));
 		else
-			$criteria->compare('t.location_id',$this->location_id);
-		if(isset($_GET['category']))
-			$criteria->compare('t.category_id',$_GET['category']);
+			$criteria->compare('t.location_id', $this->location_id);
+		if(Yii::app()->getRequest()->getParam('category'))
+			$criteria->compare('t.category_id', Yii::app()->getRequest()->getParam('category'));
 		else
-			$criteria->compare('t.category_id',$this->category_id);		
-		if(!Yii::app()->request->isAjaxRequest && isset($_GET['title']))
-			$criteria->compare('t.convert_title',strtolower($_GET['title']),true);
+			$criteria->compare('t.category_id', $this->category_id);		
+		if(!Yii::app()->request->isAjaxRequest && Yii::app()->getRequest()->getParam('title'))
+			$criteria->compare('t.convert_title', strtolower(Yii::app()->getRequest()->getParam('title')), true);
 		else
-			$criteria->compare('t.convert_title',strtolower($this->convert_title),true);
-		$criteria->compare('t.convert_desc',strtolower($this->convert_desc),true);
-		$criteria->compare('t.convert_publish_year',strtolower($this->convert_publish_year),true);
+			$criteria->compare('t.convert_title', strtolower($this->convert_title), true);
+		$criteria->compare('t.convert_desc', strtolower($this->convert_desc), true);
+		$criteria->compare('t.convert_publish_year', strtolower($this->convert_publish_year), true);
 
-		if(!isset($_GET['ArchiveConverts_sort']))
+		if(!Yii::app()->getRequest()->getParam('ArchiveConverts_sort'))
 			$criteria->order = 't.convert_id DESC';
 
 		return new CActiveDataProvider($this, array(
@@ -426,7 +426,7 @@ class ArchiveConverts extends CActiveRecord
 					),
 					'options'=>array(
 						'showOn' => 'focus',
-						'dateFormat' => 'dd-mm-yy',
+						'dateFormat' => 'yy-mm-dd',
 						'showOtherMonths' => true,
 						'selectOtherMonths' => true,
 						'changeMonth' => true,
@@ -436,10 +436,10 @@ class ArchiveConverts extends CActiveRecord
 				), true),
 			);
 			*/
-			if(!isset($_GET['type'])) {
+			if(!Yii::app()->getRequest()->getParam('type')) {
 				$this->defaultColumns[] = array(
 					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->convert_id)), $data->publish, 1)',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish", array("id"=>$data->convert_id)), $data->publish, 1)',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
@@ -460,7 +460,7 @@ class ArchiveConverts extends CActiveRecord
 	public static function getInfo($id, $column=null)
 	{
 		if($column != null) {
-			$model = self::model()->findByPk($id,array(
+			$model = self::model()->findByPk($id, array(
 				'select' => $column,
 			));
 			if(count(explode(',', $column)) == 1)

@@ -4,7 +4,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
  * @created date 17 June 2016, 06:22 WIB
  * @link https://github.com/ommu/ommu-archive
  *
@@ -132,17 +132,17 @@ class ViewArchiveListYear extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('t.publish_year',strtolower($this->publish_year),true);
-		$criteria->compare('t.lists',$this->lists);
-		$criteria->compare('t.list_all',$this->list_all);
-		$criteria->compare('t.copies',$this->copies);
-		$criteria->compare('t.copy_all',$this->copy_all);
-		$criteria->compare('t.archives',$this->archives);
-		$criteria->compare('t.archive_all',$this->archive_all);
-		$criteria->compare('t.archive_pages',$this->archive_pages);
-		$criteria->compare('t.archive_page_all',$this->archive_page_all);
+		$criteria->compare('t.publish_year', strtolower($this->publish_year), true);
+		$criteria->compare('t.lists', $this->lists);
+		$criteria->compare('t.list_all', $this->list_all);
+		$criteria->compare('t.copies', $this->copies);
+		$criteria->compare('t.copy_all', $this->copy_all);
+		$criteria->compare('t.archives', $this->archives);
+		$criteria->compare('t.archive_all', $this->archive_all);
+		$criteria->compare('t.archive_pages', $this->archive_pages);
+		$criteria->compare('t.archive_page_all', $this->archive_page_all);
 
-		if(!isset($_GET['ViewArchiveListYear_sort']))
+		if(!Yii::app()->getRequest()->getParam('ViewArchiveListYear_sort'))
 			$criteria->order = 't.publish_year DESC';
 
 		return new CActiveDataProvider($this, array(
@@ -234,7 +234,7 @@ class ViewArchiveListYear extends CActiveRecord
 	public static function getInfo($id, $column=null)
 	{
 		if($column != null) {
-			$model = self::model()->findByPk($id,array(
+			$model = self::model()->findByPk($id, array(
 				'select' => $column,
 			));
 			if(count(explode(',', $column)) == 1)

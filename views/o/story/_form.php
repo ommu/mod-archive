@@ -7,7 +7,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
  * @created date 13 June 2016, 23:54 WIB
  * @link https://github.com/ommu/ommu-archive
  *
@@ -31,7 +31,7 @@
 		<div class="clearfix">
 			<?php echo $form->labelEx($model,'story_code'); ?>
 			<div class="desc">
-				<?php echo $form->textField($model,'story_code',array('maxlength'=>8)); ?>
+				<?php echo $form->textField($model,'story_code', array('maxlength'=>8)); ?>
 				<?php echo $form->error($model,'story_code'); ?>
 				<?php /*<div class="small-px silent"></div>*/?>
 			</div>
@@ -40,7 +40,7 @@
 		<div class="clearfix">
 			<?php echo $form->labelEx($model,'story_name'); ?>
 			<div class="desc">
-				<?php echo $form->textField($model,'story_name',array('maxlength'=>64)); ?>
+				<?php echo $form->textField($model,'story_name', array('maxlength'=>64)); ?>
 				<?php echo $form->error($model,'story_name'); ?>
 				<?php /*<div class="small-px silent"></div>*/?>
 			</div>
@@ -49,7 +49,7 @@
 		<div class="clearfix">
 			<?php echo $form->labelEx($model,'story_desc'); ?>
 			<div class="desc">
-				<?php echo $form->textArea($model,'story_desc',array('rows'=>6, 'cols'=>50)); ?>
+				<?php echo $form->textArea($model,'story_desc', array('rows'=>6, 'cols'=>50)); ?>
 				<?php echo $form->error($model,'story_desc'); ?>
 				<?php /*<div class="small-px silent"></div>*/?>
 			</div>
@@ -68,7 +68,7 @@
 	</fieldset>
 </div>
 <div class="dialog-submit">
-	<?php echo CHtml::submitButton($model->isNewRecord ? Yii::t('phrase', 'Create') : Yii::t('phrase', 'Save') ,array('onclick' => 'setEnableSave()')); ?>
+	<?php echo CHtml::submitButton($model->isNewRecord ? Yii::t('phrase', 'Create') : Yii::t('phrase', 'Save') , array('onclick' => 'setEnableSave()')); ?>
 	<?php echo CHtml::button(Yii::t('phrase', 'Cancel'), array('id'=>'closed')); ?>
 </div>
 <?php $this->endWidget(); ?>

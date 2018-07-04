@@ -7,7 +7,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
  * @created date 19 June 2016, 01:23 WIB
  * @link https://github.com/ommu/ommu-archive
  *
@@ -181,7 +181,7 @@ EOP;
 				if($model->isNewRecord && !$model->getErrors())
 					$model->convert_publish_year = $parent->convert_publish_year;
 			}
-			echo $form->textField($model,'convert_publish_year',array('maxlength'=>4, 'class'=>'span-3')); ?>
+			echo $form->textField($model,'convert_publish_year', array('maxlength'=>4, 'class'=>'span-3')); ?>
 			<?php echo $form->error($model,'convert_publish_year'); ?>
 			<div class="small-px silent mt-5">example: 2015, 2016</div>
 		</div>
@@ -190,7 +190,7 @@ EOP;
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'convert_title'); ?>
 		<div class="desc">
-			<?php echo $form->textArea($model,'convert_title',array('rows'=>6, 'cols'=>50, 'class'=>'span-10 smaller')); ?>
+			<?php echo $form->textArea($model,'convert_title', array('rows'=>6, 'cols'=>50, 'class'=>'span-10 smaller')); ?>
 			<?php echo $form->error($model,'convert_title'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
@@ -199,7 +199,7 @@ EOP;
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'convert_desc'); ?>
 		<div class="desc">
-			<?php echo $form->textArea($model,'convert_desc',array('rows'=>6, 'cols'=>50, 'class'=>'span-10')); ?>
+			<?php echo $form->textArea($model,'convert_desc', array('rows'=>6, 'cols'=>50, 'class'=>'span-10')); ?>
 			<?php echo $form->error($model,'convert_desc'); ?>
 			<?php /*<div class="small-px silent"></div>*/?>
 		</div>
@@ -259,7 +259,7 @@ EOP;
 	<div class="clearfix <?php echo $model->convert_multiple == 0 ? '' :'hide';?>" id="single">
 		<?php echo $form->labelEx($model,'archive_pages'); ?>
 		<div class="desc">
-			<?php echo $form->textField($model,'archive_pages',array('maxlength'=>11, 'class'=>'span-3')); ?>
+			<?php echo $form->textField($model,'archive_pages', array('maxlength'=>11, 'class'=>'span-3')); ?>
 			<?php echo $form->error($model,'archive_pages'); ?>
 		</div>
 	</div>
@@ -272,7 +272,7 @@ EOP;
 				if($model->isNewRecord && !$model->getErrors())
 					$model->convert_copies = $parent->convert_copies;				
 			}
-			echo $form->textField($model,'convert_copies',array('maxlength'=>11, 'class'=>'span-3')); ?>
+			echo $form->textField($model,'convert_copies', array('maxlength'=>11, 'class'=>'span-3')); ?>
 			<?php echo $form->error($model,'convert_copies'); ?>
 		</div>
 	</div>

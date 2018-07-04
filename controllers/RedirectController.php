@@ -16,7 +16,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
  * @created date 28 June 2016, 23:54 WIB
  * @link https://github.com/ommu/ommu-archive
  *
@@ -87,7 +87,7 @@ class RedirectController extends Controller
 	public function actionIndex() 
 	{
 		$criteria = array();
-		if($_GET['category'] == '' || $_GET['category'] == 'senarai') {
+		if(Yii::app()->getRequest()->getParam('category') == 'senarai') {
 			$url = 'search/site/index';
 			$criteria['title'] = $_GET['keyword'];
 		} else {
