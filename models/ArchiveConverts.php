@@ -48,6 +48,8 @@
  */
 class ArchiveConverts extends CActiveRecord
 {
+	use GridViewTrait;
+	
 	public $defaultColumns = array();
 	public $convert_parent_title_i;
 	public $back_field_i;
@@ -443,10 +445,7 @@ class ArchiveConverts extends CActiveRecord
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
-					'filter'=>array(
-						1=>Yii::t('phrase', 'Yes'),
-						0=>Yii::t('phrase', 'No'),
-					),
+					'filter'=>$this->filterYesNo(),
 					'type' => 'raw',
 				);
 			}
