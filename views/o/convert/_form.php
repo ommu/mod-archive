@@ -46,7 +46,7 @@ EOP;
 	$cs->registerScript('archive', $js, CClientScript::POS_END);
 ?>
 
-<?php $form=$this->beginWidget('application.libraries.core.components.system.OActiveForm', array(
+<?php $form=$this->beginWidget('application.libraries.yii-traits.system.OActiveForm', array(
 	'id'=>'archive-converts-form',
 	'enableAjaxValidation'=>true,
 	'htmlOptions' => array(
@@ -62,7 +62,7 @@ EOP;
 </div>
 <?php $this->endWidget(); ?>
 
-<?php $form=$this->beginWidget('application.libraries.core.components.system.OActiveForm', array(
+<?php $form=$this->beginWidget('application.libraries.yii-traits.system.OActiveForm', array(
 	'id'=>'archive-converts-form',
 	'enableAjaxValidation'=>true,
 	//'htmlOptions' => array('enctype' => 'multipart/form-data')
