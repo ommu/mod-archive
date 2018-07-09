@@ -323,23 +323,21 @@ class ArchiveConvertCategory extends CActiveRecord
 	/**
 	 * Get Category
 	 */
-	public static function getCategory($publish=null, $type=null) 
+	public static function getCategory($publish=null, $array=true) 
 	{		
 		$criteria=new CDbCriteria;
 		if($publish != null)
 			$criteria->compare('publish',$publish);
 		$model = self::model()->findAll($criteria);
 
-		if($type == null) {
+		if($array == true) {
 			$items = array();
 			if($model != null) {
 				foreach($model as $key => $val)
 					$items[$val->category_id] = $val->category_name.' ('.strtoupper($val->category_code).')';
 				return $items;
-				
 			} else
 				return false;
-			
 		} else
 			return $model;
 	}

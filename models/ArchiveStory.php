@@ -323,14 +323,14 @@ class ArchiveStory extends CActiveRecord
 	/**
 	 * Get Story
 	 */
-	public static function getStory($publish=null, $type=null) 
+	public static function getStory($publish=null, $array=true) 
 	{		
 		$criteria=new CDbCriteria;
 		if($publish != null)
 			$criteria->compare('publish',$publish);
 		$model = self::model()->findAll($criteria);
 
-		if($type == null) {
+		if($array == true) {
 			$items = array();
 			if($model != null) {
 				foreach($model as $key => $val)
