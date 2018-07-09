@@ -35,7 +35,7 @@
 class ArchiveConvertCategory extends CActiveRecord
 {
 	use GridViewTrait;
-	
+
 	public $defaultColumns = array();
 	
 	// Variable Search
@@ -275,25 +275,7 @@ class ArchiveConvertCategory extends CActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter' => Yii::app()->controller->widget('application.libraries.core.components.system.CJuiDatePicker', array(
-					'model'=>$this,
-					'attribute'=>'creation_date',
-					'language' => 'en',
-					'i18nScriptFile' => 'jquery-ui-i18n.min.js',
-					//'mode'=>'datetime',
-					'htmlOptions' => array(
-						'id' => 'creation_date_filter',
-					),
-					'options'=>array(
-						'showOn' => 'focus',
-						'dateFormat' => 'yy-mm-dd',
-						'showOtherMonths' => true,
-						'selectOtherMonths' => true,
-						'changeMonth' => true,
-						'changeYear' => true,
-						'showButtonPanel' => true,
-					),
-				), true),
+				'filter' => $this->filterDatepicker($this, 'creation_date'),
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'convert_search',
