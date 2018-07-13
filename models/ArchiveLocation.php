@@ -385,10 +385,8 @@ class ArchiveLocation extends CActiveRecord
 				foreach($model as $key => $val)
 					$items[$val->location_id] = $val->location_name.' ('.strtoupper($val->location_code).')';
 				return $items;
-				
 			} else
 				return false;
-			
 		} else
 			return $model;
 	}

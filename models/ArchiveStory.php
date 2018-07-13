@@ -336,10 +336,8 @@ class ArchiveStory extends CActiveRecord
 				foreach($model as $key => $val)
 					$items[$val->story_id] = $val->story_name.' ('.strtoupper($val->story_code).')';
 				return $items;
-				
 			} else
 				return false;
-			
 		} else
 			return $model;
 	}

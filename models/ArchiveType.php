@@ -336,10 +336,8 @@ class ArchiveType extends CActiveRecord
 				foreach($model as $key => $val)
 					$items[$val->type_id] = $val->type_name.' ('.strtoupper($val->type_code).')';
 				return $items;
-				
 			} else
 				return false;
-			
 		} else
 			return $model;
 	}
