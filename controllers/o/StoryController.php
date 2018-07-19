@@ -111,7 +111,7 @@ class StoryController extends Controller
 	public function actionManage() 
 	{
 		$model=new ArchiveStory('search');
-		$model->unsetAttributes();  // clear any default values
+		$model->unsetAttributes();	// clear any default values
 		if(isset($_GET['ArchiveStory'])) {
 			$model->attributes=$_GET['ArchiveStory'];
 		}

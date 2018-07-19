@@ -95,7 +95,7 @@ class SiteController extends Controller
 		));
 		
 		$model=new ArchiveLists('frontSearch');
-		$model->unsetAttributes();  // clear any default values
+		$model->unsetAttributes();	// clear any default values
 		if(isset($_GET['ArchiveLists'])) {
 			$model->attributes=$_GET['ArchiveLists'];
 		}

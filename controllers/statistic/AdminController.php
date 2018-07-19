@@ -108,7 +108,7 @@ class AdminController extends Controller
 	public function actionManage() 
 	{
 		$model=new ViewArchiveListYear('search');
-		$model->unsetAttributes();  // clear any default values
+		$model->unsetAttributes();	// clear any default values
 		if(isset($_GET['ViewArchiveListYear'])) {
 			$model->attributes=$_GET['ViewArchiveListYear'];
 		}

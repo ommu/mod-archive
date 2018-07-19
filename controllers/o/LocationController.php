@@ -111,7 +111,7 @@ class LocationController extends Controller
 	public function actionManage() 
 	{
 		$model=new ArchiveLocation('search');
-		$model->unsetAttributes();  // clear any default values
+		$model->unsetAttributes();	// clear any default values
 		if(isset($_GET['ArchiveLocation'])) {
 			$model->attributes=$_GET['ArchiveLocation'];
 		}

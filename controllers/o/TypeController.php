@@ -111,7 +111,7 @@ class TypeController extends Controller
 	public function actionManage() 
 	{
 		$model=new ArchiveType('search');
-		$model->unsetAttributes();  // clear any default values
+		$model->unsetAttributes();	// clear any default values
 		if(isset($_GET['ArchiveType'])) {
 			$model->attributes=$_GET['ArchiveType'];
 		}

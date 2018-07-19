@@ -108,7 +108,7 @@ class ConvertController extends Controller
 	public function actionManage() 
 	{
 		$model=new ViewArchiveConvertYear('search');
-		$model->unsetAttributes();  // clear any default values
+		$model->unsetAttributes();	// clear any default values
 		if(isset($_GET['ViewArchiveConvertYear'])) {
 			$model->attributes=$_GET['ViewArchiveConvertYear'];
 		}

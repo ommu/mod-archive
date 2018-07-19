@@ -95,7 +95,7 @@ class ConvertController extends Controller
 		));
 		
 		$model=new ArchiveConverts('frontSearch');
-		$model->unsetAttributes();  // clear any default values
+		$model->unsetAttributes();	// clear any default values
 		if(isset($_GET['ArchiveConverts'])) {
 			$model->attributes=$_GET['ArchiveConverts'];
 		}
