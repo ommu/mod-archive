@@ -151,16 +151,16 @@ class ArchiveListConvert extends CActiveRecord
 		// Custom Search
 		$criteria->with = array(
 			'list' => array(
-				'alias'=>'list',
-				'select'=>'list_title, list_code',
+				'alias' => 'list',
+				'select' => 'list_title, list_code',
 			),
 			'convert' => array(
-				'alias'=>'convert',
-				'select'=>'convert_title, convert_code',
+				'alias' => 'convert',
+				'select' => 'convert_title, convert_code',
 			),
 			'creation' => array(
-				'alias'=>'creation',
-				'select'=>'displayname',
+				'alias' => 'creation',
+				'select' => 'displayname',
 			),
 		);
 

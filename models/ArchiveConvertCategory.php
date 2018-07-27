@@ -148,15 +148,15 @@ class ArchiveConvertCategory extends CActiveRecord
 		// Custom Search
 		$criteria->with = array(
 			'view' => array(
-				'alias'=>'view',
+				'alias' => 'view',
 			),
 			'creation' => array(
-				'alias'=>'creation',
-				'select'=>'displayname',
+				'alias' => 'creation',
+				'select' => 'displayname',
 			),
 			'modified' => array(
-				'alias'=>'modified',
-				'select'=>'displayname',
+				'alias' => 'modified',
+				'select' => 'displayname',
 			),
 		);
 
