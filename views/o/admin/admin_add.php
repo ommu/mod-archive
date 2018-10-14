@@ -15,7 +15,7 @@
 
 	$this->breadcrumbs=array(
 		'ArchiveLists'=>array('manage'),
-		'Create',
+		Yii::t('phrase', 'Create'),
 	);
 ?>
 

@@ -16,7 +16,7 @@
 	$this->breadcrumbs=array(
 		'Archive Converts'=>array('manage'),
 		$model->convert_id=>array('view','id'=>$model->convert_id),
-		'Update',
+		Yii::t('phrase', 'Update'),
 	);
 ?>
 

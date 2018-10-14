@@ -279,7 +279,7 @@ class ArchiveType extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'list_search',
-				'value' => 'CHtml::link($data->view->lists ? $data->view->lists : 0, Yii::app()->controller->createUrl("o/admin/manage", array("type"=>$data->type_id)))',
+				'value' => 'CHtml::link($data->view->lists ? $data->view->lists : 0, Yii::app()->controller->createUrl(\'o/admin/manage\', array("type"=>$data->type_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -288,7 +288,7 @@ class ArchiveType extends CActiveRecord
 			if(!Yii::app()->getRequest()->getParam('type')) {
 				$this->defaultColumns[] = array(
 					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish", array("id"=>$data->type_id)), $data->publish, 1)',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl(\'publish\', array(\'id\'=>$data->type_id)), $data->publish, 1)',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),

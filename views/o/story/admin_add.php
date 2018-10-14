@@ -15,7 +15,7 @@
 
 	$this->breadcrumbs=array(
 		'Archive Stories'=>array('manage'),
-		'Create',
+		Yii::t('phrase', 'Create'),
 	);
 ?>
 

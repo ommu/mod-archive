@@ -17,7 +17,6 @@
 <?php $form=$this->beginWidget('application.libraries.yii-traits.system.OActiveForm', array(
 	'id'=>'archive-settings-form',
 	'enableAjaxValidation'=>true,
-	//'htmlOptions' => array('enctype' => 'multipart/form-data')
 )); ?>
 
 <?php //begin.Messages ?>
@@ -34,21 +33,20 @@
 			<span><?php echo Yii::t('phrase', 'Enter the your license key that is provided to you when you purchased this plugin. If you do not know your license key, please contact support team.');?></span>
 		</label>
 		<div class="desc">
-			<?php 
-			if($model->isNewRecord || (!$model->isNewRecord && $model->license == '')) {
+			<?php if($model->isNewRecord || (!$model->isNewRecord && $model->license == '')) {
 				$model->license = $this->licenseCode();
 				echo $form->textField($model,'license', array('maxlength'=>32,'class'=>'span-4'));				
 			} else
 				echo $form->textField($model,'license', array('maxlength'=>32,'class'=>'span-4','disabled'=>'disabled'));?>
 			<?php echo $form->error($model,'license'); ?>
-			<span class="small-px"><?php echo Yii::t('phrase', 'Format: XXXX-XXXX-XXXX-XXXX');?></span>
+			<div class="small-px"><?php echo Yii::t('phrase', 'Format: XXXX-XXXX-XXXX-XXXX');?></div>
 		</div>
 	</div>
 
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'permission'); ?>
 		<div class="desc">
-			<span class="small-px"><?php echo Yii::t('phrase', 'Select whether or not you want to let the public (visitors that are not logged-in) to view the following sections of your social network. In some cases (such as Profiles, Blogs, and Albums), if you have given them the option, your users will be able to make their pages private even though you have made them publically viewable here. For more permissions settings, please visit the General Settings page.');?></span>
+			<div class="small-px"><?php echo Yii::t('phrase', 'Select whether or not you want to let the public (visitors that are not logged-in) to view the following sections of your social network. In some cases (such as Profiles, Blogs, and Albums), if you have given them the option, your users will be able to make their pages private even though you have made them publically viewable here. For more permissions settings, please visit the General Settings page.');?></div>
 			<?php echo $form->radioButtonList($model, 'permission', array(
 				1 => Yii::t('phrase', 'Yes, the public can view Archive unless they are made private.'),
 				0 => Yii::t('phrase', 'No, the public cannot view Archive.'),

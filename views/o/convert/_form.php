@@ -65,7 +65,6 @@ EOP;
 <?php $form=$this->beginWidget('application.libraries.yii-traits.system.OActiveForm', array(
 	'id'=>'archive-converts-form',
 	'enableAjaxValidation'=>true,
-	//'htmlOptions' => array('enctype' => 'multipart/form-data')
 )); ?>
 
 <?php //begin.Messages ?>
@@ -129,8 +128,7 @@ EOP;
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'location_id'); ?>
 		<div class="desc">
-			<?php 
-			if($parent != false) {
+			<?php if($parent != false) {
 				if($model->isNewRecord && !$model->getErrors())
 					$model->location_id = $parent->location_id;
 			}
@@ -147,8 +145,7 @@ EOP;
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'category_id'); ?>
 		<div class="desc">
-			<?php 
-			if($parent != false) {
+			<?php if($parent != false) {
 				if($model->isNewRecord && !$model->getErrors())
 					$model->category_id = $parent->category_id;				
 			}
@@ -176,8 +173,7 @@ EOP;
 	<div class="clearfix">
 		<?php echo $form->labelEx($model,'convert_publish_year'); ?>
 		<div class="desc">
-			<?php 
-			if($parent != false) {
+			<?php if($parent != false) {
 				if($model->isNewRecord && !$model->getErrors())
 					$model->convert_publish_year = $parent->convert_publish_year;
 			}
@@ -267,10 +263,9 @@ EOP;
 	<div class="clearfix <?php echo ($model->convert_parent != 0) ? 'hide' : ''?>">
 		<?php echo $form->labelEx($model,'convert_copies'); ?>
 		<div class="desc">
-			<?php 
-			if($parent != false) {
+			<?php if($parent != false) {
 				if($model->isNewRecord && !$model->getErrors())
-					$model->convert_copies = $parent->convert_copies;				
+					$model->convert_copies = $parent->convert_copies;
 			}
 			echo $form->textField($model,'convert_copies', array('maxlength'=>11, 'class'=>'span-3')); ?>
 			<?php echo $form->error($model,'convert_copies'); ?>

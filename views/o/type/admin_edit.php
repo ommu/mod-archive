@@ -16,7 +16,7 @@
 	$this->breadcrumbs=array(
 		'Archive Types'=>array('manage'),
 		$model->type_id=>array('view','id'=>$model->type_id),
-		'Update',
+		Yii::t('phrase', 'Update'),
 	);
 ?>
 

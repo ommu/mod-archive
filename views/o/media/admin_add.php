@@ -15,7 +15,7 @@
 
 	$this->breadcrumbs=array(
 		'Archive Convert Medias'=>array('manage'),
-		'Create',
+		Yii::t('phrase', 'Create'),
 	);
 ?>
 

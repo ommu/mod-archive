@@ -16,7 +16,7 @@
 	$this->breadcrumbs=array(
 		'Archive Stories'=>array('manage'),
 		$model->story_id=>array('view','id'=>$model->story_id),
-		'Update',
+		Yii::t('phrase', 'Update'),
 	);
 ?>
 

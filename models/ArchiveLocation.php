@@ -302,7 +302,7 @@ class ArchiveLocation extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'list_search',
-				'value' => 'CHtml::link($data->view->lists ? $data->view->lists : 0, Yii::app()->controller->createUrl("o/admin/manage", array("location"=>$data->location_id)))',
+				'value' => 'CHtml::link($data->view->lists ? $data->view->lists : 0, Yii::app()->controller->createUrl(\'o/admin/manage\', array("location"=>$data->location_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -337,7 +337,7 @@ class ArchiveLocation extends CActiveRecord
 			if(!Yii::app()->getRequest()->getParam('type')) {
 				$this->defaultColumns[] = array(
 					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish", array("id"=>$data->location_id)), $data->publish, 1)',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl(\'publish\', array(\'id\'=>$data->location_id)), $data->publish, 1)',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),

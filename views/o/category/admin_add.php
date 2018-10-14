@@ -15,7 +15,7 @@
 
 	$this->breadcrumbs=array(
 		'Archive Convert Categories'=>array('manage'),
-		'Create',
+		Yii::t('phrase', 'Create'),
 	);
 ?>
 

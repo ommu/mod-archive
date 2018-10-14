@@ -16,7 +16,7 @@
 	$this->breadcrumbs=array(
 		'Archive Locations'=>array('manage'),
 		$model->location_id=>array('view','id'=>$model->location_id),
-		'Update',
+		Yii::t('phrase', 'Update'),
 	);
 ?>
 
