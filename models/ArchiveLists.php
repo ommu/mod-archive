@@ -369,13 +369,13 @@ class ArchiveLists extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'story_id',
-				'value' => '$data->story_id ? $data->story->story_name : "-"',
+				'value' => '$data->story_id ? $data->story->story_name : \'-\'',
 				'filter' => ArchiveStory::getStory(),
 				'type' => 'raw',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'type_id',
-				'value' => '$data->type_id ? $data->type->type_name : "-"',
+				'value' => '$data->type_id ? $data->type->type_name : \'-\'',
 				'filter' => ArchiveType::getType(),
 				'type' => 'raw',
 			);
