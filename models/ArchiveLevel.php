@@ -1,0 +1,363 @@
+<?php
+/**
+ * ArchiveLevel
+ * 
+ * @author Putra Sudaryanto <putra@sudaryanto.id>
+ * @contact (+62)856-299-4114
+ * @copyright Copyright (c) 2019 OMMU (www.ommu.co)
+ * @created date 5 March 2019, 23:32 WIB
+ * @link https://bitbucket.org/ommu/archive
+ *
+ * This is the model class for table "ommu_archive_level".
+ *
+ * The followings are the available columns in table "ommu_archive_level":
+ * @property integer $id
+ * @property integer $publish
+ * @property integer $level_name
+ * @property integer $level_desc
+ * @property string $child
+ * @property string $creation_date
+ * @property integer $creation_id
+ * @property string $modified_date
+ * @property integer $modified_id
+ * @property string $updated_date
+ *
+ * The followings are the available model relations:
+ * @property Archives[] $archives
+ * @property SourceMessage $title
+ * @property SourceMessage $description
+ * @property Users $creation
+ * @property Users $modified
+ *
+ */
+
+namespace ommu\archive\models;
+
+use Yii;
+use yii\helpers\Html;
+use yii\helpers\Url;
+use app\models\SourceMessage;
+use ommu\users\models\Users;
+
+class ArchiveLevel extends \app\components\ActiveRecord
+{
+	use \ommu\traits\UtilityTrait;
+
+	public $gridForbiddenColumn = ['level_desc_i','child','modified_date','modifiedDisplayname','updated_date'];
+
+	public $level_name_i;
+	public $level_desc_i;
+	public $creationDisplayname;
+	public $modifiedDisplayname;
+
+	/**
+	 * @return string the associated database table name
+	 */
+	public static function tableName()
+	{
+		return 'ommu_archive_level';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		return [
+			[['level_name_i', 'level_desc_i'], 'required'],
+			[['publish', 'level_name', 'level_desc', 'creation_id', 'modified_id'], 'integer'],
+			[['level_name_i', 'level_desc_i'], 'string'],
+			[['child'], 'safe'],
+			//[['child'], 'serialize'],
+			[['level_name_i'], 'string', 'max' => 64],
+		];
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return [
+			'id' => Yii::t('app', 'ID'),
+			'publish' => Yii::t('app', 'Publish'),
+			'level_name' => Yii::t('app', 'Level'),
+			'level_desc' => Yii::t('app', 'Description'),
+			'child' => Yii::t('app', 'Child'),
+			'creation_date' => Yii::t('app', 'Creation Date'),
+			'creation_id' => Yii::t('app', 'Creation'),
+			'modified_date' => Yii::t('app', 'Modified Date'),
+			'modified_id' => Yii::t('app', 'Modified'),
+			'updated_date' => Yii::t('app', 'Updated Date'),
+			'level_name_i' => Yii::t('app', 'Level'),
+			'level_desc_i' => Yii::t('app', 'Description'),
+			'archives' => Yii::t('app', 'Archives'),
+			'creationDisplayname' => Yii::t('app', 'Creation'),
+			'modifiedDisplayname' => Yii::t('app', 'Modified'),
+		];
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getArchives($count=false, $publish=1)
+	{
+		if($count == false)
+			return $this->hasMany(Archives::className(), ['level_id' => 'id'])
+			->andOnCondition([sprintf('%s.publish', Archives::tableName()) => $publish]);
+
+		$model = Archives::find()
+			->where(['level_id' => $this->id]);
+		if($publish == 0)
+			$model->unpublish();
+		elseif($publish == 1)
+			$model->published();
+		elseif($publish == 2)
+			$model->deleted();
+		$archives = $model->count();
+
+		return $archives ? $archives : 0;
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getTitle()
+	{
+		return $this->hasOne(SourceMessage::className(), ['id' => 'level_name']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getDescription()
+	{
+		return $this->hasOne(SourceMessage::className(), ['id' => 'level_desc']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getCreation()
+	{
+		return $this->hasOne(Users::className(), ['user_id' => 'creation_id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getModified()
+	{
+		return $this->hasOne(Users::className(), ['user_id' => 'modified_id']);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 * @return \ommu\archive\models\query\ArchiveLevel the active query used by this AR class.
+	 */
+	public static function find()
+	{
+		return new \ommu\archive\models\query\ArchiveLevel(get_called_class());
+	}
+
+	/**
+	 * Set default columns to display
+	 */
+	public function init()
+	{
+		parent::init();
+
+		$this->templateColumns['_no'] = [
+			'header' => Yii::t('app', 'No'),
+			'class'  => 'yii\grid\SerialColumn',
+			'contentOptions' => ['class'=>'center'],
+		];
+		$this->templateColumns['level_name_i'] = [
+			'attribute' => 'level_name_i',
+			'value' => function($model, $key, $index, $column) {
+				return $model->level_name_i;
+			},
+		];
+		$this->templateColumns['level_desc_i'] = [
+			'attribute' => 'level_desc_i',
+			'value' => function($model, $key, $index, $column) {
+				return $model->level_desc_i;
+			},
+		];
+		$this->templateColumns['child'] = [
+			'attribute' => 'child',
+			'value' => function($model, $key, $index, $column) {
+				return serialize($model->child);
+			},
+		];
+		$this->templateColumns['creation_date'] = [
+			'attribute' => 'creation_date',
+			'value' => function($model, $key, $index, $column) {
+				return Yii::$app->formatter->asDatetime($model->creation_date, 'medium');
+			},
+			'filter' => $this->filterDatepicker($this, 'creation_date'),
+		];
+		if(!Yii::$app->request->get('creation')) {
+			$this->templateColumns['creationDisplayname'] = [
+				'attribute' => 'creationDisplayname',
+				'value' => function($model, $key, $index, $column) {
+					return isset($model->creation) ? $model->creation->displayname : '-';
+				},
+			];
+		}
+		$this->templateColumns['modified_date'] = [
+			'attribute' => 'modified_date',
+			'value' => function($model, $key, $index, $column) {
+				return Yii::$app->formatter->asDatetime($model->modified_date, 'medium');
+			},
+			'filter' => $this->filterDatepicker($this, 'modified_date'),
+		];
+		if(!Yii::$app->request->get('modified')) {
+			$this->templateColumns['modifiedDisplayname'] = [
+				'attribute' => 'modifiedDisplayname',
+				'value' => function($model, $key, $index, $column) {
+					return isset($model->modified) ? $model->modified->displayname : '-';
+				},
+			];
+		}
+		$this->templateColumns['updated_date'] = [
+			'attribute' => 'updated_date',
+			'value' => function($model, $key, $index, $column) {
+				return Yii::$app->formatter->asDatetime($model->updated_date, 'medium');
+			},
+			'filter' => $this->filterDatepicker($this, 'updated_date'),
+		];
+		$this->templateColumns['archives'] = [
+			'attribute' => 'archives',
+			'filter' => false,
+			'value' => function($model, $key, $index, $column) {
+				$archives = $model->getArchives(true);
+				return Html::a($archives, ['admin/manage', 'id'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
+			},
+			'contentOptions' => ['class'=>'center'],
+			'format' => 'html',
+		];
+		if(!Yii::$app->request->get('trash')) {
+			$this->templateColumns['publish'] = [
+				'attribute' => 'publish',
+				'filter' => $this->filterYesNo(),
+				'value' => function($model, $key, $index, $column) {
+					$url = Url::to(['publish', 'id'=>$model->primaryKey]);
+					return $this->quickAction($url, $model->publish);
+				},
+				'contentOptions' => ['class'=>'center'],
+				'format' => 'raw',
+			];
+		}
+	}
+
+	/**
+	 * User get information
+	 */
+	public static function getInfo($id, $column=null)
+	{
+		if($column != null) {
+			$model = self::find()
+				->select([$column])
+				->where(['id' => $id])
+				->one();
+			return $model->$column;
+			
+		} else {
+			$model = self::findOne($id);
+			return $model;
+		}
+	}
+
+	/**
+	 * function getLevel
+	 */
+	public static function getLevel($publish=null, $array=true) 
+	{
+		$model = self::find()->alias('t');
+		$model->leftJoin(sprintf('%s title', SourceMessage::tableName()), 't.level_name=title.id');
+		if($publish != null)
+			$model->andWhere(['t.publish' => $publish]);
+
+		$model = $model->orderBy('title.message ASC')->all();
+
+		if($array == true)
+			return \yii\helpers\ArrayHelper::map($model, 'id', 'level_name_i');
+
+		return $model;
+	}
+
+	/**
+	 * after find attributes
+	 */
+	public function afterFind()
+	{
+		parent::afterFind();
+
+		$this->level_name_i = isset($this->title) ? $this->title->message : '';
+		$this->level_desc_i = isset($this->description) ? $this->description->message : '';
+		$this->child = unserialize($this->child);
+		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
+		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
+	}
+
+	/**
+	 * before validate attributes
+	 */
+	public function beforeValidate()
+	{
+		if(parent::beforeValidate()) {
+			if($this->isNewRecord) {
+				if($this->creation_id == null)
+					$this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+			} else {
+				if($this->modified_id == null)
+					$this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * before save attributes
+	 */
+	public function beforeSave($insert)
+	{
+		$module = strtolower(Yii::$app->controller->module->id);
+		$controller = strtolower(Yii::$app->controller->id);
+		$action = strtolower(Yii::$app->controller->action->id);
+
+		$location = $this->urlTitle($module.' '.$controller);
+
+		if(parent::beforeSave($insert)) {
+			if($insert || (!$insert && !$this->level_name)) {
+				$level_name = new SourceMessage();
+				$level_name->location = $location.'_title';
+				$level_name->message = $this->level_name_i;
+				if($level_name->save())
+					$this->level_name = $level_name->id;
+
+			} else {
+				$level_name = SourceMessage::findOne($this->level_name);
+				$level_name->message = $this->level_name_i;
+				$level_name->save();
+			}
+
+			if($insert || (!$insert && !$this->level_desc)) {
+				$level_desc = new SourceMessage();
+				$level_desc->location = $location.'_description';
+				$level_desc->message = $this->level_desc_i;
+				if($level_desc->save())
+					$this->level_desc = $level_desc->id;
+
+			} else {
+				$level_desc = SourceMessage::findOne($this->level_desc);
+				$level_desc->message = $this->level_desc_i;
+				$level_desc->save();
+			}
+
+			$this->child = serialize($this->child);
+		}
+		return true;
+	}
+}
