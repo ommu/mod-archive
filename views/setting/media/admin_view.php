@@ -71,10 +71,10 @@ $this->params['menu']['content'] = [
 			'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
 		],
 		[
-			'attribute' => 'medias',
+			'attribute' => 'archives',
 			'value' => function ($model) {
-				$medias = $model->getReferenceMedia(true);
-				return Html::a($medias, ['media/manage', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$medias])]);
+				$archives = $model->getReferenceMedia(true);
+				return Html::a($archives, ['media/manage', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
 			},
 			'format' => 'html',
 		],

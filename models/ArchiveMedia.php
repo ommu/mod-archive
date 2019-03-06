@@ -88,7 +88,7 @@ class ArchiveMedia extends \app\components\ActiveRecord
 			'updated_date' => Yii::t('app', 'Updated Date'),
 			'media_name_i' => Yii::t('app', 'Media'),
 			'media_desc_i' => Yii::t('app', 'Description'),
-			'medias' => Yii::t('app', 'Archives'),
+			'archives' => Yii::t('app', 'Archives'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
 		];
@@ -211,12 +211,12 @@ class ArchiveMedia extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
 		];
-		$this->templateColumns['medias'] = [
-			'attribute' => 'medias',
+		$this->templateColumns['archives'] = [
+			'attribute' => 'archives',
 			'filter' => false,
 			'value' => function($model, $key, $index, $column) {
-				$medias = $model->getReferenceMedia(true);
-				return Html::a($media, ['media/manage', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archive', ['count'=>$medias])]);
+				$archives = $model->getReferenceMedia(true);
+				return Html::a($media, ['media/manage', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archive', ['count'=>$archives])]);
 			},
 			'contentOptions' => ['class'=>'center'],
 			'format' => 'html',
