@@ -187,8 +187,9 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		$this->templateColumns['child'] = [
 			'attribute' => 'child',
 			'value' => function($model, $key, $index, $column) {
-				return serialize($model->child);
+				return ArchiveLevel::getChild($model->child);
 			},
+			'format' => 'html',
 		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
@@ -285,6 +286,23 @@ class ArchiveLevel extends \app\components\ActiveRecord
 			return \yii\helpers\ArrayHelper::map($model, 'id', 'level_name_i');
 
 		return $model;
+	}
+
+	/**
+	 * function getChild
+	 */
+	public static function getChild($child) 
+	{
+		if(!is_array($child) || (is_array($child) && empty($child)))
+			return '-';
+		
+		$levels = self::getLevel();
+		foreach ($levels as $key => $val) {
+			if(in_array($key, $child))
+				$level[] = Html::a($val, ['admin/manage', 'level'=>$key, 'publish'=>1], ['title'=>$val]);
+		}
+
+		return implode(', ', $level);
 	}
 
 	/**

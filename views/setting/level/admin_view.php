@@ -16,6 +16,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
+use ommu\archive\models\ArchiveLevel;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Levels'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->title->message;
@@ -52,7 +53,8 @@ $this->params['menu']['content'] = [
 		],
 		[
 			'attribute' => 'child',
-			'value' => serialize($model->child),
+			'value' => ArchiveLevel::getChild($model->child),
+			'format' => 'html',
 		],
 		[
 			'attribute' => 'creation_date',
