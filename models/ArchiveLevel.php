@@ -233,7 +233,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 			'filter' => false,
 			'value' => function($model, $key, $index, $column) {
 				$archives = $model->getArchives(true);
-				return Html::a($archives, ['admin/manage', 'id'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
+				return Html::a($archives, ['admin/manage', 'level'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
 			},
 			'contentOptions' => ['class'=>'center'],
 			'format' => 'html',
@@ -299,7 +299,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		$levels = self::getLevel();
 		foreach ($levels as $key => $val) {
 			if(in_array($key, $child))
-				$level[] = Html::a($val, ['admin/manage', 'level'=>$key, 'publish'=>1], ['title'=>$val]);
+				$level[] = Html::a($val, ['setting/level/view', 'id'=>$key], ['title'=>$val]);
 		}
 
 		return implode(', ', $level);

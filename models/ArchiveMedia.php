@@ -104,9 +104,9 @@ class ArchiveMedia extends \app\components\ActiveRecord
 
 		$model = ArchiveRelatedMedia::find()
 			->where(['media_id' => $this->id]);
-		$media = $model->count();
+		$archives = $model->count();
 
-		return $media ? $media : 0;
+		return $archives ? $archives : 0;
 	}
 
 	/**
@@ -216,7 +216,7 @@ class ArchiveMedia extends \app\components\ActiveRecord
 			'filter' => false,
 			'value' => function($model, $key, $index, $column) {
 				$archives = $model->getReferenceMedia(true);
-				return Html::a($media, ['media/manage', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archive', ['count'=>$archives])]);
+				return Html::a($archives, ['media/manage', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archive', ['count'=>$archives])]);
 			},
 			'contentOptions' => ['class'=>'center'],
 			'format' => 'html',

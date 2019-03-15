@@ -80,7 +80,7 @@ $this->params['menu']['content'] = [
 			'attribute' => 'archives',
 			'value' => function ($model) {
 				$archives = $model->getArchives(true);
-				return Html::a($archives, ['admin/manage', 'id'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
+				return Html::a($archives, ['admin/manage', 'level'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
 			},
 			'format' => 'html',
 		],

@@ -74,7 +74,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
 			'meta_description' => Yii::t('app', 'Meta Description'),
 			'meta_keyword' => Yii::t('app', 'Meta Keyword'),
 			'fond_sidkkas' => Yii::t('app', 'Fond Sidkkas'),
-			'reference_code_sikn' => Yii::t('app', 'Reference Code SIKN'),
+			'reference_code_sikn' => Yii::t('app', 'SIKN Reference Code'),
 			'reference_code_level_separator' => Yii::t('app', 'Reference Code Level Separator'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
