@@ -101,8 +101,11 @@ class Archives extends \app\components\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getMedia()
+	public function getMedia($result=false)
 	{
+		if($result == true)
+			return \yii\helpers\ArrayHelper::map($this->media, 'media_id', 'media.media_name_i');
+
 		return $this->hasMany(ArchiveRelatedMedia::className(), ['archive_id' => 'id']);
 	}
 
@@ -182,9 +185,9 @@ class Archives extends \app\components\ActiveRecord
 			'attribute' => 'media',
 			'filter' => false,
 			'value' => function($model, $key, $index, $column) {
-				// return $model->getMedia();
-				return '-';
+				return Archives::parseMedia($model->getMedia(true));
 			},
+			'format' => 'html',
 		];
 		$this->templateColumns['image_type'] = [
 			'attribute' => 'image_type',
@@ -286,6 +289,21 @@ class Archives extends \app\components\ActiveRecord
 			return $items[$value];
 		} else
 			return $items;
+	}
+
+	/**
+	 * function parseMedia
+	 */
+	public static function parseMedia($medias, $separator=',') 
+	{
+		if(!is_array($medias) || (is_array($medias) && empty($medias)))
+			return '-';
+		
+		foreach ($medias as $key => $val) {
+			$media[] = Html::a($val, ['related/media/manage', 'media'=>$key], ['title'=>$val]);
+		}
+
+		return implode($separator, $media);
 	}
 
 	/**

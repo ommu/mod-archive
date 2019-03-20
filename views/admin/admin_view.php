@@ -70,13 +70,15 @@ $attributes[] = [
 	'attribute' => 'image_type',
 	'value' => Archives::getImageType($model->image_type ? $model->image_type : '-'),
 ];
-$attributes[] = [
-	'attribute' => 'media',
-	'value' => function ($model) {
-		// return $model->getMedia();
-		return '-';
-	},
-];
+if($model->level->media) {
+	$attributes[] = [
+		'attribute' => 'media',
+		'value' => function ($model) {
+			return Archives::parseMedia($model->getMedia(true));
+		},
+		'format' => 'html',
+	];
+}
 $attributes[] = [
 	'attribute' => 'creation_date',
 	'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),
