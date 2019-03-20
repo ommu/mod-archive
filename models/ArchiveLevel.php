@@ -16,6 +16,8 @@
  * @property integer $level_name
  * @property integer $level_desc
  * @property string $child
+ * @property integer $sidkkas
+ * @property integer $media
  * @property string $creation_date
  * @property integer $creation_id
  * @property string $modified_date
@@ -43,7 +45,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 
-	public $gridForbiddenColumn = ['level_desc_i','child','modified_date','modifiedDisplayname','updated_date'];
+	public $gridForbiddenColumn = ['level_desc_i', 'child', 'sidkkas', 'media', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
 	public $level_name_i;
 	public $level_desc_i;
@@ -65,7 +67,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	{
 		return [
 			[['level_name_i', 'level_desc_i'], 'required'],
-			[['publish', 'level_name', 'level_desc', 'creation_id', 'modified_id'], 'integer'],
+			[['publish', 'level_name', 'level_desc', 'sidkkas', 'media', 'creation_id', 'modified_id'], 'integer'],
 			[['level_name_i', 'level_desc_i'], 'string'],
 			[['child'], 'safe'],
 			//[['child'], 'serialize'],
@@ -84,6 +86,8 @@ class ArchiveLevel extends \app\components\ActiveRecord
 			'level_name' => Yii::t('app', 'Level'),
 			'level_desc' => Yii::t('app', 'Description'),
 			'child' => Yii::t('app', 'Child'),
+			'sidkkas' => Yii::t('app', 'SiDKKAS Select'),
+			'media' => Yii::t('app', 'Media Select'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
@@ -237,6 +241,22 @@ class ArchiveLevel extends \app\components\ActiveRecord
 			},
 			'contentOptions' => ['class'=>'center'],
 			'format' => 'html',
+		];
+		$this->templateColumns['sidkkas'] = [
+			'attribute' => 'sidkkas',
+			'filter' => $this->filterYesNo(),
+			'value' => function($model, $key, $index, $column) {
+				return $this->filterYesNo($model->sidkkas);
+			},
+			'contentOptions' => ['class'=>'center'],
+		];
+		$this->templateColumns['media'] = [
+			'attribute' => 'media',
+			'filter' => $this->filterYesNo(),
+			'value' => function($model, $key, $index, $column) {
+				return $this->filterYesNo($model->media);
+			},
+			'contentOptions' => ['class'=>'center'],
 		];
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [

@@ -47,6 +47,12 @@ use app\components\ActiveForm;
 		<?php echo $form->field($model, 'updated_date')
 			->input('date');?>
 
+		<?php echo $form->field($model, 'sidkkas')
+			->dropDownList($this->filterYesNo(), ['prompt'=>'']);?>
+
+		<?php echo $form->field($model, 'media')
+			->dropDownList($this->filterYesNo(), ['prompt'=>'']);?>
+
 		<?php echo $form->field($model, 'publish')
 			->dropDownList($this->filterYesNo(), ['prompt'=>'']);?>
 

@@ -44,6 +44,14 @@ echo $form->field($model, 'child')
 	->checkboxList($child)
 	->label($model->getAttributeLabel('child')); ?>
 
+<?php echo $form->field($model, 'sidkkas')
+	->checkbox()
+	->label($model->getAttributeLabel('sidkkas')); ?>
+
+<?php echo $form->field($model, 'media')
+	->checkbox()
+	->label($model->getAttributeLabel('media')); ?>
+
 <?php echo $form->field($model, 'publish')
 	->checkbox()
 	->label($model->getAttributeLabel('publish')); ?>
