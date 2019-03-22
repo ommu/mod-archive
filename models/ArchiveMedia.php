@@ -42,7 +42,7 @@ class ArchiveMedia extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 
-	public $gridForbiddenColumn = ['media_desc_i','modified_date','modifiedDisplayname','updated_date'];
+	public $gridForbiddenColumn = ['media_desc_i', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
 	public $media_name_i;
 	public $media_desc_i;

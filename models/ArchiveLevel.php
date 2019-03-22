@@ -45,7 +45,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 
-	public $gridForbiddenColumn = ['level_desc_i', 'child', 'sidkkas', 'media', 'modified_date', 'modifiedDisplayname', 'updated_date'];
+	public $gridForbiddenColumn = ['level_desc_i', 'child', 'sidkkas', 'media', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
 	public $level_name_i;
 	public $level_desc_i;
