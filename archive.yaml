@@ -1,8 +1,8 @@
 setting_submenu:
   update:
     label: Settings
-    url: ['setting/admin/index']
-    select: action
+    url: ['setting/admin']
+    select: controller
   level:
     label: Description Level
     url: ['setting/level']
