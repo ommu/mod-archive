@@ -1,0 +1,13 @@
+setting_submenu:
+  update:
+    label: Settings
+    url: ['setting/admin/index']
+    select: action
+  level:
+    label: Description Level
+    url: ['setting/level']
+    select: controller
+  media:
+    label: Medias
+    url: ['setting/media']
+    select: controller

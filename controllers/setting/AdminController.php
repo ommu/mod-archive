@@ -34,6 +34,15 @@ class AdminController extends Controller
 	/**
 	 * {@inheritdoc}
 	 */
+	public function init()
+	{
+		parent::init();
+		$this->subMenu = $this->module->params['setting_submenu'];
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function behaviors()
 	{
 		return [
