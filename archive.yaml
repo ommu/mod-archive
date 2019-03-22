@@ -4,7 +4,7 @@ setting_submenu:
     url: ['setting/admin']
     select: controller
   level:
-    label: Description Level
+    label: Description Levels
     url: ['setting/level']
     select: controller
   media:
