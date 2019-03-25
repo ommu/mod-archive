@@ -165,6 +165,7 @@ class Archives extends \app\components\ActiveRecord
 				'attribute' => 'level_id',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->level) ? $model->level->title->message : '-';
+					// return $model->levelName;
 				},
 				'filter' => ArchiveLevel::getLevel(),
 			];
@@ -183,10 +184,10 @@ class Archives extends \app\components\ActiveRecord
 		];
 		$this->templateColumns['media'] = [
 			'attribute' => 'media',
-			'filter' => false,
 			'value' => function($model, $key, $index, $column) {
 				return Archives::parseMedia($model->getMedia(true));
 			},
+			'filter' => false,
 			'format' => 'html',
 		];
 		$this->templateColumns['image_type'] = [
@@ -208,6 +209,7 @@ class Archives extends \app\components\ActiveRecord
 				'attribute' => 'creationDisplayname',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->creation) ? $model->creation->displayname : '-';
+					// return $model->creationDisplayname;
 				},
 			];
 		}
@@ -223,6 +225,7 @@ class Archives extends \app\components\ActiveRecord
 				'attribute' => 'modifiedDisplayname',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->modified) ? $model->modified->displayname : '-';
+					// return $model->modifiedDisplayname;
 				},
 			];
 		}
@@ -235,10 +238,10 @@ class Archives extends \app\components\ActiveRecord
 		];
 		$this->templateColumns['sidkkas'] = [
 			'attribute' => 'sidkkas',
-			'filter' => $this->filterYesNo(),
 			'value' => function($model, $key, $index, $column) {
 				return $this->filterYesNo($model->sidkkas);
 			},
+			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class'=>'center'],
 		];
 		if(!Yii::$app->request->get('trash')) {

@@ -207,6 +207,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 				'attribute' => 'creationDisplayname',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->creation) ? $model->creation->displayname : '-';
+					// return $model->creationDisplayname;
 				},
 			];
 		}
@@ -222,6 +223,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 				'attribute' => 'modifiedDisplayname',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->modified) ? $model->modified->displayname : '-';
+					// return $model->modifiedDisplayname;
 				},
 			];
 		}
@@ -234,28 +236,28 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		];
 		$this->templateColumns['archives'] = [
 			'attribute' => 'archives',
-			'filter' => false,
 			'value' => function($model, $key, $index, $column) {
 				$archives = $model->getArchives(true);
 				return Html::a($archives, ['admin/manage', 'level'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
 			},
+			'filter' => false,
 			'contentOptions' => ['class'=>'center'],
 			'format' => 'html',
 		];
 		$this->templateColumns['sidkkas'] = [
 			'attribute' => 'sidkkas',
-			'filter' => $this->filterYesNo(),
 			'value' => function($model, $key, $index, $column) {
 				return $this->filterYesNo($model->sidkkas);
 			},
+			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class'=>'center'],
 		];
 		$this->templateColumns['media'] = [
 			'attribute' => 'media',
-			'filter' => $this->filterYesNo(),
 			'value' => function($model, $key, $index, $column) {
 				return $this->filterYesNo($model->media);
 			},
+			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class'=>'center'],
 		];
 		if(!Yii::$app->request->get('trash')) {

@@ -186,6 +186,7 @@ class ArchiveMedia extends \app\components\ActiveRecord
 				'attribute' => 'creationDisplayname',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->creation) ? $model->creation->displayname : '-';
+					// return $model->creationDisplayname;
 				},
 			];
 		}
@@ -201,6 +202,7 @@ class ArchiveMedia extends \app\components\ActiveRecord
 				'attribute' => 'modifiedDisplayname',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->modified) ? $model->modified->displayname : '-';
+					// return $model->modifiedDisplayname;
 				},
 			];
 		}
@@ -213,11 +215,11 @@ class ArchiveMedia extends \app\components\ActiveRecord
 		];
 		$this->templateColumns['archives'] = [
 			'attribute' => 'archives',
-			'filter' => false,
 			'value' => function($model, $key, $index, $column) {
 				$archives = $model->getReferenceMedia(true);
 				return Html::a($archives, ['media/manage', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archive', ['count'=>$archives])]);
 			},
+			'filter' => false,
 			'contentOptions' => ['class'=>'center'],
 			'format' => 'html',
 		];
