@@ -27,24 +27,28 @@ use ommu\archive\models\ArchiveLevel;
 	'enableClientValidation' => true,
 	'enableAjaxValidation' => false,
 	//'enableClientScript' => true,
-]); ?>
+]);
+
+$wraper = [];
+if(!$model->isNewRecord)
+	$wraper = ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']];?>
 
 <?php //echo $form->errorSummary($model);?>
 
 <?php if(!$fond) {
 	if(!$model->getErrors() && $parent)
 		$model->parent_id = $parent;
-	echo $form->field($model, 'parent_id')
+	echo $form->field($model, 'parent_id', $wraper)
 		->textInput(['type'=>'number', 'min'=>'1'])
 		->label($model->getAttributeLabel('parent_id'));
 } ?>
 
-<?php echo $form->field($model, 'code')
+<?php echo $form->field($model, 'code', $wraper)
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('code'))
 	->hint(Yii::t('app', 'Provide a specific local reference code, control number, or other unique identifier. The country and repository code will be automatically added from the linked repository record to form a full reference code. (ISAD 3.1.1)')); ?>
 
-<?php echo $form->field($model, 'title')
+<?php echo $form->field($model, 'title', $wraper)
 	->textarea(['rows'=>6, 'cols'=>50])
 	->label($model->getAttributeLabel('title'))
 	->hint(Yii::t('app', 'Provide either a formal title or a concise supplied title in accordance with the rules of multilevel description and national conventions. (ISAD 3.1.2)')); ?>
@@ -55,30 +59,30 @@ use ommu\archive\models\ArchiveLevel;
 		->hiddenInput();
 } else {
 	$level = ArchiveLevel::getLevel();
-	echo $form->field($model, 'level_id')
+	echo $form->field($model, 'level_id', $wraper)
 		->dropDownList($level, ['prompt'=>''])
 		->label($model->getAttributeLabel('level_id'))
 		->hint(Yii::t('app', 'Record the level of this unit of description. (ISAD 3.1.4)'));
 } ?>
 
 <?php $imageType = Archives::getImageType();
-echo $form->field($model, 'image_type')
+echo $form->field($model, 'image_type', $wraper)
 	->radioList($imageType, ['prompt' => ''])
 	->label($model->getAttributeLabel('image_type')); ?>
 
 <?php if($fond) {
-	echo $form->field($model, 'sidkkas')
+	echo $form->field($model, 'sidkkas', $wraper)
 		->checkbox()
 		->label($model->getAttributeLabel('sidkkas'));
 } ?>
 
-<?php echo $form->field($model, 'publish')
+<?php echo $form->field($model, 'publish', $wraper)
 	->checkbox()
 	->label($model->getAttributeLabel('publish')); ?>
 
 <div class="ln_solid"></div>
 <div class="form-group row">
-	<div class="col-md-6 col-sm-9 col-xs-12 col-12 col-sm-offset-3">
+	<div class="<?php echo empty($wraper) ? 'col-md-6 col-sm-9' : 'col-sm-9';?> col-xs-12 col-12 col-sm-offset-3">
 		<?php echo Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']); ?>
 	</div>
 </div>
