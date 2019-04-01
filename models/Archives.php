@@ -49,6 +49,7 @@ class Archives extends \app\components\ActiveRecord
 	public $levelName;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
+	public $media;
 
 	/**
 	 * @return string the associated database table name
@@ -82,9 +83,9 @@ class Archives extends \app\components\ActiveRecord
 			'publish' => Yii::t('app', 'Publish'),
 			'sidkkas' => Yii::t('app', 'SiDKKAS'),
 			'parent_id' => Yii::t('app', 'Parent'),
-			'level_id' => Yii::t('app', 'Level'),
+			'level_id' => Yii::t('app', 'Level of description'),
 			'title' => Yii::t('app', 'Title'),
-			'code' => Yii::t('app', 'Code'),
+			'code' => Yii::t('app', 'Identifier'),
 			'image_type' => Yii::t('app', 'Image Type'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
@@ -101,10 +102,10 @@ class Archives extends \app\components\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getMedia($result=false)
+	public function getMedias($result=false)
 	{
 		if($result == true)
-			return \yii\helpers\ArrayHelper::map($this->media, 'media_id', 'media.media_name_i');
+			return \yii\helpers\ArrayHelper::map($this->medias, 'media_id', 'media.media_name_i');
 
 		return $this->hasMany(ArchiveRelatedMedia::className(), ['archive_id' => 'id']);
 	}
@@ -185,9 +186,9 @@ class Archives extends \app\components\ActiveRecord
 		$this->templateColumns['media'] = [
 			'attribute' => 'media',
 			'value' => function($model, $key, $index, $column) {
-				return Archives::parseMedia($model->getMedia(true));
+				return Archives::parseMedia($model->getMedias(true));
 			},
-			'filter' => false,
+			'filter' => ArchiveMedia::getMedia(),
 			'format' => 'html',
 		];
 		$this->templateColumns['image_type'] = [
@@ -282,8 +283,8 @@ class Archives extends \app\components\ActiveRecord
 	public static function getImageType($value=null)
 	{
 		$items = array(
-			'photo' => Yii::t('app', 'Photo'),
-			'text' => Yii::t('app', 'Text'),
+			'photo' => Yii::t('app', 'Image/Photo'),
+			'text' => Yii::t('app', 'Document'),
 		);
 
 		if($value !== null) {

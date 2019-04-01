@@ -108,6 +108,8 @@ class AdminController extends Controller
 	 */
 	public function actionCreate()
 	{
+		$parent = Yii::$app->request->get('parent');
+
 		$model = new Archives();
 
 		if(Yii::$app->request->isPost) {
@@ -126,11 +128,15 @@ class AdminController extends Controller
 			}
 		}
 
+		if($parent)
+			$this->subMenu = $this->module->params['archive_submenu'];
 		$this->view->title = Yii::t('app', 'Create Archive');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
 			'model' => $model,
+			'parent' => $parent,
+			'fond' => !$parent ? true : false,
 		]);
 	}
 
@@ -158,11 +164,13 @@ class AdminController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Update {model-class}: {title}', ['model-class' => 'Archive', 'title' => $model->title]);
+		$this->subMenu = $this->module->params['archive_submenu'];
+		$this->view->title = Yii::t('app', 'Update {level-name}: {title}', ['level-name' => $model->level->level_name_i, 'title' => $model->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
 			'model' => $model,
+			'fond' => $model->level_id == 1 ? true : false,
 		]);
 	}
 
@@ -175,7 +183,8 @@ class AdminController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'Detail {model-class}: {title}', ['model-class' => 'Archive', 'title' => $model->title]);
+		$this->subMenu = $this->module->params['archive_submenu'];
+		$this->view->title = Yii::t('app', 'Detail {level-name}: {title}', ['level-name' => $model->level->level_name_i, 'title' => $model->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_view', [

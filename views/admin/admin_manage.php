@@ -25,7 +25,7 @@ use ommu\archive\models\ArchiveLevel;
 $this->params['breadcrumbs'][] = $this->title;
 
 $this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Add Archive'), 'url' => Url::to(['create']), 'icon' => 'plus-square'],
+	['label' => Yii::t('app', 'Add Fond'), 'url' => Url::to(['create']), 'icon' => 'plus-square'],
 ];
 $this->params['menu']['option'] = [
 	//['label' => Yii::t('app', 'Search'), 'url' => 'javascript:void(0);'],

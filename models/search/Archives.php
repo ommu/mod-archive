@@ -27,7 +27,7 @@ class Archives extends ArchivesModel
 	public function rules()
 	{
 		return [
-			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id'], 'integer'],
+			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'media'], 'integer'],
 			[['title', 'code', 'image_type', 'creation_date', 'modified_date', 'updated_date', 'levelName', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
 		];
 	}
@@ -67,7 +67,8 @@ class Archives extends ArchivesModel
 		$query->joinWith([
 			'level.title level', 
 			'creation creation', 
-			'modified modified'
+			'modified modified', 
+			'medias medias'
 		]);
 
 		// add conditions that should always apply here
@@ -121,6 +122,7 @@ class Archives extends ArchivesModel
 			'cast(t.modified_date as date)' => $this->modified_date,
 			't.modified_id' => isset($params['modified']) ? $params['modified'] : $this->modified_id,
 			'cast(t.updated_date as date)' => $this->updated_date,
+			'medias.media_id' => $this->media,
 		]);
 
 		if(isset($params['trash']))

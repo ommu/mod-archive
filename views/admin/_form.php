@@ -31,31 +31,46 @@ use ommu\archive\models\ArchiveLevel;
 
 <?php //echo $form->errorSummary($model);?>
 
-<?php echo $form->field($model, 'parent_id')
-	->textInput(['type'=>'number', 'min'=>'1'])
-	->label($model->getAttributeLabel('parent_id')); ?>
-
-<?php $level = ArchiveLevel::getLevel();
-echo $form->field($model, 'level_id')
-	->dropDownList($level, ['prompt'=>''])
-	->label($model->getAttributeLabel('level_id')); ?>
-
-<?php echo $form->field($model, 'title')
-	->textarea(['rows'=>6, 'cols'=>50])
-	->label($model->getAttributeLabel('title')); ?>
+<?php if(!$fond) {
+	if(!$model->getErrors() && $parent)
+		$model->parent_id = $parent;
+	echo $form->field($model, 'parent_id')
+		->textInput(['type'=>'number', 'min'=>'1'])
+		->label($model->getAttributeLabel('parent_id'));
+} ?>
 
 <?php echo $form->field($model, 'code')
 	->textInput(['maxlength'=>true])
-	->label($model->getAttributeLabel('code')); ?>
+	->label($model->getAttributeLabel('code'))
+	->hint(Yii::t('app', 'Provide a specific local reference code, control number, or other unique identifier. The country and repository code will be automatically added from the linked repository record to form a full reference code. (ISAD 3.1.1)')); ?>
+
+<?php echo $form->field($model, 'title')
+	->textarea(['rows'=>6, 'cols'=>50])
+	->label($model->getAttributeLabel('title'))
+	->hint(Yii::t('app', 'Provide either a formal title or a concise supplied title in accordance with the rules of multilevel description and national conventions. (ISAD 3.1.2)')); ?>
+
+<?php if($fond) {
+	$model->level_id = 1;
+	echo $form->field($model, 'level_id', ['template' => '{input}', 'options' => ['tag' => null]])
+		->hiddenInput();
+} else {
+	$level = ArchiveLevel::getLevel();
+	echo $form->field($model, 'level_id')
+		->dropDownList($level, ['prompt'=>''])
+		->label($model->getAttributeLabel('level_id'))
+		->hint(Yii::t('app', 'Record the level of this unit of description. (ISAD 3.1.4)'));
+} ?>
 
 <?php $imageType = Archives::getImageType();
 echo $form->field($model, 'image_type')
-	->dropDownList($imageType, ['prompt' => ''])
+	->radioList($imageType, ['prompt' => ''])
 	->label($model->getAttributeLabel('image_type')); ?>
 
-<?php echo $form->field($model, 'sidkkas')
-	->checkbox()
-	->label($model->getAttributeLabel('sidkkas')); ?>
+<?php if($fond) {
+	echo $form->field($model, 'sidkkas')
+		->checkbox()
+		->label($model->getAttributeLabel('sidkkas'));
+} ?>
 
 <?php echo $form->field($model, 'publish')
 	->checkbox()

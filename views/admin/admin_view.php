@@ -20,12 +20,6 @@ use ommu\archive\models\Archives;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->title;
-
-$this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye'],
-	['label' => Yii::t('app', 'Update'), 'url' => Url::to(['update', 'id'=>$model->id]), 'icon' => 'pencil'],
-	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post'], 'icon' => 'trash'],
-];
 ?>
 
 <div class="archives-view">
@@ -36,17 +30,16 @@ $attributes[] = [
 	'value' => $model->id,
 ];
 $attributes[] = [
-	'attribute' => 'publish',
-	'value' => $this->quickAction(Url::to(['publish', 'id'=>$model->primaryKey]), $model->publish),
-	'format' => 'raw',
-];
-$attributes[] = [
-	'attribute' => 'sidkkas',
-	'value' => $this->filterYesNo($model->sidkkas),
-];
-$attributes[] = [
 	'attribute' => 'parent_id',
 	'value' => $model->parent_id,
+];
+$attributes[] = [
+	'attribute' => 'code',
+	'value' => $model->code,
+];
+$attributes[] = [
+	'attribute' => 'title',
+	'value' => $model->title ? $model->title : '-',
 ];
 $attributes[] = [
 	'attribute' => 'levelName',
@@ -59,14 +52,6 @@ $attributes[] = [
 	'format' => 'html',
 ];
 $attributes[] = [
-	'attribute' => 'code',
-	'value' => $model->code,
-];
-$attributes[] = [
-	'attribute' => 'title',
-	'value' => $model->title ? $model->title : '-',
-];
-$attributes[] = [
 	'attribute' => 'image_type',
 	'value' => Archives::getImageType($model->image_type ? $model->image_type : '-'),
 ];
@@ -74,11 +59,20 @@ if($model->level->media) {
 	$attributes[] = [
 		'attribute' => 'media',
 		'value' => function ($model) {
-			return Archives::parseMedia($model->getMedia(true));
+			return Archives::parseMedia($model->getMedias(true));
 		},
 		'format' => 'html',
 	];
 }
+$attributes[] = [
+	'attribute' => 'sidkkas',
+	'value' => $this->filterYesNo($model->sidkkas),
+];
+$attributes[] = [
+	'attribute' => 'publish',
+	'value' => $this->quickAction(Url::to(['publish', 'id'=>$model->primaryKey]), $model->publish),
+	'format' => 'raw',
+];
 $attributes[] = [
 	'attribute' => 'creation_date',
 	'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),
