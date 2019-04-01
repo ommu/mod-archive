@@ -92,8 +92,8 @@ class LevelController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		$this->view->title = Yii::t('app', 'Levels');
-		$this->view->description = '';
+		$this->view->title = Yii::t('app', 'Levels of description');
+		$this->view->description = Yii::t('app', 'Create the levels of description to be included in the inventory list. If no levels are added, the inventory list link will not be displayed.');
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
 			'searchModel' => $searchModel,
@@ -117,7 +117,7 @@ class LevelController extends Controller
 			// $model->load($postData);
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Archive level success created.'));
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Level of description success created.'));
 				return $this->redirect(['manage']);
 				//return $this->redirect(['view', 'id'=>$model->id]);
 
@@ -127,7 +127,7 @@ class LevelController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Create Level');
+		$this->view->title = Yii::t('app', 'Create level of description');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
@@ -150,7 +150,7 @@ class LevelController extends Controller
 			// $model->load($postData);
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Archive level success updated.'));
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Level of description success updated.'));
 				return $this->redirect(['manage']);
 
 			} else {
@@ -159,7 +159,7 @@ class LevelController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Update {model-class}: {level-name}', ['model-class' => 'Level', 'level-name' => $model->title->message]);
+		$this->view->title = Yii::t('app', 'Update {model-class}: {level-name}', ['model-class' => 'level of description', 'level-name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
@@ -176,7 +176,7 @@ class LevelController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'Detail {model-class}: {level-name}', ['model-class' => 'Level', 'level-name' => $model->title->message]);
+		$this->view->title = Yii::t('app', 'Detail {model-class}: {level-name}', ['model-class' => 'level of description', 'level-name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_view', [
@@ -196,7 +196,7 @@ class LevelController extends Controller
 		$model->publish = 2;
 
 		if($model->save(false, ['publish','modified_id'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Archive level success deleted.'));
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Level of description success deleted.'));
 			return $this->redirect(['manage']);
 		}
 	}
@@ -214,7 +214,7 @@ class LevelController extends Controller
 		$model->publish = $replace;
 
 		if($model->save(false, ['publish','modified_id'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Archive level success updated.'));
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Level of description success updated.'));
 			return $this->redirect(['manage']);
 		}
 	}

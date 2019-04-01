@@ -302,7 +302,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		if($publish != null)
 			$model->andWhere(['t.publish' => $publish]);
 
-		$model = $model->orderBy('title.message ASC')->all();
+		$model = $model->orderBy('t.orders ASC')->all();
 
 		if($array == true)
 			return \yii\helpers\ArrayHelper::map($model, 'id', 'level_name_i');

@@ -29,21 +29,21 @@ use app\components\ActiveForm;
 
 <?php //echo $form->errorSummary($model);?>
 
-<?php echo $form->field($model, 'media_name_i')
+<?php echo $form->field($model, 'media_name_i', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('media_name_i')); ?>
 
-<?php echo $form->field($model, 'media_desc_i')
+<?php echo $form->field($model, 'media_desc_i', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
 	->textarea(['rows'=>6, 'cols'=>50, 'maxlength'=>true])
 	->label($model->getAttributeLabel('media_desc_i')); ?>
 
-<?php echo $form->field($model, 'publish')
+<?php echo $form->field($model, 'publish', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
 	->checkbox()
 	->label($model->getAttributeLabel('publish')); ?>
 
 <div class="ln_solid"></div>
 <div class="form-group row">
-	<div class="col-md-6 col-sm-9 col-xs-12 col-12 col-sm-offset-3">
+	<div class="col-sm-9 col-xs-12 col-12 col-sm-offset-3">
 		<?php echo Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']); ?>
 	</div>
 </div>
