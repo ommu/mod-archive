@@ -36,7 +36,8 @@
 		"php": "~7.0",
 		"yiisoft/yii2": "~2.0.13",
 		"ommu/yii-traits": "~2.1",
-		"thamtech/yii2-uuid": "*"
+		"thamtech/yii2-uuid": "*",
+		"kartik-v/yii2-widget-select2": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
