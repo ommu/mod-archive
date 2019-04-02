@@ -92,7 +92,7 @@ class LevelController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		$this->view->title = Yii::t('app', 'Levels of description');
+		$this->view->title = Yii::t('app', 'Levels of Description');
 		$this->view->description = Yii::t('app', 'Create the levels of description to be included in the inventory list. If no levels are added, the inventory list link will not be displayed.');
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
@@ -127,7 +127,7 @@ class LevelController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Create level of description');
+		$this->view->title = Yii::t('app', 'Create Level of Description');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
@@ -159,7 +159,7 @@ class LevelController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Update {model-class}: {level-name}', ['model-class' => 'level of description', 'level-name' => $model->title->message]);
+		$this->view->title = Yii::t('app', 'Update {model-class}: {level-name}', ['model-class' => 'Level of Description', 'level-name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
@@ -176,10 +176,10 @@ class LevelController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'Detail {model-class}: {level-name}', ['model-class' => 'level of description', 'level-name' => $model->title->message]);
+		$this->view->title = Yii::t('app', 'Detail {model-class}: {level-name}', ['model-class' => 'Level of Description', 'level-name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_view', [
+		return $this->oRender('admin_view', [
 			'model' => $model,
 		]);
 	}

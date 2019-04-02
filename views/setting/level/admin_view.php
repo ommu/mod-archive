@@ -16,6 +16,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
+use yii\helpers\ArrayHelper;
 use ommu\archive\models\ArchiveLevel;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Levels'), 'url' => ['index']];
@@ -30,60 +31,72 @@ $this->params['menu']['content'] = [
 
 <div class="archive-level-view">
 
-<?php echo DetailView::widget([
+<?php 
+$attributes = [
+	'id',
+	[
+		'attribute' => 'publish',
+		'value' => $this->quickAction(Url::to(['publish', 'id'=>$model->primaryKey]), $model->publish),
+		'format' => 'raw',
+	],
+	[
+		'attribute' => 'level_name_i',
+		'value' => $model->level_name_i,
+	],
+	[
+		'attribute' => 'level_desc_i',
+		'value' => $model->level_desc_i,
+	],
+	[
+		'attribute' => 'child',
+		'value' => ArchiveLevel::getChild($model->child),
+		'format' => 'html',
+	],
+	[
+		'attribute' => 'creation_date',
+		'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),
+	],
+	[
+		'attribute' => 'creationDisplayname',
+		'value' => isset($model->creation) ? $model->creation->displayname : '-',
+	],
+	[
+		'attribute' => 'modified_date',
+		'value' => Yii::$app->formatter->asDatetime($model->modified_date, 'medium'),
+	],
+	[
+		'attribute' => 'modifiedDisplayname',
+		'value' => isset($model->modified) ? $model->modified->displayname : '-',
+	],
+	[
+		'attribute' => 'updated_date',
+		'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
+	],
+	[
+		'attribute' => 'archives',
+		'value' => function ($model) {
+			$archives = $model->getArchives(true);
+			return Html::a($archives, ['admin/manage', 'level'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
+		},
+		'format' => 'html',
+	],
+];
+if(Yii::$app->request->isAjax) {
+	$attributes = ArrayHelper::merge($attributes, [
+		[
+			'attribute' => '',
+			'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-success']),
+			'format' => 'html',
+		],
+	]);
+}
+
+echo DetailView::widget([
 	'model' => $model,
 	'options' => [
 		'class'=>'table table-striped detail-view',
 	],
-	'attributes' => [
-		'id',
-		[
-			'attribute' => 'publish',
-			'value' => $this->quickAction(Url::to(['publish', 'id'=>$model->primaryKey]), $model->publish),
-			'format' => 'raw',
-		],
-		[
-			'attribute' => 'level_name_i',
-			'value' => $model->level_name_i,
-		],
-		[
-			'attribute' => 'level_desc_i',
-			'value' => $model->level_desc_i,
-		],
-		[
-			'attribute' => 'child',
-			'value' => ArchiveLevel::getChild($model->child),
-			'format' => 'html',
-		],
-		[
-			'attribute' => 'creation_date',
-			'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),
-		],
-		[
-			'attribute' => 'creationDisplayname',
-			'value' => isset($model->creation) ? $model->creation->displayname : '-',
-		],
-		[
-			'attribute' => 'modified_date',
-			'value' => Yii::$app->formatter->asDatetime($model->modified_date, 'medium'),
-		],
-		[
-			'attribute' => 'modifiedDisplayname',
-			'value' => isset($model->modified) ? $model->modified->displayname : '-',
-		],
-		[
-			'attribute' => 'updated_date',
-			'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
-		],
-		[
-			'attribute' => 'archives',
-			'value' => function ($model) {
-				$archives = $model->getArchives(true);
-				return Html::a($archives, ['admin/manage', 'level'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
-			},
-			'format' => 'html',
-		],
-	],
+	'attributes' => $attributes,
 ]); ?>
 
 </div>

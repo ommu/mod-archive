@@ -179,7 +179,7 @@ class MediaController extends Controller
 		$this->view->title = Yii::t('app', 'Detail {model-class}: {media-name}', ['model-class' => 'Media', 'media-name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_view', [
+		return $this->oRender('admin_view', [
 			'model' => $model,
 		]);
 	}

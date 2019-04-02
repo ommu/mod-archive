@@ -30,7 +30,7 @@ use ommu\archive\models\ArchiveLevel;
 ]);
 
 $wraper = [];
-if(!$model->isNewRecord)
+if(!$model->isNewRecord || ($model->isNewRecord && $parent))
 	$wraper = ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']];?>
 
 <?php //echo $form->errorSummary($model);?>

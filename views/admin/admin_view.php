@@ -16,6 +16,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
+use yii\helpers\ArrayHelper;
 use ommu\archive\models\Archives;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' => ['index']];
@@ -31,7 +32,8 @@ $attributes[] = [
 ];
 $attributes[] = [
 	'attribute' => 'parent_id',
-	'value' => $model->parent_id,
+	'value' => isset($model->parent) ? Archives::parseParent($model) : '-',
+	'format' => 'html',
 ];
 $attributes[] = [
 	'attribute' => 'code',
@@ -46,7 +48,7 @@ $attributes[] = [
 	'value' => function ($model) {
 		$levelName = isset($model->level) ? $model->level->title->message : '-';
 		if($levelName != '-')
-			return Html::a($levelName, ['setting/level/view', 'id'=>$model->level_id], ['title'=>$levelName]);
+			return Html::a($levelName, ['setting/level/view', 'id'=>$model->level_id], ['title'=>$levelName, 'class'=>'modal-btn']);
 		return $levelName;
 	},
 	'format' => 'html',
@@ -59,7 +61,7 @@ if($model->level->media) {
 	$attributes[] = [
 		'attribute' => 'media',
 		'value' => function ($model) {
-			return Archives::parseMedia($model->getMedias(true));
+			return Archives::parseMedia($model->getRelatedMedia(true));
 		},
 		'format' => 'html',
 	];
@@ -93,6 +95,15 @@ $attributes[] = [
 	'attribute' => 'updated_date',
 	'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
 ];
+if(Yii::$app->request->isAjax) {
+	$attributes = ArrayHelper::merge($attributes, [
+		[
+			'attribute' => '',
+			'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-success']),
+			'format' => 'html',
+		],
+	]);
+}
 
 echo DetailView::widget([
 	'model' => $model,

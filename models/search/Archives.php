@@ -28,7 +28,7 @@ class Archives extends ArchivesModel
 	{
 		return [
 			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'media'], 'integer'],
-			[['title', 'code', 'image_type', 'creation_date', 'modified_date', 'updated_date', 'levelName', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
+			[['title', 'code', 'image_type', 'creation_date', 'modified_date', 'updated_date', 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
 		];
 	}
 
@@ -65,10 +65,11 @@ class Archives extends ArchivesModel
 		else
 			$query = ArchivesModel::find()->alias('t')->select($column);
 		$query->joinWith([
+			'parent parent', 
 			'level.title level', 
 			'creation creation', 
 			'modified modified', 
-			'medias medias'
+			'relatedMedia relatedMedia'
 		]);
 
 		// add conditions that should always apply here
@@ -81,6 +82,10 @@ class Archives extends ArchivesModel
 		$dataProvider = new ActiveDataProvider($dataParams);
 
 		$attributes = array_keys($this->getTableSchema()->columns);
+		$attributes['parentTitle'] = [
+			'asc' => ['parent.title' => SORT_ASC],
+			'desc' => ['parent.title' => SORT_DESC],
+		];
 		$attributes['level_id'] = [
 			'asc' => ['level.message' => SORT_ASC],
 			'desc' => ['level.message' => SORT_DESC],
@@ -122,7 +127,7 @@ class Archives extends ArchivesModel
 			'cast(t.modified_date as date)' => $this->modified_date,
 			't.modified_id' => isset($params['modified']) ? $params['modified'] : $this->modified_id,
 			'cast(t.updated_date as date)' => $this->updated_date,
-			'medias.media_id' => $this->media,
+			'relatedMedia.media_id' => $this->media,
 		]);
 
 		if(isset($params['trash']))
@@ -136,6 +141,7 @@ class Archives extends ArchivesModel
 
 		$query->andFilterWhere(['like', 't.title', $this->title])
 			->andFilterWhere(['like', 't.code', $this->code])
+			->andFilterWhere(['like', 'parent.title', $this->parentTitle])
 			->andFilterWhere(['like', 'level.message', $this->levelName])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
 			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname]);

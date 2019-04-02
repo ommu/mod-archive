@@ -44,8 +44,9 @@ class Archives extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 
-	public $gridForbiddenColumn = ['parent_id','creation_date','creationDisplayname','modified_date','modifiedDisplayname','updated_date'];
+	public $gridForbiddenColumn = ['parentTitle','creation_date','creationDisplayname','modified_date','modifiedDisplayname','updated_date'];
 
+	public $parentTitle;
 	public $levelName;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
@@ -82,8 +83,8 @@ class Archives extends \app\components\ActiveRecord
 			'id' => Yii::t('app', 'ID'),
 			'publish' => Yii::t('app', 'Publish'),
 			'sidkkas' => Yii::t('app', 'SiDKKAS'),
-			'parent_id' => Yii::t('app', 'Parent'),
-			'level_id' => Yii::t('app', 'Level of description'),
+			'parent_id' => Yii::t('app', 'Archival Parent'),
+			'level_id' => Yii::t('app', 'Level of Description'),
 			'title' => Yii::t('app', 'Title'),
 			'code' => Yii::t('app', 'Identifier'),
 			'image_type' => Yii::t('app', 'Image Type'),
@@ -93,7 +94,8 @@ class Archives extends \app\components\ActiveRecord
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
 			'media' => Yii::t('app', 'Media'),
-			'levelName' => Yii::t('app', 'Level'),
+			'parentTitle' => Yii::t('app', 'Archival Parent'),
+			'levelName' => Yii::t('app', 'Level of Description'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
 		];
@@ -102,12 +104,20 @@ class Archives extends \app\components\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getMedias($result=false)
+	public function getRelatedMedia($result=false)
 	{
 		if($result == true)
-			return \yii\helpers\ArrayHelper::map($this->medias, 'media_id', 'media.media_name_i');
+			return \yii\helpers\ArrayHelper::map($this->relatedMedia, 'media_id', 'media.media_name_i');
 
 		return $this->hasMany(ArchiveRelatedMedia::className(), ['archive_id' => 'id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getParent()
+	{
+		return $this->hasOne(Archives::className(), ['id' => 'parent_id']);
 	}
 
 	/**
@@ -155,15 +165,19 @@ class Archives extends \app\components\ActiveRecord
 			'class'  => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		$this->templateColumns['parent_id'] = [
-			'attribute' => 'parent_id',
-			'value' => function($model, $key, $index, $column) {
-				return $model->parent_id;
-			},
-		];
+		if(!Yii::$app->request->get('parent')) {
+			$this->templateColumns['parentTitle'] = [
+				'attribute' => 'parentTitle',
+				'header' => Yii::t('app', 'Parent'),
+				'value' => function($model, $key, $index, $column) {
+					return isset($model->parent) ? $model->parent->title : '-';
+				},
+			];
+		}
 		if(!Yii::$app->request->get('level')) {
 			$this->templateColumns['level_id'] = [
 				'attribute' => 'level_id',
+				'header' => Yii::t('app', 'Level'),
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->level) ? $model->level->title->message : '-';
 					// return $model->levelName;
@@ -186,7 +200,7 @@ class Archives extends \app\components\ActiveRecord
 		$this->templateColumns['media'] = [
 			'attribute' => 'media',
 			'value' => function($model, $key, $index, $column) {
-				return Archives::parseMedia($model->getMedias(true));
+				return Archives::parseMedia($model->getRelatedMedia(true));
 			},
 			'filter' => ArchiveMedia::getMedia(),
 			'format' => 'html',
@@ -296,14 +310,29 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * function parseParent
+	 */
+	public static function parseParent($model) 
+	{
+		$title = $model->parent->title;
+		$levelName = $model->parent->level->title->message;
+
+		$items[] = $model->getAttributeLabel('code').': '.$model->parent->code;
+		$items[] = $model->getAttributeLabel('title').': '.Html::a($title, ['view', 'id'=>$model->parent_id], ['title'=>$title, 'class'=>'modal-btn']);
+		$items[] = $model->getAttributeLabel('level_id').': '.Html::a($levelName, ['setting/level/view', 'id'=>$model->parent->level_id], ['title'=>$levelName, 'class'=>'modal-btn']);
+
+		return Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']);
+	}
+
+	/**
 	 * function parseMedia
 	 */
-	public static function parseMedia($medias, $separator=',') 
+	public static function parseMedia($relatedMedia, $separator=',') 
 	{
-		if(!is_array($medias) || (is_array($medias) && empty($medias)))
+		if(!is_array($relatedMedia) || (is_array($relatedMedia) && empty($relatedMedia)))
 			return '-';
 		
-		foreach ($medias as $key => $val) {
+		foreach ($relatedMedia as $key => $val) {
 			$media[] = Html::a($val, ['related/media/manage', 'media'=>$key], ['title'=>$val]);
 		}
 
@@ -317,6 +346,7 @@ class Archives extends \app\components\ActiveRecord
 	{
 		parent::afterFind();
 
+		// $this->parentTitle = isset($this->parent) ? $this->parent->title : '-';
 		// $this->levelName = isset($this->level) ? $this->level->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';

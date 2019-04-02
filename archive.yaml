@@ -11,6 +11,12 @@ archive_submenu:
       0: 'admin/update'
       id: $_GET*id
     select: action
+  child:
+    label: Add New Child Levels
+    url:
+      0: 'admin/create'
+      id: $_GET*id
+    select: action
   delete:
     label: Delete
     url:

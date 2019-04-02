@@ -108,7 +108,7 @@ class AdminController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$parent = Yii::$app->request->get('parent');
+		$parent = Yii::$app->request->get('id');
 
 		$model = new Archives();
 
@@ -130,13 +130,13 @@ class AdminController extends Controller
 
 		if($parent)
 			$this->subMenu = $this->module->params['archive_submenu'];
-		$this->view->title = Yii::t('app', 'Create Archive');
+		$this->view->title = $parent ? Yii::t('app', 'Add New Child Levels') : Yii::t('app', 'Create Archive');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
 			'model' => $model,
 			'parent' => $parent,
-			'fond' => !$parent ? true : false,
+			'fond' => $parent ? false : true,
 		]);
 	}
 
@@ -187,7 +187,7 @@ class AdminController extends Controller
 		$this->view->title = Yii::t('app', 'Detail {level-name}: {title}', ['level-name' => $model->level->level_name_i, 'title' => $model->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_view', [
+		return $this->oRender('admin_view', [
 			'model' => $model,
 		]);
 	}
