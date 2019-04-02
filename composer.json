@@ -1,0 +1,39 @@
+{
+	"name": "ommu/archive",
+	"description": "Archive Module from Ommu Platform",
+	"keywords": [
+		"module",
+		"archive",
+		"siks",
+		"sikn",
+		"jikn",
+		"anri",
+		"ommu",
+		"ommu-platform",
+		"yii"
+	],
+	"homepage": "https://bitbucket.org/ommu/archive",
+	"type": "ommu-module",
+	"license": "Apache-2.0",
+	"support": {
+		"issues": "https://bitbucket.org/ommu/archive/issues",
+		"wiki": "https://bitbucket.org/ommu/archive/wiki",
+		"source": "https://bitbucket.org/ommu/archive"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://bitbucket.org/ommu/archive.git"
+	},
+	"authors": [
+		{
+			"name": "Putra Sudaryanto",
+			"email": "putra@sudaryanto.id",
+			"homepage": "https://putra.sudaryanto.id",
+			"role": "Creator"
+		}
+	],
+	"require": {
+		"php": ">=5.3.2",
+		"yiisoft/yii": ">=1.1.14"
+	}
+}
