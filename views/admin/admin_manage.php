@@ -96,7 +96,7 @@ array_push($columnData, [
 			]);
 		},
 	],
-	'template' => '{view}{update}{delete}',
+	'template' => '{update}{delete}',
 ]);
 
 echo GridView::widget([

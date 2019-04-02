@@ -314,6 +314,9 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public static function parseParent($model) 
 	{
+		if(!isset($model->parent))
+			return '-';
+
 		$title = $model->parent->title;
 		$levelName = $model->parent->level->title->message;
 
@@ -327,16 +330,14 @@ class Archives extends \app\components\ActiveRecord
 	/**
 	 * function parseMedia
 	 */
-	public static function parseMedia($relatedMedia, $separator=',') 
+	public static function parseMedia($relatedMedia) 
 	{
 		if(!is_array($relatedMedia) || (is_array($relatedMedia) && empty($relatedMedia)))
 			return '-';
-		
-		foreach ($relatedMedia as $key => $val) {
-			$media[] = Html::a($val, ['related/media/manage', 'media'=>$key], ['title'=>$val]);
-		}
 
-		return implode($separator, $media);
+		return Html::ul($relatedMedia, ['item' => function($item, $index) {
+			return Html::tag('li', Html::a($item, ['setting/media/view', 'id'=>$index], ['title'=>$item, 'class'=>'modal-btn']));
+		}, 'class'=>'list-boxed']);
 	}
 
 	/**

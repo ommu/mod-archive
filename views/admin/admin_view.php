@@ -30,11 +30,13 @@ $attributes[] = [
 	'attribute' => 'id',
 	'value' => $model->id,
 ];
-$attributes[] = [
-	'attribute' => 'parent_id',
-	'value' => isset($model->parent) ? Archives::parseParent($model) : '-',
-	'format' => 'html',
-];
+if($model->level_id != 1) {
+	$attributes[] = [
+		'attribute' => 'parent_id',
+		'value' => Archives::parseParent($model),
+		'format' => 'html',
+	];
+}
 $attributes[] = [
 	'attribute' => 'code',
 	'value' => $model->code,
