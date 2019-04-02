@@ -63,7 +63,7 @@ if($model->level->media) {
 	$attributes[] = [
 		'attribute' => 'media',
 		'value' => function ($model) {
-			return Archives::parseMedia($model->getRelatedMedia(true));
+			return Archives::parseMedia($model->getRelatedMedia(true, 'title'));
 		},
 		'format' => 'html',
 	];

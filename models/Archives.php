@@ -69,6 +69,7 @@ class Archives extends \app\components\ActiveRecord
 			[['level_id', 'title', 'code'], 'required'],
 			[['publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id'], 'integer'],
 			[['title', 'image_type'], 'string'],
+			[['media'], 'safe'],
 			[['code'], 'string', 'max' => 255],
 			[['level_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLevel::className(), 'targetAttribute' => ['level_id' => 'id']],
 		];
@@ -93,7 +94,7 @@ class Archives extends \app\components\ActiveRecord
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
-			'media' => Yii::t('app', 'Media'),
+			'media' => Yii::t('app', 'Media Type'),
 			'parentTitle' => Yii::t('app', 'Archival Parent'),
 			'levelName' => Yii::t('app', 'Level of Description'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
@@ -104,10 +105,10 @@ class Archives extends \app\components\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getRelatedMedia($result=false)
+	public function getRelatedMedia($result=false, $val='id')
 	{
 		if($result == true)
-			return \yii\helpers\ArrayHelper::map($this->relatedMedia, 'media_id', 'media.media_name_i');
+			return \yii\helpers\ArrayHelper::map($this->relatedMedia, 'media_id', $val=='id' ? 'id' : 'media.media_name_i');
 
 		return $this->hasMany(ArchiveRelatedMedia::className(), ['archive_id' => 'id']);
 	}
@@ -199,8 +200,9 @@ class Archives extends \app\components\ActiveRecord
 		];
 		$this->templateColumns['media'] = [
 			'attribute' => 'media',
+			'header' => Yii::t('app', 'Media'),
 			'value' => function($model, $key, $index, $column) {
-				return Archives::parseMedia($model->getRelatedMedia(true));
+				return Archives::parseMedia($model->getRelatedMedia(true, 'title'));
 			},
 			'filter' => ArchiveMedia::getMedia(),
 			'format' => 'html',
@@ -351,6 +353,7 @@ class Archives extends \app\components\ActiveRecord
 		// $this->levelName = isset($this->level) ? $this->level->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
+		$this->media = array_flip($this->getRelatedMedia(true));
 	}
 
 	/**
@@ -367,6 +370,39 @@ class Archives extends \app\components\ActiveRecord
 					$this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
 			}
 		}
+		return true;
+	}
+
+	/**
+	 * before save attributes
+	 */
+	public function beforeSave($insert)
+	{
+		$oldMedia = array_flip($this->getRelatedMedia(true));
+		$media = $this->media;
+
+		// insert difference media
+		if(is_array($media)) {
+			foreach ($media as $val) {
+				if(in_array($val, $oldMedia)) {
+					unset($oldMedia[array_keys($oldMedia, $val)[0]]);
+					continue;
+				}
+
+				$model = new ArchiveRelatedMedia();
+				$model->archive_id = $this->id;
+				$model->media_id = $val;
+				$model->save();
+			}
+		}
+
+		// drop difference media
+		if(!empty($oldMedia)) {
+			foreach ($oldMedia as $key => $val) {
+				ArchiveRelatedMedia::findOne($key)->delete();
+			}
+		}
+
 		return true;
 	}
 }

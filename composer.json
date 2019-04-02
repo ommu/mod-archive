@@ -37,7 +37,7 @@
 		"yiisoft/yii2": "~2.0.13",
 		"ommu/yii-traits": "~2.1",
 		"thamtech/yii2-uuid": "*",
-		"kartik-v/yii2-widget-select2": "dev-master"
+		"yii2mod/yii2-selectize": "*"
 	},
 	"autoload": {
 		"psr-4": {

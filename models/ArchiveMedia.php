@@ -217,7 +217,7 @@ class ArchiveMedia extends \app\components\ActiveRecord
 			'attribute' => 'archives',
 			'value' => function($model, $key, $index, $column) {
 				$archives = $model->getReferenceMedia(true);
-				return Html::a($archives, ['media/manage', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archive', ['count'=>$archives])]);
+				return Html::a($archives, ['admin/manage', 'media'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archive', ['count'=>$archives])]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],

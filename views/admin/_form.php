@@ -18,6 +18,8 @@ use yii\helpers\Html;
 use app\components\ActiveForm;
 use ommu\archive\models\Archives;
 use ommu\archive\models\ArchiveLevel;
+use ommu\archive\models\ArchiveMedia;
+use yii2mod\selectize\Selectize;
 ?>
 
 <div class="archives-form">
@@ -64,6 +66,18 @@ if(!$model->isNewRecord || ($model->isNewRecord && $parent))
 		->label($model->getAttributeLabel('level_id'))
 		->hint(Yii::t('app', 'Record the level of this unit of description. (ISAD 3.1.4)'));
 } ?>
+
+<?php echo $form->field($model, 'media', $wraper)
+	->widget(Selectize::className(), [
+		'items' => ArchiveMedia::getMedia(1),
+		'options' => [
+			'multiple' => true,
+		],
+		'pluginOptions' => [
+			'plugins' => ['remove_button'],
+		],
+	])
+	->label($model->getAttributeLabel('media')); ?>
 
 <?php $imageType = Archives::getImageType();
 echo $form->field($model, 'image_type', $wraper)

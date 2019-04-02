@@ -36,6 +36,6 @@ setting_submenu:
     url: ['setting/level']
     select: controller
   media:
-    label: Medias
+    label: Media Type
     url: ['setting/media']
     select: controller

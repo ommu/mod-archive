@@ -70,7 +70,7 @@ $attributes = [
 		'attribute' => 'archives',
 		'value' => function ($model) {
 			$archives = $model->getReferenceMedia(true);
-			return Html::a($archives, ['media/manage', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
+			return Html::a($archives, ['admin/manage', 'media'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
 		},
 		'format' => 'html',
 	],

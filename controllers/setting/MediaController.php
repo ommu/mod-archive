@@ -92,7 +92,7 @@ class MediaController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		$this->view->title = Yii::t('app', 'Media');
+		$this->view->title = Yii::t('app', 'Media Type');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
@@ -117,7 +117,7 @@ class MediaController extends Controller
 			// $model->load($postData);
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Archive media success created.'));
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Media type success created.'));
 				return $this->redirect(['manage']);
 				//return $this->redirect(['view', 'id'=>$model->id]);
 
@@ -150,7 +150,7 @@ class MediaController extends Controller
 			// $model->load($postData);
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Archive media success updated.'));
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Media type success updated.'));
 				return $this->redirect(['manage']);
 
 			} else {
@@ -159,7 +159,7 @@ class MediaController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Update {model-class}: {media-name}', ['model-class' => 'Media', 'media-name' => $model->title->message]);
+		$this->view->title = Yii::t('app', 'Update {model-class}: {media-name}', ['model-class' => 'Media Type', 'media-name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
@@ -176,7 +176,7 @@ class MediaController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'Detail {model-class}: {media-name}', ['model-class' => 'Media', 'media-name' => $model->title->message]);
+		$this->view->title = Yii::t('app', 'Detail {model-class}: {media-name}', ['model-class' => 'Media Type', 'media-name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
@@ -196,7 +196,7 @@ class MediaController extends Controller
 		$model->publish = 2;
 
 		if($model->save(false, ['publish','modified_id'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Archive media success deleted.'));
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Media type success deleted.'));
 			return $this->redirect(['manage']);
 		}
 	}
@@ -214,7 +214,7 @@ class MediaController extends Controller
 		$model->publish = $replace;
 
 		if($model->save(false, ['publish','modified_id'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Archive media success updated.'));
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Media type success updated.'));
 			return $this->redirect(['manage']);
 		}
 	}
