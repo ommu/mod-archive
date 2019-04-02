@@ -48,9 +48,9 @@ echo $form->field($model, 'child', ['horizontalCssClasses' => ['wrapper'=>'col-s
 	->checkbox()
 	->label($model->getAttributeLabel('sidkkas')); ?>
 
-<?php echo $form->field($model, 'media', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'image_type', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
 	->checkbox()
-	->label($model->getAttributeLabel('media')); ?>
+	->label($model->getAttributeLabel('image_type')); ?>
 
 <?php echo $form->field($model, 'publish', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
 	->checkbox()

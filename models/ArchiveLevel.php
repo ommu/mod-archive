@@ -17,7 +17,7 @@
  * @property integer $level_desc
  * @property string $child
  * @property integer $sidkkas
- * @property integer $media
+ * @property integer $image_type
  * @property string $creation_date
  * @property integer $creation_id
  * @property string $modified_date
@@ -45,7 +45,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 
-	public $gridForbiddenColumn = ['level_desc_i', 'child', 'sidkkas', 'media', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
+	public $gridForbiddenColumn = ['level_desc_i', 'child', 'sidkkas', 'image_type', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
 	public $level_name_i;
 	public $level_desc_i;
@@ -67,7 +67,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	{
 		return [
 			[['level_name_i', 'level_desc_i'], 'required'],
-			[['publish', 'level_name', 'level_desc', 'sidkkas', 'media', 'creation_id', 'modified_id'], 'integer'],
+			[['publish', 'level_name', 'level_desc', 'sidkkas', 'image_type', 'creation_id', 'modified_id'], 'integer'],
 			[['level_name_i', 'level_desc_i'], 'string'],
 			[['child'], 'safe'],
 			//[['child'], 'serialize'],
@@ -87,7 +87,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 			'level_desc' => Yii::t('app', 'Description'),
 			'child' => Yii::t('app', 'Child'),
 			'sidkkas' => Yii::t('app', 'SiDKKAS Select'),
-			'media' => Yii::t('app', 'Media Select'),
+			'image_type' => Yii::t('app', 'Image Type Select'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
@@ -252,10 +252,10 @@ class ArchiveLevel extends \app\components\ActiveRecord
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class'=>'center'],
 		];
-		$this->templateColumns['media'] = [
-			'attribute' => 'media',
+		$this->templateColumns['image_type'] = [
+			'attribute' => 'image_type',
 			'value' => function($model, $key, $index, $column) {
-				return $this->filterYesNo($model->media);
+				return $this->filterYesNo($model->image_type);
 			},
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class'=>'center'],

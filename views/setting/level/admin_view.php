@@ -53,6 +53,14 @@ $attributes = [
 		'format' => 'html',
 	],
 	[
+		'attribute' => 'sidkkas',
+		'value' => $this->filterYesNo($model->sidkkas),
+	],
+	[
+		'attribute' => 'image_type',
+		'value' => $this->filterYesNo($model->image_type),
+	],
+	[
 		'attribute' => 'creation_date',
 		'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),
 	],

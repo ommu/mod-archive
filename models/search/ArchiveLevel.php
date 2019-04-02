@@ -27,7 +27,7 @@ class ArchiveLevel extends ArchiveLevelModel
 	public function rules()
 	{
 		return [
-			[['id', 'publish', 'level_name', 'level_desc', 'sidkkas', 'media', 'creation_id', 'modified_id'], 'integer'],
+			[['id', 'publish', 'level_name', 'level_desc', 'sidkkas', 'image_type', 'creation_id', 'modified_id'], 'integer'],
 			[['child', 'creation_date', 'modified_date', 'updated_date', 'level_name_i', 'level_desc_i', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
 		];
 	}
@@ -116,7 +116,7 @@ class ArchiveLevel extends ArchiveLevelModel
 			't.level_name' => $this->level_name,
 			't.level_desc' => $this->level_desc,
 			't.sidkkas' => $this->sidkkas,
-			't.media' => $this->media,
+			't.image_type' => $this->image_type,
 			'cast(t.creation_date as date)' => $this->creation_date,
 			't.creation_id' => isset($params['creation']) ? $params['creation'] : $this->creation_id,
 			'cast(t.modified_date as date)' => $this->modified_date,
