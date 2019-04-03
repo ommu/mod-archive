@@ -130,7 +130,7 @@ class AdminController extends Controller
 
 		if($parent)
 			$this->subMenu = $this->module->params['archive_submenu'];
-		$this->view->title = $parent ? Yii::t('app', 'Add New Child Levels') : Yii::t('app', 'Create Archive');
+		$this->view->title = $parent ? Yii::t('app', 'Add New Child Levels') : Yii::t('app', 'Create Fond');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [

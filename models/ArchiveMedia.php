@@ -22,7 +22,7 @@
  * @property string $updated_date
  *
  * The followings are the available model relations:
- * @property ArchiveRelatedMedia[] $referenceMedia
+ * @property ArchiveRelatedMedia[] $archives
  * @property SourceMessage $title
  * @property SourceMessage $description
  * @property Users $creation
@@ -97,7 +97,7 @@ class ArchiveMedia extends \app\components\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getReferenceMedia($count=false)
+	public function getArchives($count=false)
 	{
 		if($count == false)
 			return $this->hasMany(ArchiveRelatedMedia::className(), ['media_id' => 'id']);
@@ -216,7 +216,7 @@ class ArchiveMedia extends \app\components\ActiveRecord
 		$this->templateColumns['archives'] = [
 			'attribute' => 'archives',
 			'value' => function($model, $key, $index, $column) {
-				$archives = $model->getReferenceMedia(true);
+				$archives = $model->getArchives(true);
 				return Html::a($archives, ['admin/manage', 'media'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archive', ['count'=>$archives])]);
 			},
 			'filter' => false,
