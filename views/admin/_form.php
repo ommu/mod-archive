@@ -60,7 +60,7 @@ if(!$model->isNewRecord || ($model->isNewRecord && $parent))
 	echo $form->field($model, 'level_id', ['template' => '{input}', 'options' => ['tag' => null]])
 		->hiddenInput();
 } else {
-	$level = ArchiveLevel::getLevel();
+	$level = $model->getChildLevel();
 	echo $form->field($model, 'level_id', $wraper)
 		->dropDownList($level, ['prompt'=>''])
 		->label($model->getAttributeLabel('level_id'))
@@ -79,12 +79,14 @@ if(!$model->isNewRecord || ($model->isNewRecord && $parent))
 	])
 	->label($model->getAttributeLabel('media')); ?>
 
-<?php $imageType = Archives::getImageType();
-echo $form->field($model, 'image_type', $wraper)
-	->radioList($imageType, ['prompt' => ''])
-	->label($model->getAttributeLabel('image_type')); ?>
+<?php if($item || $model->level->image_type) {
+	$imageType = Archives::getImageType();
+	echo $form->field($model, 'image_type', $wraper)
+		->radioList($imageType, ['prompt' => ''])
+		->label($model->getAttributeLabel('image_type'));
+} ?>
 
-<?php if($fond) {
+<?php if($fond || $model->level->sidkkas) {
 	echo $form->field($model, 'sidkkas', $wraper)
 		->checkbox()
 		->label($model->getAttributeLabel('sidkkas'));

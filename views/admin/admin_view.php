@@ -55,11 +55,7 @@ $attributes[] = [
 	},
 	'format' => 'html',
 ];
-$attributes[] = [
-	'attribute' => 'image_type',
-	'value' => Archives::getImageType($model->image_type ? $model->image_type : '-'),
-];
-if($model->level->media) {
+if($model->level->image_type) {
 	$attributes[] = [
 		'attribute' => 'media',
 		'value' => function ($model) {
@@ -68,6 +64,10 @@ if($model->level->media) {
 		'format' => 'html',
 	];
 }
+$attributes[] = [
+	'attribute' => 'image_type',
+	'value' => Archives::getImageType($model->image_type ? $model->image_type : '-'),
+];
 $attributes[] = [
 	'attribute' => 'sidkkas',
 	'value' => $this->filterYesNo($model->sidkkas),

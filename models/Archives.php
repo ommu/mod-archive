@@ -39,6 +39,7 @@ use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use ommu\users\models\Users;
+use yii\helpers\ArrayHelper;
 
 class Archives extends \app\components\ActiveRecord
 {
@@ -309,6 +310,26 @@ class Archives extends \app\components\ActiveRecord
 			return $items[$value];
 		} else
 			return $items;
+	}
+
+	/**
+	 * function getLevel
+	 */
+	public function getChildLevel()
+	{
+		$levels = ArchiveLevel::getLevel(1);
+		$child = $this->level->child;
+		if(!is_array($child))
+			$child = [];
+
+		$items = ArrayHelper::merge(explode(',', $this->level_id), $child);
+
+		foreach ($levels as $key => $val) {
+			if(!ArrayHelper::isIn($key, $items))
+				ArrayHelper::remove($levels, $key);
+		}
+
+		return $levels;
 	}
 
 	/**
