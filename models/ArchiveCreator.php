@@ -1,20 +1,20 @@
 <?php
 /**
- * ArchiveMedia
+ * ArchiveCreator
  * 
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2019 OMMU (www.ommu.co)
- * @created date 5 March 2019, 23:33 WIB
+ * @created date 3 April 2019, 16:18 WIB
  * @link https://bitbucket.org/ommu/archive
  *
- * This is the model class for table "ommu_archive_media".
+ * This is the model class for table "ommu_archive_creator".
  *
- * The followings are the available columns in table "ommu_archive_media":
+ * The followings are the available columns in table "ommu_archive_creator":
  * @property integer $id
  * @property integer $publish
- * @property integer $media_name
- * @property integer $media_desc
+ * @property string $creator_name
+ * @property string $creator_desc
  * @property string $creation_date
  * @property integer $creation_id
  * @property string $modified_date
@@ -22,9 +22,7 @@
  * @property string $updated_date
  *
  * The followings are the available model relations:
- * @property ArchiveRelatedMedia[] $archives
- * @property SourceMessage $title
- * @property SourceMessage $description
+ * @property ArchiveRelatedCreator[] $archives
  * @property Users $creation
  * @property Users $modified
  *
@@ -35,17 +33,14 @@ namespace ommu\archive\models;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use app\models\SourceMessage;
 use ommu\users\models\Users;
 
-class ArchiveMedia extends \app\components\ActiveRecord
+class ArchiveCreator extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 
-	public $gridForbiddenColumn = ['media_desc_i', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
+	public $gridForbiddenColumn = ['creator_desc', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
-	public $media_name_i;
-	public $media_desc_i;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
 
@@ -54,7 +49,7 @@ class ArchiveMedia extends \app\components\ActiveRecord
 	 */
 	public static function tableName()
 	{
-		return 'ommu_archive_media';
+		return 'ommu_archive_creator';
 	}
 
 	/**
@@ -63,11 +58,11 @@ class ArchiveMedia extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['media_name_i', 'media_desc_i'], 'required'],
-			[['publish', 'media_name', 'media_desc', 'creation_id', 'modified_id'], 'integer'],
-			[['media_name_i', 'media_desc_i'], 'string'],
-			[['media_name_i'], 'string', 'max' => 64],
-			[['media_desc_i'], 'string', 'max' => 128],
+			[['creator_name'], 'required'],
+			[['publish', 'creation_id', 'modified_id'], 'integer'],
+			[['creator_desc'], 'string'],
+			[['creator_desc'], 'safe'],
+			[['creator_name'], 'string', 'max' => 64],
 		];
 	}
 
@@ -79,16 +74,14 @@ class ArchiveMedia extends \app\components\ActiveRecord
 		return [
 			'id' => Yii::t('app', 'ID'),
 			'publish' => Yii::t('app', 'Publish'),
-			'media_name' => Yii::t('app', 'Media'),
-			'media_desc' => Yii::t('app', 'Description'),
+			'creator_name' => Yii::t('app', 'Creator Name'),
+			'creator_desc' => Yii::t('app', 'Creator Desc'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
-			'media_name_i' => Yii::t('app', 'Media'),
-			'media_desc_i' => Yii::t('app', 'Description'),
-			'archives' => Yii::t('app', 'Archives'),
+			'archives' => Yii::t('app', 'Creators'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
 		];
@@ -100,29 +93,13 @@ class ArchiveMedia extends \app\components\ActiveRecord
 	public function getArchives($count=false)
 	{
 		if($count == false)
-			return $this->hasMany(ArchiveRelatedMedia::className(), ['media_id' => 'id']);
+			return $this->hasMany(ArchiveRelatedCreator::className(), ['creator_id' => 'id']);
 
-		$model = ArchiveRelatedMedia::find()
-			->where(['media_id' => $this->id]);
+		$model = ArchiveRelatedCreator::find()
+			->where(['creator_id' => $this->id]);
 		$archives = $model->count();
 
 		return $archives ? $archives : 0;
-	}
-
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getTitle()
-	{
-		return $this->hasOne(SourceMessage::className(), ['id' => 'media_name']);
-	}
-
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getDescription()
-	{
-		return $this->hasOne(SourceMessage::className(), ['id' => 'media_desc']);
 	}
 
 	/**
@@ -143,11 +120,11 @@ class ArchiveMedia extends \app\components\ActiveRecord
 
 	/**
 	 * {@inheritdoc}
-	 * @return \ommu\archive\models\query\ArchiveMedia the active query used by this AR class.
+	 * @return \ommu\archive\models\query\ArchiveCreator the active query used by this AR class.
 	 */
 	public static function find()
 	{
-		return new \ommu\archive\models\query\ArchiveMedia(get_called_class());
+		return new \ommu\archive\models\query\ArchiveCreator(get_called_class());
 	}
 
 	/**
@@ -162,16 +139,16 @@ class ArchiveMedia extends \app\components\ActiveRecord
 			'class'  => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		$this->templateColumns['media_name_i'] = [
-			'attribute' => 'media_name_i',
+		$this->templateColumns['creator_name'] = [
+			'attribute' => 'creator_name',
 			'value' => function($model, $key, $index, $column) {
-				return $model->media_name_i;
+				return $model->creator_name;
 			},
 		];
-		$this->templateColumns['media_desc_i'] = [
-			'attribute' => 'media_desc_i',
+		$this->templateColumns['creator_desc'] = [
+			'attribute' => 'creator_desc',
 			'value' => function($model, $key, $index, $column) {
-				return $model->media_desc_i;
+				return $model->creator_desc;
 			},
 		];
 		$this->templateColumns['creation_date'] = [
@@ -217,7 +194,7 @@ class ArchiveMedia extends \app\components\ActiveRecord
 			'attribute' => 'archives',
 			'value' => function($model, $key, $index, $column) {
 				$archives = $model->getArchives(true);
-				return Html::a($archives, ['admin/manage', 'media'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
+				return Html::a($archives, ['admin/manage', 'creator'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],
@@ -226,11 +203,11 @@ class ArchiveMedia extends \app\components\ActiveRecord
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [
 				'attribute' => 'publish',
-				'filter' => $this->filterYesNo(),
 				'value' => function($model, $key, $index, $column) {
 					$url = Url::to(['publish', 'id'=>$model->primaryKey]);
 					return $this->quickAction($url, $model->publish);
 				},
+				'filter' => $this->filterYesNo(),
 				'contentOptions' => ['class'=>'center'],
 				'format' => 'raw',
 			];
@@ -256,32 +233,12 @@ class ArchiveMedia extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * function getMedia
-	 */
-	public static function getMedia($publish=null, $array=true) 
-	{
-		$model = self::find()->alias('t');
-		$model->leftJoin(sprintf('%s title', SourceMessage::tableName()), 't.media_name=title.id');
-		if($publish != null)
-			$model->andWhere(['t.publish' => $publish]);
-
-		$model = $model->orderBy('title.message ASC')->all();
-
-		if($array == true)
-			return \yii\helpers\ArrayHelper::map($model, 'id', 'media_name_i');
-
-		return $model;
-	}
-
-	/**
 	 * after find attributes
 	 */
 	public function afterFind()
 	{
 		parent::afterFind();
 
-		$this->media_name_i = isset($this->title) ? $this->title->message : '';
-		$this->media_desc_i = isset($this->description) ? $this->description->message : '';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
 	}
@@ -299,48 +256,6 @@ class ArchiveMedia extends \app\components\ActiveRecord
 				if($this->modified_id == null)
 					$this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
 			}
-		}
-		return true;
-	}
-
-	/**
-	 * before save attributes
-	 */
-	public function beforeSave($insert)
-	{
-		$module = strtolower(Yii::$app->controller->module->id);
-		$controller = strtolower(Yii::$app->controller->id);
-		$action = strtolower(Yii::$app->controller->action->id);
-
-		$location = $this->urlTitle($module.' '.$controller);
-
-		if(parent::beforeSave($insert)) {
-			if($insert || (!$insert && !$this->media_name)) {
-				$media_name = new SourceMessage();
-				$media_name->location = $location.'_title';
-				$media_name->message = $this->media_name_i;
-				if($media_name->save())
-					$this->media_name = $media_name->id;
-
-			} else {
-				$media_name = SourceMessage::findOne($this->media_name);
-				$media_name->message = $this->media_name_i;
-				$media_name->save();
-			}
-
-			if($insert || (!$insert && !$this->media_desc)) {
-				$media_desc = new SourceMessage();
-				$media_desc->location = $location.'_description';
-				$media_desc->message = $this->media_desc_i;
-				if($media_desc->save())
-					$this->media_desc = $media_desc->id;
-
-			} else {
-				$media_desc = SourceMessage::findOne($this->media_desc);
-				$media_desc->message = $this->media_desc_i;
-				$media_desc->save();
-			}
-
 		}
 		return true;
 	}
