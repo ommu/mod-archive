@@ -58,14 +58,14 @@ $attributes[] = [
 $attributes[] = [
 	'attribute' => 'creator',
 	'value' => function ($model) {
-		return Archives::parseCreator($model->getRelatedCreator(true, 'title'));
+		return Archives::parseMedia($model->getRelatedCreator(true, 'title'), 'creator');
 	},
 	'format' => 'html',
 ];
 $attributes[] = [
 	'attribute' => 'repository',
 	'value' => function ($model) {
-		return Archives::parseRepository($model->getRelatedRepository(true, 'title'));
+		return Archives::parseMedia($model->getRelatedRepository(true, 'title'), 'repository');
 	},
 	'format' => 'html',
 ];

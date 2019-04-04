@@ -232,7 +232,7 @@ class Archives extends \app\components\ActiveRecord
 				'attribute' => 'creator',
 				'header' => Yii::t('app', 'Creator'),
 				'value' => function($model, $key, $index, $column) {
-					return Archives::parseMedia($model->getRelatedCreator(true, 'title'));
+					return Archives::parseMedia($model->getRelatedCreator(true, 'title'), 'creator');
 				},
 				'format' => 'html',
 			];
@@ -241,7 +241,7 @@ class Archives extends \app\components\ActiveRecord
 			$this->templateColumns['repository'] = [
 				'attribute' => 'repository',
 				'value' => function($model, $key, $index, $column) {
-					return Archives::parseMedia($model->getRelatedRepository(true, 'title'));
+					return Archives::parseMedia($model->getRelatedRepository(true, 'title'), 'repository');
 				},
 				'format' => 'html',
 			];
@@ -402,40 +402,29 @@ class Archives extends \app\components\ActiveRecord
 	/**
 	 * function parseMedia
 	 */
-	public static function parseMedia($relatedMedia)
+	public static function parseMedia($relatedMedia, $controller='media')
 	{
-		if(!is_array($relatedMedia) || (is_array($relatedMedia) && empty($relatedMedia)))
-			return '-';
+		$items = self::getUrlFormat($relatedMedia, $controller);
 
-		return Html::ul($relatedMedia, ['item' => function($item, $index) {
-			return Html::tag('li', Html::a($item, ['setting/media/view', 'id'=>$index], ['title'=>$item, 'class'=>'modal-btn']));
+		return Html::ul($items, ['item' => function($item, $index) {
+			return Html::tag('li', Html::a($index, $item, ['title'=>$index, 'class'=>'modal-btn']));
 		}, 'class'=>'list-boxed']);
 	}
 
 	/**
-	 * function parseCreator
+	 * function getUrlFormat
 	 */
-	public static function parseCreator($relatedCreator)
+	public static function getUrlFormat($array, $controller)
 	{
-		if(!is_array($relatedCreator) || (is_array($relatedCreator) && empty($relatedCreator)))
+		if(!is_array($array) || (is_array($array) && empty($array)))
 			return '-';
 
-		return Html::ul($relatedCreator, ['item' => function($item, $index) {
-			return Html::tag('li', Html::a($item, ['setting/creator/view', 'id'=>$index], ['title'=>$item, 'class'=>'modal-btn']));
-		}, 'class'=>'list-boxed']);
-	}
+		$items = array_flip($array);
+		foreach ($items as $key => $val) {
+			$items[$key] = Url::to(['setting/'.$controller.'/view', 'id'=>$val]);
+		}
 
-	/**
-	 * function parseRepository
-	 */
-	public static function parseRepository($relatedRepository)
-	{
-		if(!is_array($relatedRepository) || (is_array($relatedRepository) && empty($relatedRepository)))
-			return '-';
-
-		return Html::ul($relatedRepository, ['item' => function($item, $index) {
-			return Html::tag('li', Html::a($item, ['setting/repository/view', 'id'=>$index], ['title'=>$item, 'class'=>'modal-btn']));
-		}, 'class'=>'list-boxed']);
+		return $items;
 	}
 
 	/**
