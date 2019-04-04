@@ -28,7 +28,7 @@ class Archives extends ArchivesModel
 	{
 		return [
 			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'media'], 'integer'],
-			[['title', 'code', 'image_type', 'creation_date', 'modified_date', 'updated_date', 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
+			[['title', 'code', 'image_type', 'creation_date', 'modified_date', 'updated_date', 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository'], 'safe'],
 		];
 	}
 
@@ -69,7 +69,9 @@ class Archives extends ArchivesModel
 			'level.title level', 
 			'creation creation', 
 			'modified modified', 
-			'relatedMedia relatedMedia'
+			'relatedMedia relatedMedia', 
+			'relatedCreator.creator relatedCreator', 
+			'relatedRepository.repository relatedRepository'
 		]);
 
 		// add conditions that should always apply here
@@ -139,12 +141,20 @@ class Archives extends ArchivesModel
 				$query->andFilterWhere(['t.publish' => $this->publish]);
 		}
 
+		if(isset($params['creatorId']) && $params['creatorId'])
+			$query->andFilterWhere(['relatedCreator.id' => $params['creatorId']]);
+
+		if(isset($params['repositoryId']) && $params['repositoryId'])
+			$query->andFilterWhere(['relatedRepository.id' => $params['repositoryId']]);
+
 		$query->andFilterWhere(['like', 't.title', $this->title])
 			->andFilterWhere(['like', 't.code', $this->code])
 			->andFilterWhere(['like', 'parent.title', $this->parentTitle])
 			->andFilterWhere(['like', 'level.message', $this->levelName])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
-			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname]);
+			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname])
+			->andFilterWhere(['like', 'relatedCreator.creator_name', $this->creator])
+			->andFilterWhere(['like', 'relatedRepository.repository_name', $this->repository]);
 
 		return $dataProvider;
 	}

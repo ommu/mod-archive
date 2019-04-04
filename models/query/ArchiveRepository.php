@@ -50,6 +50,15 @@ class ArchiveRepository extends \yii\db\ActiveQuery
 
 	/**
 	 * {@inheritdoc}
+	 */
+	public function suggest() 
+	{
+		return $this->select(['id', 'repository_name'])
+			->published();
+	}
+
+	/**
+	 * {@inheritdoc}
 	 * @return \ommu\archive\models\ArchiveRepository[]|array
 	 */
 	public function all($db = null)

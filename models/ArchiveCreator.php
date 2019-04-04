@@ -74,14 +74,14 @@ class ArchiveCreator extends \app\components\ActiveRecord
 		return [
 			'id' => Yii::t('app', 'ID'),
 			'publish' => Yii::t('app', 'Publish'),
-			'creator_name' => Yii::t('app', 'Creator Name'),
-			'creator_desc' => Yii::t('app', 'Creator Desc'),
+			'creator_name' => Yii::t('app', 'Creator'),
+			'creator_desc' => Yii::t('app', 'Description'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
-			'archives' => Yii::t('app', 'Creators'),
+			'archives' => Yii::t('app', 'Archives'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
 		];

@@ -74,14 +74,14 @@ class ArchiveRepository extends \app\components\ActiveRecord
 		return [
 			'id' => Yii::t('app', 'ID'),
 			'publish' => Yii::t('app', 'Publish'),
-			'repository_name' => Yii::t('app', 'Repository Name'),
-			'repository_desc' => Yii::t('app', 'Repository Desc'),
+			'repository_name' => Yii::t('app', 'Repository'),
+			'repository_desc' => Yii::t('app', 'Description'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
-			'archives' => Yii::t('app', 'Repositories'),
+			'archives' => Yii::t('app', 'Archives'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
 		];

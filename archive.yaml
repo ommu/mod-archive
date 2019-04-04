@@ -39,3 +39,11 @@ setting_submenu:
     label: Media Type
     url: ['setting/media']
     select: controller
+  creator:
+    label: Creator(s)
+    url: ['setting/creator']
+    select: controller
+  repository:
+    label: Repositories
+    url: ['setting/repository']
+    select: controller

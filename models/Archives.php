@@ -27,6 +27,8 @@
  *
  * The followings are the available model relations:
  * @property ArchiveRelatedMedia[] $media
+ * @property ArchiveRelatedCreator[] $creator
+ * @property ArchiveRelatedRepository[] $repository
  * @property ArchiveLevel $level
  * @property Users $creation
  * @property Users $modified
@@ -45,13 +47,15 @@ class Archives extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 
-	public $gridForbiddenColumn = ['parentTitle','creation_date','creationDisplayname','modified_date','modifiedDisplayname','updated_date'];
+	public $gridForbiddenColumn = ['parentTitle', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date', 'creator', 'repository'];
 
 	public $parentTitle;
 	public $levelName;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
 	public $media;
+	public $creator;
+	public $repository;
 
 	/**
 	 * @return string the associated database table name
@@ -70,7 +74,7 @@ class Archives extends \app\components\ActiveRecord
 			[['level_id', 'title', 'code'], 'required'],
 			[['publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id'], 'integer'],
 			[['title', 'image_type'], 'string'],
-			[['media'], 'safe'],
+			[['media', 'creator', 'repository'], 'safe'],
 			[['code'], 'string', 'max' => 255],
 			[['level_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLevel::className(), 'targetAttribute' => ['level_id' => 'id']],
 		];
@@ -96,6 +100,8 @@ class Archives extends \app\components\ActiveRecord
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
 			'media' => Yii::t('app', 'Media Type'),
+			'creator' => Yii::t('app', 'Name of creator(s)'),
+			'repository' => Yii::t('app', 'Repository'),
 			'parentTitle' => Yii::t('app', 'Archival Parent'),
 			'levelName' => Yii::t('app', 'Level of Description'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
@@ -112,6 +118,28 @@ class Archives extends \app\components\ActiveRecord
 			return \yii\helpers\ArrayHelper::map($this->relatedMedia, 'media_id', $val=='id' ? 'id' : 'media.media_name_i');
 
 		return $this->hasMany(ArchiveRelatedMedia::className(), ['archive_id' => 'id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getRelatedCreator($result=false, $val='id')
+	{
+		if($result == true)
+			return \yii\helpers\ArrayHelper::map($this->relatedCreator, 'creator_id', $val=='id' ? 'id' : 'creator.creator_name');
+
+		return $this->hasMany(ArchiveRelatedCreator::className(), ['archive_id' => 'id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getRelatedRepository($result=false, $val='id')
+	{
+		if($result == true)
+			return \yii\helpers\ArrayHelper::map($this->relatedRepository, 'repository_id', $val=='id' ? 'id' : 'repository.repository_name');
+
+		return $this->hasMany(ArchiveRelatedRepository::className(), ['archive_id' => 'id']);
 	}
 
 	/**
@@ -198,6 +226,21 @@ class Archives extends \app\components\ActiveRecord
 			'value' => function($model, $key, $index, $column) {
 				return $model->title;
 			},
+		];
+		$this->templateColumns['creator'] = [
+			'attribute' => 'creator',
+			'header' => Yii::t('app', 'Creator'),
+			'value' => function($model, $key, $index, $column) {
+				return Archives::parseMedia($model->getRelatedCreator(true, 'title'));
+			},
+			'format' => 'html',
+		];
+		$this->templateColumns['repository'] = [
+			'attribute' => 'repository',
+			'value' => function($model, $key, $index, $column) {
+				return Archives::parseMedia($model->getRelatedRepository(true, 'title'));
+			},
+			'format' => 'html',
 		];
 		$this->templateColumns['media'] = [
 			'attribute' => 'media',
