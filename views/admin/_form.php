@@ -15,6 +15,7 @@
  */
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use app\components\ActiveForm;
 use ommu\archive\models\Archives;
 use ommu\archive\models\ArchiveLevel;
@@ -66,6 +67,46 @@ if(!$model->isNewRecord || ($model->isNewRecord && $parent))
 		->label($model->getAttributeLabel('level_id'))
 		->hint(Yii::t('app', 'Record the level of this unit of description. (ISAD 3.1.4)'));
 } ?>
+
+<div class="ln_solid"></div>
+
+<?php 
+$creatorSuggestUrl = Url::to(['setting/creator/suggest']);
+echo $form->field($model, 'creator', $wraper)
+	->widget(Selectize::className(), [
+		'url' => $creatorSuggestUrl,
+		'pluginOptions' => [
+			'plugins' => ['remove_button'],
+			'valueField' => 'id',
+			'labelField' => 'label',
+			'searchField' => ['label'],
+			'persist' => false,
+			'createOnBlur' => false,
+			'create' => true,
+		],
+	])
+	->label($model->getAttributeLabel('creator'))
+	->hint(Yii::t('app', 'Record the name of the organization(s) or the individual(s) responsible for the creation, accumulation and maintenance of the records in the unit of description. Search for an existing name in the authority records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new authority record. (ISAD 3.2.1)')); ?>
+
+<?php
+$repositorySuggestUrl = Url::to(['setting/repository/suggest']);
+echo $form->field($model, 'repository', $wraper)
+	->widget(Selectize::className(), [
+		'url' => $repositorySuggestUrl,
+		'pluginOptions' => [
+			'plugins' => ['remove_button'],
+			'valueField' => 'id',
+			'labelField' => 'label',
+			'searchField' => ['label'],
+			'persist' => false,
+			'createOnBlur' => false,
+			'create' => true,
+		],
+	])
+	->label($model->getAttributeLabel('repository'))
+	->hint(Yii::t('app', 'Record the name of the organization which has custody of the archival material. Search for an existing name in the archival institution records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new archival institution record.')); ?>
+
+<div class="ln_solid"></div>
 
 <?php echo $form->field($model, 'media', $wraper)
 	->widget(Selectize::className(), [
