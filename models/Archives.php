@@ -405,6 +405,8 @@ class Archives extends \app\components\ActiveRecord
 	public static function parseMedia($relatedMedia, $controller='media')
 	{
 		$items = self::getUrlFormat($relatedMedia, $controller);
+		if($items == '-')
+			return $items;
 
 		return Html::ul($items, ['item' => function($item, $index) {
 			return Html::tag('li', Html::a($index, $item, ['title'=>$index, 'class'=>'modal-btn']));
