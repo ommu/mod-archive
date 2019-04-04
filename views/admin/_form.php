@@ -32,6 +32,9 @@ use yii2mod\selectize\Selectize;
 	//'enableClientScript' => true,
 ]);
 
+// echo '<pre>';
+// print_r($model);
+
 $wraper = [];
 if(!$model->isNewRecord || ($model->isNewRecord && $parent))
 	$wraper = ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']];?>
@@ -77,7 +80,7 @@ echo $form->field($model, 'creator', $wraper)
 		'url' => $creatorSuggestUrl,
 		'pluginOptions' => [
 			'plugins' => ['remove_button'],
-			'valueField' => 'id',
+			'valueField' => 'label',
 			'labelField' => 'label',
 			'searchField' => ['label'],
 			'persist' => false,
@@ -95,7 +98,7 @@ echo $form->field($model, 'repository', $wraper)
 		'url' => $repositorySuggestUrl,
 		'pluginOptions' => [
 			'plugins' => ['remove_button'],
-			'valueField' => 'id',
+			'valueField' => 'label',
 			'labelField' => 'label',
 			'searchField' => ['label'],
 			'persist' => false,

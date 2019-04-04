@@ -418,6 +418,8 @@ class Archives extends \app\components\ActiveRecord
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
 		$this->media = array_flip($this->getRelatedMedia(true));
+		$this->creator = implode(',', $this->getRelatedCreator(true, 'title'));
+		$this->repository = implode(',', $this->getRelatedRepository(true, 'title'));
 	}
 
 	/**
@@ -443,7 +445,13 @@ class Archives extends \app\components\ActiveRecord
 	public function beforeSave($insert)
 	{
 		$oldMedia = array_flip($this->getRelatedMedia(true));
+		$oldCreator = $this->getRelatedCreator(true, 'title');
+		$oldRepository = $this->getRelatedRepository(true, 'title');
 		$media = $this->media;
+		if($this->creator)
+			$creator = explode(',', $this->creator);
+		if($this->repository)
+			$repository = explode(',', $this->repository);
 
 		// insert difference media
 		if(is_array($media)) {
@@ -464,6 +472,86 @@ class Archives extends \app\components\ActiveRecord
 		if(!empty($oldMedia)) {
 			foreach ($oldMedia as $key => $val) {
 				ArchiveRelatedMedia::findOne($key)->delete();
+			}
+		}
+
+		// insert difference creator
+		if(is_array($creator)) {
+			foreach ($creator as $val) {
+				if(in_array($val, $oldCreator)) {
+					unset($oldCreator[array_keys($oldCreator, $val)[0]]);
+					continue;
+				}
+
+				$creatorFind = ArchiveCreator::find()
+					->select(['id'])
+					->andWhere(['creator_name' => $val])
+					->one();
+						
+				if($creatorFind != null)
+					$creator_id = $creatorFind->id;
+				else {
+					$model = new ArchiveCreator();
+					$model->creator_name = $val;
+					if($model->save())
+						$creator_id = $model->id;
+				}
+
+				$model = new ArchiveRelatedCreator();
+				$model->archive_id = $this->id;
+				$model->creator_id = $creator_id;
+				$model->save();
+			}
+		}
+
+		// drop difference creator
+		if(!empty($oldCreator)) {
+			foreach ($oldCreator as $key => $val) {
+				ArchiveRelatedCreator::find()
+					->select(['id'])
+					->where(['archive_id'=>$this->id, 'creator_id'=>$key])
+					->one()
+					->delete();
+			}
+		}
+
+		// insert difference repository
+		if(is_array($repository)) {
+			foreach ($repository as $val) {
+				if(in_array($val, $oldRepository)) {
+					unset($oldRepository[array_keys($oldRepository, $val)[0]]);
+					continue;
+				}
+
+				$repositoryFind = ArchiveRepository::find()
+					->select(['id'])
+					->andWhere(['repository_name' => $val])
+					->one();
+						
+				if($repositoryFind != null)
+					$repository_id = $repositoryFind->id;
+				else {
+					$model = new ArchiveRepository();
+					$model->repository_name = $val;
+					if($model->save())
+						$repository_id = $model->id;
+				}
+
+				$model = new ArchiveRelatedRepository();
+				$model->archive_id = $this->id;
+				$model->repository_id = $repository_id;
+				$model->save();
+			}
+		}
+
+		// drop difference repository
+		if(!empty($oldRepository)) {
+			foreach ($oldRepository as $key => $val) {
+				ArchiveRelatedRepository::find()
+					->select(['id'])
+					->where(['archive_id'=>$this->id, 'repository_id'=>$key])
+					->one()
+					->delete();
 			}
 		}
 

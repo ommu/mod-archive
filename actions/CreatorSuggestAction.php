@@ -37,8 +37,9 @@ class CreatorSuggestAction extends \yii\base\Action
 
 		if($term == null) return [];
 
-		$model = ArchiveCreator::find()->where(['like', 'creator_name', $term])
+		$model = ArchiveCreator::find()
 			->suggest()
+			->where(['like', 'creator_name', $term])
 			->limit(15)
 			->all();
 
