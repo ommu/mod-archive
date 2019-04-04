@@ -233,6 +233,23 @@ class ArchiveRepository extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * function getRepository
+	 */
+	public static function getRepository($publish=null, $array=true) 
+	{
+		$model = self::find();
+		if($publish != null)
+			$model->andWhere(['publish' => $publish]);
+
+		$model = $model->orderBy('repository_name ASC')->all();
+
+		if($array == true)
+			return \yii\helpers\ArrayHelper::map($model, 'id', 'repository_name');
+
+		return $model;
+	}
+
+	/**
 	 * after find attributes
 	 */
 	public function afterFind()
