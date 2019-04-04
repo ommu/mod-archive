@@ -66,6 +66,60 @@ echo DetailView::widget([
 ]);
 }?>
 
+<?php if($media != null) {
+$model = $medias;
+echo DetailView::widget([
+	'model' => $medias,
+	'options' => [
+		'class'=>'table table-striped detail-view',
+	],
+	'attributes' => [
+		[
+			'attribute' => 'media_name_i',
+			'value' => $model->media_name_i,
+		],
+		[
+			'attribute' => 'media_desc_i',
+			'value' => $model->media_desc_i,
+		],
+	],
+]);
+}?>
+
+<?php if($creator != null) {
+$model = $creators;
+echo DetailView::widget([
+	'model' => $creators,
+	'options' => [
+		'class'=>'table table-striped detail-view',
+	],
+	'attributes' => [
+		'creator_name',
+		[
+			'attribute' => 'creator_desc',
+			'value' => $model->creator_desc ? $model->creator_desc : '-',
+		],
+	],
+]);
+}?>
+
+<?php if($repository != null) {
+$model = $repositories;
+echo DetailView::widget([
+	'model' => $repositories,
+	'options' => [
+		'class'=>'table table-striped detail-view',
+	],
+	'attributes' => [
+		'repository_name',
+		[
+			'attribute' => 'repository_desc',
+			'value' => $model->repository_desc ? $model->repository_desc : '-',
+		],
+	],
+]);
+}?>
+
 <?php //echo $this->render('_search', ['model'=>$searchModel]); ?>
 
 <?php echo $this->render('_option_form', ['model'=>$searchModel, 'gridColumns'=>$this->activeDefaultColumns($columns), 'route'=>$this->context->route]); ?>

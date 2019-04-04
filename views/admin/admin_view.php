@@ -55,6 +55,20 @@ $attributes[] = [
 	},
 	'format' => 'html',
 ];
+$attributes[] = [
+	'attribute' => 'creator',
+	'value' => function ($model) {
+		return Archives::parseCreator($model->getRelatedCreator(true, 'title'));
+	},
+	'format' => 'html',
+];
+$attributes[] = [
+	'attribute' => 'repository',
+	'value' => function ($model) {
+		return Archives::parseRepository($model->getRelatedRepository(true, 'title'));
+	},
+	'format' => 'html',
+];
 if($model->level->image_type) {
 	$attributes[] = [
 		'attribute' => 'media',

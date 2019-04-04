@@ -227,30 +227,36 @@ class Archives extends \app\components\ActiveRecord
 				return $model->title;
 			},
 		];
-		$this->templateColumns['creator'] = [
-			'attribute' => 'creator',
-			'header' => Yii::t('app', 'Creator'),
-			'value' => function($model, $key, $index, $column) {
-				return Archives::parseMedia($model->getRelatedCreator(true, 'title'));
-			},
-			'format' => 'html',
-		];
-		$this->templateColumns['repository'] = [
-			'attribute' => 'repository',
-			'value' => function($model, $key, $index, $column) {
-				return Archives::parseMedia($model->getRelatedRepository(true, 'title'));
-			},
-			'format' => 'html',
-		];
-		$this->templateColumns['media'] = [
-			'attribute' => 'media',
-			'header' => Yii::t('app', 'Media'),
-			'value' => function($model, $key, $index, $column) {
-				return Archives::parseMedia($model->getRelatedMedia(true, 'title'));
-			},
-			'filter' => ArchiveMedia::getMedia(),
-			'format' => 'html',
-		];
+		if(!Yii::$app->request->get('creatorId')) {
+			$this->templateColumns['creator'] = [
+				'attribute' => 'creator',
+				'header' => Yii::t('app', 'Creator'),
+				'value' => function($model, $key, $index, $column) {
+					return Archives::parseMedia($model->getRelatedCreator(true, 'title'));
+				},
+				'format' => 'html',
+			];
+		}
+		if(!Yii::$app->request->get('repositoryId')) {
+			$this->templateColumns['repository'] = [
+				'attribute' => 'repository',
+				'value' => function($model, $key, $index, $column) {
+					return Archives::parseMedia($model->getRelatedRepository(true, 'title'));
+				},
+				'format' => 'html',
+			];
+		}
+		if(!Yii::$app->request->get('media')) {
+			$this->templateColumns['media'] = [
+				'attribute' => 'media',
+				'header' => Yii::t('app', 'Media'),
+				'value' => function($model, $key, $index, $column) {
+					return Archives::parseMedia($model->getRelatedMedia(true, 'title'));
+				},
+				'filter' => ArchiveMedia::getMedia(),
+				'format' => 'html',
+			];
+		}
 		$this->templateColumns['image_type'] = [
 			'attribute' => 'image_type',
 			'value' => function($model, $key, $index, $column) {
@@ -396,13 +402,39 @@ class Archives extends \app\components\ActiveRecord
 	/**
 	 * function parseMedia
 	 */
-	public static function parseMedia($relatedMedia) 
+	public static function parseMedia($relatedMedia)
 	{
 		if(!is_array($relatedMedia) || (is_array($relatedMedia) && empty($relatedMedia)))
 			return '-';
 
 		return Html::ul($relatedMedia, ['item' => function($item, $index) {
 			return Html::tag('li', Html::a($item, ['setting/media/view', 'id'=>$index], ['title'=>$item, 'class'=>'modal-btn']));
+		}, 'class'=>'list-boxed']);
+	}
+
+	/**
+	 * function parseCreator
+	 */
+	public static function parseCreator($relatedCreator)
+	{
+		if(!is_array($relatedCreator) || (is_array($relatedCreator) && empty($relatedCreator)))
+			return '-';
+
+		return Html::ul($relatedCreator, ['item' => function($item, $index) {
+			return Html::tag('li', Html::a($item, ['setting/creator/view', 'id'=>$index], ['title'=>$item, 'class'=>'modal-btn']));
+		}, 'class'=>'list-boxed']);
+	}
+
+	/**
+	 * function parseRepository
+	 */
+	public static function parseRepository($relatedRepository)
+	{
+		if(!is_array($relatedRepository) || (is_array($relatedRepository) && empty($relatedRepository)))
+			return '-';
+
+		return Html::ul($relatedRepository, ['item' => function($item, $index) {
+			return Html::tag('li', Html::a($item, ['setting/repository/view', 'id'=>$index], ['title'=>$item, 'class'=>'modal-btn']));
 		}, 'class'=>'list-boxed']);
 	}
 

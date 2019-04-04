@@ -194,7 +194,7 @@ class ArchiveCreator extends \app\components\ActiveRecord
 			'attribute' => 'archives',
 			'value' => function($model, $key, $index, $column) {
 				$archives = $model->getArchives(true);
-				return Html::a($archives, ['admin/manage', 'creator'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
+				return Html::a($archives, ['admin/manage', 'creatorId'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],

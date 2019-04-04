@@ -34,7 +34,6 @@ use app\components\Controller;
 use mdm\admin\components\AccessControl;
 use ommu\archive\models\Archives;
 use ommu\archive\models\search\Archives as ArchivesSearch;
-use ommu\archive\models\ArchiveLevel;
 
 class AdminController extends Controller
 {
@@ -72,6 +71,9 @@ class AdminController extends Controller
 	public function actionManage()
 	{
 		$level = Yii::$app->request->get('level');
+		$media = Yii::$app->request->get('media');
+		$creator = Yii::$app->request->get('creatorId');
+		$repository = Yii::$app->request->get('repositoryId');
 
 		$searchModel = new ArchivesSearch();
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -87,7 +89,13 @@ class AdminController extends Controller
 		$columns = $searchModel->getGridColumn($cols);
 
 		if($level != null)
-			$levels = ArchiveLevel::findOne($level);
+			$levels = \ommu\archive\models\ArchiveLevel::findOne($level);
+		if($media != null)
+			$medias = \ommu\archive\models\ArchiveMedia::findOne($media);
+		if($creator != null)
+			$creators = \ommu\archive\models\ArchiveCreator::findOne($creator);
+		if($repository != null)
+			$repositories = \ommu\archive\models\ArchiveRepository::findOne($repository);
 
 		$this->view->title = Yii::t('app', 'Archives');
 		$this->view->description = '';
@@ -98,6 +106,12 @@ class AdminController extends Controller
 			'columns' => $columns,
 			'level' => $level,
 			'levels' => $levels,
+			'media' => $media,
+			'medias' => $medias,
+			'creator' => $creator,
+			'creators' => $creators,
+			'repository' => $repository,
+			'repositories' => $repositories,
 		]);
 	}
 
