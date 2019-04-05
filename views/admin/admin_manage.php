@@ -37,9 +37,9 @@ $this->params['menu']['option'] = [
 <?php Pjax::begin(); ?>
 
 <?php if($level != null) {
-$model = $levels;
+$model = $level;
 echo DetailView::widget([
-	'model' => $levels,
+	'model' => $model,
 	'options' => [
 		'class'=>'table table-striped detail-view',
 	],
@@ -67,9 +67,9 @@ echo DetailView::widget([
 }?>
 
 <?php if($media != null) {
-$model = $medias;
+$model = $media;
 echo DetailView::widget([
-	'model' => $medias,
+	'model' => $model,
 	'options' => [
 		'class'=>'table table-striped detail-view',
 	],
@@ -87,9 +87,9 @@ echo DetailView::widget([
 }?>
 
 <?php if($creator != null) {
-$model = $creators;
+$model = $creator;
 echo DetailView::widget([
-	'model' => $creators,
+	'model' => $model,
 	'options' => [
 		'class'=>'table table-striped detail-view',
 	],
@@ -104,9 +104,9 @@ echo DetailView::widget([
 }?>
 
 <?php if($repository != null) {
-$model = $repositories;
+$model = $repository;
 echo DetailView::widget([
-	'model' => $repositories,
+	'model' => $model,
 	'options' => [
 		'class'=>'table table-striped detail-view',
 	],
