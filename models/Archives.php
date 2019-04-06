@@ -54,6 +54,8 @@ class Archives extends \app\components\ActiveRecord
 	public $levelName;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
+
+	public $shortCode;
 	public $media;
 	public $creator;
 	public $repository;
@@ -74,11 +76,12 @@ class Archives extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['level_id', 'title', 'code'], 'required'],
+			[['level_id', 'title', 'shortCode'], 'required'],
 			[['publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id'], 'integer'],
 			[['title', 'image_type'], 'string'],
-			[['media', 'creator', 'repository'], 'safe'],
+			[['code', 'media', 'creator', 'repository'], 'safe'],
 			[['code'], 'string', 'max' => 255],
+			[['shortCode'], 'string', 'max' => 16],
 			[['level_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLevel::className(), 'targetAttribute' => ['level_id' => 'id']],
 		];
 	}
@@ -95,20 +98,21 @@ class Archives extends \app\components\ActiveRecord
 			'parent_id' => Yii::t('app', 'Archival Parent'),
 			'level_id' => Yii::t('app', 'Level of Description'),
 			'title' => Yii::t('app', 'Title'),
-			'code' => Yii::t('app', 'Identifier'),
+			'code' => Yii::t('app', 'Reference code'),
 			'image_type' => Yii::t('app', 'Image Type'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
-			'media' => Yii::t('app', 'Media Type'),
-			'creator' => Yii::t('app', 'Name of creator(s)'),
-			'repository' => Yii::t('app', 'Repository'),
 			'parentTitle' => Yii::t('app', 'Archival Parent'),
 			'levelName' => Yii::t('app', 'Level of Description'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
+			'shortCode' => Yii::t('app', 'Identifier'),
+			'media' => Yii::t('app', 'Media Type'),
+			'creator' => Yii::t('app', 'Name of creator(s)'),
+			'repository' => Yii::t('app', 'Repository'),
 		];
 	}
 
@@ -235,7 +239,7 @@ class Archives extends \app\components\ActiveRecord
 				'attribute' => 'creator',
 				'header' => Yii::t('app', 'Creator'),
 				'value' => function($model, $key, $index, $column) {
-					return Archives::parseMedia($model->getRelatedCreator(true, 'title'), 'creator');
+					return Archives::parseRelated($model->getRelatedCreator(true, 'title'), 'creator');
 				},
 				'format' => 'html',
 			];
@@ -244,7 +248,7 @@ class Archives extends \app\components\ActiveRecord
 			$this->templateColumns['repository'] = [
 				'attribute' => 'repository',
 				'value' => function($model, $key, $index, $column) {
-					return Archives::parseMedia($model->getRelatedRepository(true, 'title'), 'repository');
+					return Archives::parseRelated($model->getRelatedRepository(true, 'title'), 'repository');
 				},
 				'format' => 'html',
 			];
@@ -254,7 +258,7 @@ class Archives extends \app\components\ActiveRecord
 				'attribute' => 'media',
 				'header' => Yii::t('app', 'Media'),
 				'value' => function($model, $key, $index, $column) {
-					return Archives::parseMedia($model->getRelatedMedia(true, 'title'));
+					return Archives::parseRelated($model->getRelatedMedia(true, 'title'));
 				},
 				'filter' => ArchiveMedia::getMedia(),
 				'format' => 'html',
@@ -367,14 +371,16 @@ class Archives extends \app\components\ActiveRecord
 	/**
 	 * function getLevel
 	 */
-	public function getChildLevel()
+	public function getChildLevel($isNewRecord=false)
 	{
 		$levels = ArchiveLevel::getLevel(1);
 		$child = $this->level->child;
 		if(!is_array($child))
 			$child = [];
+		$items = $child;
 
-		$items = ArrayHelper::merge(explode(',', $this->level_id), $child);
+		if(!$isNewRecord)
+			$items = ArrayHelper::merge(explode(',', $this->level_id), $child);
 
 		foreach ($levels as $key => $val) {
 			if(!ArrayHelper::isIn($key, $items))
@@ -403,9 +409,9 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * function parseMedia
+	 * function parseRelated
 	 */
-	public static function parseMedia($relatedMedia, $controller='media')
+	public static function parseRelated($relatedMedia, $controller='media')
 	{
 		$items = self::getUrlFormat($relatedMedia, $controller);
 		if($items == '-')
@@ -433,6 +439,28 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * function getReferenceCode
+	 */
+	public function getReferenceCode($archive=null)
+	{
+		if(!$archive)
+			$archive = $this;
+		$codes = [];
+		if(isset($archive->parent)) {
+			$levelAsKey = $archive->parent->level->level_name_i;
+			$codes[$levelAsKey]['id'] = $archive->parent->id;
+			$codes[$levelAsKey]['code'] = $archive->parent->code;
+			$codes[$levelAsKey]['shortCode'] = $archive->parent->shortCode;
+			// $codes[$levelAsKey]['sidkkas'] = $archive->parent->sidkkas;
+			// $codes[$levelAsKey]['publish'] = $archive->parent->publish;
+
+			return ArrayHelper::merge($codes, $this->getReferenceCode($archive->parent));
+		}
+
+		return $codes;
+	}
+
+	/**
 	 * after find attributes
 	 */
 	public function afterFind()
@@ -443,6 +471,10 @@ class Archives extends \app\components\ActiveRecord
 		// $this->levelName = isset($this->level) ? $this->level->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
+		$parentCode = $this->parent->code;
+		$this->shortCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
+		if(strtolower($this->level->level_name_i) == 'fond')
+			$this->shortCode = preg_replace("/^[.-]/", '', preg_replace("/^(3400|23400-24)/", '', $this->shortCode));
 		$this->media = array_flip($this->getRelatedMedia(true));
 		$this->creator = implode(',', $this->getRelatedCreator(true, 'title'));
 		$this->repository = implode(',', $this->getRelatedRepository(true, 'title'));
@@ -470,10 +502,37 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function beforeSave($insert)
 	{
-		// set archive media, creator and repository
-		$event = new Event(['sender' => $this]);
-		Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARCHIVES, $event);
+		$setting = \ommu\archive\models\ArchiveSetting::find()
+			->select(['reference_code_sikn', 'reference_code_level_separator'])
+			->where(['id' => 1])
+			->one();
+
+		// set code
+		if(strtolower($this->level->level_name_i) == 'fond')
+			$this->code = join($setting->reference_code_level_separator, [$setting->reference_code_sikn, $this->shortCode]);
+		else
+			$this->code = join($setting->reference_code_level_separator, [$this->parent->code, $this->shortCode]);
+		
+		if(!$insert) {
+			// set archive media, creator and repository
+			$event = new Event(['sender' => $this]);
+			Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARCHIVES, $event);
+		}
 
 		return true;
+	}
+
+	/**
+	 * After save attributes
+	 */
+	public function afterSave($insert, $changedAttributes)
+	{
+		parent::afterSave($insert, $changedAttributes);
+		
+		if($insert) {
+			// set archive media, creator and repository
+			$event = new Event(['sender' => $this]);
+			Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARCHIVES, $event);
+		}
 	}
 }

@@ -18,22 +18,30 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use app\components\ActiveForm;
 use ommu\archive\models\Archives;
-use ommu\archive\models\ArchiveLevel;
 use ommu\archive\models\ArchiveMedia;
 use yii2mod\selectize\Selectize;
+use yii\helpers\ArrayHelper;
 ?>
 
 <div class="archives-form">
 
-<?php $form = ActiveForm::begin([
+<?php
+$js = <<<JS
+	$('#shortcode').on('keyup', function (e) {
+		var shortcode = $(this).val();
+		if(shortcode == '')
+			var shortcode = 'xxxx';
+		$('#reference-code').html(shortcode);
+	});
+JS;
+$this->registerJs($js, \yii\web\View::POS_READY);
+
+$form = ActiveForm::begin([
 	'options' => ['class'=>'form-horizontal form-label-left'],
 	'enableClientValidation' => true,
 	'enableAjaxValidation' => false,
 	//'enableClientScript' => true,
 ]);
-
-// echo '<pre>';
-// print_r($model);
 
 $wraper = [];
 if(!$model->isNewRecord || ($model->isNewRecord && $parent))
@@ -41,17 +49,25 @@ if(!$model->isNewRecord || ($model->isNewRecord && $parent))
 
 <?php //echo $form->errorSummary($model);?>
 
-<?php if(!$fond) {
+<?php 
+$shortCode = $model->shortCode ? $model->shortCode : 'xxxx';
+if(!$fond) {
 	if(!$model->getErrors() && $parent)
-		$model->parent_id = $parent;
-	echo $form->field($model, 'parent_id', $wraper)
-		->textInput(['type'=>'number', 'min'=>'1'])
-		->label($model->getAttributeLabel('parent_id'));
+		$model->parent_id = $parent->id;
+	$parentCode = $model->parent->code;
+	echo $form->field($model, 'parent_id', ArrayHelper::merge(['template' => '{label}{beginWrapper}{input}<h5 class="text-muted">'.$parentCode.$setting->reference_code_level_separator.'<span id="reference-code" class="text-primary">'.$shortCode.'</span></h5>{endWrapper}'], $wraper))
+		->hiddenInput()
+		->label($model->getAttributeLabel('code'));
+} else {
+	$model->level_id = 1;
+	echo $form->field($model, 'level_id', ArrayHelper::merge(['template' => '{label}{beginWrapper}{input}<h5 class="text-muted">'.$setting->reference_code_sikn.$setting->reference_code_level_separator.'<span id="reference-code" class="text-primary">'.$shortCode.'</span></h5>{endWrapper}'], $wraper))
+		->hiddenInput()
+		->label($model->getAttributeLabel('code'));
 } ?>
 
-<?php echo $form->field($model, 'code', $wraper)
+<?php echo $form->field($model, 'shortCode', $wraper)
 	->textInput(['maxlength'=>true])
-	->label($model->getAttributeLabel('code'))
+	->label($model->getAttributeLabel('shortCode'))
 	->hint(Yii::t('app', 'Provide a specific local reference code, control number, or other unique identifier. The country and repository code will be automatically added from the linked repository record to form a full reference code. (ISAD 3.1.1)')); ?>
 
 <?php echo $form->field($model, 'title', $wraper)
@@ -59,12 +75,8 @@ if(!$model->isNewRecord || ($model->isNewRecord && $parent))
 	->label($model->getAttributeLabel('title'))
 	->hint(Yii::t('app', 'Provide either a formal title or a concise supplied title in accordance with the rules of multilevel description and national conventions. (ISAD 3.1.2)')); ?>
 
-<?php if($fond) {
-	$model->level_id = 1;
-	echo $form->field($model, 'level_id', ['template' => '{input}', 'options' => ['tag' => null]])
-		->hiddenInput();
-} else {
-	$level = $model->getChildLevel();
+<?php if(!$fond) {
+	$level = $model->isNewRecord ? $parent->getChildLevel(true) : $model->getChildLevel();
 	echo $form->field($model, 'level_id', $wraper)
 		->dropDownList($level, ['prompt'=>''])
 		->label($model->getAttributeLabel('level_id'))

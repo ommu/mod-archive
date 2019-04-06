@@ -19,12 +19,16 @@ use yii\helpers\Url;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id'=>$model->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
+
+$referenceCode = $model->referenceCode;
+array_multisort($referenceCode);
 ?>
 
 <div class="archives-update">
 
 <?php echo $this->render('_form', [
 	'model' => $model,
+	'setting' => $setting,
 	'fond' => $fond,
 ]); ?>
 

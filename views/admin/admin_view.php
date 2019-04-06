@@ -58,14 +58,14 @@ $attributes[] = [
 $attributes[] = [
 	'attribute' => 'creator',
 	'value' => function ($model) {
-		return Archives::parseMedia($model->getRelatedCreator(true, 'title'), 'creator');
+		return Archives::parseRelated($model->getRelatedCreator(true, 'title'), 'creator');
 	},
 	'format' => 'html',
 ];
 $attributes[] = [
 	'attribute' => 'repository',
 	'value' => function ($model) {
-		return Archives::parseMedia($model->getRelatedRepository(true, 'title'), 'repository');
+		return Archives::parseRelated($model->getRelatedRepository(true, 'title'), 'repository');
 	},
 	'format' => 'html',
 ];
@@ -73,7 +73,7 @@ if($model->level->image_type) {
 	$attributes[] = [
 		'attribute' => 'media',
 		'value' => function ($model) {
-			return Archives::parseMedia($model->getRelatedMedia(true, 'title'));
+			return Archives::parseRelated($model->getRelatedMedia(true, 'title'));
 		},
 		'format' => 'html',
 	];

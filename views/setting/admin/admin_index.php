@@ -50,7 +50,10 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Archive Settings');
 				'value' => ArchiveSetting::getFondSidkka($model->fond_sidkkas),
 			],
 			'reference_code_sikn',
-			'reference_code_level_separator',
+			[
+				'attribute' => 'reference_code_level_separator',
+				'value' => '"'.$model->reference_code_level_separator.'"',
+			],
 			[
 				'attribute' => 'modified_date',
 				'value' => Yii::$app->formatter->asDatetime($model->modified_date, 'medium'),

@@ -114,6 +114,10 @@ class AdminController extends Controller
 	public function actionCreate()
 	{
 		$parent = Yii::$app->request->get('id');
+		$setting = \ommu\archive\models\ArchiveSetting::find()
+			->select(['reference_code_sikn', 'reference_code_level_separator'])
+			->where(['id' => 1])
+			->one();
 
 		$model = new Archives();
 
@@ -123,9 +127,8 @@ class AdminController extends Controller
 			// $model->load($postData);
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Archive success created.'));
-				return $this->redirect(['manage']);
-				//return $this->redirect(['view', 'id'=>$model->id]);
+				Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} success created.', ['level-name'=>$model->level->level_name_i]));
+				return $this->redirect([$parent ? 'create' : 'view', 'id'=>$model->id]);
 
 			} else {
 				if(Yii::$app->request->isAjax)
@@ -133,14 +136,17 @@ class AdminController extends Controller
 			}
 		}
 
-		if($parent)
+		if($parent != null) {
+			$parent = Archives::findOne($parent);
 			$this->subMenu = $this->module->params['archive_submenu'];
+		}
 		$this->view->title = $parent ? Yii::t('app', 'Add New Child Levels') : Yii::t('app', 'Create Fond');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
 			'model' => $model,
 			'parent' => $parent,
+			'setting' => $setting,
 			'fond' => $parent ? false : true,
 		]);
 	}
@@ -153,6 +159,11 @@ class AdminController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
+		$setting = \ommu\archive\models\ArchiveSetting::find()
+			->select(['reference_code_sikn', 'reference_code_level_separator'])
+			->where(['id' => 1])
+			->one();
+
 		$model = $this->findModel($id);
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
@@ -175,6 +186,7 @@ class AdminController extends Controller
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
 			'model' => $model,
+			'setting' => $setting,
 			'fond' => $model->level_id == 1 ? true : false,
 		]);
 	}
