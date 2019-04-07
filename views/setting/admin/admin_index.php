@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Archive Settings');
 			],
 			[
 				'attribute' => 'fond_sidkkas',
-				'value' => ArchiveSetting::getFondSidkka($model->fond_sidkkas),
+				'value' => ArchiveSetting::getFondSidkkas($model->fond_sidkkas),
 			],
 			'reference_code_sikn',
 			[

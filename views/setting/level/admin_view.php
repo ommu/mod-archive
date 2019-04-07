@@ -16,7 +16,6 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
-use yii\helpers\ArrayHelper;
 use ommu\archive\models\ArchiveLevel;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Levels'), 'url' => ['index']];
@@ -88,16 +87,13 @@ $attributes = [
 		},
 		'format' => 'html',
 	],
+	[
+		'attribute' => '',
+		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-success']),
+		'format' => 'html',
+		'visible' => Yii::$app->request->isAjax ? true : false,
+	],
 ];
-if(Yii::$app->request->isAjax) {
-	$attributes = ArrayHelper::merge($attributes, [
-		[
-			'attribute' => '',
-			'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-success']),
-			'format' => 'html',
-		],
-	]);
-}
 
 echo DetailView::widget([
 	'model' => $model,

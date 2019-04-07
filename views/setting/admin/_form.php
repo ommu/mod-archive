@@ -59,7 +59,7 @@ echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hi
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('reference_code_level_separator')); ?>
 
-<?php $fondSidkka = ArchiveSetting::getFondSidkka();
+<?php $fondSidkka = ArchiveSetting::getFondSidkkas();
 echo $form->field($model, 'fond_sidkkas', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
 	->dropDownList($fondSidkka, ['prompt'=>''])
 	->label($model->getAttributeLabel('fond_sidkkas')); ?>

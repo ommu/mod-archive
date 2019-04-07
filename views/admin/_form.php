@@ -68,20 +68,25 @@ if(!$fond) {
 <?php echo $form->field($model, 'shortCode', $wraper)
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('shortCode'))
-	->hint(Yii::t('app', 'Provide a specific local reference code, control number, or other unique identifier. The country and repository code will be automatically added from the linked repository record to form a full reference code. (ISAD 3.1.1)')); ?>
+	->hint(Yii::t('app', 'Provide a specific local reference code, control number, or other unique identifier. The country and repository code will be automatically added from the linked repository record to form a full reference code.')); ?>
 
 <?php echo $form->field($model, 'title', $wraper)
 	->textarea(['rows'=>6, 'cols'=>50])
 	->label($model->getAttributeLabel('title'))
-	->hint(Yii::t('app', 'Provide either a formal title or a concise supplied title in accordance with the rules of multilevel description and national conventions. (ISAD 3.1.2)')); ?>
+	->hint(Yii::t('app', 'Provide either a formal title or a concise supplied title in accordance with the rules of multilevel description and national conventions.')); ?>
 
 <?php if(!$fond) {
-	$level = $model->isNewRecord ? $parent->getChildLevel(true) : $model->getChildLevel();
+	$level = $model->isNewRecord ? $parent->getChildLevels(true) : $model->getChildLevels();
 	echo $form->field($model, 'level_id', $wraper)
 		->dropDownList($level, ['prompt'=>''])
 		->label($model->getAttributeLabel('level_id'))
-		->hint(Yii::t('app', 'Record the level of this unit of description. (ISAD 3.1.4)'));
+		->hint(Yii::t('app', 'Record the level of this unit of description.'));
 } ?>
+
+<?php echo $form->field($model, 'medium', $wraper)
+	->textarea(['rows'=>4, 'cols'=>50])
+	->label($model->getAttributeLabel('medium'))
+	->hint(Yii::t('app', 'Record the extent of the unit of description by giving the number of physical or logical units in arabic numerals and the unit of measurement. Give the specific medium (media) of the unit of description. Separate multiple extents with a linebreak.')); ?>
 
 <div class="ln_solid"></div>
 
@@ -101,7 +106,7 @@ echo $form->field($model, 'creator', $wraper)
 		],
 	])
 	->label($model->getAttributeLabel('creator'))
-	->hint(Yii::t('app', 'Record the name of the organization(s) or the individual(s) responsible for the creation, accumulation and maintenance of the records in the unit of description. Search for an existing name in the authority records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new authority record. (ISAD 3.2.1)')); ?>
+	->hint(Yii::t('app', 'Record the name of the organization(s) or the individual(s) responsible for the creation, accumulation and maintenance of the records in the unit of description. Search for an existing name in the authority records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new authority record.')); ?>
 
 <?php
 $repositorySuggestUrl = Url::to(['setting/repository/suggest']);
@@ -142,15 +147,18 @@ echo $form->field($model, 'repository', $wraper)
 		->label($model->getAttributeLabel('image_type'));
 } ?>
 
+<div class="ln_solid"></div>
+
+<?php $publish = Archives::getPublish();
+echo $form->field($model, 'publish', $wraper)
+	->dropDownList($publish, ['prompt' => ''])
+	->label($model->getAttributeLabel('publish')); ?>
+
 <?php if($fond || $model->level->sidkkas) {
 	echo $form->field($model, 'sidkkas', $wraper)
 		->checkbox()
 		->label($model->getAttributeLabel('sidkkas'));
 } ?>
-
-<?php echo $form->field($model, 'publish', $wraper)
-	->checkbox()
-	->label($model->getAttributeLabel('publish')); ?>
 
 <div class="ln_solid"></div>
 <div class="form-group row">

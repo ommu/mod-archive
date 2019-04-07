@@ -156,10 +156,10 @@ class ArchiveSetting extends \app\components\ActiveRecord
 		}
 		$this->templateColumns['fond_sidkkas'] = [
 			'attribute' => 'fond_sidkkas',
-			'filter' => self::getFondSidkka(),
 			'value' => function($model, $key, $index, $column) {
-				return self::getFondSidkka($model->fond_sidkkas);
+				return self::getFondSidkkas($model->fond_sidkkas);
 			},
+			'filter' => self::getFondSidkkas(),
 			'contentOptions' => ['class'=>'center'],
 		];
 	}
@@ -199,9 +199,9 @@ class ArchiveSetting extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * function getFondSidkka
+	 * function getFondSidkkas
 	 */
-	public static function getFondSidkka($value=null)
+	public static function getFondSidkkas($value=null)
 	{
 		$items = array(
 			'0' => Yii::t('app', 'Disable'),

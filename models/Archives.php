@@ -18,6 +18,7 @@
  * @property integer $level_id
  * @property string $title
  * @property string $code
+ * @property string $medium
  * @property string $image_type
  * @property string $creation_date
  * @property integer $creation_id
@@ -76,10 +77,10 @@ class Archives extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['level_id', 'title', 'shortCode'], 'required'],
+			[['publish', 'level_id', 'title', 'shortCode'], 'required'],
 			[['publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id'], 'integer'],
 			[['title', 'image_type'], 'string'],
-			[['code', 'media', 'creator', 'repository'], 'safe'],
+			[['code', 'medium', 'media', 'creator', 'repository'], 'safe'],
 			[['code'], 'string', 'max' => 255],
 			[['shortCode'], 'string', 'max' => 16],
 			[['level_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLevel::className(), 'targetAttribute' => ['level_id' => 'id']],
@@ -93,12 +94,13 @@ class Archives extends \app\components\ActiveRecord
 	{
 		return [
 			'id' => Yii::t('app', 'ID'),
-			'publish' => Yii::t('app', 'Publish'),
+			'publish' => Yii::t('app', 'Publication Status'),
 			'sidkkas' => Yii::t('app', 'SiDKKAS'),
 			'parent_id' => Yii::t('app', 'Archival Parent'),
 			'level_id' => Yii::t('app', 'Level of Description'),
 			'title' => Yii::t('app', 'Title'),
 			'code' => Yii::t('app', 'Reference code'),
+			'medium' => Yii::t('app', 'Extent and medium'),
 			'image_type' => Yii::t('app', 'Image Type'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
@@ -234,6 +236,13 @@ class Archives extends \app\components\ActiveRecord
 				return $model->title;
 			},
 		];
+		$this->templateColumns['medium'] = [
+			'attribute' => 'medium',
+			'header' => Yii::t('app', 'Medium'),
+			'value' => function($model, $key, $index, $column) {
+				return $model->medium;
+			},
+		];
 		if(!Yii::$app->request->get('creatorId')) {
 			$this->templateColumns['creator'] = [
 				'attribute' => 'creator',
@@ -321,13 +330,12 @@ class Archives extends \app\components\ActiveRecord
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [
 				'attribute' => 'publish',
-				'filter' => $this->filterYesNo(),
+				'header' => Yii::t('app', 'Status'),
 				'value' => function($model, $key, $index, $column) {
-					$url = Url::to(['publish', 'id'=>$model->primaryKey]);
-					return $this->quickAction($url, $model->publish);
+					return self::getPublish($model->publish);
 				},
+				'filter' => self::getPublish(),
 				'contentOptions' => ['class'=>'center'],
-				'format' => 'raw',
 			];
 		}
 	}
@@ -351,6 +359,22 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * function getPublish
+	 */
+	public static function getPublish($value=null)
+	{
+		$items = array(
+			'1' => Yii::t('app', 'Published'),
+			'0' => Yii::t('app', 'Draft'),
+		);
+
+		if($value !== null)
+			return $items[$value];
+		else
+			return $items;
+	}
+
+	/**
 	 * function getImageType
 	 */
 	public static function getImageType($value=null)
@@ -371,16 +395,16 @@ class Archives extends \app\components\ActiveRecord
 	/**
 	 * function getLevel
 	 */
-	public function getChildLevel($isNewRecord=false)
+	public function getChildLevels($isNewRecord=false)
 	{
 		$levels = ArchiveLevel::getLevel(1);
 		$child = $this->level->child;
 		if(!is_array($child))
 			$child = [];
-		$items = $child;
 
+		$items = $child;
 		if(!$isNewRecord)
-			$items = ArrayHelper::merge(explode(',', $this->level_id), $child);
+			$items = ArrayHelper::merge(explode(',', $this->level_id), $items);
 
 		foreach ($levels as $key => $val) {
 			if(!ArrayHelper::isIn($key, $items))

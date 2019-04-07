@@ -16,7 +16,6 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
-use yii\helpers\ArrayHelper;
 use ommu\archive\models\Archives;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' => ['index']];
@@ -26,100 +25,100 @@ $this->params['breadcrumbs'][] = $model->title;
 <div class="archives-view">
 
 <?php 
-$attributes[] = [
-	'attribute' => 'id',
-	'value' => $model->id,
-];
-if($model->level_id != 1) {
-	$attributes[] = [
+$attributes = [
+	[
+		'attribute' => 'id',
+		'value' => $model->id,
+	],
+	[
 		'attribute' => 'parent_id',
 		'value' => Archives::parseParent($model),
 		'format' => 'html',
-	];
-}
-$attributes[] = [
-	'attribute' => 'code',
-	'value' => $model->code,
-];
-$attributes[] = [
-	'attribute' => 'title',
-	'value' => $model->title ? $model->title : '-',
-];
-$attributes[] = [
-	'attribute' => 'levelName',
-	'value' => function ($model) {
-		$levelName = isset($model->level) ? $model->level->title->message : '-';
-		if($levelName != '-')
-			return Html::a($levelName, ['setting/level/view', 'id'=>$model->level_id], ['title'=>$levelName, 'class'=>'modal-btn']);
-		return $levelName;
-	},
-	'format' => 'html',
-];
-$attributes[] = [
-	'attribute' => 'creator',
-	'value' => function ($model) {
-		return Archives::parseRelated($model->getRelatedCreator(true, 'title'), 'creator');
-	},
-	'format' => 'html',
-];
-$attributes[] = [
-	'attribute' => 'repository',
-	'value' => function ($model) {
-		return Archives::parseRelated($model->getRelatedRepository(true, 'title'), 'repository');
-	},
-	'format' => 'html',
-];
-if($model->level->image_type) {
-	$attributes[] = [
+		'visible' => $model->level_id != 1 ? true : false,
+	],
+	[
+		'attribute' => 'code',
+		'value' => $model->code,
+	],
+	[
+		'attribute' => 'title',
+		'value' => $model->title ? $model->title : '-',
+	],
+	[
+		'attribute' => 'levelName',
+		'value' => function ($model) {
+			$levelName = isset($model->level) ? $model->level->title->message : '-';
+			if($levelName != '-')
+				return Html::a($levelName, ['setting/level/view', 'id'=>$model->level_id], ['title'=>$levelName, 'class'=>'modal-btn']);
+			return $levelName;
+		},
+		'format' => 'html',
+	],
+	[
+		'attribute' => 'medium',
+		'value' => $model->medium ? $model->medium : '-',
+	],
+	[
+		'attribute' => 'creator',
+		'value' => function ($model) {
+			return Archives::parseRelated($model->getRelatedCreator(true, 'title'), 'creator');
+		},
+		'format' => 'html',
+	],
+	[
+		'attribute' => 'repository',
+		'value' => function ($model) {
+			return Archives::parseRelated($model->getRelatedRepository(true, 'title'), 'repository');
+		},
+		'format' => 'html',
+	],
+	[
 		'attribute' => 'media',
 		'value' => function ($model) {
 			return Archives::parseRelated($model->getRelatedMedia(true, 'title'));
 		},
 		'format' => 'html',
-	];
-}
-$attributes[] = [
-	'attribute' => 'image_type',
-	'value' => Archives::getImageType($model->image_type ? $model->image_type : '-'),
+	],
+	[
+		'attribute' => 'image_type',
+		'value' => Archives::getImageType($model->image_type ? $model->image_type : '-'),
+		'visible' => $model->level->image_type ? true : false,
+	],
+	[
+		'attribute' => 'sidkkas',
+		'value' => $this->filterYesNo($model->sidkkas),
+	],
+	[
+		'attribute' => 'publish',
+		'value' => Archives::getPublish($model->publish),
+	],
+	[
+		'attribute' => 'creation_date',
+		'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),
+	],
+	[
+		'attribute' => 'creationDisplayname',
+		'value' => isset($model->creation) ? $model->creation->displayname : '-',
+	],
+	[
+		'attribute' => 'modified_date',
+		'value' => Yii::$app->formatter->asDatetime($model->modified_date, 'medium'),
+	],
+	[
+		'attribute' => 'modifiedDisplayname',
+		'value' => isset($model->modified) ? $model->modified->displayname : '-',
+	],
+	[
+		'attribute' => 'updated_date',
+		'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
+	],
+	[
+		'attribute' => '',
+		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-success']),
+		'format' => 'html',
+		'visible' => Yii::$app->request->isAjax ? true : false,
+	],
 ];
-$attributes[] = [
-	'attribute' => 'sidkkas',
-	'value' => $this->filterYesNo($model->sidkkas),
-];
-$attributes[] = [
-	'attribute' => 'publish',
-	'value' => $this->quickAction(Url::to(['publish', 'id'=>$model->primaryKey]), $model->publish),
-	'format' => 'raw',
-];
-$attributes[] = [
-	'attribute' => 'creation_date',
-	'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),
-];
-$attributes[] = [
-	'attribute' => 'creationDisplayname',
-	'value' => isset($model->creation) ? $model->creation->displayname : '-',
-];
-$attributes[] = [
-	'attribute' => 'modified_date',
-	'value' => Yii::$app->formatter->asDatetime($model->modified_date, 'medium'),
-];
-$attributes[] = [
-	'attribute' => 'modifiedDisplayname',
-	'value' => isset($model->modified) ? $model->modified->displayname : '-',
-];
-$attributes[] = [
-	'attribute' => 'updated_date',
-	'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
-];
-if(Yii::$app->request->isAjax) {
-	$attributes = ArrayHelper::merge($attributes, [
-		[
-			'attribute' => '',
-			'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-success']),
-			'format' => 'html',
-		],
-	]);
-}
 
 echo DetailView::widget([
 	'model' => $model,
