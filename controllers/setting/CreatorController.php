@@ -29,8 +29,8 @@
 namespace ommu\archive\controllers\setting;
 
 use Yii;
-use yii\filters\VerbFilter;
 use app\components\Controller;
+use yii\filters\VerbFilter;
 use mdm\admin\components\AccessControl;
 use ommu\archive\models\ArchiveCreator;
 use ommu\archive\models\search\ArchiveCreator as ArchiveCreatorSearch;
