@@ -159,7 +159,7 @@ class MediaController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Update {model-class}: {media-name}', ['model-class' => 'Media Type', 'media-name' => $model->title->message]);
+		$this->view->title = Yii::t('app', 'Update Media Type: {media-name}', ['media-name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
@@ -176,7 +176,7 @@ class MediaController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'Detail {model-class}: {media-name}', ['model-class' => 'Media Type', 'media-name' => $model->title->message]);
+		$this->view->title = Yii::t('app', 'Detail Media Type: {media-name}', ['media-name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [

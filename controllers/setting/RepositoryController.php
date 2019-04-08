@@ -176,7 +176,7 @@ class RepositoryController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Update {model-class}: {repository-name}', ['model-class' => 'Archival Institution', 'repository-name' => $model->repository_name]);
+		$this->view->title = Yii::t('app', 'Update Archival Institution: {repository-name}', ['repository-name' => $model->repository_name]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
@@ -193,7 +193,7 @@ class RepositoryController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'Detail {model-class}: {repository-name}', ['model-class' => 'Archival Institution', 'repository-name' => $model->repository_name]);
+		$this->view->title = Yii::t('app', 'Detail Archival Institution: {repository-name}', ['repository-name' => $model->repository_name]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [

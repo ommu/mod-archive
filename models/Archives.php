@@ -27,9 +27,9 @@
  * @property string $updated_date
  *
  * The followings are the available model relations:
- * @property ArchiveRelatedMedia[] $media
- * @property ArchiveRelatedCreator[] $creator
- * @property ArchiveRelatedRepository[] $repository
+ * @property ArchiveRelatedMedia[] $relatedMedia
+ * @property ArchiveRelatedCreator[] $relatedCreator
+ * @property ArchiveRelatedRepository[] $relatedRepository
  * @property ArchiveLevel $level
  * @property Users $creation
  * @property Users $modified
@@ -248,7 +248,7 @@ class Archives extends \app\components\ActiveRecord
 				'attribute' => 'creator',
 				'header' => Yii::t('app', 'Creator'),
 				'value' => function($model, $key, $index, $column) {
-					return Archives::parseRelated($model->getRelatedCreator(true, 'title'), 'creator');
+					return self::parseRelated($model->getRelatedCreator(true, 'title'), 'creator');
 				},
 				'format' => 'html',
 			];
@@ -257,7 +257,7 @@ class Archives extends \app\components\ActiveRecord
 			$this->templateColumns['repository'] = [
 				'attribute' => 'repository',
 				'value' => function($model, $key, $index, $column) {
-					return Archives::parseRelated($model->getRelatedRepository(true, 'title'), 'repository');
+					return self::parseRelated($model->getRelatedRepository(true, 'title'), 'repository');
 				},
 				'format' => 'html',
 			];
@@ -267,7 +267,7 @@ class Archives extends \app\components\ActiveRecord
 				'attribute' => 'media',
 				'header' => Yii::t('app', 'Media'),
 				'value' => function($model, $key, $index, $column) {
-					return Archives::parseRelated($model->getRelatedMedia(true, 'title'));
+					return self::parseRelated($model->getRelatedMedia(true, 'title'));
 				},
 				'filter' => ArchiveMedia::getMedia(),
 				'format' => 'html',

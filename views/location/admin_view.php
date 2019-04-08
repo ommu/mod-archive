@@ -44,7 +44,11 @@ $attributes = [
 	],
 	[
 		'attribute' => 'parent_id',
-		'value' => isset($model->parent) ? $model->parent->location_name : '-',
+		'value' => function ($model) {
+			if($model->type == 'room')
+				return isset($model->parent) ? $model->parent->location_name.', '.$model->parent->parent->location_name : '-';
+			return isset($model->parent) ? $model->parent->location_name : '-';
+		},
 		'visible' => $model->type != 'building' ? true : false,
 	],
 	'location_name',
@@ -53,10 +57,9 @@ $attributes = [
 		'value' => $model->location_desc ? $model->location_desc : '-',
 	],
 	[
-		'attribute' => 'storages',
+		'attribute' => 'storage',
 		'value' => function ($model) {
-			$storages = $model->getStorages(true);
-			return Html::a($storages, ['storage/manage', 'room'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} storages', ['count'=>$storages])]);
+			return ArchiveLocation::parseStorage($model->getRoomStorage(true, 'title'));
 		},
 		'format' => 'html',
 		'visible' => $model->type == 'room' ? true : false,

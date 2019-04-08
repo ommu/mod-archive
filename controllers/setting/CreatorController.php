@@ -176,7 +176,7 @@ class CreatorController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Update {model-class}: {creator-name}', ['model-class' => 'Authority Record', 'creator-name' => $model->creator_name]);
+		$this->view->title = Yii::t('app', 'Update Authority Record: {creator-name}', ['creator-name' => $model->creator_name]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
@@ -193,7 +193,7 @@ class CreatorController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'Detail {model-class}: {creator-name}', ['model-class' => 'Authority Record', 'creator-name' => $model->creator_name]);
+		$this->view->title = Yii::t('app', 'Detail Authority Record: {creator-name}', ['creator-name' => $model->creator_name]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [

@@ -17,6 +17,8 @@
 use yii\helpers\Html;
 use app\components\ActiveForm;
 use ommu\archive\models\ArchiveLocation;
+use ommu\archive\models\ArchiveStorage;
+use yii2mod\selectize\Selectize;
 ?>
 
 <div class="archive-location-form">
@@ -44,6 +46,20 @@ echo $form->field($model, 'parent_id', ['horizontalCssClasses' => ['wrapper'=>'c
 <?php echo $form->field($model, 'location_desc', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
 	->textarea(['rows'=>4, 'cols'=>50])
 	->label($model->getAttributeLabel('location_desc')); ?>
+
+<?php if($model->type == 'room') {
+echo $form->field($model, 'storage', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+	->widget(Selectize::className(), [
+		'items' =>ArchiveStorage::getStorage(1),
+		'options' => [
+			'multiple' => true,
+		],
+		'pluginOptions' => [
+			'plugins' => ['remove_button'],
+		],
+	])
+	->label($model->getAttributeLabel('storage'));
+} ?>
 
 <?php echo $form->field($model, 'publish', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
 	->checkbox()

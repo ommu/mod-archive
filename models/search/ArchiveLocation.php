@@ -27,8 +27,8 @@ class ArchiveLocation extends ArchiveLocationModel
 	public function rules()
 	{
 		return [
-			[['id', 'publish', 'parent_id', 'creation_id', 'modified_id'], 'integer'],
-			[['type', 'location_name', 'location_desc', 'creation_date', 'modified_date', 'updated_date', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
+			[['id', 'publish', 'parent_id', 'creation_id', 'modified_id', 'storage'], 'integer'],
+			[['type', 'location_name', 'location_desc', 'creation_date', 'modified_date', 'updated_date', 'parentName', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
 		];
 	}
 
@@ -65,8 +65,10 @@ class ArchiveLocation extends ArchiveLocationModel
 		else
 			$query = ArchiveLocationModel::find()->alias('t')->select($column);
 		$query->joinWith([
+			'parent parent', 
 			'creation creation', 
-			'modified modified'
+			'modified modified', 
+			'roomStorage roomStorage'
 		]);
 
 		// add conditions that should always apply here
@@ -110,6 +112,7 @@ class ArchiveLocation extends ArchiveLocationModel
 			'cast(t.modified_date as date)' => $this->modified_date,
 			't.modified_id' => isset($params['modified']) ? $params['modified'] : $this->modified_id,
 			'cast(t.updated_date as date)' => $this->updated_date,
+			'roomStorage.storage_id' => $this->storage,
 		]);
 
 		if(isset($params['trash']))
@@ -123,6 +126,7 @@ class ArchiveLocation extends ArchiveLocationModel
 
 		$query->andFilterWhere(['like', 't.location_name', $this->location_name])
 			->andFilterWhere(['like', 't.location_desc', $this->location_desc])
+			->andFilterWhere(['like', 'parent.location_name', $this->parentName])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
 			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname]);
 

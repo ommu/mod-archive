@@ -24,7 +24,7 @@
  * @property string $updated_date
  *
  * The followings are the available model relations:
- * @property ArchiveRoomStorage[] $storages
+ * @property ArchiveRoomStorage[] $roomStorage
  * @property Users $creation
  * @property Users $modified
  *
@@ -43,8 +43,11 @@ class ArchiveLocation extends \app\components\ActiveRecord
 
 	public $gridForbiddenColumn = ['type', 'location_desc', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
+	public $parentName;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
+
+	public $storage;
 
 	const TYPE_BUILDING = 'building';
 	const TYPE_DEPO = 'depo';
@@ -70,7 +73,7 @@ class ArchiveLocation extends \app\components\ActiveRecord
 			[['parent_id'], 'required', 'on' => self::SCENARIO_NOT_BUILDING],
 			[['publish', 'parent_id', 'creation_id', 'modified_id'], 'integer'],
 			[['type', 'location_desc'], 'string'],
-			[['location_desc'], 'safe'],
+			[['location_desc', 'storage'], 'safe'],
 			[['location_name'], 'string', 'max' => 128],
 		];
 	}
@@ -81,7 +84,7 @@ class ArchiveLocation extends \app\components\ActiveRecord
 	public function scenarios()
 	{
 		$scenarios = parent::scenarios();
-		$scenarios[self::SCENARIO_NOT_BUILDING] = ['publish', 'parent_id', 'location_name', 'location_desc'];
+		$scenarios[self::SCENARIO_NOT_BUILDING] = ['publish', 'parent_id', 'location_name', 'location_desc', 'storage'];
 		return $scenarios;
 	}
 
@@ -102,25 +105,22 @@ class ArchiveLocation extends \app\components\ActiveRecord
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
-			'storages' => Yii::t('app', 'Storages'),
+			'parentName' => Yii::t('app', 'Parent'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
+			'storage' => Yii::t('app', 'Storage Unit'),
 		];
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getStorages($count=false)
+	public function getRoomStorage($result=false, $val='id')
 	{
-		if($count == false)
-			return $this->hasMany(ArchiveRoomStorage::className(), ['room_id' => 'id']);
+		if($result == true)
+			return \yii\helpers\ArrayHelper::map($this->roomStorage, 'storage_id', $val=='id' ? 'id' : 'storage.storage_name_i');
 
-		$model = ArchiveRoomStorage::find()
-			->where(['room_id' => $this->id]);
-		$storages = $model->count();
-
-		return $storages ? $storages : 0;
+		return $this->hasMany(ArchiveRoomStorage::className(), ['room_id' => 'id']);
 	}
 
 	/**
@@ -169,10 +169,13 @@ class ArchiveLocation extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 		];
 		if($this->type != 'building') {
-			$this->templateColumns['parent_id'] = [
-				'attribute' => 'parent_id',
+			$this->templateColumns['parentName'] = [
+				'attribute' => 'parentName',
 				'value' => function($model, $key, $index, $column) {
+					if($model->type == 'room')
+						return isset($model->parent) ? $model->parent->location_name.', '.$model->parent->parent->location_name : '-';
 					return isset($model->parent) ? $model->parent->location_name : '-';
+					// return $model->parentName;
 				},
 			];
 		}
@@ -236,14 +239,13 @@ class ArchiveLocation extends \app\components\ActiveRecord
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
 		];
 		if($this->type == 'room') {
-			$this->templateColumns['storages'] = [
-				'attribute' => 'storages',
+			$this->templateColumns['storage'] = [
+				'attribute' => 'storage',
+				'header' => Yii::t('app', 'Storage'),
 				'value' => function($model, $key, $index, $column) {
-					$storages = $model->getStorages(true);
-					return Html::a($storages, ['storage/manage', 'room'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} storages', ['count'=>$storages])]);
+					return self::parseStorage($model->getRoomStorage(true, 'title'));
 				},
-				'filter' => false,
-				'contentOptions' => ['class'=>'center'],
+				'filter' => ArchiveStorage::getStorage(),
 				'format' => 'html',
 			];
 		}
@@ -297,7 +299,7 @@ class ArchiveLocation extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * function getMedia
+	 * function getLocation
 	 */
 	public static function getLocation($data=[], $array=true) 
 	{
@@ -315,14 +317,29 @@ class ArchiveLocation extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * function parseRelated
+	 */
+	public static function parseStorage($roomStorage)
+	{
+		if(!is_array($roomStorage) || (is_array($roomStorage) && empty($roomStorage)))
+			return '-';
+
+		return Html::ul($roomStorage, ['item' => function($item, $index) {
+			return Html::tag('li', Html::a($item, ['setting/storage/view', 'id'=>$index], ['title'=>$item, 'class'=>'modal-btn']));
+		}, 'class'=>'list-boxed']);
+	}
+
+	/**
 	 * after find attributes
 	 */
 	public function afterFind()
 	{
 		parent::afterFind();
 
+		// $this->parentName = isset($this->parent) ? $this->parent->location_name : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
+		$this->storage = array_flip($this->getRoomStorage(true));
 	}
 
 	/**
@@ -340,5 +357,52 @@ class ArchiveLocation extends \app\components\ActiveRecord
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * before save attributes
+	 */
+	public function beforeSave($insert)
+	{
+		if(!$insert) {
+			$oldStorage = array_flip($this->getRoomStorage(true));
+			$storage = $this->storage;
+	
+			// insert difference storage
+			if(is_array($storage)) {
+				foreach ($storage as $val) {
+					if(in_array($val, $oldStorage)) {
+						unset($oldStorage[array_keys($oldStorage, $val)[0]]);
+						continue;
+					}
+	
+					$model = new ArchiveRoomStorage();
+					$model->room_id = $this->id;
+					$model->storage_id = $val;
+					$model->save();
+				}
+			}
+	
+			// drop difference storage
+			if(!empty($oldStorage)) {
+				foreach ($oldStorage as $key => $val) {
+					ArchiveRoomStorage::findOne($key)->delete();
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * After save attributes
+	 */
+	public function afterSave($insert, $changedAttributes)
+	{
+		parent::afterSave($insert, $changedAttributes);
+		
+		// if($insert) {
+			
+		// }
 	}
 }

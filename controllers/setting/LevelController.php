@@ -159,7 +159,7 @@ class LevelController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Update {model-class}: {level-name}', ['model-class' => 'Level of Description', 'level-name' => $model->title->message]);
+		$this->view->title = Yii::t('app', 'Update Level of Description: {level-name}', ['level-name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
@@ -176,7 +176,7 @@ class LevelController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'Detail {model-class}: {level-name}', ['model-class' => 'Level of Description', 'level-name' => $model->title->message]);
+		$this->view->title = Yii::t('app', 'Detail Level of Description: {level-name}', ['level-name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [

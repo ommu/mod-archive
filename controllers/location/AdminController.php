@@ -35,6 +35,7 @@ use yii\helpers\Inflector;
 use mdm\admin\components\AccessControl;
 use ommu\archive\models\ArchiveLocation;
 use ommu\archive\models\search\ArchiveLocation as ArchiveLocationSearch;
+use yii\helpers\ArrayHelper;
 
 class AdminController extends Controller
 {
@@ -111,7 +112,12 @@ class AdminController extends Controller
 	public function actionCreate()
 	{
 		$model = new ArchiveLocation();
-		$model->setAttributeLabels(['location_name'=>$this->title]);
+		$attributes = ['location_name'=>$this->title];
+		if($this->type == 'depo')
+			$attributes = ArrayHelper::merge($attributes, ['parent_id'=>ArchiveLocation::getType(ArchiveLocation::TYPE_BUILDING)]);
+		if($this->type == 'room')
+			$attributes = ArrayHelper::merge($attributes, ['parent_id'=>ArchiveLocation::getType(ArchiveLocation::TYPE_DEPO)]);
+		$model->setAttributeLabels($attributes);
 		$model->type = $this->type;
 		if($model->type != 'building')
 			$model->scenario = ArchiveLocation::SCENARIO_NOT_BUILDING;
@@ -122,7 +128,7 @@ class AdminController extends Controller
 			// $model->load($postData);
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Physical storage {title} success created.', ['title'=>Yii::t('app', strtolower($this->title))]));
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Physical storage {title} success created.', ['title'=>strtolower($this->title)]));
 				return $this->redirect(['manage']);
 				//return $this->redirect(['view', 'id'=>$model->id]);
 
@@ -132,7 +138,7 @@ class AdminController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Create {model-class}', ['model-class' => Yii::t('app', $this->title)]);
+		$this->view->title = Yii::t('app', 'Create {title}', ['title' => $this->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
@@ -149,7 +155,6 @@ class AdminController extends Controller
 	public function actionUpdate($id)
 	{
 		$model = $this->findModel($id);
-		$model->setAttributeLabels(['location_name'=>ArchiveLocation::getType($model->type)]);
 		if($model->type != 'building')
 			$model->scenario = ArchiveLocation::SCENARIO_NOT_BUILDING;
 
@@ -159,7 +164,7 @@ class AdminController extends Controller
 			// $model->load($postData);
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Physical storage {title} success updated.', ['title'=>Yii::t('app', strtolower($this->title))]));
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Physical storage {title} success updated.', ['title'=>strtolower($this->title)]));
 				return $this->redirect(['manage']);
 
 			} else {
@@ -168,7 +173,7 @@ class AdminController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Update {model-class}: {location-name}', ['model-class' => Yii::t('app', $this->title), 'location-name' => $model->location_name]);
+		$this->view->title = Yii::t('app', 'Update {title}: {location-name}', ['title' => $this->title, 'location-name' => $model->location_name]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
@@ -184,9 +189,8 @@ class AdminController extends Controller
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
-		$model->setAttributeLabels(['location_name'=>ArchiveLocation::getType($model->type)]);
 
-		$this->view->title = Yii::t('app', 'Detail {model-class}: {location-name}', ['model-class' => Yii::t('app', $this->title), 'location-name' => $model->location_name]);
+		$this->view->title = Yii::t('app', 'Detail {title}: {location-name}', ['title' => $this->title, 'location-name' => $model->location_name]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
@@ -206,7 +210,7 @@ class AdminController extends Controller
 		$model->publish = 2;
 
 		if($model->save(false, ['publish','modified_id'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Physical storage {title} success deleted.', ['title'=>Yii::t('app', strtolower($this->title))]));
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Physical storage {title} success deleted.', ['title'=>strtolower($this->title)]));
 			return $this->redirect(['manage']);
 		}
 	}
@@ -224,7 +228,7 @@ class AdminController extends Controller
 		$model->publish = $replace;
 
 		if($model->save(false, ['publish','modified_id'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Physical storage {title} success updated.', ['title'=>Yii::t('app', strtolower($this->title))]));
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Physical storage {title} success updated.', ['title'=>strtolower($this->title)]));
 			return $this->redirect(['manage']);
 		}
 	}
@@ -264,8 +268,16 @@ class AdminController extends Controller
 	 */
 	protected function findModel($id)
 	{
-		if(($model = ArchiveLocation::findOne($id)) !== null)
+		if(($model = ArchiveLocation::findOne($id)) !== null) {
+			$attributes = ['location_name'=>$this->title];
+			if($model->type == 'depo')
+				$attributes = ArrayHelper::merge($attributes, ['parent_id'=>ArchiveLocation::getType(ArchiveLocation::TYPE_BUILDING)]);
+			if($model->type == 'room')
+				$attributes = ArrayHelper::merge($attributes, ['parent_id'=>ArchiveLocation::getType(ArchiveLocation::TYPE_DEPO)]);
+			$model->setAttributeLabels($attributes);
+
 			return $model;
+		}
 
 		throw new \yii\web\NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
 	}
