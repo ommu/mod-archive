@@ -28,7 +28,7 @@ class Archives extends ArchivesModel
 	{
 		return [
 			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'media'], 'integer'],
-			[['title', 'code', 'image_type', 'creation_date', 'modified_date', 'updated_date', 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository'], 'safe'],
+			[['title', 'code', 'medium', 'image_type', 'creation_date', 'modified_date', 'updated_date', 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository'], 'safe'],
 		];
 	}
 
