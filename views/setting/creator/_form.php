@@ -34,7 +34,7 @@ use app\components\ActiveForm;
 	->label($model->getAttributeLabel('creator_name')); ?>
 
 <?php echo $form->field($model, 'creator_desc', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
-	->textarea(['rows'=>6, 'cols'=>50])
+	->textarea(['rows'=>4, 'cols'=>50])
 	->label($model->getAttributeLabel('creator_desc')); ?>
 
 <?php echo $form->field($model, 'publish', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])

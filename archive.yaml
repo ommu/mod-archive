@@ -27,6 +27,10 @@ archive_submenu:
       data-method: post
     select: action
 location_submenu:
+  storage:
+    label: Storages
+    url: ['setting/storage']
+    select: controller
   build:
     label: Building
     url: ['location/admin']

@@ -34,7 +34,7 @@ use app\components\ActiveForm;
 	->label($model->getAttributeLabel('media_name_i')); ?>
 
 <?php echo $form->field($model, 'media_desc_i', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
-	->textarea(['rows'=>6, 'cols'=>50, 'maxlength'=>true])
+	->textarea(['rows'=>4, 'cols'=>50, 'maxlength'=>true])
 	->label($model->getAttributeLabel('media_desc_i')); ?>
 
 <?php echo $form->field($model, 'publish', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])

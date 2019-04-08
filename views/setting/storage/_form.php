@@ -1,49 +1,47 @@
 <?php
 /**
- * Archive Locations (archive-location)
+ * Archive Storages (archive-storage)
  * @var $this app\components\View
- * @var $this ommu\archive\controllers\location\AdminController
- * @var $model ommu\archive\models\ArchiveLocation
+ * @var $this ommu\archive\controllers\setting\StorageController
+ * @var $model ommu\archive\models\ArchiveStorage
  * @var $form app\components\ActiveForm
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2019 OMMU (www.ommu.co)
- * @created date 8 April 2019, 08:42 WIB
+ * @created date 8 April 2019, 17:04 WIB
  * @link https://bitbucket.org/ommu/archive
  *
  */
 
 use yii\helpers\Html;
 use app\components\ActiveForm;
-use ommu\archive\models\ArchiveLocation;
+use ommu\archive\models\ArchiveStorage;
 ?>
 
-<div class="archive-location-form">
+<div class="archive-storage-form">
 
 <?php $form = ActiveForm::begin([
 	'options' => ['class'=>'form-horizontal form-label-left'],
 	'enableClientValidation' => true,
 	'enableAjaxValidation' => false,
 	//'enableClientScript' => true,
-]);?>
+]); ?>
 
 <?php //echo $form->errorSummary($model);?>
 
-<?php if($model->type != 'building') {
-$parentId = ArchiveLocation::getLocation(['publish'=>1, 'type'=>$model->type == 'depo' ? 'building' : 'depo']);
+<?php $parentId = ArchiveStorage::getStorage();
 echo $form->field($model, 'parent_id', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
 	->dropDownList($parentId, ['prompt' => ''])
-	->label($model->getAttributeLabel('parent_id'));
-} ?>
+	->label($model->getAttributeLabel('parent_id')); ?>
 
-<?php echo $form->field($model, 'location_name', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'storage_name_i', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
 	->textInput(['maxlength'=>true])
-	->label($model->getAttributeLabel('location_name')); ?>
+	->label($model->getAttributeLabel('storage_name_i')); ?>
 
-<?php echo $form->field($model, 'location_desc', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
-	->textarea(['rows'=>4, 'cols'=>50])
-	->label($model->getAttributeLabel('location_desc')); ?>
+<?php echo $form->field($model, 'storage_desc_i', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+	->textarea(['rows'=>4, 'cols'=>50, 'maxlength'=>true])
+	->label($model->getAttributeLabel('storage_desc_i')); ?>
 
 <?php echo $form->field($model, 'publish', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
 	->checkbox()
@@ -51,7 +49,7 @@ echo $form->field($model, 'parent_id', ['horizontalCssClasses' => ['wrapper'=>'c
 
 <div class="ln_solid"></div>
 <div class="form-group row">
-	<div class="col-sm-9 col-xs-12 col-12 col-sm-offset-3">
+	<div class="col-md-6 col-sm-9 col-xs-12 col-12 col-sm-offset-3">
 		<?php echo Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']); ?>
 	</div>
 </div>

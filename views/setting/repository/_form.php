@@ -34,7 +34,7 @@ use app\components\ActiveForm;
 	->label($model->getAttributeLabel('repository_name')); ?>
 
 <?php echo $form->field($model, 'repository_desc')
-	->textarea(['rows'=>6, 'cols'=>50])
+	->textarea(['rows'=>4, 'cols'=>50])
 	->label($model->getAttributeLabel('repository_desc', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])); ?>
 
 <?php echo $form->field($model, 'publish', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])

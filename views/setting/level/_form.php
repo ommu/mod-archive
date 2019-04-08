@@ -35,7 +35,7 @@ use ommu\archive\models\ArchiveLevel;
 	->label($model->getAttributeLabel('level_name_i')); ?>
 
 <?php echo $form->field($model, 'level_desc_i', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
-	->textarea(['rows'=>6, 'cols'=>50])
+	->textarea(['rows'=>4, 'cols'=>50])
 	->label($model->getAttributeLabel('level_desc_i')); ?>
 
 <?php $child = ArchiveLevel::getLevel(1);
