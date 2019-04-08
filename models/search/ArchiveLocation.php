@@ -81,6 +81,10 @@ class ArchiveLocation extends ArchiveLocationModel
 		$dataProvider = new ActiveDataProvider($dataParams);
 
 		$attributes = array_keys($this->getTableSchema()->columns);
+		$attributes['parentName'] = [
+			'asc' => ['parent.location_name' => SORT_ASC],
+			'desc' => ['parent.location_name' => SORT_DESC],
+		];
 		$attributes['creationDisplayname'] = [
 			'asc' => ['creation.displayname' => SORT_ASC],
 			'desc' => ['creation.displayname' => SORT_DESC],

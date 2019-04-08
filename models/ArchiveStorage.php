@@ -23,7 +23,7 @@
  * @property string $updated_date
  *
  * The followings are the available model relations:
- * @property ArchiveRoomStorage[] $storages
+ * @property ArchiveRoomStorage[] $rooms
  * @property SourceMessage $title
  * @property SourceMessage $description
  * @property Users $creation
@@ -92,7 +92,7 @@ class ArchiveStorage extends \app\components\ActiveRecord
 			'updated_date' => Yii::t('app', 'Updated Date'),
 			'storage_name_i' => Yii::t('app', 'Storage'),
 			'storage_desc_i' => Yii::t('app', 'Description'),
-			'storages' => Yii::t('app', 'Storages'),
+			'rooms' => Yii::t('app', 'Rooms'),
 			'parentName' => Yii::t('app', 'Parent'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
@@ -102,16 +102,16 @@ class ArchiveStorage extends \app\components\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getStorages($count=false)
+	public function getRooms($count=false)
 	{
 		if($count == false)
 			return $this->hasMany(ArchiveRoomStorage::className(), ['storage_id' => 'id']);
 
 		$model = ArchiveRoomStorage::find()
 			->where(['storage_id' => $this->id]);
-		$storages = $model->count();
+		$rooms = $model->count();
 
-		return $storages ? $storages : 0;
+		return $rooms ? $rooms : 0;
 	}
 
 	/**
@@ -233,11 +233,11 @@ class ArchiveStorage extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
 		];
-		$this->templateColumns['storages'] = [
-			'attribute' => 'storages',
+		$this->templateColumns['rooms'] = [
+			'attribute' => 'rooms',
 			'value' => function($model, $key, $index, $column) {
-				$storages = $model->getStorages(true);
-				return Html::a($storages, ['storage/manage', 'storage'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} storages', ['count'=>$storages])]);
+				$rooms = $model->getRooms(true);
+				return Html::a($rooms, ['location/room/manage', 'storage'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} rooms', ['count'=>$rooms])]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],

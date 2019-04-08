@@ -69,8 +69,8 @@ $attributes = [
 	[
 		'attribute' => 'storages',
 		'value' => function ($model) {
-			$storages = $model->getStorages(true);
-			return Html::a($storages, ['storage/manage', 'storage'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} storages', ['count'=>$storages])]);
+			$storages = $model->getRooms(true);
+			return Html::a($storages, ['location/room/manage', 'storage'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} storages', ['count'=>$storages])]);
 		},
 		'format' => 'html',
 	],
