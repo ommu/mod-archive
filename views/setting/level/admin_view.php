@@ -52,12 +52,9 @@ $attributes = [
 		'format' => 'html',
 	],
 	[
-		'attribute' => 'sidkkas',
-		'value' => $this->filterYesNo($model->sidkkas),
-	],
-	[
-		'attribute' => 'image_type',
-		'value' => $this->filterYesNo($model->image_type),
+		'attribute' => 'field',
+		'value' => ArchiveLevel::getField($model->field),
+		'format' => 'html',
 	],
 	[
 		'attribute' => 'creation_date',

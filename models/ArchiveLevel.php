@@ -16,8 +16,7 @@
  * @property integer $level_name
  * @property integer $level_desc
  * @property string $child
- * @property integer $sidkkas
- * @property integer $image_type
+ * @property string $field
  * @property string $creation_date
  * @property integer $creation_id
  * @property string $modified_date
@@ -45,7 +44,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 
-	public $gridForbiddenColumn = ['level_desc_i', 'child', 'sidkkas', 'image_type', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
+	public $gridForbiddenColumn = ['level_desc_i', 'child', 'field', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
 	public $level_name_i;
 	public $level_desc_i;
@@ -67,10 +66,10 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	{
 		return [
 			[['level_name_i', 'level_desc_i'], 'required'],
-			[['publish', 'level_name', 'level_desc', 'sidkkas', 'image_type', 'creation_id', 'modified_id'], 'integer'],
+			[['publish', 'level_name', 'level_desc', 'creation_id', 'modified_id'], 'integer'],
 			[['level_name_i', 'level_desc_i'], 'string'],
-			[['child'], 'safe'],
-			//[['child'], 'serialize'],
+			[['child', 'field'], 'safe'],
+			//[['child', 'field], 'serialize'],
 			[['level_name_i'], 'string', 'max' => 64],
 		];
 	}
@@ -86,8 +85,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 			'level_name' => Yii::t('app', 'Level'),
 			'level_desc' => Yii::t('app', 'Description'),
 			'child' => Yii::t('app', 'Child'),
-			'sidkkas' => Yii::t('app', 'SiDKKAS Select'),
-			'image_type' => Yii::t('app', 'Image Type Select'),
+			'field' => Yii::t('app', 'Field'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
@@ -191,8 +189,17 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		$this->templateColumns['child'] = [
 			'attribute' => 'child',
 			'value' => function($model, $key, $index, $column) {
-				return ArchiveLevel::getChild($model->child);
+				return ArchiveLevel::getChild($model->child, ',');
 			},
+			'filter' => false,
+			'format' => 'html',
+		];
+		$this->templateColumns['field'] = [
+			'attribute' => 'field',
+			'value' => function($model, $key, $index, $column) {
+				return ArchiveLevel::getField($model->field, ',');
+			},
+			'filter' => false,
 			'format' => 'html',
 		];
 		$this->templateColumns['creation_date'] = [
@@ -244,22 +251,6 @@ class ArchiveLevel extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 			'format' => 'html',
 		];
-		$this->templateColumns['sidkkas'] = [
-			'attribute' => 'sidkkas',
-			'value' => function($model, $key, $index, $column) {
-				return $this->filterYesNo($model->sidkkas);
-			},
-			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'center'],
-		];
-		$this->templateColumns['image_type'] = [
-			'attribute' => 'image_type',
-			'value' => function($model, $key, $index, $column) {
-				return $this->filterYesNo($model->image_type);
-			},
-			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'center'],
-		];
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [
 				'attribute' => 'publish',
@@ -295,7 +286,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	/**
 	 * function getLevel
 	 */
-	public static function getLevel($publish=null, $array=true) 
+	public static function getLevel($publish=null, $array=true)
 	{
 		$model = self::find()->alias('t');
 		$model->leftJoin(sprintf('%s title', SourceMessage::tableName()), 't.level_name=title.id');
@@ -313,18 +304,55 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	/**
 	 * function getChild
 	 */
-	public static function getChild($child) 
+	public static function getChild($child, $sep='li')
 	{
 		if(!is_array($child) || (is_array($child) && empty($child)))
 			return '-';
-		
+
 		$levels = self::getLevel();
 		foreach ($levels as $key => $val) {
 			if(in_array($key, $child))
-				$level[] = Html::a($val, ['setting/level/view', 'id'=>$key], ['title'=>$val]);
+				$level[] = Html::a($val, ['setting/level/view', 'id'=>$key], ['title'=>$val, 'class'=>'modal-btn']);
+		}
+
+		if($sep == 'li') {
+			return Html::ul($level, ['item' => function($item, $index) {
+				return Html::tag('li', $item);
+			}, 'class'=>'list-boxed']);
 		}
 
 		return implode(', ', $level);
+	}
+
+	/**
+	 * function getField
+	 */
+	public static function getField($field=null, $sep='li')
+	{
+		$items = array(
+			'creator' => Yii::t('app', 'Name of creator(s)'),
+			'repository' => Yii::t('app', 'Repository'),
+			'sidkkas' => Yii::t('app', 'SiDKKAS'),
+			'image_type' => Yii::t('app', 'Image Type'),
+		);
+
+		if($field !== null) {
+			if(!is_array($field) || (is_array($field) && empty($field)))
+				return '-';
+
+			$item = [];
+			foreach ($items as $key => $val) {
+				if(in_array($key, $field))
+					$item[$key] = $val;
+			}
+			if($sep == 'li') {
+				return Html::ul($item, ['item' => function($item, $index) {
+					return Html::tag('li', "($index) $item");
+				}, 'class'=>'list-boxed']);
+			}
+			return implode(', ', $item);
+		} else
+			return $items;
 	}
 
 	/**
@@ -337,6 +365,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		$this->level_name_i = isset($this->title) ? $this->title->message : '';
 		$this->level_desc_i = isset($this->description) ? $this->description->message : '';
 		$this->child = unserialize($this->child);
+		$this->field = unserialize($this->field);
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
 	}
@@ -397,6 +426,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 			}
 
 			$this->child = serialize($this->child);
+			$this->field = serialize($this->field);
 		}
 		return true;
 	}

@@ -44,13 +44,10 @@ echo $form->field($model, 'child', ['horizontalCssClasses' => ['wrapper'=>'col-s
 	->checkboxList($child)
 	->label($model->getAttributeLabel('child')); ?>
 
-<?php echo $form->field($model, 'sidkkas', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
-	->checkbox()
-	->label($model->getAttributeLabel('sidkkas')); ?>
-
-<?php echo $form->field($model, 'image_type', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
-	->checkbox()
-	->label($model->getAttributeLabel('image_type')); ?>
+<?php $field = ArchiveLevel::getField();
+echo $form->field($model, 'field', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+	->checkboxList($field)
+	->label($model->getAttributeLabel('field')); ?>
 
 <?php echo $form->field($model, 'publish', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
 	->checkbox()

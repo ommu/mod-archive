@@ -27,8 +27,8 @@ class ArchiveLevel extends ArchiveLevelModel
 	public function rules()
 	{
 		return [
-			[['id', 'publish', 'level_name', 'level_desc', 'sidkkas', 'image_type', 'creation_id', 'modified_id'], 'integer'],
-			[['child', 'creation_date', 'modified_date', 'updated_date', 'level_name_i', 'level_desc_i', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
+			[['id', 'publish', 'level_name', 'level_desc', 'creation_id', 'modified_id'], 'integer'],
+			[['child', 'field', 'creation_date', 'modified_date', 'updated_date', 'level_name_i', 'level_desc_i', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
 		];
 	}
 
@@ -115,8 +115,6 @@ class ArchiveLevel extends ArchiveLevelModel
 			't.id' => $this->id,
 			't.level_name' => $this->level_name,
 			't.level_desc' => $this->level_desc,
-			't.sidkkas' => $this->sidkkas,
-			't.image_type' => $this->image_type,
 			'cast(t.creation_date as date)' => $this->creation_date,
 			't.creation_id' => isset($params['creation']) ? $params['creation'] : $this->creation_id,
 			'cast(t.modified_date as date)' => $this->modified_date,
@@ -134,6 +132,7 @@ class ArchiveLevel extends ArchiveLevelModel
 		}
 
 		$query->andFilterWhere(['like', 't.child', $this->child])
+			->andFilterWhere(['like', 't.field', $this->field])
 			->andFilterWhere(['like', 'title.message', $this->level_name_i])
 			->andFilterWhere(['like', 'description.message', $this->level_desc_i])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
