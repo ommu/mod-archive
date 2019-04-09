@@ -23,7 +23,7 @@ use yii\helpers\ArrayHelper;
 $this->params['breadcrumbs'][] = $this->title;
 
 $this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Add {title}', ['title'=>Yii::t('app', $this->context->title)]), 'url' => Url::to(['create']), 'icon' => 'plus-square'],
+	['label' => Yii::t('app', 'Add {title}', ['title'=>Yii::t('app', $this->context->title)]), 'url' => Url::to(['create']), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success btn-sm']],
 ];
 $this->params['menu']['option'] = [
 	//['label' => Yii::t('app', 'Search'), 'url' => 'javascript:void(0);'],

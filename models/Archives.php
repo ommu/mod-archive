@@ -49,7 +49,7 @@ class Archives extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 
-	public $gridForbiddenColumn = ['parentTitle', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date', 'creator', 'repository'];
+	public $gridForbiddenColumn = ['parentTitle', 'creator', 'repository', 'image_type', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
 	public $parentTitle;
 	public $levelName;

@@ -31,6 +31,14 @@ $attributes = [
 		'value' => $model->id,
 	],
 	[
+		'attribute' => 'publish',
+		'value' => Archives::getPublish($model->publish),
+	],
+	[
+		'attribute' => 'sidkkas',
+		'value' => $this->filterYesNo($model->sidkkas),
+	],
+	[
 		'attribute' => 'parent_id',
 		'value' => Archives::parseParent($model),
 		'format' => 'html',
@@ -83,14 +91,6 @@ $attributes = [
 		'attribute' => 'image_type',
 		'value' => Archives::getImageType($model->image_type ? $model->image_type : '-'),
 		'visible' => $model->level->image_type ? true : false,
-	],
-	[
-		'attribute' => 'sidkkas',
-		'value' => $this->filterYesNo($model->sidkkas),
-	],
-	[
-		'attribute' => 'publish',
-		'value' => Archives::getPublish($model->publish),
 	],
 	[
 		'attribute' => 'creation_date',
