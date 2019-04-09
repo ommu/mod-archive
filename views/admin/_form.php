@@ -17,10 +17,16 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\components\ActiveForm;
+use yii\redactor\widgets\Redactor;
 use ommu\archive\models\Archives;
 use ommu\archive\models\ArchiveMedia;
 use yii2mod\selectize\Selectize;
 use yii\helpers\ArrayHelper;
+
+$redactorOptions = [
+	'buttons' => ['html', 'format', 'bold', 'italic', 'deleted'],
+	'plugins' => ['fontcolor','imagemanager']
+];
 ?>
 
 <div class="archives-form">
@@ -72,6 +78,7 @@ if(!$fond) {
 
 <?php echo $form->field($model, 'title', $wraper)
 	->textarea(['rows'=>4, 'cols'=>50])
+	->widget(Redactor::className(), ['clientOptions' => $redactorOptions])
 	->label($model->getAttributeLabel('title'))
 	->hint(Yii::t('app', 'Provide either a formal title or a concise supplied title in accordance with the rules of multilevel description and national conventions.')); ?>
 
