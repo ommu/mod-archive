@@ -243,7 +243,7 @@ class ArchiveLocation extends \app\components\ActiveRecord
 				'attribute' => 'storage',
 				'header' => Yii::t('app', 'Storage'),
 				'value' => function($model, $key, $index, $column) {
-					return self::parseStorage($model->getRoomStorage(true, 'title'));
+					return self::parseStorage($model->getRoomStorage(true, 'title'), ',');
 				},
 				'filter' => ArchiveStorage::getStorage(),
 				'format' => 'html',
@@ -319,14 +319,18 @@ class ArchiveLocation extends \app\components\ActiveRecord
 	/**
 	 * function parseRelated
 	 */
-	public static function parseStorage($roomStorage)
+	public static function parseStorage($roomStorage, $sep='li')
 	{
 		if(!is_array($roomStorage) || (is_array($roomStorage) && empty($roomStorage)))
 			return '-';
 
-		return Html::ul($roomStorage, ['item' => function($item, $index) {
-			return Html::tag('li', Html::a($item, ['setting/storage/view', 'id'=>$index], ['title'=>$item, 'class'=>'modal-btn']));
-		}, 'class'=>'list-boxed']);
+		if($sep == 'li') {
+			return Html::ul($roomStorage, ['item' => function($item, $index) {
+				return Html::tag('li', Html::a($item, ['setting/storage/view', 'id'=>$index], ['title'=>$item, 'class'=>'modal-btn']));
+			}, 'class'=>'list-boxed']);
+		}
+
+		return implode(', ', $roomStorage);
 	}
 
 	/**

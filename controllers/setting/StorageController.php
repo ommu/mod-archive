@@ -43,7 +43,7 @@ class StorageController extends Controller
 	public function init()
 	{
 		parent::init();
-		$this->subMenu = $this->module->params['location_submenu'];
+		$this->subMenu = $this->module->params['setting_submenu'];
 	}
 
 	/**

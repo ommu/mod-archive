@@ -312,12 +312,12 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		$levels = self::getLevel();
 		foreach ($levels as $key => $val) {
 			if(in_array($key, $child))
-				$level[] = Html::a($val, ['setting/level/view', 'id'=>$key], ['title'=>$val, 'class'=>'modal-btn']);
+				$level[$key] = $val;
 		}
 
 		if($sep == 'li') {
 			return Html::ul($level, ['item' => function($item, $index) {
-				return Html::tag('li', $item);
+				return Html::tag('li', Html::a($item, ['setting/level/view', 'id'=>$index], ['title'=>$item, 'class'=>'modal-btn']));
 			}, 'class'=>'list-boxed']);
 		}
 
@@ -345,11 +345,13 @@ class ArchiveLevel extends \app\components\ActiveRecord
 				if(in_array($key, $field))
 					$item[$key] = $val;
 			}
+
 			if($sep == 'li') {
 				return Html::ul($item, ['item' => function($item, $index) {
 					return Html::tag('li', "($index) $item");
 				}, 'class'=>'list-boxed']);
 			}
+
 			return implode(', ', $item);
 		} else
 			return $items;
@@ -366,6 +368,8 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		$this->level_desc_i = isset($this->description) ? $this->description->message : '';
 		$this->child = unserialize($this->child);
 		$this->field = unserialize($this->field);
+		if(!is_array($this->field))
+			$this->field = [];
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
 	}

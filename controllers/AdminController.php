@@ -85,7 +85,7 @@ class AdminController extends Controller
 
 		if(($level = Yii::$app->request->get('level')) != null)
 			$level = \ommu\archive\models\ArchiveLevel::findOne($level);
-		if(($media = Yii::$app->request->get('media')) != null)
+		if(($media = Yii::$app->request->get('mediaId')) != null)
 			$media = \ommu\archive\models\ArchiveMedia::findOne($media);
 		if(($creator = Yii::$app->request->get('creatorId')) != null)
 			$creator = \ommu\archive\models\ArchiveCreator::findOne($creator);

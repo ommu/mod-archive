@@ -69,13 +69,13 @@ $attributes = [
 		'attribute' => 'archives',
 		'value' => function ($model) {
 			$archives = $model->getArchives(true);
-			return Html::a($archives, ['admin/manage', 'media'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
+			return Html::a($archives, ['admin/manage', 'mediaId'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
 		},
 		'format' => 'html',
 	],
 	[
 		'attribute' => '',
-		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-success']),
+		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-primary btn-sm']),
 		'format' => 'html',
 		'visible' => Yii::$app->request->isAjax ? true : false,
 	],

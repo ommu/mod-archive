@@ -97,41 +97,43 @@ if(!$fond) {
 
 <div class="ln_solid"></div>
 
-<?php 
-$creatorSuggestUrl = Url::to(['setting/creator/suggest']);
-echo $form->field($model, 'creator', $wraper)
-	->widget(Selectize::className(), [
-		'url' => $creatorSuggestUrl,
-		'pluginOptions' => [
-			'plugins' => ['remove_button'],
-			'valueField' => 'label',
-			'labelField' => 'label',
-			'searchField' => ['label'],
-			'persist' => false,
-			'createOnBlur' => false,
-			'create' => true,
-		],
-	])
-	->label($model->getAttributeLabel('creator'))
-	->hint(Yii::t('app', 'Record the name of the organization(s) or the individual(s) responsible for the creation, accumulation and maintenance of the records in the unit of description. Search for an existing name in the authority records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new authority record.')); ?>
+<?php if(in_array('creator', $model->level->field)) {
+	$creatorSuggestUrl = Url::to(['setting/creator/suggest']);
+	echo $form->field($model, 'creator', $wraper)
+		->widget(Selectize::className(), [
+			'url' => $creatorSuggestUrl,
+			'pluginOptions' => [
+				'plugins' => ['remove_button'],
+				'valueField' => 'label',
+				'labelField' => 'label',
+				'searchField' => ['label'],
+				'persist' => false,
+				'createOnBlur' => false,
+				'create' => true,
+			],
+		])
+		->label($model->getAttributeLabel('creator'))
+		->hint(Yii::t('app', 'Record the name of the organization(s) or the individual(s) responsible for the creation, accumulation and maintenance of the records in the unit of description. Search for an existing name in the authority records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new authority record.'));
+} ?>
 
-<?php
-$repositorySuggestUrl = Url::to(['setting/repository/suggest']);
-echo $form->field($model, 'repository', $wraper)
-	->widget(Selectize::className(), [
-		'url' => $repositorySuggestUrl,
-		'pluginOptions' => [
-			'plugins' => ['remove_button'],
-			'valueField' => 'label',
-			'labelField' => 'label',
-			'searchField' => ['label'],
-			'persist' => false,
-			'createOnBlur' => false,
-			'create' => true,
-		],
-	])
-	->label($model->getAttributeLabel('repository'))
-	->hint(Yii::t('app', 'Record the name of the organization which has custody of the archival material. Search for an existing name in the archival institution records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new archival institution record.')); ?>
+<?php if($fond || in_array('repository', $model->level->field)) {
+	$repositorySuggestUrl = Url::to(['setting/repository/suggest']);
+	echo $form->field($model, 'repository', $wraper)
+		->widget(Selectize::className(), [
+			'url' => $repositorySuggestUrl,
+			'pluginOptions' => [
+				'plugins' => ['remove_button'],
+				'valueField' => 'label',
+				'labelField' => 'label',
+				'searchField' => ['label'],
+				'persist' => false,
+				'createOnBlur' => false,
+				'create' => true,
+			],
+		])
+		->label($model->getAttributeLabel('repository'))
+		->hint(Yii::t('app', 'Record the name of the organization which has custody of the archival material. Search for an existing name in the archival institution records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new archival institution record.'));
+} ?>
 
 <div class="ln_solid"></div>
 
@@ -147,7 +149,7 @@ echo $form->field($model, 'repository', $wraper)
 	])
 	->label($model->getAttributeLabel('media')); ?>
 
-<?php if($item || $model->level->image_type) {
+<?php if(in_array('image_type', $model->level->field)) {
 	$imageType = Archives::getImageType();
 	echo $form->field($model, 'image_type', $wraper)
 		->radioList($imageType, ['prompt' => ''])
@@ -161,7 +163,7 @@ echo $form->field($model, 'publish', $wraper)
 	->dropDownList($publish, ['prompt' => ''])
 	->label($model->getAttributeLabel('publish')); ?>
 
-<?php if($fond || $model->level->sidkkas) {
+<?php if($fond || in_array('sidkkas', $model->level->field)) {
 	echo $form->field($model, 'sidkkas', $wraper)
 		->checkbox()
 		->label($model->getAttributeLabel('sidkkas'));

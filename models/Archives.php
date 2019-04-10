@@ -235,6 +235,7 @@ class Archives extends \app\components\ActiveRecord
 			'value' => function($model, $key, $index, $column) {
 				return $model->title;
 			},
+			'format' => 'html',
 		];
 		$this->templateColumns['medium'] = [
 			'attribute' => 'medium',
@@ -248,7 +249,7 @@ class Archives extends \app\components\ActiveRecord
 				'attribute' => 'creator',
 				'header' => Yii::t('app', 'Creator'),
 				'value' => function($model, $key, $index, $column) {
-					return self::parseRelated($model->getRelatedCreator(true, 'title'), 'creator');
+					return self::parseRelated($model->getRelatedCreator(true, 'title'), 'creator', ',');
 				},
 				'format' => 'html',
 			];
@@ -257,17 +258,17 @@ class Archives extends \app\components\ActiveRecord
 			$this->templateColumns['repository'] = [
 				'attribute' => 'repository',
 				'value' => function($model, $key, $index, $column) {
-					return self::parseRelated($model->getRelatedRepository(true, 'title'), 'repository');
+					return self::parseRelated($model->getRelatedRepository(true, 'title'), 'repository', ',');
 				},
 				'format' => 'html',
 			];
 		}
-		if(!Yii::$app->request->get('media')) {
+		if(!Yii::$app->request->get('mediaId')) {
 			$this->templateColumns['media'] = [
 				'attribute' => 'media',
 				'header' => Yii::t('app', 'Media'),
 				'value' => function($model, $key, $index, $column) {
-					return self::parseRelated($model->getRelatedMedia(true, 'title'));
+					return self::parseRelated($model->getRelatedMedia(true, 'title'), 'media', ',');
 				},
 				'filter' => ArchiveMedia::getMedia(),
 				'format' => 'html',
@@ -435,15 +436,20 @@ class Archives extends \app\components\ActiveRecord
 	/**
 	 * function parseRelated
 	 */
-	public static function parseRelated($relatedMedia, $controller='media')
+	public static function parseRelated($relatedMedia, $controller='media', $sep='li')
 	{
-		$items = self::getUrlFormat($relatedMedia, $controller);
-		if($items == '-')
-			return $items;
+		if(!is_array($relatedMedia) || (is_array($relatedMedia) && empty($relatedMedia)))
+			return '-';
 
-		return Html::ul($items, ['item' => function($item, $index) {
-			return Html::tag('li', Html::a($index, $item, ['title'=>$index, 'class'=>'modal-btn']));
-		}, 'class'=>'list-boxed']);
+		if($sep == 'li') {
+			$items = self::getUrlFormat($relatedMedia, $controller);
+
+			return Html::ul($items, ['item' => function($item, $index) {
+				return Html::tag('li', Html::a($index, $item, ['title'=>$index, 'class'=>'modal-btn']));
+			}, 'class'=>'list-boxed']);
+		}
+
+		return implode(', ', $relatedMedia);
 	}
 
 	/**
@@ -451,9 +457,6 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public static function getUrlFormat($array, $controller)
 	{
-		if(!is_array($array) || (is_array($array) && empty($array)))
-			return '-';
-
 		$items = array_flip($array);
 		foreach ($items as $key => $val) {
 			$items[$key] = Url::to(['setting/'.$controller.'/view', 'id'=>$val]);
@@ -489,16 +492,22 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function afterFind()
 	{
+		$setting = \ommu\archive\models\ArchiveSetting::find()
+			->select(['reference_code_sikn', 'reference_code_level_separator'])
+			->where(['id' => 1])
+			->one();
+
 		parent::afterFind();
 
 		// $this->parentTitle = isset($this->parent) ? $this->parent->title : '-';
 		// $this->levelName = isset($this->level) ? $this->level->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
+
+		$this->code = preg_replace("/^[.-]/", '', preg_replace("/^(3400|23400-24)/", '', $this->code));
+
 		$parentCode = $this->parent->code;
 		$this->shortCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
-		if(strtolower($this->level->level_name_i) == 'fond')
-			$this->shortCode = preg_replace("/^[.-]/", '', preg_replace("/^(3400|23400-24)/", '', $this->shortCode));
 		$this->media = array_flip($this->getRelatedMedia(true));
 		$this->creator = implode(',', $this->getRelatedCreator(true, 'title'));
 		$this->repository = implode(',', $this->getRelatedRepository(true, 'title'));
@@ -526,16 +535,8 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function beforeSave($insert)
 	{
-		$setting = \ommu\archive\models\ArchiveSetting::find()
-			->select(['reference_code_sikn', 'reference_code_level_separator'])
-			->where(['id' => 1])
-			->one();
-
 		// set code
-		if(strtolower($this->level->level_name_i) == 'fond')
-			$this->code = join($setting->reference_code_level_separator, [$setting->reference_code_sikn, $this->shortCode]);
-		else
-			$this->code = join($setting->reference_code_level_separator, [$this->parent->code, $this->shortCode]);
+		$this->code = strtolower($this->level->level_name_i) == 'fond' ? $this->shortCode : join('.', [$this->parent->code, $this->shortCode]);
 		
 		if(!$insert) {
 			// set archive media, creator and repository

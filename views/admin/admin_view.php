@@ -51,6 +51,7 @@ $attributes = [
 	[
 		'attribute' => 'title',
 		'value' => $model->title ? $model->title : '-',
+		'format' => 'html',
 	],
 	[
 		'attribute' => 'levelName',
@@ -90,7 +91,7 @@ $attributes = [
 	[
 		'attribute' => 'image_type',
 		'value' => Archives::getImageType($model->image_type ? $model->image_type : '-'),
-		'visible' => $model->level->image_type ? true : false,
+		'visible' => in_array('image_type', $model->level->field) ? true : false,
 	],
 	[
 		'attribute' => 'creation_date',
@@ -114,7 +115,7 @@ $attributes = [
 	],
 	[
 		'attribute' => '',
-		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-success']),
+		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-primary btn-sm']),
 		'format' => 'html',
 		'visible' => Yii::$app->request->isAjax ? true : false,
 	],
