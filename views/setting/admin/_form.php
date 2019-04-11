@@ -55,14 +55,19 @@ echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hi
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('reference_code_sikn')); ?>
 
-<?php echo $form->field($model, 'reference_code_level_separator', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'reference_code_separator', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
 	->textInput(['maxlength'=>true])
-	->label($model->getAttributeLabel('reference_code_level_separator')); ?>
+	->label($model->getAttributeLabel('reference_code_separator')); ?>
 
 <?php $fondSidkka = ArchiveSetting::getFondSidkkas();
 echo $form->field($model, 'fond_sidkkas', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
 	->dropDownList($fondSidkka, ['prompt'=>''])
 	->label($model->getAttributeLabel('fond_sidkkas')); ?>
+
+<?php $fondSidkka = ArchiveSetting::getFondSidkkas();
+echo $form->field($model, 'maintenance_mode', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+	->dropDownList($fondSidkka, ['prompt'=>''])
+	->label($model->getAttributeLabel('maintenance_mode')); ?>
 
 <div class="ln_solid"></div>
 <div class="form-group row">

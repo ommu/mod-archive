@@ -108,7 +108,7 @@ class AdminController extends Controller
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Archive setting success updated.'));
-				return $this->redirect(['manage']);
+				return $this->redirect(['index']);
 
 			} else {
 				if(Yii::$app->request->isAjax)
@@ -135,7 +135,7 @@ class AdminController extends Controller
 		$this->findModel(1)->delete();
 		
 		Yii::$app->session->setFlash('success', Yii::t('app', 'Archive setting success deleted.'));
-		return $this->redirect(['manage']);
+		return $this->redirect(['index']);
 	}
 
 	/**

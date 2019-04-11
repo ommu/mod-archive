@@ -45,14 +45,18 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Archive Settings');
 				'attribute' => 'meta_keyword',
 				'value' => $model->meta_keyword ? $model->meta_keyword : '-',
 			],
+			'reference_code_sikn',
+			[
+				'attribute' => 'reference_code_separator',
+				'value' => '"'.$model->reference_code_separator.'"',
+			],
 			[
 				'attribute' => 'fond_sidkkas',
 				'value' => ArchiveSetting::getFondSidkkas($model->fond_sidkkas),
 			],
-			'reference_code_sikn',
 			[
-				'attribute' => 'reference_code_level_separator',
-				'value' => '"'.$model->reference_code_level_separator.'"',
+				'attribute' => 'maintenance_mode',
+				'value' => ArchiveSetting::getFondSidkkas($model->maintenance_mode),
 			],
 			[
 				'attribute' => 'modified_date',
@@ -65,7 +69,7 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Archive Settings');
 			[
 				'attribute' => '',
 				'value' => Html::a(Yii::t('app', 'Update'), Url::to(['update']), [
-					'class' => 'btn btn-success',
+					'class' => 'btn btn-primary',
 				]),
 				'format' => 'html',
 			],

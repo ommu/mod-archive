@@ -115,7 +115,7 @@ class AdminController extends Controller
 	{
 		$parent = Yii::$app->request->get('id');
 		$setting = \ommu\archive\models\ArchiveSetting::find()
-			->select(['reference_code_sikn', 'reference_code_level_separator'])
+			->select(['fond_sidkkas', 'maintenance_mode', 'reference_code_sikn', 'reference_code_separator'])
 			->where(['id' => 1])
 			->one();
 
@@ -160,7 +160,7 @@ class AdminController extends Controller
 	public function actionUpdate($id)
 	{
 		$setting = \ommu\archive\models\ArchiveSetting::find()
-			->select(['reference_code_sikn', 'reference_code_level_separator'])
+			->select(['fond_sidkkas', 'maintenance_mode', 'reference_code_sikn', 'reference_code_separator'])
 			->where(['id' => 1])
 			->one();
 
@@ -199,6 +199,10 @@ class AdminController extends Controller
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
+		$setting = \ommu\archive\models\ArchiveSetting::find()
+			->select(['reference_code_sikn', 'reference_code_separator'])
+			->where(['id' => 1])
+			->one();
 
 		$this->subMenu = $this->module->params['archive_submenu'];
 		$this->view->title = Yii::t('app', 'Detail {level-name}: {title}', ['level-name' => $model->level->level_name_i, 'title' => $model->title]);
@@ -206,6 +210,7 @@ class AdminController extends Controller
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
 			'model' => $model,
+			'setting' => $setting,
 		]);
 	}
 

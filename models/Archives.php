@@ -57,6 +57,7 @@ class Archives extends \app\components\ActiveRecord
 	public $modifiedDisplayname;
 
 	public $shortCode;
+	public $confirmCode;
 	public $media;
 	public $creator;
 	public $repository;
@@ -476,7 +477,9 @@ class Archives extends \app\components\ActiveRecord
 		if(isset($archive->parent)) {
 			$levelAsKey = $archive->parent->level->level_name_i;
 			$codes[$levelAsKey]['id'] = $archive->parent->id;
+			$codes[$levelAsKey]['level'] = $levelAsKey;
 			$codes[$levelAsKey]['code'] = $archive->parent->code;
+			$codes[$levelAsKey]['confirmCode'] = $archive->parent->confirmCode;
 			$codes[$levelAsKey]['shortCode'] = $archive->parent->shortCode;
 			// $codes[$levelAsKey]['sidkkas'] = $archive->parent->sidkkas;
 			// $codes[$levelAsKey]['publish'] = $archive->parent->publish;
@@ -493,7 +496,7 @@ class Archives extends \app\components\ActiveRecord
 	public function afterFind()
 	{
 		$setting = \ommu\archive\models\ArchiveSetting::find()
-			->select(['reference_code_sikn', 'reference_code_level_separator'])
+			->select(['reference_code_sikn', 'reference_code_separator'])
 			->where(['id' => 1])
 			->one();
 
@@ -505,9 +508,18 @@ class Archives extends \app\components\ActiveRecord
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
 
 		$this->code = preg_replace("/^[.-]/", '', preg_replace("/^(3400|23400-24)/", '', $this->code));
-
 		$parentCode = $this->parent->code;
-		$this->shortCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
+		$confirmCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
+		$parentConfirmCode = $this->parent->confirmCode;
+		if(preg_match("/^($parentConfirmCode)/", $confirmCode)) {
+			$shortCodeStatus = false;
+			$this->confirmCode = $confirmCode;
+		} else {
+			$shortCodeStatus = true;
+			$this->confirmCode = join('.', [$parentConfirmCode, $confirmCode]);
+		}
+		$this->shortCode = $shortCodeStatus ? $confirmCode : preg_replace("/^[.-]/", '', preg_replace("/^($parentConfirmCode)/", '', $this->confirmCode));
+
 		$this->media = array_flip($this->getRelatedMedia(true));
 		$this->creator = implode(',', $this->getRelatedCreator(true, 'title'));
 		$this->repository = implode(',', $this->getRelatedRepository(true, 'title'));

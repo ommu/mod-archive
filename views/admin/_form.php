@@ -27,6 +27,11 @@ $redactorOptions = [
 	'buttons' => ['html', 'format', 'bold', 'italic', 'deleted'],
 	'plugins' => ['fontcolor','imagemanager']
 ];
+if(!$model->isNewRecord && $setting->maintenance_mode) {
+	echo '<pre>';
+	print_r($model->referenceCode);
+	echo '</pre>';
+}
 ?>
 
 <div class="archives-form">
@@ -61,12 +66,12 @@ if(!$fond) {
 	if(!$model->getErrors() && $parent)
 		$model->parent_id = $parent->id;
 	$parentCode = $model->parent->code;
-	echo $form->field($model, 'parent_id', ArrayHelper::merge(['template' => '{label}{beginWrapper}{input}<h5 class="text-muted">'.$parentCode.$setting->reference_code_level_separator.'<span id="reference-code" class="text-primary">'.$shortCode.'</span></h5>{endWrapper}'], $wraper))
+	echo $form->field($model, 'parent_id', ArrayHelper::merge(['template' => '{label}{beginWrapper}{input}<h5 class="text-muted">'.$setting->reference_code_sikn.' '.$parentCode.'-<span class="text-success">'.$parentCode.'</span>.<span id="reference-code" class="text-primary">'.$shortCode.'</span></h5>{endWrapper}'], $wraper))
 		->hiddenInput()
 		->label($model->getAttributeLabel('code'));
 } else {
 	$model->level_id = 1;
-	echo $form->field($model, 'level_id', ArrayHelper::merge(['template' => '{label}{beginWrapper}{input}<h5 class="text-muted">'.$setting->reference_code_sikn.$setting->reference_code_level_separator.'<span id="reference-code" class="text-primary">'.$shortCode.'</span></h5>{endWrapper}'], $wraper))
+	echo $form->field($model, 'level_id', ArrayHelper::merge(['template' => '{label}{beginWrapper}{input}<h5 class="text-muted">'.$setting->reference_code_sikn.' <span id="reference-code" class="text-primary">'.$shortCode.'</span></h5>{endWrapper}'], $wraper))
 		->hiddenInput()
 		->label($model->getAttributeLabel('code'));
 } ?>
@@ -97,7 +102,7 @@ if(!$fond) {
 
 <div class="ln_solid"></div>
 
-<?php if(in_array('creator', $model->level->field)) {
+<?php if(!$model->isNewRecord && in_array('creator', $model->level->field)) {
 	$creatorSuggestUrl = Url::to(['setting/creator/suggest']);
 	echo $form->field($model, 'creator', $wraper)
 		->widget(Selectize::className(), [
@@ -116,7 +121,7 @@ if(!$fond) {
 		->hint(Yii::t('app', 'Record the name of the organization(s) or the individual(s) responsible for the creation, accumulation and maintenance of the records in the unit of description. Search for an existing name in the authority records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new authority record.'));
 } ?>
 
-<?php if($fond || in_array('repository', $model->level->field)) {
+<?php if($fond || (!$model->isNewRecord && in_array('repository', $model->level->field))) {
 	$repositorySuggestUrl = Url::to(['setting/repository/suggest']);
 	echo $form->field($model, 'repository', $wraper)
 		->widget(Selectize::className(), [
@@ -135,7 +140,9 @@ if(!$fond) {
 		->hint(Yii::t('app', 'Record the name of the organization which has custody of the archival material. Search for an existing name in the archival institution records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new archival institution record.'));
 } ?>
 
-<div class="ln_solid"></div>
+<?php if((!$model->isNewRecord && in_array('creator', $model->level->field)) || ($fond || (!$model->isNewRecord && in_array('repository', $model->level->field)))) {?>
+	<div class="ln_solid"></div>
+<?php }?>
 
 <?php echo $form->field($model, 'media', $wraper)
 	->widget(Selectize::className(), [
@@ -149,7 +156,7 @@ if(!$fond) {
 	])
 	->label($model->getAttributeLabel('media')); ?>
 
-<?php if(in_array('image_type', $model->level->field)) {
+<?php if(!$model->isNewRecord && in_array('image_type', $model->level->field)) {
 	$imageType = Archives::getImageType();
 	echo $form->field($model, 'image_type', $wraper)
 		->radioList($imageType, ['prompt' => ''])
@@ -163,7 +170,7 @@ echo $form->field($model, 'publish', $wraper)
 	->dropDownList($publish, ['prompt' => ''])
 	->label($model->getAttributeLabel('publish')); ?>
 
-<?php if($fond || in_array('sidkkas', $model->level->field)) {
+<?php if($setting->fond_sidkkas && ($fond || (!$model->isNewRecord && in_array('sidkkas', $model->level->field)))) {
 	echo $form->field($model, 'sidkkas', $wraper)
 		->checkbox()
 		->label($model->getAttributeLabel('sidkkas'));

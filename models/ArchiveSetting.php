@@ -17,8 +17,9 @@
  * @property string $meta_description
  * @property string $meta_keyword
  * @property integer $fond_sidkkas
+ * @property integer $maintenance_mode
  * @property string $reference_code_sikn
- * @property string $reference_code_level_separator
+ * @property string $reference_code_separator
  * @property string $modified_date
  * @property integer $modified_id
  *
@@ -54,11 +55,11 @@ class ArchiveSetting extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['license', 'permission', 'meta_description', 'meta_keyword', 'fond_sidkkas', 'reference_code_level_separator'], 'required'],
-			[['permission', 'fond_sidkkas', 'modified_id'], 'integer'],
+			[['license', 'permission', 'meta_description', 'meta_keyword', 'fond_sidkkas', 'maintenance_mode', 'reference_code_separator'], 'required'],
+			[['permission', 'fond_sidkkas', 'maintenance_mode', 'modified_id'], 'integer'],
 			[['meta_description', 'meta_keyword'], 'string'],
 			[['license', 'reference_code_sikn'], 'string', 'max' => 32],
-			[['reference_code_level_separator'], 'string', 'max' => 1],
+			[['reference_code_separator'], 'string', 'max' => 1],
 		];
 	}
 
@@ -74,8 +75,9 @@ class ArchiveSetting extends \app\components\ActiveRecord
 			'meta_description' => Yii::t('app', 'Meta Description'),
 			'meta_keyword' => Yii::t('app', 'Meta Keyword'),
 			'fond_sidkkas' => Yii::t('app', 'Fond Sidkkas'),
+			'maintenance_mode' => Yii::t('app', 'Maintenance Mode'),
 			'reference_code_sikn' => Yii::t('app', 'SIKN Reference Code'),
-			'reference_code_level_separator' => Yii::t('app', 'Reference Code Level Separator'),
+			'reference_code_separator' => Yii::t('app', 'Reference Code Level Separator'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
@@ -132,10 +134,10 @@ class ArchiveSetting extends \app\components\ActiveRecord
 				return $model->reference_code_sikn;
 			},
 		];
-		$this->templateColumns['reference_code_level_separator'] = [
-			'attribute' => 'reference_code_level_separator',
+		$this->templateColumns['reference_code_separator'] = [
+			'attribute' => 'reference_code_separator',
 			'value' => function($model, $key, $index, $column) {
-				return $model->reference_code_level_separator;
+				return $model->reference_code_separator;
 			},
 		];
 		$this->templateColumns['modified_date'] = [
@@ -158,6 +160,14 @@ class ArchiveSetting extends \app\components\ActiveRecord
 			'attribute' => 'fond_sidkkas',
 			'value' => function($model, $key, $index, $column) {
 				return self::getFondSidkkas($model->fond_sidkkas);
+			},
+			'filter' => self::getFondSidkkas(),
+			'contentOptions' => ['class'=>'center'],
+		];
+		$this->templateColumns['maintenance_mode'] = [
+			'attribute' => 'maintenance_mode',
+			'value' => function($model, $key, $index, $column) {
+				return self::getFondSidkkas($model->maintenance_mode);
 			},
 			'filter' => self::getFondSidkkas(),
 			'contentOptions' => ['class'=>'center'],
