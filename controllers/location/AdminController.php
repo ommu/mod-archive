@@ -234,6 +234,29 @@ class AdminController extends Controller
 	}
 
 	/**
+	 * Finds the ArchiveLocation model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 * @param integer $id
+	 * @return ArchiveLocation the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected function findModel($id)
+	{
+		if(($model = ArchiveLocation::findOne($id)) !== null) {
+			$attributes = ['location_name'=>$this->title];
+			if($model->type == 'depo')
+				$attributes = ArrayHelper::merge($attributes, ['parent_id'=>ArchiveLocation::getType(ArchiveLocation::TYPE_BUILDING)]);
+			if($model->type == 'room')
+				$attributes = ArrayHelper::merge($attributes, ['parent_id'=>ArchiveLocation::getType(ArchiveLocation::TYPE_DEPO)]);
+			$model->setAttributeLabels($attributes);
+
+			return $model;
+		}
+
+		throw new \yii\web\NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+	}
+
+	/**
 	 * {@inheritdoc}
 	 */
 	public function getViewPath()
@@ -257,28 +280,5 @@ class AdminController extends Controller
 	public function getTitle()
 	{
 		return ArchiveLocation::getType($this->type);
-	}
-
-	/**
-	 * Finds the ArchiveLocation model based on its primary key value.
-	 * If the model is not found, a 404 HTTP exception will be thrown.
-	 * @param integer $id
-	 * @return ArchiveLocation the loaded model
-	 * @throws NotFoundHttpException if the model cannot be found
-	 */
-	protected function findModel($id)
-	{
-		if(($model = ArchiveLocation::findOne($id)) !== null) {
-			$attributes = ['location_name'=>$this->title];
-			if($model->type == 'depo')
-				$attributes = ArrayHelper::merge($attributes, ['parent_id'=>ArchiveLocation::getType(ArchiveLocation::TYPE_BUILDING)]);
-			if($model->type == 'room')
-				$attributes = ArrayHelper::merge($attributes, ['parent_id'=>ArchiveLocation::getType(ArchiveLocation::TYPE_DEPO)]);
-			$model->setAttributeLabels($attributes);
-
-			return $model;
-		}
-
-		throw new \yii\web\NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
 	}
 }
