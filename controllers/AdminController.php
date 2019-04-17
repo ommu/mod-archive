@@ -127,8 +127,11 @@ class AdminController extends Controller
 			// $model->load($postData);
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} success created.', ['level-name'=>$model->level->level_name_i]));
-				return $this->redirect([$parent ? 'create' : 'view', 'id'=>$model->id]);
+				Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success created.', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]));
+				if($parent)
+					return $this->redirect(['create', 'id'=>$model->parent_id]);
+				else
+					return $this->redirect(['view', 'id'=>$model->id]);
 
 			} else {
 				if(Yii::$app->request->isAjax)
@@ -140,14 +143,15 @@ class AdminController extends Controller
 			$parent = Archives::findOne($parent);
 			$this->subMenu = $this->module->params['archive_submenu'];
 		}
+
 		$this->view->title = $parent ? Yii::t('app', 'Add New Child Levels {level-name}: {title}', ['level-name' => $parent->level->level_name_i, 'title' => $parent->title]) : Yii::t('app', 'Create Fond');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
 			'model' => $model,
-			'parent' => $parent,
 			'setting' => $setting,
 			'fond' => $parent ? false : true,
+			'parent' => $parent,
 		]);
 	}
 
@@ -171,8 +175,8 @@ class AdminController extends Controller
 			// $model->load($postData);
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Archive success updated.'));
-				return $this->redirect(['manage']);
+				Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success updated.', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]));
+				return $this->redirect(['update', 'id'=>$model->id]);
 
 			} else {
 				if(Yii::$app->request->isAjax)
@@ -226,25 +230,7 @@ class AdminController extends Controller
 		$model->publish = 2;
 
 		if($model->save(false, ['publish','modified_id'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Archive success deleted.'));
-			return $this->redirect(['manage']);
-		}
-	}
-
-	/**
-	 * actionPublish an existing Archives model.
-	 * If publish is successful, the browser will be redirected to the 'index' page.
-	 * @param integer $id
-	 * @return mixed
-	 */
-	public function actionPublish($id)
-	{
-		$model = $this->findModel($id);
-		$replace = $model->publish == 1 ? 0 : 1;
-		$model->publish = $replace;
-
-		if($model->save(false, ['publish','modified_id'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Archive success updated.'));
+			Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success deleted.', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]));
 			return $this->redirect(['manage']);
 		}
 	}

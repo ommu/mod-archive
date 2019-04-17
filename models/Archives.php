@@ -547,8 +547,17 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function beforeSave($insert)
 	{
+		$setting = \ommu\archive\models\ArchiveSetting::find()
+			->select(['maintenance_mode'])
+			->where(['id' => 1])
+			->one();
+
 		// set code
-		$this->code = strtolower($this->level->level_name_i) == 'fond' ? $this->shortCode : join('.', [$this->parent->code, $this->shortCode]);
+		$this->code = strtolower($this->level->level_name_i) == 'fond' ? 
+			$this->shortCode : 
+			(!$setting->maintenance_mode ? 
+				join('.', [$this->parent->code, $this->shortCode]) : 
+				join('.', [$this->parent->confirmCode, $this->shortCode]));
 		
 		if(!$insert) {
 			// set archive media, creator and repository

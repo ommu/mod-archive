@@ -27,11 +27,6 @@ $redactorOptions = [
 	'buttons' => ['html', 'format', 'bold', 'italic', 'deleted'],
 	'plugins' => ['fontcolor','imagemanager']
 ];
-if(!$model->isNewRecord && $setting->maintenance_mode) {
-	echo '<pre>';
-	print_r($model->referenceCode);
-	echo '</pre>';
-}
 ?>
 
 <div class="archives-form">
@@ -41,8 +36,8 @@ $js = <<<JS
 	$('#shortcode').on('keyup', function (e) {
 		var shortcode = $(this).val();
 		if(shortcode == '')
-			var shortcode = 'xxxx';
-		$('#reference-code').html(shortcode);
+			var shortcode = 'xxx';
+		$('.reference-code').html(shortcode);
 	});
 JS;
 $this->registerJs($js, \yii\web\View::POS_READY);
@@ -61,23 +56,55 @@ if(!$model->isNewRecord || ($model->isNewRecord && $parent))
 <?php //echo $form->errorSummary($model);?>
 
 <?php 
-$shortCode = $model->shortCode ? $model->shortCode : 'xxxx';
-if(!$fond) {
+if(!$model->isNewRecord && $setting->maintenance_mode) {
+	echo '<pre>';
+	print_r($model->referenceCode);
+	echo '</pre>';
+}
+$shortCode = $model->shortCode ? $model->shortCode : 'xxx';
+if($fond) {
+	$model->level_id = 1;
+	echo $form->field($model, 'level_id', ArrayHelper::merge(['template' => '{label}{beginWrapper}{input}<h5 class="text-muted">'.$setting->reference_code_sikn.' <span class="text-primary reference-code">'.$shortCode.'</span></h5>{endWrapper}'], $wraper))
+		->hiddenInput()
+		->label($model->getAttributeLabel('code'));
+
+	$shortCodeFieldTemplate = $wraper;
+	$shortCodeInputOptions = ['maxlength'=>true];
+} else {
 	if(!$model->getErrors() && $parent)
 		$model->parent_id = $parent->id;
 	$parentCode = $model->parent->code;
-	echo $form->field($model, 'parent_id', ArrayHelper::merge(['template' => '{label}{beginWrapper}{input}<h5 class="text-muted">'.$setting->reference_code_sikn.' '.$parentCode.'-<span class="text-success">'.$parentCode.'</span>.<span id="reference-code" class="text-primary">'.$shortCode.'</span></h5>{endWrapper}'], $wraper))
+	if($setting->maintenance_mode)
+		$parentCode = $model->parent->confirmCode;
+	if(!$setting->maintenance_mode) {
+		if(!$model->isNewRecord) {
+			$template = '<h5 class="text-muted">'.$setting->reference_code_sikn.' '.join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'code')).$setting->reference_code_separator.'<span class="text-primary">'.$model->parent->code.'.</span><span class="text-primary reference-code">'.$shortCode.'</span></h5>';
+		} else {
+			$template = '<h5 class="text-muted">'.$setting->reference_code_sikn.' '.join($setting->reference_code_separator, ArrayHelper::merge(ArrayHelper::map($referenceCode, 'level', 'code'), [$model->parent->code])).$setting->reference_code_separator.'<span class="text-primary">'.$model->parent->code.'.</span><span class="text-primary reference-code">'.$shortCode.'</span></h5>';
+		}
+	} else {
+		if(!$model->isNewRecord) {
+			$oldReferenceCodeTemplate = preg_replace("/($shortCode)$/", '<span class="text-danger reference-code">'.$shortCode.'</span>', $model->code);
+			$newReferenceCodeTemplate = join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'confirmCode')).$setting->reference_code_separator.'<span class="text-primary">'.$model->parent->confirmCode.'.</span><span class="text-primary reference-code">'.$shortCode.'</span>';
+			if($model->code == $model->confirmCode)
+				$oldReferenceCodeTemplate = $newReferenceCodeTemplate;
+
+			$template = '<h5 class="text-muted">//OLD// '.$setting->reference_code_sikn.' '.$oldReferenceCodeTemplate.'</h5>';
+			$template .= '<h5 class="text-muted">//NEW// '.$setting->reference_code_sikn.' '.$newReferenceCodeTemplate.'</h5>';
+		} else {
+			$template = '<h5 class="text-muted">'.$setting->reference_code_sikn.' '.join($setting->reference_code_separator, ArrayHelper::merge(ArrayHelper::map($referenceCode, 'level', 'confirmCode'), [$model->parent->confirmCode])).$setting->reference_code_separator.'<span class="text-primary">'.$model->parent->confirmCode.'.</span><span class="text-primary reference-code">'.$shortCode.'</span></h5>';
+		}
+	}
+	echo $form->field($model, 'parent_id', ArrayHelper::merge(['template' => '{label}{beginWrapper}{input}'.$template.'{endWrapper}'], $wraper))
 		->hiddenInput()
 		->label($model->getAttributeLabel('code'));
-} else {
-	$model->level_id = 1;
-	echo $form->field($model, 'level_id', ArrayHelper::merge(['template' => '{label}{beginWrapper}{input}<h5 class="text-muted">'.$setting->reference_code_sikn.' <span id="reference-code" class="text-primary">'.$shortCode.'</span></h5>{endWrapper}'], $wraper))
-		->hiddenInput()
-		->label($model->getAttributeLabel('code'));
+
+	$shortCodeFieldTemplate = ArrayHelper::merge(['template' => '{label}{beginWrapper}<div class="selectize-control shadow"><div class="selectize-input"><div class="item">'.$parentCode.'.</div>{input}</div></div>{error}{hint}{endWrapper}'], $wraper);
+	$shortCodeInputOptions = ['maxlength'=>true, 'class'=>''];
 } ?>
 
-<?php echo $form->field($model, 'shortCode', $wraper)
-	->textInput(['maxlength'=>true])
+<?php echo $form->field($model, 'shortCode', $shortCodeFieldTemplate)
+	->textInput($shortCodeInputOptions)
 	->label($model->getAttributeLabel('shortCode'))
 	->hint(Yii::t('app', 'Provide a specific local reference code, control number, or other unique identifier. The country and repository code will be automatically added from the linked repository record to form a full reference code.')); ?>
 

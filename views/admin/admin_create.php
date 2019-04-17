@@ -18,15 +18,19 @@ use yii\helpers\Url;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Create');
+
+$referenceCode = $parent->referenceCode;
+array_multisort($referenceCode);
 ?>
 
 <div class="archives-create">
 
 <?php echo $this->render('_form', [
 	'model' => $model,
-	'parent' => $parent,
 	'setting' => $setting,
 	'fond' => $fond,
+	'parent' => $parent,
+	'referenceCode' => $referenceCode,
 ]); ?>
 
 </div>
