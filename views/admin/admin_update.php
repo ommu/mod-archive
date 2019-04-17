@@ -20,6 +20,12 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' =>
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id'=>$model->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 
+if($setting->maintenance_mode) {
+	$this->params['menu']['content'] = [
+		['label' => Yii::t('app', 'Show Reference Code Parameters'), 'url' => 'javascript:void(0);', 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success btn-sm', 'id'=>'reference-code']],
+	];
+}
+
 $referenceCode = $model->referenceCode;
 array_multisort($referenceCode);
 ?>

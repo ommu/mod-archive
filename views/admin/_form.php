@@ -39,6 +39,9 @@ $js = <<<JS
 			var shortcode = 'xxx';
 		$('.reference-code').html(shortcode);
 	});
+	$('#reference-code').on('click', function (e) {
+		$('#reference-code-box').toggleClass('show hide');
+	});
 JS;
 $this->registerJs($js, \yii\web\View::POS_READY);
 
@@ -57,9 +60,9 @@ if(!$model->isNewRecord || ($model->isNewRecord && $parent))
 
 <?php 
 if(!$model->isNewRecord && $setting->maintenance_mode) {
-	echo '<pre>';
+	echo '<div id="reference-code-box" class="hide"><pre>';
 	print_r($model->referenceCode);
-	echo '</pre>';
+	echo '</pre></div>';
 }
 $shortCode = $model->shortCode ? $model->shortCode : 'xxx';
 if($fond) {
