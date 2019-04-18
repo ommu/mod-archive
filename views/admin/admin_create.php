@@ -19,8 +19,14 @@ use yii\helpers\Url;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Create');
 
-$referenceCode = $parent->referenceCode;
-array_multisort($referenceCode);
+$this->params['menu']['content'] = [
+	['label' => Yii::t('app', 'Back to Inventaris'), 'url' => Url::to(['index']), 'icon' => 'tasks', 'htmlOptions' => ['class'=>'btn btn-success btn-sm']],
+];
+
+if($parent) {
+	$referenceCode = $parent->referenceCode;
+	array_multisort($referenceCode);
+}
 ?>
 
 <div class="archives-create">

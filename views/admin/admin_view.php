@@ -20,6 +20,10 @@ use ommu\archive\models\Archives;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->title;
+
+$this->params['menu']['content'] = [
+	['label' => Yii::t('app', 'Back to Inventaris'), 'url' => Url::to(['index']), 'icon' => 'tasks', 'htmlOptions' => ['class'=>'btn btn-success btn-sm']],
+];
 ?>
 
 <div class="archives-view">

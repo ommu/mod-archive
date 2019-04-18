@@ -36,7 +36,7 @@ $js = <<<JS
 	$('#shortcode').on('keyup', function (e) {
 		var shortcode = $(this).val();
 		if(shortcode == '')
-			var shortcode = 'xxx';
+			var shortcode = 'XXX';
 		$('.reference-code').html(shortcode);
 	});
 	$('#reference-code').on('click', function (e) {
@@ -64,7 +64,7 @@ if(!$model->isNewRecord && $setting->maintenance_mode) {
 	print_r($model->referenceCode);
 	echo '</pre></div>';
 }
-$shortCode = $model->shortCode ? $model->shortCode : 'xxx';
+$shortCode = $model->shortCode ? $model->shortCode : 'XXX';
 if($fond) {
 	$model->level_id = 1;
 	echo $form->field($model, 'level_id', ArrayHelper::merge(['template' => '{label}{beginWrapper}{input}<h5 class="text-muted">'.$setting->reference_code_sikn.' <span class="text-primary reference-code">'.$shortCode.'</span></h5>{endWrapper}'], $wraper))
@@ -72,7 +72,7 @@ if($fond) {
 		->label($model->getAttributeLabel('code'));
 
 	$shortCodeFieldTemplate = $wraper;
-	$shortCodeInputOptions = ['maxlength'=>true];
+	$shortCodeInputOptions = ['maxlength'=>true, 'placeholder'=>'XXX'];
 } else {
 	if(!$model->getErrors() && $parent)
 		$model->parent_id = $parent->id;
@@ -103,7 +103,7 @@ if($fond) {
 		->label($model->getAttributeLabel('code'));
 
 	$shortCodeFieldTemplate = ArrayHelper::merge(['template' => '{label}{beginWrapper}<div class="selectize-control shadow"><div class="selectize-input"><div class="item">'.$parentCode.'.</div>{input}</div></div>{error}{hint}{endWrapper}'], $wraper);
-	$shortCodeInputOptions = ['maxlength'=>true, 'class'=>''];
+	$shortCodeInputOptions = ['maxlength'=>true, 'class'=>'', 'placeholder'=>'XXX'];
 } ?>
 
 <?php echo $form->field($model, 'shortCode', $shortCodeFieldTemplate)
