@@ -35,6 +35,8 @@ use ommu\users\models\Users;
 
 class ArchiveSetting extends \app\components\ActiveRecord
 {
+	use \ommu\traits\UtilityTrait;
+
 	public $gridForbiddenColumn = [];
 
 	public $modifiedDisplayname;
