@@ -36,6 +36,7 @@ namespace ommu\archive\models;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\helpers\Inflector;
 use app\models\SourceMessage;
 use ommu\users\models\Users;
 
@@ -333,7 +334,7 @@ class ArchiveStorage extends \app\components\ActiveRecord
 		$controller = strtolower(Yii::$app->controller->id);
 		$action = strtolower(Yii::$app->controller->action->id);
 
-		$location = $this->urlTitle($module.' '.$controller);
+		$location = Inflector::slug($module.' '.$controller);
 
 		if(parent::beforeSave($insert)) {
 			if($insert || (!$insert && !$this->storage_name)) {
