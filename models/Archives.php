@@ -424,7 +424,7 @@ class Archives extends \app\components\ActiveRecord
 		if(!isset($model->parent))
 			return '-';
 
-		$title = $model->parent->title;
+		$title = self::htmlHardDecode($model->parent->title);
 		$levelName = $model->parent->level->title->message;
 
 		$items[] = $model->getAttributeLabel('code').': '.$model->parent->code;

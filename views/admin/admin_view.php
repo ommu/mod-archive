@@ -36,7 +36,7 @@ $attributes = [
 	],
 	[
 		'attribute' => 'sidkkas',
-		'value' => $this->filterYesNo($model->sidkkas),
+		'value' => $model->filterYesNo($model->sidkkas),
 	],
 	[
 		'attribute' => 'parent_id',

@@ -144,7 +144,7 @@ class AdminController extends Controller
 			$this->subMenu = $this->module->params['archive_submenu'];
 		}
 
-		$this->view->title = $parent ? Yii::t('app', 'Add New Child Levels {level-name}: {title}', ['level-name' => $parent->level->level_name_i, 'title' => $parent->title]) : Yii::t('app', 'Create Fond');
+		$this->view->title = $parent ? Yii::t('app', 'Add New Child Levels {level-name}: {title}', ['level-name' => $parent->level->level_name_i, 'title' => Archives::htmlHardDecode($parent->title)]) : Yii::t('app', 'Create Fond');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
@@ -185,7 +185,7 @@ class AdminController extends Controller
 		}
 
 		$this->subMenu = $this->module->params['archive_submenu'];
-		$this->view->title = Yii::t('app', 'Update {level-name}: {title}', ['level-name' => $model->level->level_name_i, 'title' => $model->title]);
+		$this->view->title = Yii::t('app', 'Update {level-name}: {title}', ['level-name' => $model->level->level_name_i, 'title' => Archives::htmlHardDecode($model->title)]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
@@ -209,7 +209,7 @@ class AdminController extends Controller
 			->one();
 
 		$this->subMenu = $this->module->params['archive_submenu'];
-		$this->view->title = Yii::t('app', 'Detail {level-name}: {title}', ['level-name' => $model->level->level_name_i, 'title' => $model->title]);
+		$this->view->title = Yii::t('app', 'Detail {level-name}: {title}', ['level-name' => $model->level->level_name_i, 'title' => Archives::htmlHardDecode($model->title)]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
