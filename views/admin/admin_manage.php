@@ -18,7 +18,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use app\components\widgets\GridView;
 use yii\widgets\Pjax;
-use yii\helpers\ArrayHelper;
 use yii\widgets\DetailView;
 use ommu\archive\models\ArchiveLevel;
 
@@ -155,11 +154,11 @@ array_push($columnData, [
 	],
 	'buttons' => [
 		'view' => function ($url, $model, $key) {
-			$url = Url::to(ArrayHelper::merge(['view', 'id'=>$model->primaryKey], Yii::$app->request->get()));
+			$url = Url::to(['view', 'id'=>$model->primaryKey]);
 			return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, ['title' => Yii::t('app', 'Detail Archive')]);
 		},
 		'update' => function ($url, $model, $key) {
-			$url = Url::to(ArrayHelper::merge(['update', 'id'=>$model->primaryKey], Yii::$app->request->get()));
+			$url = Url::to(['update', 'id'=>$model->primaryKey]);
 			return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, ['title' => Yii::t('app', 'Update Archive')]);
 		},
 		'delete' => function ($url, $model, $key) {
