@@ -155,6 +155,32 @@ class Archives extends \app\components\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
+	public function getArchives($count=false, $publish=1)
+	{
+		if($count == false) {
+			$model = $this->hasMany(Archives::className(), ['parent_id' => 'id']);
+			if($publish != null)
+				return $model->andOnCondition([sprintf('%s.publish', Archives::tableName()) => $publish]);
+			else
+				return $model->andOnCondition(['IN', sprintf('%s.publish', Archives::tableName()), [0,1]]);
+		}
+
+		$model = Archives::find()
+			->where(['parent_id' => $this->id]);
+		if($publish == 0)
+			$model->unpublish();
+		elseif($publish == 1)
+			$model->published();
+		elseif($publish == 2)
+			$model->deleted();
+		$archives = $model->count();
+
+		return $archives ? $archives : 0;
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
 	public function getParent()
 	{
 		return $this->hasOne(Archives::className(), ['id' => 'parent_id']);

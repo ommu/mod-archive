@@ -105,9 +105,10 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	 */
 	public function getArchives($count=false, $publish=1)
 	{
-		if($count == false)
+		if($count == false) {
 			return $this->hasMany(Archives::className(), ['level_id' => 'id'])
-			->andOnCondition([sprintf('%s.publish', Archives::tableName()) => $publish]);
+				->andOnCondition([sprintf('%s.publish', Archives::tableName()) => $publish]);
+		}
 
 		$model = Archives::find()
 			->where(['level_id' => $this->id]);
