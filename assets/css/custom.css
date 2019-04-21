@@ -1,3 +1,12 @@
+.detail-view hr {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+#tree {
+	border: 1px dotted #eee;
+	background: #f9f9f9;
+	padding: 10px;
+}
 #tree .aciTreeText p:first-child,
 #tree .aciTreeText p + p {
 	margin-bottom: 0;

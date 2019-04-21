@@ -21,7 +21,7 @@ jQuery(document).ready(function ($) {
 		itemHook: function(parent, item, itemData, level) {
 			// set a custom item label to show the branch level
 			this.setLabel(item, {
-				label: itemData.level + ': ' + itemData.code + itemData.label + '<a href="'+itemData['view-url']+'" title="Detail '+itemData.level+': '+itemData.code+'">Detail</a> | <a href="'+itemData['update-url']+'" title="Update '+itemData.level+': '+itemData.code+'">Update</a>',
+				label: itemData.level + ': ' + itemData.code + itemData.label + '<a class="modal-btn" href="'+itemData['view-url']+'" title="Detail '+itemData.level+': '+itemData.code+'">Detail</a> | <a href="'+itemData['update-url']+'" title="Update '+itemData.level+': '+itemData.code+'">Update</a>',
 			});
 		}
 	});
