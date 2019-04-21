@@ -27,11 +27,14 @@ $redactorOptions = [
 	'buttons' => ['html', 'format', 'bold', 'italic', 'deleted'],
 	'plugins' => ['fontcolor','imagemanager']
 ];
+
+if(!$fond)
+	$level = $model->isNewRecord ? $parent->getChildLevels(true) : $model->getChildLevels();
 ?>
 
 <div class="archives-form">
 
-<?php
+<?php if(!empty($level)) {
 $js = <<<JS
 	$('#shortcode').on('keyup', function (e) {
 		var shortCode = $(this).val();
@@ -119,7 +122,6 @@ if($fond) {
 	->hint(Yii::t('app', 'Provide either a formal title or a concise supplied title in accordance with the rules of multilevel description and national conventions.')); ?>
 
 <?php if(!$fond) {
-	$level = $model->isNewRecord ? $parent->getChildLevels(true) : $model->getChildLevels();
 	echo $form->field($model, 'level_id', $wraper)
 		->dropDownList($level, ['prompt'=>''])
 		->label($model->getAttributeLabel('level_id'))
@@ -214,6 +216,15 @@ echo $form->field($model, 'publish', $wraper)
 	</div>
 </div>
 
-<?php ActiveForm::end(); ?>
+<?php ActiveForm::end();
+
+} else {?>
+	<div class="bs-example" data-example-id="simple-jumbotron">
+		<div class="jumbotron">
+			<h1><?php echo $model->getAttributeLabel('level_id').': '.$parent->level->level_name_i;?></h1>
+			<p><?php echo Yii::t('app', 'This level cannot add more child levels');?></p>
+		</div>
+	</div>
+<?php }?>
 
 </div>
