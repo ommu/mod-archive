@@ -3,7 +3,7 @@ namespace ommu\archive\assets;
 
 class AciTreeAsset extends \yii\web\AssetBundle
 {
-	public $sourcePath = '@ommu/aciTree';
+	public $sourcePath = '@npm/acitree/dist';
 	
 	public $css = [
 		'css/aciTree.css',
