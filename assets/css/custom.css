@@ -1,0 +1,4 @@
+#tree .aciTreeText p:first-child,
+#tree .aciTreeText p + p {
+	margin-bottom: 0;
+}

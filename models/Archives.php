@@ -449,7 +449,7 @@ class Archives extends \app\components\ActiveRecord
 	public static function parseParent($model) 
 	{
 		if(!isset($model->parent))
-			return '<div id="tree" class="aciTree"></div>';
+			return Yii::$app->request->isAjax ? '-' : '<div id="tree" class="aciTree"></div>';
 
 		$title = self::htmlHardDecode($model->parent->title);
 		$levelName = $model->parent->level->title->message;
@@ -458,7 +458,9 @@ class Archives extends \app\components\ActiveRecord
 		$items[] = Yii::t('app', '{level} Code: {code}', ['level'=>$levelName, 'code'=>$model->parent->code]);
 		$items[] = $model->getAttributeLabel('title').': '.Html::a($title, ['view', 'id'=>$model->parent_id], ['title'=>$title, 'class'=>'modal-btn']);
 
-		return Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']).'<div id="tree" class="aciTree"></div>';
+		if(Yii::$app->request->isAjax)
+			return Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']);
+		return Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']).'<hr/><div id="tree" class="aciTree"></div>';
 	}
 
 	/**

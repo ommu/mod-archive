@@ -3,21 +3,25 @@ namespace ommu\archive\assets;
 
 class AciTreeAsset extends \yii\web\AssetBundle
 {
-	public $sourcePath = '@npm/acitree/dist';
+	public $sourcePath = '@ommu/archive/assets';
 	
 	public $css = [
-		'css/aciTree.css',
+		'css/custom.css',
 	];
 
 	public $js = [
-		'js/jquery.min.js',
-		'js/jquery.aciPlugin.min.js',
-		'js/jquery.aciTree.min.js',
+		'js/custom.js',
 	];
 
-	public $depends = [];
+	public $depends = [
+		'ommu\archive\assets\AciTreePluginAsset',
+	];
 
 	public $publishOptions = [
 		'forceCopy' => YII_DEBUG ? true : false,
+		'except' => [
+			'AciTreeAsset.php',
+			'AciTreePluginAsset.php',
+		],
 	];
 }

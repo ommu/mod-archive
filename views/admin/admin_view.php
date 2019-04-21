@@ -34,35 +34,10 @@ $this->params['menu']['content'] = [
 <?php 
 $treeDataUrl = Url::to(['data', 'id'=>$model->id]);
 $js = <<<JS
-	jQuery.noConflict(true);
+	var treeDataUrl = '$treeDataUrl';
 	var selectedId = '$model->id';
-
-	// listen for the events before we init the tree
-	jQuery('#tree').on('acitree', function(event, api, item, eventName, options) {
-		var itemId = api.getId(item);
-		// do some stuff on init
-		if (eventName == 'added') {
-			if(itemId == selectedId) {
-				// then select it
-				api.select(item);
-			}
-		}
-	});
-	// init the tree
-	jQuery('#tree').aciTree({
-		ajax: {
-			url: '$treeDataUrl',
-		},
-		selectable: true,
-		itemHook: function(parent, item, itemData, level) {
-			// set a custom item label to show the branch level
-			this.setLabel(item, {
-				label: itemData.level + ': ' + itemData.code + itemData.label + '<a href="'+itemData['view-url']+'" title="Detail '+itemData.level+': '+itemData.code+'">Detail</a> | <a href="'+itemData['update-url']+'" title="Update '+itemData.level+': '+itemData.code+'">Update</a>',
-			});
-		}
-	});
 JS;
-$this->registerJs($js, \yii\web\View::POS_READY);
+$this->registerJs($js, \yii\web\View::POS_HEAD);
 
 $attributes = [
 	[
@@ -81,7 +56,6 @@ $attributes = [
 		'attribute' => 'parent_id',
 		'value' => Archives::parseParent($model),
 		'format' => 'raw',
-		'visible' => Yii::$app->request->isAjax ? false : true,
 	],
 	[
 		'attribute' => 'code',
