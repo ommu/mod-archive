@@ -58,6 +58,7 @@ class Archives extends \app\components\ActiveRecord
 
 	public $shortCode;
 	public $confirmCode;
+	public $releaseCode;
 	public $media;
 	public $creator;
 	public $repository;
@@ -448,16 +449,16 @@ class Archives extends \app\components\ActiveRecord
 	public static function parseParent($model) 
 	{
 		if(!isset($model->parent))
-			return '-';
+			return '<div id="tree" class="aciTree"></div>';
 
 		$title = self::htmlHardDecode($model->parent->title);
 		$levelName = $model->parent->level->title->message;
 
-		$items[] = $model->getAttributeLabel('code').': '.$model->parent->code;
-		$items[] = $model->getAttributeLabel('title').': '.Html::a($title, ['view', 'id'=>$model->parent_id], ['title'=>$title, 'class'=>'modal-btn']);
 		$items[] = $model->getAttributeLabel('level_id').': '.Html::a($levelName, ['setting/level/view', 'id'=>$model->parent->level_id], ['title'=>$levelName, 'class'=>'modal-btn']);
+		$items[] = Yii::t('app', '{level} Code: {code}', ['level'=>$levelName, 'code'=>$model->parent->code]);
+		$items[] = $model->getAttributeLabel('title').': '.Html::a($title, ['view', 'id'=>$model->parent_id], ['title'=>$title, 'class'=>'modal-btn']);
 
-		return Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']);
+		return Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']).'<div id="tree" class="aciTree"></div>';
 	}
 
 	/**
@@ -500,11 +501,19 @@ class Archives extends \app\components\ActiveRecord
 		if(!$archive)
 			$archive = $this;
 		$codes = [];
+		$levelAsKey = $archive->level->level_name_i;
+		$codes[$levelAsKey]['id'] = $archive->id;
+		$codes[$levelAsKey]['level'] = $levelAsKey;
+		$codes[$levelAsKey]['code'] = $archive->code;
+		$codes[$levelAsKey]['releaseCode'] = $archive->releaseCode;
+		$codes[$levelAsKey]['confirmCode'] = $archive->confirmCode;
+		$codes[$levelAsKey]['shortCode'] = $archive->shortCode;
 		if(isset($archive->parent)) {
 			$levelAsKey = $archive->parent->level->level_name_i;
 			$codes[$levelAsKey]['id'] = $archive->parent->id;
 			$codes[$levelAsKey]['level'] = $levelAsKey;
 			$codes[$levelAsKey]['code'] = $archive->parent->code;
+			$codes[$levelAsKey]['releaseCode'] = $archive->releaseCode;
 			$codes[$levelAsKey]['confirmCode'] = $archive->parent->confirmCode;
 			$codes[$levelAsKey]['shortCode'] = $archive->parent->shortCode;
 			// $codes[$levelAsKey]['sidkkas'] = $archive->parent->sidkkas;
@@ -522,7 +531,7 @@ class Archives extends \app\components\ActiveRecord
 	public function afterFind()
 	{
 		$setting = \ommu\archive\models\ArchiveSetting::find()
-			->select(['reference_code_sikn', 'reference_code_separator'])
+			->select(['maintenance_mode', 'reference_code_sikn', 'reference_code_separator'])
 			->where(['id' => 1])
 			->one();
 
@@ -532,7 +541,7 @@ class Archives extends \app\components\ActiveRecord
 		// $this->levelName = isset($this->level) ? $this->level->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
-
+		$this->releaseCode = preg_replace("/^[.-]/", '', preg_replace("/^(3400|23400-24)/", '', $this->code));
 		$this->code = preg_replace("/^[.-]/", '', preg_replace("/^(3400|23400-24)/", '', $this->code));
 		$parentCode = $this->parent->code;
 		$confirmCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));

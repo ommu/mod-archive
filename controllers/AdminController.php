@@ -34,6 +34,8 @@ use yii\filters\VerbFilter;
 use mdm\admin\components\AccessControl;
 use ommu\archive\models\Archives;
 use ommu\archive\models\search\Archives as ArchivesSearch;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
 class AdminController extends Controller
 {
@@ -203,10 +205,6 @@ class AdminController extends Controller
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
-		$setting = \ommu\archive\models\ArchiveSetting::find()
-			->select(['reference_code_sikn', 'reference_code_separator'])
-			->where(['id' => 1])
-			->one();
 
 		$this->subMenu = $this->module->params['archive_submenu'];
 		$this->view->title = Yii::t('app', 'Detail {level-name}: {title}', ['level-name' => $model->level->level_name_i, 'title' => Archives::htmlHardDecode($model->title)]);
@@ -214,7 +212,6 @@ class AdminController extends Controller
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
 			'model' => $model,
-			'setting' => $setting,
 		]);
 	}
 
@@ -248,5 +245,49 @@ class AdminController extends Controller
 			return $model;
 
 		throw new \yii\web\NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+	}
+
+	/**
+	 * Displays a single Archives model.
+	 * @param integer $id
+	 * @return mixed
+	 */
+	public function actionData($id)
+	{
+		Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+		$model = Archives::findOne($id);
+
+		if($model == null) return [];
+
+		$codes = [];
+		$result[] = $this->getData($model, $codes);
+
+		return $result;
+	}
+
+	/**
+	 * Displays a single Archives model.
+	 * @param integer $id
+	 * @return mixed
+	 */
+	public function getData($model, $codes)
+	{
+		$data = [
+			'id' => $model->id,
+			'code' => $model->code,
+			'level' => $model->level->level_name_i,
+			'label' => $model->title,
+			'inode' => !empty($model->archives) ? true : false,
+			'view-url' => Url::to(['view', 'id'=>$model->id]),
+			'update-url' => Url::to(['update', 'id'=>$model->id]),
+		];
+		if(!empty($codes))
+			$data = ArrayHelper::merge($data, ['open'=>true, 'branch'=>[$codes]]);
+		
+		if(isset($model->parent))
+			$data = $this->getData($model->parent, $data);
+
+		return $data;
 	}
 }

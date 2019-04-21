@@ -15,6 +15,7 @@
  */
 
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Create');
@@ -22,6 +23,13 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Create');
 $this->params['menu']['content'] = [
 	['label' => Yii::t('app', 'Back to Inventaris'), 'url' => Url::to(['index']), 'icon' => 'tasks', 'htmlOptions' => ['class'=>'btn btn-success btn-sm']],
 ];
+if($setting->maintenance_mode) {
+	$this->params['menu']['content'] = ArrayHelper::merge(
+		$this->params['menu']['content'], 
+		[
+			['label' => Yii::t('app', 'Show Reference Code Parameters'), 'url' => 'javascript:void(0);', 'icon' => 'code', 'htmlOptions' => ['class'=>'btn btn-warning btn-sm', 'id'=>'reference-code']],
+		]);
+}
 
 if($parent) {
 	$referenceCode = $parent->referenceCode;

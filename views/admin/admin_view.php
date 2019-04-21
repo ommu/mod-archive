@@ -17,6 +17,9 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
 use ommu\archive\models\Archives;
+use yii\helpers\ArrayHelper;
+
+\ommu\archive\assets\AciTreeAsset::register($this);
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->title;
@@ -29,6 +32,38 @@ $this->params['menu']['content'] = [
 <div class="archives-view">
 
 <?php 
+$treeDataUrl = Url::to(['data', 'id'=>$model->id]);
+$js = <<<JS
+	jQuery.noConflict(true);
+	var selectedId = '$model->id';
+
+	// listen for the events before we init the tree
+	jQuery('#tree').on('acitree', function(event, api, item, eventName, options) {
+		var itemId = api.getId(item);
+		// do some stuff on init
+		if (eventName == 'added') {
+			if(itemId == selectedId) {
+				// then select it
+				api.select(item);
+			}
+		}
+	});
+	// init the tree
+	jQuery('#tree').aciTree({
+		ajax: {
+			url: '$treeDataUrl',
+		},
+		selectable: true,
+		itemHook: function(parent, item, itemData, level) {
+			// set a custom item label to show the branch level
+			this.setLabel(item, {
+				label: itemData.level + ': ' + itemData.code + itemData.label + '<a href="'+itemData['view-url']+'" title="Detail '+itemData.level+': '+itemData.code+'">Detail</a> | <a href="'+itemData['update-url']+'" title="Update '+itemData.level+': '+itemData.code+'">Update</a>',
+			});
+		}
+	});
+JS;
+$this->registerJs($js, \yii\web\View::POS_READY);
+
 $attributes = [
 	[
 		'attribute' => 'id',
@@ -45,12 +80,31 @@ $attributes = [
 	[
 		'attribute' => 'parent_id',
 		'value' => Archives::parseParent($model),
-		'format' => 'html',
-		'visible' => $model->level_id != 1 ? true : false,
+		'format' => 'raw',
+		'visible' => Yii::$app->request->isAjax ? false : true,
 	],
 	[
 		'attribute' => 'code',
-		'value' => $model->code,
+		'value' => function ($model) {
+			$setting = \ommu\archive\models\ArchiveSetting::find()
+				->select(['maintenance_mode', 'reference_code_sikn', 'reference_code_separator'])
+				->where(['id' => 1])
+				->one();
+			if(!$setting->maintenance_mode) {
+				$referenceCode = $model->referenceCode;
+				array_multisort($referenceCode);
+				return $setting->reference_code_sikn.' '.preg_replace("/($model->code)$/", '<span class="text-primary">'.$model->code.'</span>', join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'code')));
+			} else {
+				$referenceCode = $model->referenceCode;
+				array_multisort($referenceCode);
+				$oldReferenceCodeTemplate = $setting->reference_code_sikn.' '.preg_replace("/($model->shortCode)$/", '<span class="text-danger">'.$model->shortCode.'</span>', $model->code);
+				$newReferenceCodeTemplate = $setting->reference_code_sikn.' '.preg_replace("/($model->confirmCode)$/", '<span class="text-primary">'.$model->confirmCode.'</span>', join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'confirmCode')));
+				if($model->code == $model->confirmCode)
+					$oldReferenceCodeTemplate = $newReferenceCodeTemplate;
+				return '//OLD// '.$oldReferenceCodeTemplate.'<br/>//NEW// '.$newReferenceCodeTemplate;
+			}
+		},
+		'format' => 'html',
 	],
 	[
 		'attribute' => 'title',

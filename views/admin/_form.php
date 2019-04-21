@@ -34,10 +34,11 @@ $redactorOptions = [
 <?php
 $js = <<<JS
 	$('#shortcode').on('keyup', function (e) {
-		var shortcode = $(this).val();
-		if(shortcode == '')
-			var shortcode = 'XXX';
-		$('.reference-code').html(shortcode);
+		var shortCode = $(this).val();
+		var parentCode = $(this).parent().find('.item').text();
+		if(shortCode == '')
+			var shortCode = 'XXX';
+		$('.reference-code').html(parentCode+shortCode);
 	});
 	$('#reference-code').on('click', function (e) {
 		$('#reference-code-box').toggleClass('show hide');
@@ -59,9 +60,9 @@ if(!$model->isNewRecord || ($model->isNewRecord && $parent))
 <?php //echo $form->errorSummary($model);?>
 
 <?php 
-if(!$model->isNewRecord && $setting->maintenance_mode) {
+if($setting->maintenance_mode) {
 	echo '<div id="reference-code-box" class="hide"><pre>';
-	print_r($model->referenceCode);
+	print_r($referenceCode);
 	echo '</pre></div>';
 }
 $shortCode = $model->shortCode ? $model->shortCode : 'XXX';
@@ -81,21 +82,21 @@ if($fond) {
 		$parentCode = $model->parent->confirmCode;
 	if(!$setting->maintenance_mode) {
 		if(!$model->isNewRecord) {
-			$template = '<h5 class="text-muted">'.$setting->reference_code_sikn.' '.join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'code')).$setting->reference_code_separator.'<span class="text-primary">'.$model->parent->code.'.</span><span class="text-primary reference-code">'.$shortCode.'</span></h5>';
+			$template = '<h5 class="text-muted">'.$setting->reference_code_sikn.' '.preg_replace("/($model->code)$/", '<span class="text-primary reference-code">'.$model->code.'</span>', join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'code'))).'</h5>';
 		} else {
-			$template = '<h5 class="text-muted">'.$setting->reference_code_sikn.' '.join($setting->reference_code_separator, ArrayHelper::merge(ArrayHelper::map($referenceCode, 'level', 'code'), [$model->parent->code])).$setting->reference_code_separator.'<span class="text-primary">'.$model->parent->code.'.</span><span class="text-primary reference-code">'.$shortCode.'</span></h5>';
+			$template = '<h5 class="text-muted">'.$setting->reference_code_sikn.' '.join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'code')).$setting->reference_code_separator.'<span class="text-primary reference-code">'.$model->parent->code.'.'.$shortCode.'</span></h5>';
 		}
 	} else {
 		if(!$model->isNewRecord) {
-			$oldReferenceCodeTemplate = preg_replace("/($shortCode)$/", '<span class="text-danger reference-code">'.$shortCode.'</span>', $model->code);
-			$newReferenceCodeTemplate = join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'confirmCode')).$setting->reference_code_separator.'<span class="text-primary">'.$model->parent->confirmCode.'.</span><span class="text-primary reference-code">'.$shortCode.'</span>';
+			$oldReferenceCodeTemplate = preg_replace("/($shortCode)$/", '<span class="text-danger">'.$shortCode.'</span>', $model->code);
+			$newReferenceCodeTemplate = preg_replace("/($model->confirmCode)$/", '<span class="text-primary reference-code">'.$model->confirmCode.'</span>', join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'confirmCode')));
 			if($model->code == $model->confirmCode)
 				$oldReferenceCodeTemplate = $newReferenceCodeTemplate;
 
 			$template = '<h5 class="text-muted">//OLD// '.$setting->reference_code_sikn.' '.$oldReferenceCodeTemplate.'</h5>';
 			$template .= '<h5 class="text-muted">//NEW// '.$setting->reference_code_sikn.' '.$newReferenceCodeTemplate.'</h5>';
 		} else {
-			$template = '<h5 class="text-muted">'.$setting->reference_code_sikn.' '.join($setting->reference_code_separator, ArrayHelper::merge(ArrayHelper::map($referenceCode, 'level', 'confirmCode'), [$model->parent->confirmCode])).$setting->reference_code_separator.'<span class="text-primary">'.$model->parent->confirmCode.'.</span><span class="text-primary reference-code">'.$shortCode.'</span></h5>';
+			$template = '<h5 class="text-muted">'.$setting->reference_code_sikn.' '.join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'confirmCode')).$setting->reference_code_separator.'<span class="text-primary reference-code">'.$model->parent->confirmCode.'.'.$shortCode.'</span></h5>';
 		}
 	}
 	echo $form->field($model, 'parent_id', ArrayHelper::merge(['template' => '{label}{beginWrapper}{input}'.$template.'{endWrapper}'], $wraper))
