@@ -36,7 +36,8 @@
 		"php": "~7.0",
 		"yiisoft/yii2": "~2.0.13",
 		"thamtech/yii2-uuid": "*",
-		"yii2mod/yii2-selectize": "*"
+		"yii2mod/yii2-selectize": "*",
+		"npm-asset/acitree": "4.5.1"
 	},
 	"autoload": {
 		"psr-4": {
