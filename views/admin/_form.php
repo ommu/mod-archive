@@ -34,7 +34,7 @@ if(!$fond)
 
 <div class="archives-form">
 
-<?php if(!empty($level)) {
+<?php if($fond || !empty($level)) {
 $js = <<<JS
 	$('#shortcode').on('keyup', function (e) {
 		var shortCode = $(this).val();
@@ -49,8 +49,9 @@ $js = <<<JS
 JS;
 $this->registerJs($js, \yii\web\View::POS_READY);
 
+$hintCondition = $model->isNewRecord && !$fond ? 'hint-tooltip' : '';
 $form = ActiveForm::begin([
-	'options' => ['class'=>'form-horizontal form-label-left'],
+	'options' => ['class'=>'form-horizontal form-label-left '.$hintCondition],
 	'enableClientValidation' => true,
 	'enableAjaxValidation' => false,
 	//'enableClientScript' => true,
