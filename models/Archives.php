@@ -510,19 +510,8 @@ class Archives extends \app\components\ActiveRecord
 		$codes[$levelAsKey]['releaseCode'] = $archive->releaseCode;
 		$codes[$levelAsKey]['confirmCode'] = $archive->confirmCode;
 		$codes[$levelAsKey]['shortCode'] = $archive->shortCode;
-		if(isset($archive->parent)) {
-			$levelAsKey = $archive->parent->level->level_name_i;
-			$codes[$levelAsKey]['id'] = $archive->parent->id;
-			$codes[$levelAsKey]['level'] = $levelAsKey;
-			$codes[$levelAsKey]['code'] = $archive->parent->code;
-			$codes[$levelAsKey]['releaseCode'] = $archive->releaseCode;
-			$codes[$levelAsKey]['confirmCode'] = $archive->parent->confirmCode;
-			$codes[$levelAsKey]['shortCode'] = $archive->parent->shortCode;
-			// $codes[$levelAsKey]['sidkkas'] = $archive->parent->sidkkas;
-			// $codes[$levelAsKey]['publish'] = $archive->parent->publish;
-
-			return ArrayHelper::merge($codes, $this->getReferenceCode($archive->parent));
-		}
+		if(isset($archive->parent))
+			$codes = ArrayHelper::merge($codes, $this->getReferenceCode($archive->parent));
 
 		return $codes;
 	}
