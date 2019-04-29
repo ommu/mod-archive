@@ -10,7 +10,7 @@ class AciTreeAsset extends \yii\web\AssetBundle
 	];
 
 	public $js = [
-		'js/custom.js',
+		'js/acitree.js',
 	];
 
 	public $depends = [
