@@ -36,7 +36,9 @@ if(!$fond)
 <div class="archives-form">
 
 <?php if($fond || !empty($level)) {
+	$creatorField = !in_array('creator', $model->level->field) ? 'creator.disable()' : '';
 $js = <<<JS
+	$creatorField;
 	$('#shortcode').on('keyup', function (e) {
 		var shortCode = $(this).val();
 		var parentCode = $(this).parent().find('.item').text();
@@ -46,6 +48,13 @@ $js = <<<JS
 	});
 	$('#reference-code').on('click', function (e) {
 		$('#reference-code-box').toggleClass('show hide');
+	});
+	$('#level_id').on('change', function (e) {
+		var levelId = $(this).val();
+		if(levelId == 8)
+			creator.enable();
+		else
+			creator.disable();
 	});
 JS;
 $this->registerJs($js, \yii\web\View::POS_READY);
