@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' =>
 $this->params['breadcrumbs'][] = $model->title;
 
 $this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Back to Inventaris'), 'url' => Url::to(['index']), 'icon' => 'tasks', 'htmlOptions' => ['class'=>'btn btn-success btn-sm']],
+	['label' => Yii::t('app', 'Back to Inventaris'), 'url' => Url::to(['index']), 'icon' => 'tasks', 'htmlOptions' => ['class'=>'btn btn-success']],
 ];
 ?>
 
@@ -147,7 +147,7 @@ $attributes = [
 	],
 	[
 		'attribute' => '',
-		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-primary btn-sm']),
+		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-primary']),
 		'format' => 'html',
 		'visible' => Yii::$app->request->isAjax ? true : false,
 	],

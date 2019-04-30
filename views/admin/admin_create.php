@@ -21,13 +21,13 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' =>
 $this->params['breadcrumbs'][] = Yii::t('app', 'Create');
 
 $this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Back to Inventaris'), 'url' => Url::to(['index']), 'icon' => 'tasks', 'htmlOptions' => ['class'=>'btn btn-success btn-sm']],
+	['label' => Yii::t('app', 'Back to Inventaris'), 'url' => Url::to(['index']), 'icon' => 'tasks', 'htmlOptions' => ['class'=>'btn btn-success']],
 ];
 if($setting->maintenance_mode) {
 	$this->params['menu']['content'] = ArrayHelper::merge(
 		$this->params['menu']['content'], 
 		[
-			['label' => Yii::t('app', 'Show Reference Code Parameters'), 'url' => 'javascript:void(0);', 'icon' => 'code', 'htmlOptions' => ['class'=>'btn btn-warning btn-sm', 'id'=>'reference-code']],
+			['label' => Yii::t('app', 'Show Reference Code Parameters'), 'url' => 'javascript:void(0);', 'icon' => 'code', 'htmlOptions' => ['class'=>'btn btn-warning', 'id'=>'reference-code']],
 		]);
 }
 
