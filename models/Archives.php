@@ -581,9 +581,9 @@ class Archives extends \app\components\ActiveRecord
 		// set code
 		$this->code = strtolower($this->level->level_name_i) == 'fond' ? 
 			$this->shortCode : 
-			(!$setting->maintenance_mode ? 
-				join('.', [$this->parent->code, $this->shortCode]) : 
-				join('.', [$this->parent->confirmCode, $this->shortCode]));
+			($setting->maintenance_mode ? 
+				join('.', [$this->parent->confirmCode, $this->shortCode]) :
+				join('.', [$this->parent->code, $this->shortCode]));
 		
 		if(!$insert) {
 			// set archive media, creator and repository
@@ -605,6 +605,29 @@ class Archives extends \app\components\ActiveRecord
 			// set archive media, creator and repository
 			$event = new Event(['sender' => $this]);
 			Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARCHIVES, $event);
+
+		} else {
+			// update sidkkas status
+			if(array_key_exists('sidkkas', $changedAttributes) && $changedAttributes['sidkkas'] != $this->sidkkas) {
+				$models = self::find()
+					->where(['parent_id'=>$this->id])
+					->all();
+				foreach ($models as $model) {
+					$model->sidkkas = $this->sidkkas;
+					$model->update(false);
+				}
+			}
+
+			// delete archive childs
+			if(array_key_exists('publish', $changedAttributes) && $changedAttributes['publish'] != $this->publish && $this->publish == 2) {
+				$models = self::find()
+					->where(['parent_id'=>$this->id])
+					->all();
+				foreach ($models as $model) {
+					$model->publish = 2;
+					$model->update(false);
+				}
+			}
 		}
 	}
 }
