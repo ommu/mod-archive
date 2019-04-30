@@ -87,7 +87,7 @@ class Events extends \yii\base\BaseObject
 					->select(['id'])
 					->andWhere(['creator_name' => $val])
 					->one();
-						
+
 				if($creatorFind != null)
 					$creator_id = $creatorFind->id;
 				else {
@@ -121,28 +121,35 @@ class Events extends \yii\base\BaseObject
 	 */
 	public static function setArchiveRepository($archive)
 	{
-		$oldRepository = $archive->getRelatedRepository(true, 'title');
-		if($archive->repository)
-			$repository = explode(',', $archive->repository);
+		$oldRepository = array_flip($archive->getRelatedRepository(true));
 
-		// insert difference repository
-		if(is_array($repository)) {
-			foreach ($repository as $val) {
-				if(in_array($val, $oldRepository)) {
-					unset($oldRepository[array_keys($oldRepository, $val)[0]]);
-					continue;
-				}
+		if((empty($oldRepository) && !$archive->repository) || in_array($archive->repository, $oldRepository))
+			return;
+		
+		if(is_numeric($archive->repository)) {
+			if(empty($oldRepository)) {
+				$model = new ArchiveRelatedRepository();
+				$model->archive_id = $archive->id;
+				$model->repository_id = $archive->repository;
+				$model->save();
+			} else {
+				$model = ArchiveRelatedRepository::findOne(key($oldRepository));
+				$model->repository_id = $archive->repository;
+				$model->save();
+			}
 
+		} else {
+			if($archive->repository) {
 				$repositoryFind = ArchiveRepository::find()
 					->select(['id'])
-					->andWhere(['repository_name' => $val])
+					->andWhere(['repository_name' => $archive->repository])
 					->one();
-						
+
 				if($repositoryFind != null)
 					$repository_id = $repositoryFind->id;
 				else {
 					$model = new ArchiveRepository();
-					$model->repository_name = $val;
+					$model->repository_name = $archive->repository;
 					if($model->save())
 						$repository_id = $model->id;
 				}
@@ -151,16 +158,9 @@ class Events extends \yii\base\BaseObject
 				$model->archive_id = $archive->id;
 				$model->repository_id = $repository_id;
 				$model->save();
-			}
-		}
-
-		// drop difference repository
-		if(!empty($oldRepository)) {
-			foreach ($oldRepository as $key => $val) {
-				ArchiveRelatedRepository::find()
-					->select(['id'])
-					->where(['archive_id'=>$archive->id, 'repository_id'=>$key])
-					->one()
+			} else {
+				// drop old repository
+				ArchiveRelatedRepository::findOne(key($oldRepository))
 					->delete();
 			}
 		}

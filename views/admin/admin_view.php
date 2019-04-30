@@ -109,7 +109,7 @@ $attributes = [
 	[
 		'attribute' => 'repository',
 		'value' => function ($model) {
-			return Archives::parseRelated($model->getRelatedRepository(true, 'title'), 'repository');
+			return implode(',', $model->getRelatedRepository(true, 'title'));
 		},
 		'format' => 'html',
 	],

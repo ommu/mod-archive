@@ -286,7 +286,7 @@ class Archives extends \app\components\ActiveRecord
 			$this->templateColumns['repository'] = [
 				'attribute' => 'repository',
 				'value' => function($model, $key, $index, $column) {
-					return self::parseRelated($model->getRelatedRepository(true, 'title'), 'repository', ',');
+					return implode(',', $model->getRelatedRepository(true, 'title'));
 				},
 				'format' => 'html',
 			];
@@ -548,7 +548,7 @@ class Archives extends \app\components\ActiveRecord
 
 		$this->media = array_flip($this->getRelatedMedia(true));
 		$this->creator = implode(',', $this->getRelatedCreator(true, 'title'));
-		$this->repository = implode(',', $this->getRelatedRepository(true, 'title'));
+		$this->repository =  array_flip($this->getRelatedRepository(true));
 	}
 
 	/**

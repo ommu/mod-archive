@@ -20,8 +20,9 @@ use app\components\ActiveForm;
 use yii\redactor\widgets\Redactor;
 use ommu\archive\models\Archives;
 use ommu\archive\models\ArchiveMedia;
-use yii2mod\selectize\Selectize;
+use ommu\selectize\Selectize;
 use yii\helpers\ArrayHelper;
+use ommu\archive\models\ArchiveRepository;
 
 $redactorOptions = [
 	'buttons' => ['html', 'format', 'bold', 'italic', 'deleted'],
@@ -136,10 +137,11 @@ if($fond) {
 
 <div class="ln_solid"></div>
 
-<?php if(!$model->isNewRecord && in_array('creator', $model->level->field)) {
+<?php if(!$fond) {
 	$creatorSuggestUrl = Url::to(['setting/creator/suggest']);
 	echo $form->field($model, 'creator', $wraper)
 		->widget(Selectize::className(), [
+			'cascade' => true,
 			'url' => $creatorSuggestUrl,
 			'pluginOptions' => [
 				'plugins' => ['remove_button'],
@@ -155,14 +157,17 @@ if($fond) {
 		->hint(Yii::t('app', 'Record the name of the organization(s) or the individual(s) responsible for the creation, accumulation and maintenance of the records in the unit of description. Search for an existing name in the authority records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new authority record.'));
 } ?>
 
-<?php if($fond || (!$model->isNewRecord && in_array('repository', $model->level->field))) {
+<?php if($fond) {
 	$repositorySuggestUrl = Url::to(['setting/repository/suggest']);
 	echo $form->field($model, 'repository', $wraper)
 		->widget(Selectize::className(), [
+			'options' => [
+				'placeholder' => Yii::t('app', 'Select a repository..'),
+			],
+			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a repository..')], ArchiveRepository::getRepository(1)),
 			'url' => $repositorySuggestUrl,
 			'pluginOptions' => [
-				'plugins' => ['remove_button'],
-				'valueField' => 'label',
+				'valueField' => 'id',
 				'labelField' => 'label',
 				'searchField' => ['label'],
 				'persist' => false,
@@ -174,9 +179,7 @@ if($fond) {
 		->hint(Yii::t('app', 'Record the name of the organization which has custody of the archival material. Search for an existing name in the archival institution records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new archival institution record.'));
 } ?>
 
-<?php if((!$model->isNewRecord && in_array('creator', $model->level->field)) || ($fond || (!$model->isNewRecord && in_array('repository', $model->level->field)))) {?>
-	<div class="ln_solid"></div>
-<?php }?>
+<div class="ln_solid"></div>
 
 <?php echo $form->field($model, 'media', $wraper)
 	->widget(Selectize::className(), [
