@@ -36,9 +36,9 @@ if(!$fond)
 <div class="archives-form">
 
 <?php if($fond || !empty($level)) {
-	$creatorField = !in_array('creator', $model->level->field) ? 'creator.disable()' : '';
+	$creatorField = (!$model->isNewRecord && !in_array('creator', $model->level->field)) ? 'creator.disable();' : '';
 $js = <<<JS
-	$creatorField;
+	$creatorField
 	$('#shortcode').on('keyup', function (e) {
 		var shortCode = $(this).val();
 		var parentCode = $(this).parent().find('.item').text();
