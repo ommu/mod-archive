@@ -59,6 +59,7 @@ class Archives extends \app\components\ActiveRecord
 	public $shortCode;
 	public $confirmCode;
 	public $releaseCode;
+	public $updateCode = true;
 	public $media;
 	public $creator;
 	public $repository;
@@ -579,11 +580,13 @@ class Archives extends \app\components\ActiveRecord
 			->one();
 
 		// set code
-		$this->code = strtolower($this->level->level_name_i) == 'fond' ? 
-			$this->shortCode : 
-			($setting->maintenance_mode ? 
-				join('.', [$this->parent->confirmCode, $this->shortCode]) :
-				join('.', [$this->parent->code, $this->shortCode]));
+		if($this->updateCode == true) {
+			$this->code = strtolower($this->level->level_name_i) == 'fond' ? 
+				$this->shortCode : 
+				($setting->maintenance_mode ? 
+					join('.', [$this->parent->confirmCode, $this->shortCode]) :
+					join('.', [$this->parent->code, $this->shortCode]));
+		}
 		
 		if(!$insert) {
 			// set archive media, creator and repository
@@ -613,6 +616,7 @@ class Archives extends \app\components\ActiveRecord
 					->where(['parent_id'=>$this->id])
 					->all();
 				foreach ($models as $model) {
+					$model->updateCode = false;
 					$model->sidkkas = $this->sidkkas;
 					$model->update(false);
 				}
@@ -624,6 +628,7 @@ class Archives extends \app\components\ActiveRecord
 					->where(['parent_id'=>$this->id])
 					->all();
 				foreach ($models as $model) {
+					$model->updateCode = false;
 					$model->publish = 2;
 					$model->update(false);
 				}
