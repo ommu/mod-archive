@@ -176,7 +176,6 @@ array_push($columnData, [
 echo GridView::widget([
 	'dataProvider' => $dataProvider,
 	'filterModel' => $searchModel,
-	'layout' => '{items}{summary}{pager}',
 	'columns' => $columnData,
 ]); ?>
 
