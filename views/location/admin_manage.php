@@ -40,11 +40,8 @@ $this->params['menu']['option'] = [
 <?php 
 $columnData = $columns;
 array_push($columnData, [
-	'class' => 'yii\grid\ActionColumn',
+	'class' => 'app\components\grid\ActionColumn',
 	'header' => Yii::t('app', 'Option'),
-	'contentOptions' => [
-		'class'=>'action-column',
-	],
 	'buttons' => [
 		'view' => function ($url, $model, $key) {
 			$context = $this->context;
@@ -66,7 +63,7 @@ array_push($columnData, [
 			]);
 		},
 	],
-	'template' => '{view}{update}{delete}',
+	'template' => '{view} {update} {delete}',
 ]);
 
 echo GridView::widget([
