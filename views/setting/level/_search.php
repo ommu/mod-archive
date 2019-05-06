@@ -4,7 +4,7 @@
  * @var $this app\components\View
  * @var $this ommu\archive\controllers\setting\LevelController
  * @var $model ommu\archive\models\search\ArchiveLevel
- * @var $form app\components\ActiveForm
+ * @var $form yii\widgets\ActiveForm
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
@@ -15,7 +15,7 @@
  */
 
 use yii\helpers\Html;
-use app\components\ActiveForm;
+use yii\widgets\ActiveForm;
 ?>
 
 <div class="archive-level-search search-form">

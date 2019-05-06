@@ -4,7 +4,7 @@
  * @var $this app\components\View
  * @var $this ommu\archive\controllers\AdminController
  * @var $model ommu\archive\models\search\Archives
- * @var $form app\components\ActiveForm
+ * @var $form yii\widgets\ActiveForm
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
@@ -15,7 +15,7 @@
  */
 
 use yii\helpers\Html;
-use app\components\ActiveForm;
+use yii\widgets\ActiveForm;
 use ommu\archive\models\Archives;
 use ommu\archive\models\ArchiveLevel;
 ?>
