@@ -29,15 +29,15 @@ use app\components\widgets\ActiveForm;
 
 <?php //echo $form->errorSummary($model);?>
 
-<?php echo $form->field($model, 'media_name_i', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'media_name_i')
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('media_name_i')); ?>
 
-<?php echo $form->field($model, 'media_desc_i', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'media_desc_i')
 	->textarea(['rows'=>4, 'cols'=>50, 'maxlength'=>true])
 	->label($model->getAttributeLabel('media_desc_i')); ?>
 
-<?php echo $form->field($model, 'publish', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'publish')
 	->checkbox()
 	->label($model->getAttributeLabel('publish')); ?>
 

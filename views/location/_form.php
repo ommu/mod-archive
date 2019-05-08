@@ -34,21 +34,21 @@ use yii2mod\selectize\Selectize;
 
 <?php if($model->type != 'building') {
 $parentId = ArchiveLocation::getLocation(['publish'=>1, 'type'=>$model->type == 'depo' ? 'building' : 'depo']);
-echo $form->field($model, 'parent_id', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+echo $form->field($model, 'parent_id')
 	->dropDownList($parentId, ['prompt' => ''])
 	->label($model->getAttributeLabel('parent_id'));
 } ?>
 
-<?php echo $form->field($model, 'location_name', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'location_name')
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('location_name')); ?>
 
-<?php echo $form->field($model, 'location_desc', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'location_desc')
 	->textarea(['rows'=>4, 'cols'=>50])
 	->label($model->getAttributeLabel('location_desc')); ?>
 
 <?php if($model->type == 'room') {
-echo $form->field($model, 'storage', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+echo $form->field($model, 'storage')
 	->widget(Selectize::className(), [
 		'items' =>ArchiveStorage::getStorage(1),
 		'options' => [
@@ -61,7 +61,7 @@ echo $form->field($model, 'storage', ['horizontalCssClasses' => ['wrapper'=>'col
 	->label($model->getAttributeLabel('storage'));
 } ?>
 
-<?php echo $form->field($model, 'publish', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'publish')
 	->checkbox()
 	->label($model->getAttributeLabel('publish')); ?>
 

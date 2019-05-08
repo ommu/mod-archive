@@ -29,15 +29,15 @@ use app\components\widgets\ActiveForm;
 
 <?php //echo $form->errorSummary($model);?>
 
-<?php echo $form->field($model, 'repository_name', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'repository_name')
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('repository_name')); ?>
 
 <?php echo $form->field($model, 'repository_desc')
 	->textarea(['rows'=>4, 'cols'=>50])
-	->label($model->getAttributeLabel('repository_desc', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])); ?>
+	->label($model->getAttributeLabel('repository_desc')); ?>
 
-<?php echo $form->field($model, 'publish', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'publish')
 	->checkbox()
 	->label($model->getAttributeLabel('publish')); ?>
 

@@ -32,40 +32,40 @@ use ommu\archive\models\ArchiveSetting;
 
 <?php if($model->isNewRecord && !$model->getErrors())
 	$model->license = $model->licenseCode();
-echo $form->field($model, 'license', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+echo $form->field($model, 'license')
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('license'))
 	->hint(Yii::t('app', 'Enter the your license key that is provided to you when you purchased this plugin. If you do not know your license key, please contact support team.').'<br/>'.Yii::t('app', 'Format: XXXX-XXXX-XXXX-XXXX')); ?>
 
 <?php $permission = ArchiveSetting::getPermission();
-echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hint}{input}{error}{endWrapper}', 'horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hint}{input}{error}{endWrapper}'])
 	->radioList($permission)
 	->label($model->getAttributeLabel('permission'))
 	->hint(Yii::t('app', 'Select whether or not you want to let the public (visitors that are not logged-in) to view the following sections of your social network. In some cases (such as Profiles, Blogs, and Albums), if you have given them the option, your users will be able to make their pages private even though you have made them publically viewable here. For more permissions settings, please visit the General Settings page.')); ?>
 
-<?php echo $form->field($model, 'meta_description', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'meta_description')
 	->textarea(['rows'=>6, 'cols'=>50])
 	->label($model->getAttributeLabel('meta_description')); ?>
 
-<?php echo $form->field($model, 'meta_keyword', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'meta_keyword')
 	->textarea(['rows'=>6, 'cols'=>50])
 	->label($model->getAttributeLabel('meta_keyword')); ?>
 
-<?php echo $form->field($model, 'reference_code_sikn', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'reference_code_sikn')
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('reference_code_sikn')); ?>
 
-<?php echo $form->field($model, 'reference_code_separator', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'reference_code_separator')
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('reference_code_separator')); ?>
 
 <?php $fondSidkka = ArchiveSetting::getFondSidkkas();
-echo $form->field($model, 'fond_sidkkas', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+echo $form->field($model, 'fond_sidkkas')
 	->dropDownList($fondSidkka, ['prompt'=>''])
 	->label($model->getAttributeLabel('fond_sidkkas')); ?>
 
 <?php $fondSidkka = ArchiveSetting::getFondSidkkas();
-echo $form->field($model, 'maintenance_mode', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+echo $form->field($model, 'maintenance_mode')
 	->dropDownList($fondSidkka, ['prompt'=>''])
 	->label($model->getAttributeLabel('maintenance_mode')); ?>
 

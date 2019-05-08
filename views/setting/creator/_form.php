@@ -29,15 +29,15 @@ use app\components\widgets\ActiveForm;
 
 <?php //echo $form->errorSummary($model);?>
 
-<?php echo $form->field($model, 'creator_name', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'creator_name')
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('creator_name')); ?>
 
-<?php echo $form->field($model, 'creator_desc', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'creator_desc')
 	->textarea(['rows'=>4, 'cols'=>50])
 	->label($model->getAttributeLabel('creator_desc')); ?>
 
-<?php echo $form->field($model, 'publish', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'publish')
 	->checkbox()
 	->label($model->getAttributeLabel('publish')); ?>
 

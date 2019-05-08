@@ -31,19 +31,19 @@ use ommu\archive\models\ArchiveStorage;
 <?php //echo $form->errorSummary($model);?>
 
 <?php $parentId = ArchiveStorage::getStorage();
-echo $form->field($model, 'parent_id', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+echo $form->field($model, 'parent_id')
 	->dropDownList($parentId, ['prompt' => ''])
 	->label($model->getAttributeLabel('parent_id')); ?>
 
-<?php echo $form->field($model, 'storage_name_i', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'storage_name_i')
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('storage_name_i')); ?>
 
-<?php echo $form->field($model, 'storage_desc_i', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'storage_desc_i')
 	->textarea(['rows'=>4, 'cols'=>50, 'maxlength'=>true])
 	->label($model->getAttributeLabel('storage_desc_i')); ?>
 
-<?php echo $form->field($model, 'publish', ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']])
+<?php echo $form->field($model, 'publish')
 	->checkbox()
 	->label($model->getAttributeLabel('publish')); ?>
 

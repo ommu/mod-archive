@@ -66,10 +66,7 @@ $form = ActiveForm::begin([
 	'enableAjaxValidation' => false,
 	//'enableClientScript' => true,
 ]);
-
-$wraper = [];
-if(!$model->isNewRecord || ($model->isNewRecord && $parent))
-	$wraper = ['horizontalCssClasses' => ['wrapper'=>'col-sm-9 col-xs-12 col-12']];?>
+?>
 
 <?php //echo $form->errorSummary($model);?>
 
@@ -82,11 +79,11 @@ if($setting->maintenance_mode) {
 $shortCode = $model->shortCode ? $model->shortCode : 'XXX';
 if($fond) {
 	$model->level_id = 1;
-	echo $form->field($model, 'level_id', ArrayHelper::merge(['template' => '{label}{beginWrapper}{input}<h5 class="text-muted">'.$setting->reference_code_sikn.' <span class="text-primary reference-code">'.$shortCode.'</span></h5>{endWrapper}'], $wraper))
+	echo $form->field($model, 'level_id', ['template' => '{label}{beginWrapper}{input}<h5 class="text-muted">'.$setting->reference_code_sikn.' <span class="text-primary reference-code">'.$shortCode.'</span></h5>{endWrapper}'])
 		->hiddenInput()
 		->label($model->getAttributeLabel('code'));
 
-	$shortCodeFieldTemplate = $wraper;
+	$shortCodeFieldTemplate = [];
 	$shortCodeInputOptions = ['maxlength'=>true, 'placeholder'=>'XXX'];
 } else {
 	if(!$model->getErrors() && $parent)
@@ -113,11 +110,11 @@ if($fond) {
 			$template = '<h5 class="text-muted">'.$setting->reference_code_sikn.' '.join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'confirmCode')).$setting->reference_code_separator.'<span class="text-primary reference-code">'.$model->parent->confirmCode.'.'.$shortCode.'</span></h5>';
 		}
 	}
-	echo $form->field($model, 'parent_id', ArrayHelper::merge(['template' => '{label}{beginWrapper}{input}'.$template.'{endWrapper}'], $wraper))
+	echo $form->field($model, 'parent_id', ['template' => '{label}{beginWrapper}{input}'.$template.'{endWrapper}'])
 		->hiddenInput()
 		->label($model->getAttributeLabel('code'));
 
-	$shortCodeFieldTemplate = ArrayHelper::merge(['template' => '{label}{beginWrapper}<div class="selectize-control shadow"><div class="selectize-input"><div class="item">'.$parentCode.'.</div>{input}</div></div>{error}{hint}{endWrapper}'], $wraper);
+	$shortCodeFieldTemplate = ['template' => '{label}{beginWrapper}<div class="selectize-control shadow"><div class="selectize-input"><div class="item">'.$parentCode.'.</div>{input}</div></div>{error}{hint}{endWrapper}'];
 	$shortCodeInputOptions = ['maxlength'=>true, 'class'=>'', 'placeholder'=>'XXX'];
 } ?>
 
@@ -126,20 +123,20 @@ if($fond) {
 	->label($model->getAttributeLabel('shortCode'))
 	->hint(Yii::t('app', 'Provide a specific local reference code, control number, or other unique identifier. The country and repository code will be automatically added from the linked repository record to form a full reference code.')); ?>
 
-<?php echo $form->field($model, 'title', $wraper)
+<?php echo $form->field($model, 'title')
 	->textarea(['rows'=>4, 'cols'=>50])
 	->widget(Redactor::className(), ['clientOptions' => $redactorOptions])
 	->label($model->getAttributeLabel('title'))
 	->hint(Yii::t('app', 'Provide either a formal title or a concise supplied title in accordance with the rules of multilevel description and national conventions.')); ?>
 
 <?php if(!$fond) {
-	echo $form->field($model, 'level_id', $wraper)
+	echo $form->field($model, 'level_id')
 		->dropDownList($level, ['prompt'=>''])
 		->label($model->getAttributeLabel('level_id'))
 		->hint(Yii::t('app', 'Record the level of this unit of description.'));
 } ?>
 
-<?php echo $form->field($model, 'medium', $wraper)
+<?php echo $form->field($model, 'medium')
 	->textarea(['rows'=>2, 'cols'=>50])
 	->label($model->getAttributeLabel('medium'))
 	->hint(Yii::t('app', 'Record the extent of the unit of description by giving the number of physical or logical units in arabic numerals and the unit of measurement. Give the specific medium (media) of the unit of description. Separate multiple extents with a linebreak.')); ?>
@@ -148,7 +145,7 @@ if($fond) {
 
 <?php if(!$fond) {
 	$creatorSuggestUrl = Url::to(['setting/creator/suggest']);
-	echo $form->field($model, 'creator', $wraper)
+	echo $form->field($model, 'creator')
 		->widget(Selectize::className(), [
 			'cascade' => true,
 			'url' => $creatorSuggestUrl,
@@ -168,7 +165,7 @@ if($fond) {
 
 <?php if($fond) {
 	$repositorySuggestUrl = Url::to(['setting/repository/suggest']);
-	echo $form->field($model, 'repository', $wraper)
+	echo $form->field($model, 'repository')
 		->widget(Selectize::className(), [
 			'options' => [
 				'placeholder' => Yii::t('app', 'Select a repository..'),
@@ -190,7 +187,7 @@ if($fond) {
 
 <div class="ln_solid"></div>
 
-<?php echo $form->field($model, 'media', $wraper)
+<?php echo $form->field($model, 'media')
 	->widget(Selectize::className(), [
 		'items' => ArchiveMedia::getMedia(1),
 		'options' => [
@@ -204,7 +201,7 @@ if($fond) {
 
 <?php if(!$model->isNewRecord && in_array('image_type', $model->level->field)) {
 	$imageType = Archives::getImageType();
-	echo $form->field($model, 'image_type', $wraper)
+	echo $form->field($model, 'image_type')
 		->radioList($imageType, ['prompt' => ''])
 		->label($model->getAttributeLabel('image_type'));
 } ?>
@@ -212,19 +209,19 @@ if($fond) {
 <div class="ln_solid"></div>
 
 <?php $publish = Archives::getPublish();
-echo $form->field($model, 'publish', $wraper)
+echo $form->field($model, 'publish')
 	->dropDownList($publish, ['prompt' => ''])
 	->label($model->getAttributeLabel('publish')); ?>
 
 <?php if($setting->fond_sidkkas && ($fond || (!$model->isNewRecord && in_array('sidkkas', $model->level->field)))) {
-	echo $form->field($model, 'sidkkas', $wraper)
+	echo $form->field($model, 'sidkkas')
 		->checkbox()
 		->label($model->getAttributeLabel('sidkkas'));
 } ?>
 
 <div class="ln_solid"></div>
 <div class="form-group row">
-	<div class="<?php echo empty($wraper) ? 'col-md-6 col-sm-9' : 'col-sm-9';?> col-xs-12 col-12 col-sm-offset-3">
+	<div class="col-md-6 col-sm-9 col-xs-12 col-12 col-sm-offset-3">
 		<?php echo Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']); ?>
 	</div>
 </div>
