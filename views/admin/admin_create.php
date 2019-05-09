@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Create');
 $this->params['menu']['content'] = [
 	['label' => Yii::t('app', 'Back to Inventaris'), 'url' => Url::to(['index']), 'icon' => 'tasks', 'htmlOptions' => ['class'=>'btn btn-success']],
 ];
-if($setting->maintenance_mode) {
+if($setting->maintenance_mode && !($model->isNewRecord && $fond)) {
 	$this->params['menu']['content'] = ArrayHelper::merge(
 		$this->params['menu']['content'], 
 		[

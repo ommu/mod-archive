@@ -36,7 +36,7 @@ if(!$fond)
 <div class="archives-form">
 
 <?php if($fond || !empty($level)) {
-	$creatorField = (!$fond && !$model->isNewRecord && !in_array('creator', $model->level->field)) ? 'creator.disable();' : '';
+	$creatorField = (!$fond && !$model->isNewRecord && !in_array('creator', $model->level->field)) ? "creator.disable();\nmedia.disable();\n$('#image_type input[name=image_type]').attr('disabled', true);" : '';
 $js = <<<JS
 	$creatorField
 	$('#shortcode').on('keyup', function (e) {
@@ -51,10 +51,15 @@ $js = <<<JS
 	});
 	$('#level_id').on('change', function (e) {
 		var levelId = $(this).val();
-		if(levelId == 8)
+		if(levelId == 8) {
 			creator.enable();
-		else
+			media.enable();
+			$("#image_type input[name=image_type]").attr('disabled', false);
+		} else {
 			creator.disable();
+			media.disable();
+			$("#image_type input[name=image_type]").attr('disabled', true);
+		}
 	});
 JS;
 $this->registerJs($js, \yii\web\View::POS_READY);
@@ -143,26 +148,6 @@ if($fond) {
 
 <div class="ln_solid"></div>
 
-<?php if(!$fond) {
-	$creatorSuggestUrl = Url::to(['setting/creator/suggest']);
-	echo $form->field($model, 'creator')
-		->widget(Selectize::className(), [
-			'cascade' => true,
-			'url' => $creatorSuggestUrl,
-			'pluginOptions' => [
-				'plugins' => ['remove_button'],
-				'valueField' => 'label',
-				'labelField' => 'label',
-				'searchField' => ['label'],
-				'persist' => false,
-				'createOnBlur' => false,
-				'create' => true,
-			],
-		])
-		->label($model->getAttributeLabel('creator'))
-		->hint(Yii::t('app', 'Record the name of the organization(s) or the individual(s) responsible for the creation, accumulation and maintenance of the records in the unit of description. Search for an existing name in the authority records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new authority record.'));
-} ?>
-
 <?php if($fond) {
 	$repositorySuggestUrl = Url::to(['setting/repository/suggest']);
 	echo $form->field($model, 'repository')
@@ -185,10 +170,30 @@ if($fond) {
 		->hint(Yii::t('app', 'Record the name of the organization which has custody of the archival material. Search for an existing name in the archival institution records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new archival institution record.'));
 } ?>
 
+<?php if(!$fond) {
+	$creatorSuggestUrl = Url::to(['setting/creator/suggest']);
+	echo $form->field($model, 'creator')
+		->widget(Selectize::className(), [
+			'cascade' => true,
+			'url' => $creatorSuggestUrl,
+			'pluginOptions' => [
+				'plugins' => ['remove_button'],
+				'valueField' => 'label',
+				'labelField' => 'label',
+				'searchField' => ['label'],
+				'persist' => false,
+				'createOnBlur' => false,
+				'create' => true,
+			],
+		])
+		->label($model->getAttributeLabel('creator'))
+		->hint(Yii::t('app', 'Record the name of the organization(s) or the individual(s) responsible for the creation, accumulation and maintenance of the records in the unit of description. Search for an existing name in the authority records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new authority record.'));?>
+
 <div class="ln_solid"></div>
 
 <?php echo $form->field($model, 'media')
 	->widget(Selectize::className(), [
+		'cascade' => true,
 		'items' => ArchiveMedia::getMedia(1),
 		'options' => [
 			'multiple' => true,
@@ -199,16 +204,15 @@ if($fond) {
 	])
 	->label($model->getAttributeLabel('media')); ?>
 
-<?php if(!$model->isNewRecord && in_array('image_type', $model->level->field)) {
-	$imageType = Archives::getImageType();
+<?php $imageType = Archives::getImageType();
 	echo $form->field($model, 'image_type')
 		->radioList($imageType, ['prompt' => ''])
-		->label($model->getAttributeLabel('image_type'));
-} ?>
+		->label($model->getAttributeLabel('image_type'));?>
 
 <div class="ln_solid"></div>
+<?php }
 
-<?php $publish = Archives::getPublish();
+$publish = Archives::getPublish();
 echo $form->field($model, 'publish')
 	->dropDownList($publish, ['prompt' => ''])
 	->label($model->getAttributeLabel('publish')); ?>
