@@ -67,9 +67,8 @@ echo $form->field($model, 'storage')
 
 <div class="ln_solid"></div>
 
-<?php $button = Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']);
-echo $form->field($model, 'id', ['template' => '{label}{beginWrapper}'.$button.'{endWrapper}'])
-	->label(''); ?>
+<?php echo $form->field($model, 'submitButton')
+	->submitButton(); ?>
 
 <?php ActiveForm::end(); ?>
 
