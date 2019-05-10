@@ -1,7 +1,7 @@
 <?php
 /**
  * CreatorController
- * @var $this app\components\View
+ * @var $this ommu\archive\controllers\setting\CreatorController
  * @var $model ommu\archive\models\ArchiveCreator
  *
  * CreatorController implements the CRUD actions for ArchiveCreator model.

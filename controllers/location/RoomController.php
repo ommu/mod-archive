@@ -1,10 +1,10 @@
 <?php
 /**
- * AdminController
- * @var $this app\components\View
+ * RoomController
+ * @var $this ommu\archive\controllers\location\RoomController
  * @var $model ommu\archive\models\ArchiveLocation
  *
- * AdminController implements the CRUD actions for ArchiveLocation model.
+ * RoomController implements the CRUD actions for ArchiveLocation model.
  * Reference start
  * TOC :
  *	Index

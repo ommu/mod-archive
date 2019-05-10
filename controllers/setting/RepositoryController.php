@@ -1,7 +1,7 @@
 <?php
 /**
  * RepositoryController
- * @var $this app\components\View
+ * @var $this ommu\archive\controllers\setting\RepositoryController
  * @var $model ommu\archive\models\ArchiveRepository
  *
  * RepositoryController implements the CRUD actions for ArchiveRepository model.

@@ -1,7 +1,7 @@
 <?php
 /**
  * StorageController
- * @var $this app\components\View
+ * @var $this ommu\archive\controllers\setting\StorageController
  * @var $model ommu\archive\models\ArchiveStorage
  *
  * StorageController implements the CRUD actions for ArchiveStorage model.

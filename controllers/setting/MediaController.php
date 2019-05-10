@@ -1,7 +1,7 @@
 <?php
 /**
  * MediaController
- * @var $this app\components\View
+ * @var $this ommu\archive\controllers\setting\MediaController
  * @var $model ommu\archive\models\ArchiveMedia
  *
  * MediaController implements the CRUD actions for ArchiveMedia model.

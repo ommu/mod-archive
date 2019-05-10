@@ -1,7 +1,7 @@
 <?php
 /**
  * LevelController
- * @var $this app\components\View
+ * @var $this ommu\archive\controllers\setting\LevelController
  * @var $model ommu\archive\models\ArchiveLevel
  *
  * LevelController implements the CRUD actions for ArchiveLevel model.

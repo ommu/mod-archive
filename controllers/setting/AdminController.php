@@ -1,7 +1,7 @@
 <?php
 /**
  * AdminController
- * @var $this app\components\View
+ * @var $this ommu\archive\controllers\setting\AdminController
  * @var $model ommu\archive\models\ArchiveSetting
  *
  * AdminController implements the CRUD actions for ArchiveSetting model.
