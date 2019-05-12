@@ -230,7 +230,7 @@ class Archives extends \app\components\ActiveRecord
 
 		$this->templateColumns['_no'] = [
 			'header' => Yii::t('app', 'No'),
-			'class'  => 'yii\grid\SerialColumn',
+			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
 		if(!Yii::$app->request->get('parent')) {
