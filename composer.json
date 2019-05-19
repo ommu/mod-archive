@@ -1,6 +1,7 @@
 {
 	"name": "ommu/archive",
 	"description": "Archive Module from Ommu Platform",
+	"type": "ommu-module",
 	"keywords": [
 		"module",
 		"archive",
@@ -12,9 +13,8 @@
 		"ommu-platform",
 		"yii2"
 	],
-	"homepage": "https://bitbucket.org/ommu/archive",
-	"type": "ommu-module",
 	"license": "Apache-2.0",
+	"homepage": "https://bitbucket.org/ommu/archive",
 	"support": {
 		"issues": "https://bitbucket.org/ommu/archive/issues",
 		"wiki": "https://bitbucket.org/ommu/archive/wiki",
