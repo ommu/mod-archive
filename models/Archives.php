@@ -110,6 +110,7 @@ class Archives extends \app\components\ActiveRecord
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
+			'childs' => Yii::t('app', 'Childs'),
 			'parentTitle' => Yii::t('app', 'Archival Parent'),
 			'levelName' => Yii::t('app', 'Level of Description'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
@@ -169,12 +170,15 @@ class Archives extends \app\components\ActiveRecord
 
 		$model = Archives::find()
 			->where(['parent_id' => $this->id]);
-		if($publish == 0)
-			$model->unpublish();
-		elseif($publish == 1)
-			$model->published();
-		elseif($publish == 2)
-			$model->deleted();
+		if($publish != null) {
+			if($publish == 0)
+				$model->unpublish();
+			elseif($publish == 1)
+				$model->published();
+			elseif($publish == 2)
+				$model->deleted();
+		} else
+			$model->andWhere(['IN', 'publish', [0,1]]);
 		$archives = $model->count();
 
 		return $archives ? $archives : 0;
@@ -359,6 +363,16 @@ class Archives extends \app\components\ActiveRecord
 				'contentOptions' => ['class'=>'center'],
 			];
 		}
+		$this->templateColumns['childs'] = [
+			'attribute' => 'childs',
+			'value' => function($model, $key, $index, $column) {
+				$childs = $model->getArchives(true, null);
+				return $childs ? Html::a($childs, ['admin/manage', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$childs])]) : '-';
+			},
+			'filter' => false,
+			'contentOptions' => ['class'=>'center'],
+			'format' => 'html',
+		];
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [
 				'attribute' => 'publish',

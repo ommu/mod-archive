@@ -106,18 +106,24 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	public function getArchives($count=false, $publish=1)
 	{
 		if($count == false) {
-			return $this->hasMany(Archives::className(), ['level_id' => 'id'])
-				->andOnCondition([sprintf('%s.publish', Archives::tableName()) => $publish]);
+			$model = $this->hasMany(Archives::className(), ['level_id' => 'id']);
+			if($publish != null)
+				return $model->andOnCondition([sprintf('%s.publish', Archives::tableName()) => $publish]);
+			else
+				return $model->andOnCondition(['IN', sprintf('%s.publish', Archives::tableName()), [0,1]]);
 		}
 
 		$model = Archives::find()
 			->where(['level_id' => $this->id]);
-		if($publish == 0)
-			$model->unpublish();
-		elseif($publish == 1)
-			$model->published();
-		elseif($publish == 2)
-			$model->deleted();
+		if($publish != null) {
+			if($publish == 0)
+				$model->unpublish();
+			elseif($publish == 1)
+				$model->published();
+			elseif($publish == 2)
+				$model->deleted();
+		} else
+			$model->andWhere(['IN', 'publish', [0,1]]);
 		$archives = $model->count();
 
 		return $archives ? $archives : 0;
@@ -246,8 +252,8 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		$this->templateColumns['archives'] = [
 			'attribute' => 'archives',
 			'value' => function($model, $key, $index, $column) {
-				$archives = $model->getArchives(true);
-				return Html::a($archives, ['admin/manage', 'level'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
+				$archives = $model->getArchives(true, null);
+				return $archives ? Html::a($archives, ['admin/manage', 'level'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]) : '-';
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],

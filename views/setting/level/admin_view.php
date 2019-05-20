@@ -79,8 +79,8 @@ $attributes = [
 	[
 		'attribute' => 'archives',
 		'value' => function ($model) {
-			$archives = $model->getArchives(true);
-			return Html::a($archives, ['admin/manage', 'level'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
+			$archives = $model->getArchives(true, null);
+			return $archives ? Html::a($archives, ['admin/manage', 'level'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]) : '-';
 		},
 		'format' => 'html',
 	],

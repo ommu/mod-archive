@@ -126,6 +126,14 @@ $attributes = [
 		'visible' => in_array('image_type', $model->level->field) ? true : false,
 	],
 	[
+		'attribute' => 'childs',
+		'value' => function ($model) {
+			$childs = $model->getArchives(true, null);
+			return $childs ? Html::a($childs, ['admin/manage', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$childs])]) : '-';
+		},
+		'format' => 'html',
+	],
+	[
 		'attribute' => 'creation_date',
 		'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),
 	],
