@@ -349,14 +349,16 @@ class Archives extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
 		];
-		$this->templateColumns['sidkkas'] = [
-			'attribute' => 'sidkkas',
-			'value' => function($model, $key, $index, $column) {
-				return $this->filterYesNo($model->sidkkas);
-			},
-			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'center'],
-		];
+		if(!Yii::$app->request->get('id')) {
+			$this->templateColumns['sidkkas'] = [
+				'attribute' => 'sidkkas',
+				'value' => function($model, $key, $index, $column) {
+					return $this->filterYesNo($model->sidkkas);
+				},
+				'filter' => $this->filterYesNo(),
+				'contentOptions' => ['class'=>'center'],
+			];
+		}
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [
 				'attribute' => 'publish',

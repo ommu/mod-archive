@@ -23,9 +23,15 @@ use ommu\archive\models\ArchiveLevel;
 
 $this->params['breadcrumbs'][] = $this->title;
 
-$this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Add Fond'), 'url' => Url::to(['create']), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
-];
+if(($id = Yii::$app->request->get('id')) != null) {
+	$this->params['menu']['content'] = [
+		['label' => Yii::t('app', 'Add New Child Levels'), 'url' => Url::to(['create', 'id'=>$id]), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
+	];
+} else {
+	$this->params['menu']['content'] = [
+		['label' => Yii::t('app', 'Add Fond'), 'url' => Url::to(['create']), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
+	];
+}
 $this->params['menu']['option'] = [
 	//['label' => Yii::t('app', 'Search'), 'url' => 'javascript:void(0);'],
 	['label' => Yii::t('app', 'Grid Option'), 'url' => 'javascript:void(0);'],

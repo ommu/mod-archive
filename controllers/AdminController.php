@@ -42,6 +42,16 @@ class AdminController extends Controller
 	/**
 	 * {@inheritdoc}
 	 */
+	public function init()
+	{
+		parent::init();
+		if(Yii::$app->request->get('id'))
+			$this->subMenu = $this->module->params['archive_submenu'];
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function behaviors()
 	{
 		return [
@@ -73,6 +83,8 @@ class AdminController extends Controller
 	public function actionManage()
 	{
 		$searchModel = new ArchivesSearch();
+		if(($id = Yii::$app->request->get('id')) != null)
+			$searchModel = new ArchivesSearch(['parent_id'=>$id]);
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 		$gridColumn = Yii::$app->request->get('GridColumn', null);
@@ -94,7 +106,13 @@ class AdminController extends Controller
 		if(($repository = Yii::$app->request->get('repositoryId')) != null)
 			$repository = \ommu\archive\models\ArchiveRepository::findOne($repository);
 
-		$this->view->title = Yii::t('app', 'Archives');
+		if($id != null) {
+			$parent = Archives::findOne($id);
+			if(strtolower($parent->level->level_name_i) == 'item')
+				unset($this->subMenu['childs']);
+		}
+
+		$this->view->title = $parent ?  Yii::t('app', 'Childs {level-name}: {title}', ['level-name' => $parent->level->level_name_i, 'title' => Archives::htmlHardDecode($parent->title)]) : Yii::t('app', 'Archives');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
@@ -141,10 +159,8 @@ class AdminController extends Controller
 			}
 		}
 
-		if($parent != null) {
+		if($parent != null)
 			$parent = Archives::findOne($parent);
-			$this->subMenu = $this->module->params['archive_submenu'];
-		}
 
 		$this->view->title = $parent ? Yii::t('app', 'Add New Child Levels {level-name}: {title}', ['level-name' => $parent->level->level_name_i, 'title' => Archives::htmlHardDecode($parent->title)]) : Yii::t('app', 'Create Fond');
 		$this->view->description = '';
@@ -187,7 +203,9 @@ class AdminController extends Controller
 			}
 		}
 
-		$this->subMenu = $this->module->params['archive_submenu'];
+		if(strtolower($model->level->level_name_i) == 'item')
+			unset($this->subMenu['childs']);
+
 		$this->view->title = Yii::t('app', 'Update {level-name}: {title}', ['level-name' => $model->level->level_name_i, 'title' => Archives::htmlHardDecode($model->title)]);
 		$this->view->description = '';
 		$this->view->keywords = '';
@@ -207,7 +225,9 @@ class AdminController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->subMenu = $this->module->params['archive_submenu'];
+		if(strtolower($model->level->level_name_i) == 'item')
+			unset($this->subMenu['childs']);
+
 		$this->view->title = Yii::t('app', 'Detail {level-name}: {title}', ['level-name' => $model->level->level_name_i, 'title' => Archives::htmlHardDecode($model->title)]);
 		$this->view->description = '';
 		$this->view->keywords = '';
