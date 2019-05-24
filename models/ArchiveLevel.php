@@ -103,7 +103,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getArchives($count=false, $publish=1)
+	public function getArchives($count=false, $publish=null)
 	{
 		if($count == false) {
 			$model = $this->hasMany(Archives::className(), ['level_id' => 'id']);
@@ -252,7 +252,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		$this->templateColumns['archives'] = [
 			'attribute' => 'archives',
 			'value' => function($model, $key, $index, $column) {
-				$archives = $model->getArchives(true, null);
+				$archives = $model->getArchives(true);
 				return $archives ? Html::a($archives, ['admin/manage', 'level'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]) : '-';
 			},
 			'filter' => false,

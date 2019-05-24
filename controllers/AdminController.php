@@ -140,6 +140,8 @@ class AdminController extends Controller
 			->one();
 
 		$model = new Archives();
+		if(!$parent)
+			$model = new Archives(['level_id'=>1]);
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());

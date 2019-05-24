@@ -96,10 +96,6 @@ $attributes = [
 		'format' => 'html',
 	],
 	[
-		'attribute' => 'medium',
-		'value' => $model->medium ? $model->medium : '-',
-	],
-	[
 		'attribute' => 'creator',
 		'value' => function ($model) {
 			return Archives::parseRelated($model->getRelatedCreator(true, 'title'), 'creator');
@@ -114,6 +110,11 @@ $attributes = [
 		'format' => 'html',
 	],
 	[
+		'attribute' => 'medium',
+		'value' => Archives::parseChilds($model->childs, $model->id),
+		'format' => 'html',
+	],
+	[
 		'attribute' => 'media',
 		'value' => function ($model) {
 			return Archives::parseRelated($model->getRelatedMedia(true, 'title'));
@@ -124,14 +125,6 @@ $attributes = [
 		'attribute' => 'image_type',
 		'value' => Archives::getImageType($model->image_type ? $model->image_type : '-'),
 		'visible' => in_array('image_type', $model->level->field) ? true : false,
-	],
-	[
-		'attribute' => 'childs',
-		'value' => function ($model) {
-			$childs = $model->getArchives(true, null);
-			return $childs ? Html::a($childs, ['admin/manage', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$childs])]) : '-';
-		},
-		'format' => 'html',
 	],
 	[
 		'attribute' => 'creation_date',

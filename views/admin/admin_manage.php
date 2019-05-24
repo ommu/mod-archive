@@ -163,7 +163,7 @@ array_push($columnData, [
 		if($action == 'delete')
 			return Url::to(['delete', 'id'=>$key]);
 	},
-	'template' => '{update} {delete}',
+	'template' => '{view} {update} {delete}',
 ]);
 
 echo GridView::widget([

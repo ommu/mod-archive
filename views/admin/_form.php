@@ -36,7 +36,7 @@ if(!$fond)
 <div class="archives-form">
 
 <?php if($fond || !empty($level)) {
-	$creatorField = (!$fond && !$model->isNewRecord && !in_array('creator', $model->level->field)) ? "creator.disable();\nmedia.disable();\n$('#image_type input[name=image_type]').attr('disabled', true);" : '';
+	$creatorField = (!$fond && !$model->isNewRecord && !in_array('creator', $model->level->field)) ? "creator.disable();\nmedia.disable();\n$('#image_type input[name=image_type]').attr('disabled', true);\n$('textarea#medium').attr('disabled', true);" : '';
 $js = <<<JS
 	$creatorField
 	$('#shortcode').on('keyup', function (e) {
@@ -55,10 +55,12 @@ $js = <<<JS
 			creator.enable();
 			media.enable();
 			$("#image_type input[name=image_type]").attr('disabled', false);
+			$("textarea#medium").attr('disabled', false);
 		} else {
 			creator.disable();
 			media.disable();
 			$("#image_type input[name=image_type]").attr('disabled', true);
+			$("textarea#medium").attr('disabled', true);
 		}
 	});
 JS;
@@ -83,7 +85,6 @@ if($setting->maintenance_mode) {
 }
 $shortCode = $model->shortCode ? $model->shortCode : 'XXX';
 if($fond) {
-	$model->level_id = 1;
 	echo $form->field($model, 'level_id', ['template' => '{label}{beginWrapper}{input}<h5 class="text-muted">'.$setting->reference_code_sikn.' <span class="text-primary reference-code">'.$shortCode.'</span></h5>{endWrapper}'])
 		->hiddenInput()
 		->label($model->getAttributeLabel('code'));

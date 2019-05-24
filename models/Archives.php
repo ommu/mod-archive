@@ -58,11 +58,11 @@ class Archives extends \app\components\ActiveRecord
 
 	public $shortCode;
 	public $confirmCode;
-	public $releaseCode;
 	public $updateCode = true;
 	public $media;
 	public $creator;
 	public $repository;
+	public $group_childs;
 
 	const EVENT_BEFORE_SAVE_ARCHIVES = 'BeforeSaveArchives';
 
@@ -110,7 +110,6 @@ class Archives extends \app\components\ActiveRecord
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
-			'childs' => Yii::t('app', 'Childs'),
 			'parentTitle' => Yii::t('app', 'Archival Parent'),
 			'levelName' => Yii::t('app', 'Level of Description'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
@@ -156,11 +155,12 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * @param $type relation|array|count
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getArchives($count=false, $publish=1)
+	public function getArchives($type='relation', $publish=null)
 	{
-		if($count == false) {
+		if($type == 'relation') {
 			$model = $this->hasMany(Archives::className(), ['parent_id' => 'id']);
 			if($publish != null)
 				return $model->andOnCondition([sprintf('%s.publish', Archives::tableName()) => $publish]);
@@ -169,6 +169,7 @@ class Archives extends \app\components\ActiveRecord
 		}
 
 		$model = Archives::find()
+			->select(['id'])
 			->where(['parent_id' => $this->id]);
 		if($publish != null) {
 			if($publish == 0)
@@ -179,9 +180,20 @@ class Archives extends \app\components\ActiveRecord
 				$model->deleted();
 		} else
 			$model->andWhere(['IN', 'publish', [0,1]]);
-		$archives = $model->count();
 
-		return $archives ? $archives : 0;
+		if($type == 'array') {
+			$model->select(['level_id', 'count(id) as group_childs'])
+				->groupBy(['level_id']);
+			$archives = $model->all();
+
+			return ArrayHelper::map($archives, 'level_id', 'group_childs');
+		}
+
+		if($type == 'count') {
+			$archives = $model->count();
+	
+			return $archives ? $archives : 0;
+		}
 	}
 
 	/**
@@ -240,16 +252,17 @@ class Archives extends \app\components\ActiveRecord
 		if(!Yii::$app->request->get('parent')) {
 			$this->templateColumns['parentTitle'] = [
 				'attribute' => 'parentTitle',
-				'header' => Yii::t('app', 'Parent'),
+				'label' => Yii::t('app', 'Parent'),
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->parent) ? $model->parent->title : '-';
 				},
+				'format' => 'html',
 			];
 		}
 		if(!Yii::$app->request->get('level')) {
 			$this->templateColumns['level_id'] = [
 				'attribute' => 'level_id',
-				'header' => Yii::t('app', 'Level'),
+				'label' => Yii::t('app', 'Level'),
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->level) ? $model->level->title->message : '-';
 					// return $model->levelName;
@@ -270,17 +283,10 @@ class Archives extends \app\components\ActiveRecord
 			},
 			'format' => 'html',
 		];
-		$this->templateColumns['medium'] = [
-			'attribute' => 'medium',
-			'header' => Yii::t('app', 'Medium'),
-			'value' => function($model, $key, $index, $column) {
-				return $model->medium;
-			},
-		];
 		if(!Yii::$app->request->get('creatorId')) {
 			$this->templateColumns['creator'] = [
 				'attribute' => 'creator',
-				'header' => Yii::t('app', 'Creator'),
+				'label' => Yii::t('app', 'Creator'),
 				'value' => function($model, $key, $index, $column) {
 					return self::parseRelated($model->getRelatedCreator(true, 'title'), 'creator', ',');
 				},
@@ -296,10 +302,18 @@ class Archives extends \app\components\ActiveRecord
 				'format' => 'html',
 			];
 		}
+		$this->templateColumns['medium'] = [
+			'attribute' => 'medium',
+			'label' => Yii::t('app', 'Medium'),
+			'value' => function($model, $key, $index, $column) {
+				return Archives::parseChilds($model->childs, $model->id);
+			},
+			'format' => 'html',
+		];
 		if(!Yii::$app->request->get('mediaId')) {
 			$this->templateColumns['media'] = [
 				'attribute' => 'media',
-				'header' => Yii::t('app', 'Media'),
+				'label' => Yii::t('app', 'Media'),
 				'value' => function($model, $key, $index, $column) {
 					return self::parseRelated($model->getRelatedMedia(true, 'title'), 'media', ',');
 				},
@@ -363,20 +377,10 @@ class Archives extends \app\components\ActiveRecord
 				'contentOptions' => ['class'=>'center'],
 			];
 		}
-		$this->templateColumns['childs'] = [
-			'attribute' => 'childs',
-			'value' => function($model, $key, $index, $column) {
-				$childs = $model->getArchives(true, null);
-				return $childs ? Html::a($childs, ['admin/manage', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$childs])]) : '-';
-			},
-			'filter' => false,
-			'contentOptions' => ['class'=>'center'],
-			'format' => 'html',
-		];
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [
 				'attribute' => 'publish',
-				'header' => Yii::t('app', 'Status'),
+				'label' => Yii::t('app', 'Status'),
 				'value' => function($model, $key, $index, $column) {
 					return self::getPublish($model->publish);
 				},
@@ -513,6 +517,65 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * function getChilds
+	 */
+	public function getChilds()
+	{
+		$childs = $this->getArchives('array');
+
+		if(empty($childs))
+			return [];
+
+		// $archives = self::find()
+		// 	->select(['id', 'parent_id'])
+		// 	->where(['parent_id' => $this->id])
+		// 	->andWhere(['IN', 'publish', [0,1]])
+		// 	->all();
+
+		// if(!empty($archives)) {
+		// 	foreach ($archives as $archive) {
+		// 		$childArchives = $archive->getArchives('array');
+		// 		if(!empty($childArchives)) {
+		// 			foreach ($childArchives as $key => $val) {
+		// 				if(array_key_exists($key, $childs))
+		// 					$childs[$key] = $childs[$key] + $val;
+		// 				else
+		// 					$childs[$key] = $val;
+		// 			}
+		// 		}
+		// 	}
+		// }
+
+		if($this->medium)
+			return ArrayHelper::merge($childs, [0=>$this->medium]);
+
+		return $childs;
+	}
+
+	/**
+	 * function parseRelated
+	 */
+	public static function parseChilds($childs, $id, $sep='li')
+	{
+		if(empty($childs))
+			return '-';
+
+		$levels = ArchiveLevel::getLevel();
+		$return = [];
+		$i=0;
+		foreach ($childs as $key => $val) {
+			$i++;
+			$title = $val." ".$levels[$key];
+			$return[] = $i == 1 ? Html::a($title, ['admin/manage', 'id'=>$id], ['title'=>$title]) : $title;
+		}
+
+		if($sep == 'li')
+			return Html::ul($return, ['encode'=>false, 'class'=>'list-boxed']);
+
+		return implode(', ', $childs);
+	}
+
+	/**
 	 * function getReferenceCode
 	 */
 	public function getReferenceCode($archive=null)
@@ -524,7 +587,6 @@ class Archives extends \app\components\ActiveRecord
 		$codes[$levelAsKey]['id'] = $archive->id;
 		$codes[$levelAsKey]['level'] = $levelAsKey;
 		$codes[$levelAsKey]['code'] = $archive->code;
-		$codes[$levelAsKey]['releaseCode'] = $archive->releaseCode;
 		$codes[$levelAsKey]['confirmCode'] = $archive->confirmCode;
 		$codes[$levelAsKey]['shortCode'] = $archive->shortCode;
 		if(isset($archive->parent))
@@ -549,7 +611,6 @@ class Archives extends \app\components\ActiveRecord
 		// $this->levelName = isset($this->level) ? $this->level->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
-		$this->releaseCode = preg_replace("/^[.-]/", '', preg_replace("/^(3400|23400-24)/", '', $this->code));
 		$this->code = preg_replace("/^[.-]/", '', preg_replace("/^(3400|23400-24)/", '', $this->code));
 		$parentCode = $this->parent->code;
 		$confirmCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
@@ -631,10 +692,12 @@ class Archives extends \app\components\ActiveRecord
 				$models = self::find()
 					->where(['parent_id'=>$this->id])
 					->all();
-				foreach ($models as $model) {
-					$model->updateCode = false;
-					$model->sidkkas = $this->sidkkas;
-					$model->update(false);
+				if(!empty($models)) {
+					foreach ($models as $model) {
+						$model->updateCode = false;
+						$model->sidkkas = $this->sidkkas;
+						$model->update(false);
+					}
 				}
 			}
 
@@ -643,10 +706,12 @@ class Archives extends \app\components\ActiveRecord
 				$models = self::find()
 					->where(['parent_id'=>$this->id])
 					->all();
-				foreach ($models as $model) {
-					$model->updateCode = false;
-					$model->publish = 2;
-					$model->update(false);
+				if(!empty($models)) {
+					foreach ($models as $model) {
+						$model->updateCode = false;
+						$model->publish = 2;
+						$model->update(false);
+					}
 				}
 			}
 		}
