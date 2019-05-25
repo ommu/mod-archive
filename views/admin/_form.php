@@ -47,7 +47,7 @@ $js = <<<JS
 		$('.reference-code').html(parentCode+shortCode);
 	});
 	$('#reference-code').on('click', function (e) {
-		$('#reference-code-box').toggleClass('show hide');
+		$('#tree').toggleClass('show hide');
 	});
 	$('#level_id').on('change', function (e) {
 		var levelId = $(this).val();
@@ -108,13 +108,13 @@ if($fond) {
 			$oldReferenceCodeTemplate = preg_replace("/($shortCode)$/", '<span class="text-danger">'.$shortCode.'</span>', $model->code);
 			$newReferenceCodeTemplate = preg_replace("/($model->confirmCode)$/", '<span class="text-primary reference-code">'.$model->confirmCode.'</span>', join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'confirmCode')));
 			if($model->code == $model->confirmCode)
-				$oldReferenceCodeTemplate = $newReferenceCodeTemplate;
-
-			$template = '<h5 class="text-muted">//OLD// '.$setting->reference_code_sikn.' '.$oldReferenceCodeTemplate.'</h5>';
-			$template .= '<h5 class="text-muted">//NEW// '.$setting->reference_code_sikn.' '.$newReferenceCodeTemplate.'</h5>';
-		} else {
+				$template = '<h5 class="text-muted">//OLD//NEW// '.$setting->reference_code_sikn.' '.$newReferenceCodeTemplate.'</h5>';
+			else {
+				$template = '<h5 class="text-muted">//OLD// '.$setting->reference_code_sikn.' '.$oldReferenceCodeTemplate.'</h5>';
+				$template .= '<h5 class="text-muted">//NEW// '.$setting->reference_code_sikn.' '.$newReferenceCodeTemplate.'</h5>';
+			}
+		} else
 			$template = '<h5 class="text-muted">'.$setting->reference_code_sikn.' '.join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'confirmCode')).$setting->reference_code_separator.'<span class="text-primary reference-code">'.$model->parent->confirmCode.'.'.$shortCode.'</span></h5>';
-		}
 	}
 	echo $form->field($model, 'parent_id', ['template' => '{label}{beginWrapper}{input}'.$template.'{endWrapper}'])
 		->hiddenInput()
@@ -142,14 +142,16 @@ if($fond) {
 		->hint(Yii::t('app', 'Record the level of this unit of description.'));
 } ?>
 
-<?php echo $form->field($model, 'medium')
-	->textarea(['rows'=>2, 'cols'=>50])
-	->label($model->getAttributeLabel('medium'))
-	->hint(Yii::t('app', 'Record the extent of the unit of description by giving the number of physical or logical units in arabic numerals and the unit of measurement. Give the specific medium (media) of the unit of description. Separate multiple extents with a linebreak.')); ?>
+<?php if(!$fond) {
+	echo $form->field($model, 'medium')
+		->textarea(['rows'=>2, 'cols'=>50])
+		->label($model->getAttributeLabel('medium'))
+		->hint(Yii::t('app', 'Record the extent of the unit of description by giving the number of physical or logical units in arabic numerals and the unit of measurement. Give the specific medium (media) of the unit of description. Separate multiple extents with a linebreak.')); ?>
 
 <div class="ln_solid"></div>
+<?php }
 
-<?php if($fond) {
+if($fond) {
 	$repositorySuggestUrl = Url::to(['setting/repository/suggest']);
 	echo $form->field($model, 'repository')
 		->widget(Selectize::className(), [

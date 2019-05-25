@@ -18,6 +18,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use ommu\archive\models\Archives;
 use ommu\archive\models\ArchiveLevel;
+use ommu\archive\models\ArchiveSetting;
 ?>
 
 <div class="archives-search search-form">
@@ -57,8 +58,10 @@ use ommu\archive\models\ArchiveLevel;
 		<?php echo $form->field($model, 'updated_date')
 			->input('date');?>
 
-		<?php echo $form->field($model, 'sidkkas')
-			->dropDownList($model->filterYesNo(), ['prompt'=>'']);?>
+		<?php if(ArchiveSetting::getInfo('fond_sidkkas')) {
+			echo $form->field($model, 'sidkkas')
+				->dropDownList($model->filterYesNo(), ['prompt'=>'']);
+		}?>
 
 		<?php echo $form->field($model, 'publish')
 			->dropDownList($model->filterYesNo(), ['prompt'=>'']);?>

@@ -17,6 +17,8 @@
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 
+\ommu\archive\assets\AciTreeAsset::register($this);
+
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id'=>$model->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
@@ -24,21 +26,32 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 $this->params['menu']['content'] = [
 	['label' => Yii::t('app', 'Back to Inventaris'), 'url' => Url::to(['index']), 'icon' => 'tasks', 'htmlOptions' => ['class'=>'btn btn-success']],
 ];
-if($setting->maintenance_mode) {
+if(!$fond) {
 	$this->params['menu']['content'] = ArrayHelper::merge(
 		$this->params['menu']['content'], 
 		[
-			['label' => Yii::t('app', 'Show Reference Code Parameters'), 'url' => 'javascript:void(0);', 'icon' => 'code', 'htmlOptions' => ['class'=>'btn btn-warning', 'id'=>'reference-code']],
-		]);
-}
+			['label' => Yii::t('app', 'Show Reference Code'), 'url' => 'javascript:void(0);', 'icon' => 'code', 'htmlOptions' => ['class'=>'btn btn-warning', 'id'=>'reference-code']],
+		]
+	);
 
-$referenceCode = $model->referenceCode;
-array_multisort($referenceCode);
+	$referenceCode = $model->referenceCode;
+	array_multisort($referenceCode);
+
+	$treeDataUrl = Url::to(['data', 'id'=>$model->parent_id]);
+$js = <<<JS
+	var treeDataUrl = '$treeDataUrl';
+	var selectedId = '$model->parent_id';
+JS;
+	$this->registerJs($js, \yii\web\View::POS_HEAD);
+}
 ?>
 
 <div class="archives-update">
 
-<?php echo $this->render('_form', [
+<?php
+echo !Yii::$app->request->isAjax && !$fond ? '<div id="tree" class="aciTree hide mb-4"></div>' : '';
+
+echo $this->render('_form', [
 	'model' => $model,
 	'setting' => $setting,
 	'fond' => $fond,

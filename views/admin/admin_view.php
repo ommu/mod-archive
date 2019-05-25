@@ -74,7 +74,7 @@ $attributes = [
 				$oldReferenceCodeTemplate = $setting->reference_code_sikn.' '.preg_replace("/($model->shortCode)$/", '<span class="text-danger">'.$model->shortCode.'</span>', $model->code);
 				$newReferenceCodeTemplate = $setting->reference_code_sikn.' '.preg_replace("/($model->confirmCode)$/", '<span class="text-primary">'.$model->confirmCode.'</span>', join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'confirmCode')));
 				if($model->code == $model->confirmCode)
-					$oldReferenceCodeTemplate = $newReferenceCodeTemplate;
+					return '//OLD//NEW// '.$newReferenceCodeTemplate;
 				return '//OLD// '.$oldReferenceCodeTemplate.'<br/>//NEW// '.$newReferenceCodeTemplate;
 			}
 		},

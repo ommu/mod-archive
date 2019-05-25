@@ -308,6 +308,8 @@ class Archives extends \app\components\ActiveRecord
 			'value' => function($model, $key, $index, $column) {
 				return Archives::parseChilds($model->childs, $model->id);
 			},
+			'filter' => false,
+			'enableSorting' => false,
 			'format' => 'html',
 		];
 		if(!Yii::$app->request->get('mediaId')) {
@@ -367,15 +369,17 @@ class Archives extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
 		];
-		if(!Yii::$app->request->get('id')) {
-			$this->templateColumns['sidkkas'] = [
-				'attribute' => 'sidkkas',
-				'value' => function($model, $key, $index, $column) {
-					return $this->filterYesNo($model->sidkkas);
-				},
-				'filter' => $this->filterYesNo(),
-				'contentOptions' => ['class'=>'center'],
-			];
+		if(ArchiveSetting::getInfo('fond_sidkkas')) {
+			if(!Yii::$app->request->get('id')) {
+				$this->templateColumns['sidkkas'] = [
+					'attribute' => 'sidkkas',
+					'value' => function($model, $key, $index, $column) {
+						return $this->filterYesNo($model->sidkkas);
+					},
+					'filter' => $this->filterYesNo(),
+					'contentOptions' => ['class'=>'center'],
+				];
+			}
 		}
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [
