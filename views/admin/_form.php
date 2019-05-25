@@ -36,7 +36,7 @@ if(!$fond)
 <div class="archives-form">
 
 <?php if($fond || !empty($level)) {
-	$creatorField = (!$fond && !$model->isNewRecord && !in_array('creator', $model->level->field)) ? "creator.disable();\nmedia.disable();\n$('#image_type input[name=image_type]').attr('disabled', true);\n$('textarea#medium').attr('disabled', true);" : '';
+	$creatorField = (!$fond && ($model->isNewRecord || (!$model->isNewRecord && strtolower($model->level->level_name_i) !== 'item'))) ? "creator.disable();\nmedia.disable();\n$('#image_type input[name=image_type]').attr('disabled', true);\n$('textarea#medium').attr('disabled', true);" : '';
 $js = <<<JS
 	$creatorField
 	$('#shortcode').on('keyup', function (e) {

@@ -525,26 +525,30 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function getChilds()
 	{
-		$childs = $this->getArchives('array');
+		if(strtolower($this->level->level_name_i) == 'item')
+			return [];
 
+		$childs = $this->getArchives('array');
 		if(empty($childs))
 			return [];
 
 		// $archives = self::find()
-		// 	->select(['id', 'parent_id'])
+		// 	->select(['id', 'level_id'])
 		// 	->where(['parent_id' => $this->id])
 		// 	->andWhere(['IN', 'publish', [0,1]])
 		// 	->all();
 
 		// if(!empty($archives)) {
 		// 	foreach ($archives as $archive) {
-		// 		$childArchives = $archive->getArchives('array');
-		// 		if(!empty($childArchives)) {
-		// 			foreach ($childArchives as $key => $val) {
-		// 				if(array_key_exists($key, $childs))
-		// 					$childs[$key] = $childs[$key] + $val;
-		// 				else
-		// 					$childs[$key] = $val;
+		// 		if(strtolower($archive->level->level_name_i) != 'item') {
+		// 			$childArchives = $archive->getChilds();
+		// 			if(!empty($childArchives)) {
+		// 				foreach ($childArchives as $key => $val) {
+		// 					if(array_key_exists($key, $childs))
+		// 						$childs[$key] = $childs[$key] + $val;
+		// 					else
+		// 						$childs[$key] = $val;
+		// 				}
 		// 			}
 		// 		}
 		// 	}
