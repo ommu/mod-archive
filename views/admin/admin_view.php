@@ -105,7 +105,24 @@ $attributes = [
 	[
 		'attribute' => 'repository',
 		'value' => function ($model) {
-			return implode(',', $model->getRelatedRepository(true, 'title'));
+			$repository = $model->getRelatedRepository(true, 'title');
+			if(empty($repository))
+				return '-';
+			return implode(', ', $repository);
+		},
+		'format' => 'html',
+	],
+	[
+		'attribute' => 'subject',
+		'value' => function ($model) {
+			return Archives::parseSubject($model->getRelatedSubject(true, 'title'), 'subjectId');
+		},
+		'format' => 'html',
+	],
+	[
+		'attribute' => 'function',
+		'value' => function ($model) {
+			return Archives::parseSubject($model->getRelatedFunction(true, 'title'), 'functionId');
 		},
 		'format' => 'html',
 	],

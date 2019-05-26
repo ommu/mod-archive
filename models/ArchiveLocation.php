@@ -317,7 +317,7 @@ class ArchiveLocation extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * function parseRelated
+	 * function parseStorage
 	 */
 	public static function parseStorage($roomStorage, $sep='li')
 	{

@@ -140,9 +140,7 @@ if($fond) {
 		->dropDownList($level, ['prompt'=>''])
 		->label($model->getAttributeLabel('level_id'))
 		->hint(Yii::t('app', 'Record the level of this unit of description.'));
-} ?>
 
-<?php if(!$fond) {
 	echo $form->field($model, 'medium')
 		->textarea(['rows'=>2, 'cols'=>50])
 		->label($model->getAttributeLabel('medium'))
@@ -190,10 +188,45 @@ if($fond) {
 			],
 		])
 		->label($model->getAttributeLabel('creator'))
-		->hint(Yii::t('app', 'Record the name of the organization(s) or the individual(s) responsible for the creation, accumulation and maintenance of the records in the unit of description. Search for an existing name in the authority records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new authority record.'));?>
+		->hint(Yii::t('app', 'Record the name of the organization(s) or the individual(s) responsible for the creation, accumulation and maintenance of the records in the unit of description. Search for an existing name in the authority records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new authority record.'));
+} ?>
 
 <div class="ln_solid"></div>
 
+<?php $subjectSuggestUrl = Url::to(['/admin/tag/suggest']);
+echo $form->field($model, 'subject')
+	->widget(Selectize::className(), [
+		'url' => $subjectSuggestUrl,
+		'queryParam' => 'term',
+		'pluginOptions' => [
+			'valueField' => 'label',
+			'labelField' => 'label',
+			'searchField' => ['label'],
+			'persist' => false,
+			'createOnBlur' => false,
+			'create' => true,
+		],
+	])
+	->label($model->getAttributeLabel('subject'));?>
+
+<?php echo $form->field($model, 'function')
+	->widget(Selectize::className(), [
+		'url' => $subjectSuggestUrl,
+		'queryParam' => 'term',
+		'pluginOptions' => [
+			'valueField' => 'label',
+			'labelField' => 'label',
+			'searchField' => ['label'],
+			'persist' => false,
+			'createOnBlur' => false,
+			'create' => true,
+		],
+	])
+	->label($model->getAttributeLabel('function'));?>
+
+<div class="ln_solid"></div>
+
+<?php if(!$fond) {?>
 <?php echo $form->field($model, 'media')
 	->widget(Selectize::className(), [
 		'cascade' => true,

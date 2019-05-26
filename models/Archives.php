@@ -30,6 +30,7 @@
  * @property ArchiveRelatedMedia[] $relatedMedia
  * @property ArchiveRelatedCreator[] $relatedCreator
  * @property ArchiveRelatedRepository[] $relatedRepository
+ * @property ArchiveRelatedSubject[] $relatedSubject
  * @property ArchiveLevel $level
  * @property Users $creation
  * @property Users $modified
@@ -49,7 +50,7 @@ class Archives extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 
-	public $gridForbiddenColumn = ['parentTitle', 'creator', 'repository', 'image_type', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
+	public $gridForbiddenColumn = ['parentTitle', 'media', 'creator', 'repository', 'subject', 'function', 'image_type', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
 	public $parentTitle;
 	public $levelName;
@@ -62,6 +63,8 @@ class Archives extends \app\components\ActiveRecord
 	public $media;
 	public $creator;
 	public $repository;
+	public $subject;
+	public $function;
 	public $group_childs;
 
 	const EVENT_BEFORE_SAVE_ARCHIVES = 'BeforeSaveArchives';
@@ -83,7 +86,7 @@ class Archives extends \app\components\ActiveRecord
 			[['publish', 'level_id', 'title', 'shortCode'], 'required'],
 			[['publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id'], 'integer'],
 			[['title', 'image_type'], 'string'],
-			[['code', 'medium', 'media', 'creator', 'repository'], 'safe'],
+			[['code', 'medium', 'media', 'creator', 'repository', 'subject', 'function'], 'safe'],
 			[['code'], 'string', 'max' => 255],
 			[['shortCode'], 'string', 'max' => 16],
 			[['level_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLevel::className(), 'targetAttribute' => ['level_id' => 'id']],
@@ -118,6 +121,8 @@ class Archives extends \app\components\ActiveRecord
 			'media' => Yii::t('app', 'Media Type'),
 			'creator' => Yii::t('app', 'Name of creator(s)'),
 			'repository' => Yii::t('app', 'Repository'),
+			'subject' => Yii::t('app', 'Subject'),
+			'function' => Yii::t('app', 'Function'),
 		];
 	}
 
@@ -152,6 +157,32 @@ class Archives extends \app\components\ActiveRecord
 			return \yii\helpers\ArrayHelper::map($this->relatedRepository, 'repository_id', $val=='id' ? 'id' : 'repository.repository_name');
 
 		return $this->hasMany(ArchiveRelatedRepository::className(), ['archive_id' => 'id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getRelatedSubject($result=false, $val='id')
+	{
+		if($result == true)
+			return \yii\helpers\ArrayHelper::map($this->relatedSubject, 'tag_id', $val=='id' ? 'id' : 'tag.body');
+
+		return $this->hasMany(ArchiveRelatedSubject::className(), ['archive_id' => 'id'])
+			->alias('subjectRelation')
+			->andOnCondition([sprintf('%s.type', 'subjectRelation') => 'subject']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getRelatedFunction($result=false, $val='id')
+	{
+		if($result == true)
+			return \yii\helpers\ArrayHelper::map($this->relatedFunction, 'tag_id', $val=='id' ? 'id' : 'tag.body');
+
+		return $this->hasMany(ArchiveRelatedSubject::className(), ['archive_id' => 'id'])
+			->alias('functionRelation')
+			->andOnCondition([sprintf('%s.type', 'functionRelation') => 'function']);
 	}
 
 	/**
@@ -288,7 +319,7 @@ class Archives extends \app\components\ActiveRecord
 				'attribute' => 'creator',
 				'label' => Yii::t('app', 'Creator'),
 				'value' => function($model, $key, $index, $column) {
-					return self::parseRelated($model->getRelatedCreator(true, 'title'), 'creator', ',');
+					return self::parseRelated($model->getRelatedCreator(true, 'title'), 'creator', ', ');
 				},
 				'format' => 'html',
 			];
@@ -297,7 +328,28 @@ class Archives extends \app\components\ActiveRecord
 			$this->templateColumns['repository'] = [
 				'attribute' => 'repository',
 				'value' => function($model, $key, $index, $column) {
-					return implode(',', $model->getRelatedRepository(true, 'title'));
+					$repository = $model->getRelatedRepository(true, 'title');
+					if(empty($repository))
+						return '-';
+					return implode(', ', $repository);
+				},
+				'format' => 'html',
+			];
+		}
+		if(!Yii::$app->request->get('subjectId')) {
+			$this->templateColumns['subject'] = [
+				'attribute' => 'subject',
+				'value' => function($model, $key, $index, $column) {
+					return self::parseSubject($model->getRelatedSubject(true, 'title'), 'subjectId', ', ');
+				},
+				'format' => 'html',
+			];
+		}
+		if(!Yii::$app->request->get('functionId')) {
+			$this->templateColumns['function'] = [
+				'attribute' => 'function',
+				'value' => function($model, $key, $index, $column) {
+					return self::parseSubject($model->getRelatedFunction(true, 'title'), 'functionId', ', ');
 				},
 				'format' => 'html',
 			];
@@ -306,7 +358,7 @@ class Archives extends \app\components\ActiveRecord
 			'attribute' => 'medium',
 			'label' => Yii::t('app', 'Medium'),
 			'value' => function($model, $key, $index, $column) {
-				return Archives::parseChilds($model->childs, $model->id);
+				return self::parseChilds($model->childs, $model->id);
 			},
 			'filter' => false,
 			'enableSorting' => false,
@@ -317,7 +369,7 @@ class Archives extends \app\components\ActiveRecord
 				'attribute' => 'media',
 				'label' => Yii::t('app', 'Media'),
 				'value' => function($model, $key, $index, $column) {
-					return self::parseRelated($model->getRelatedMedia(true, 'title'), 'media', ',');
+					return self::parseRelated($model->getRelatedMedia(true, 'title'), 'media', ', ');
 				},
 				'filter' => ArchiveMedia::getMedia(),
 				'format' => 'html',
@@ -496,28 +548,53 @@ class Archives extends \app\components\ActiveRecord
 		if(!is_array($relatedMedia) || (is_array($relatedMedia) && empty($relatedMedia)))
 			return '-';
 
-		if($sep == 'li') {
-			$items = self::getUrlFormat($relatedMedia, $controller);
+		$items = self::getUrlFormat($relatedMedia, $controller, true);
 
+		if($sep == 'li') {
 			return Html::ul($items, ['item' => function($item, $index) {
-				return Html::tag('li', Html::a($index, $item, ['title'=>$index, 'class'=>'modal-btn']));
+				return Html::tag('li', $item);
 			}, 'class'=>'list-boxed']);
 		}
 
-		return implode(', ', $relatedMedia);
+		return implode($sep, $items);
 	}
 
 	/**
 	 * function getUrlFormat
 	 */
-	public static function getUrlFormat($array, $controller)
+	public static function getUrlFormat($relates, $controller, $hyperlink=false)
 	{
-		$items = array_flip($array);
-		foreach ($items as $key => $val) {
-			$items[$key] = Url::to(['setting/'.$controller.'/view', 'id'=>$val]);
+		$items = [];
+		foreach ($relates as $key => $val) {
+			if($hyperlink)
+				$items[$val] = Html::a($val, ['setting/'.$controller.'/view', 'id'=>$key], ['title'=>$val, 'class'=>'modal-btn']);
+			else
+				$items[$val] = Url::to(['setting/'.$controller.'/view', 'id'=>$key]);
 		}
 
 		return $items;
+	}
+
+	/**
+	 * function parseSubject
+	 */
+	public static function parseSubject($relatedSubject, $attr='subjectId', $sep='li')
+	{
+		if(!is_array($relatedSubject) || (is_array($relatedSubject) && empty($relatedSubject)))
+			return '-';
+
+		$items = [];
+		foreach ($relatedSubject as $key => $val) {
+			$items[$val] = Html::a($val, ['admin/manage', $attr=>$key], ['title'=>$val]);
+		}
+
+		if($sep == 'li') {
+			return Html::ul($items, ['item' => function($item, $index) {
+				return Html::tag('li', $item);
+			}, 'class'=>'list-boxed']);
+		}
+
+		return implode($sep, $items);
 	}
 
 	/**
@@ -561,7 +638,7 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * function parseRelated
+	 * function parseChilds
 	 */
 	public static function parseChilds($childs, $id, $sep='li')
 	{
@@ -635,6 +712,8 @@ class Archives extends \app\components\ActiveRecord
 		$this->media = array_flip($this->getRelatedMedia(true));
 		$this->creator = implode(',', $this->getRelatedCreator(true, 'title'));
 		$this->repository =  array_flip($this->getRelatedRepository(true));
+		$this->subject =  implode(',', $this->getRelatedSubject(true, 'title'));
+		$this->function =  implode(',', $this->getRelatedFunction(true, 'title'));
 	}
 
 	/**
@@ -674,7 +753,7 @@ class Archives extends \app\components\ActiveRecord
 		}
 		
 		if(!$insert) {
-			// set archive media, creator and repository
+			// set archive media, creator repository, subject and function
 			$event = new Event(['sender' => $this]);
 			Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARCHIVES, $event);
 		}
@@ -690,7 +769,7 @@ class Archives extends \app\components\ActiveRecord
 		parent::afterSave($insert, $changedAttributes);
 		
 		if($insert) {
-			// set archive media, creator and repository
+			// set archive media, creator repository, subject and function
 			$event = new Event(['sender' => $this]);
 			Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARCHIVES, $event);
 

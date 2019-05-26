@@ -28,7 +28,7 @@ class Archives extends ArchivesModel
 	{
 		return [
 			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'media'], 'integer'],
-			[['title', 'code', 'medium', 'image_type', 'creation_date', 'modified_date', 'updated_date', 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository'], 'safe'],
+			[['title', 'code', 'medium', 'image_type', 'creation_date', 'modified_date', 'updated_date', 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository', 'subject', 'function'], 'safe'],
 		];
 	}
 
@@ -71,7 +71,9 @@ class Archives extends ArchivesModel
 			'modified modified', 
 			'relatedMedia relatedMedia', 
 			'relatedCreator.creator relatedCreator', 
-			'relatedRepository.repository relatedRepository'
+			'relatedRepository.repository relatedRepository', 
+			'relatedSubject.tag relatedSubject', 
+			'relatedFunction.tag relatedFunction'
 		]);
 
 		// add conditions that should always apply here
@@ -149,6 +151,12 @@ class Archives extends ArchivesModel
 		if(isset($params['repositoryId']) && $params['repositoryId'])
 			$query->andFilterWhere(['relatedRepository.id' => $params['repositoryId']]);
 
+		if(isset($params['subjectId']) && $params['subjectId'])
+			$query->andFilterWhere(['relatedSubject.tag_id' => $params['subjectId']]);
+
+		if(isset($params['functionId']) && $params['functionId'])
+			$query->andFilterWhere(['relatedFunction.tag_id' => $params['functionId']]);
+
 		$query->andFilterWhere(['like', 't.title', $this->title])
 			->andFilterWhere(['like', 't.code', $this->code])
 			->andFilterWhere(['like', 'parent.title', $this->parentTitle])
@@ -156,7 +164,9 @@ class Archives extends ArchivesModel
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
 			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname])
 			->andFilterWhere(['like', 'relatedCreator.creator_name', $this->creator])
-			->andFilterWhere(['like', 'relatedRepository.repository_name', $this->repository]);
+			->andFilterWhere(['like', 'relatedRepository.repository_name', $this->repository])
+			->andFilterWhere(['like', 'relatedSubject.body', $this->subject])
+			->andFilterWhere(['like', 'relatedFunction.body', $this->function]);
 
 		return $dataProvider;
 	}

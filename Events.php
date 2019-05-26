@@ -15,11 +15,14 @@
 namespace ommu\archive;
 
 use Yii;
+use yii\helpers\Inflector;
 use ommu\archive\models\ArchiveCreator;
 use ommu\archive\models\ArchiveRepository;
 use ommu\archive\models\ArchiveRelatedMedia;
 use ommu\archive\models\ArchiveRelatedCreator;
 use ommu\archive\models\ArchiveRelatedRepository;
+use ommu\archive\models\ArchiveRelatedSubject;
+use ommu\core\models\CoreTags;
 
 class Events extends \yii\base\BaseObject
 {
@@ -33,6 +36,8 @@ class Events extends \yii\base\BaseObject
 		self::setArchiveMedia($archive);
 		self::setArchiveCreator($archive);
 		self::setArchiveRepository($archive);
+		self::setArchiveSubject($archive);
+		self::setArchiveSubject($archive, 'function');
 	}
 
 	/**
@@ -161,6 +166,63 @@ class Events extends \yii\base\BaseObject
 			} else {
 				// drop old repository
 				ArchiveRelatedRepository::findOne(key($oldRepository))
+					->delete();
+			}
+		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public static function setArchiveSubject($archive, $type='subject')
+	{
+		if($type == 'subject') {
+			$oldSubject = $archive->getRelatedSubject(true, 'title');
+			if($archive->subject)
+				$subject = explode(',', $archive->subject);
+		} else {
+			$oldSubject = $archive->getRelatedFunction(true, 'title');
+			if($archive->function)
+				$subject = explode(',', $archive->function);
+		}
+
+		// insert difference subject
+		if(is_array($subject)) {
+			foreach ($subject as $val) {
+				if(in_array($val, $oldSubject)) {
+					unset($oldSubject[array_keys($oldSubject, $val)[0]]);
+					continue;
+				}
+
+				$subjectFind = CoreTags::find()
+					->select(['tag_id'])
+					->andWhere(['body' => Inflector::slug($val)])
+					->one();
+
+				if($subjectFind != null)
+					$tag_id = $subjectFind->tag_id;
+				else {
+					$model = new CoreTags();
+					$model->body = $val;
+					if($model->save())
+						$tag_id = $model->tag_id;
+				}
+
+				$model = new ArchiveRelatedSubject();
+				$model->type = $type;
+				$model->archive_id = $archive->id;
+				$model->tag_id = $tag_id;
+				$model->save();
+			}
+		}
+
+		// drop difference subject
+		if(!empty($oldSubject)) {
+			foreach ($oldSubject as $key => $val) {
+				ArchiveRelatedSubject::find()
+					->select(['id'])
+					->where(['type'=>$type, 'archive_id'=>$archive->id, 'tag_id'=>$key])
+					->one()
 					->delete();
 			}
 		}
