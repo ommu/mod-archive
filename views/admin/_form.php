@@ -31,6 +31,12 @@ $redactorOptions = [
 
 if(!$fond)
 	$level = $model->isNewRecord ? $parent->getChildLevels(true) : $model->getChildLevels();
+
+// if($setting->maintenance_mode) {
+	echo '<div id="reference-code-box" class="hide"><pre>';
+	print_r($referenceCode);
+	echo '</pre></div>';
+// }
 ?>
 
 <div class="archives-form">
@@ -78,11 +84,6 @@ $form = ActiveForm::begin([
 <?php //echo $form->errorSummary($model);?>
 
 <?php 
-if($setting->maintenance_mode) {
-	echo '<div id="reference-code-box" class="hide"><pre>';
-	print_r($referenceCode);
-	echo '</pre></div>';
-}
 $shortCode = $model->shortCode ? $model->shortCode : 'XXX';
 if($fond) {
 	echo $form->field($model, 'level_id', ['template' => '{label}{beginWrapper}{input}<h5 class="text-muted">'.$setting->reference_code_sikn.' <span class="text-primary reference-code">'.$shortCode.'</span></h5>{endWrapper}'])

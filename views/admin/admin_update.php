@@ -34,9 +34,6 @@ if(!$fond) {
 		]
 	);
 
-	$referenceCode = $model->referenceCode;
-	array_multisort($referenceCode);
-
 	$treeDataUrl = Url::to(['data', 'id'=>$model->parent_id]);
 $js = <<<JS
 	var treeDataUrl = '$treeDataUrl';
@@ -55,7 +52,7 @@ echo $this->render('_form', [
 	'model' => $model,
 	'setting' => $setting,
 	'fond' => $fond,
-	'referenceCode' => $referenceCode,
+	'referenceCode' => $model->referenceCode,
 ]); ?>
 
 </div>

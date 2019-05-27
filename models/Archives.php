@@ -57,6 +57,7 @@ class Archives extends \app\components\ActiveRecord
 	public $creationDisplayname;
 	public $modifiedDisplayname;
 
+	public $oldCode;
 	public $shortCode;
 	public $confirmCode;
 	public $updateCode = true;
@@ -663,19 +664,20 @@ class Archives extends \app\components\ActiveRecord
 	/**
 	 * function getReferenceCode
 	 */
-	public function getReferenceCode($archive=null)
+	public function getReferenceCode($result=false)
 	{
-		if(!$archive)
-			$archive = $this;
+		if($result == true)
+			return ArrayHelper::map($this->referenceCode, 'level', 'confirmCode');
+
 		$codes = [];
-		$levelAsKey = $archive->level->level_name_i;
-		$codes[$levelAsKey]['id'] = $archive->id;
+		$levelAsKey = $this->level->level_name_i;
+		$codes[$levelAsKey]['id'] = $this->id;
 		$codes[$levelAsKey]['level'] = $levelAsKey;
-		$codes[$levelAsKey]['code'] = $archive->code;
-		$codes[$levelAsKey]['confirmCode'] = $archive->confirmCode;
-		$codes[$levelAsKey]['shortCode'] = $archive->shortCode;
-		if(isset($archive->parent))
-			$codes = ArrayHelper::merge($codes, $this->getReferenceCode($archive->parent));
+		$codes[$levelAsKey]['code'] = $this->code;
+		$codes[$levelAsKey]['confirmCode'] = $this->confirmCode;
+		$codes[$levelAsKey]['shortCode'] = $this->shortCode;
+		if(isset($this->parent))
+			$codes = ArrayHelper::merge($this->parent->getReferenceCode(), $codes);
 
 		return $codes;
 	}
@@ -696,8 +698,11 @@ class Archives extends \app\components\ActiveRecord
 		// $this->levelName = isset($this->level) ? $this->level->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
+		$this->oldCode = $this->code;
 		$this->code = preg_replace("/^[.-]/", '', preg_replace("/^(3400|23400-24)/", '', $this->code));
 		$parentCode = $this->parent->code;
+		if($this->parent->code == $this->parent->confirmCode)
+			$parentCode = join('.', $this->getReferenceCode(true));
 		$confirmCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
 		$parentConfirmCode = $this->parent->confirmCode;
 		if(preg_match("/^($parentConfirmCode)/", $confirmCode)) {
@@ -745,11 +750,19 @@ class Archives extends \app\components\ActiveRecord
 
 		// set code
 		if($this->updateCode == true) {
-			$this->code = strtolower($this->level->level_name_i) == 'fond' ? 
-				$this->shortCode : 
-				($setting->maintenance_mode ? 
-					join('.', [$this->parent->confirmCode, $this->shortCode]) :
-					join('.', [$this->parent->code, $this->shortCode]));
+			if(strtolower($this->level->level_name_i) == 'fond')
+				$this->code = $this->shortCode;
+			else {
+				if($setting->maintenance_mode)
+					$this->code = join('.', [$this->parent->confirmCode, $this->shortCode]);
+				else
+					$this->code = join('.', [$this->parent->code, $this->shortCode]);
+			}
+			// $this->code = strtolower($this->level->level_name_i) == 'fond' ? 
+			// 	$this->shortCode : 
+			// 	($setting->maintenance_mode ? 
+			// 		join('.', [$this->parent->confirmCode, $this->shortCode]) :
+			// 		join('.', [$this->parent->code, $this->shortCode]));
 		}
 		
 		if(!$insert) {
@@ -774,9 +787,24 @@ class Archives extends \app\components\ActiveRecord
 			Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARCHIVES, $event);
 
 		} else {
+			// replace code
+			// if(array_key_exists('code', $changedAttributes) && $changedAttributes['code'] != $this->code) {
+			// 	$models = self::find()
+			// 		->select(['id', 'parent_id', 'code'])
+			// 		->where(['parent_id'=>$this->id])
+			// 		->all();
+			// 	if(!empty($models)) {
+			// 		foreach ($models as $model) {
+			// 			$model->updateCode = true;
+			// 			$model->update(false);
+			// 		}
+			// 	}
+			// }
+
 			// update sidkkas status
 			if(array_key_exists('sidkkas', $changedAttributes) && $changedAttributes['sidkkas'] != $this->sidkkas) {
 				$models = self::find()
+					->select(['id', 'sidkkas'])
 					->where(['parent_id'=>$this->id])
 					->all();
 				if(!empty($models)) {
@@ -791,6 +819,7 @@ class Archives extends \app\components\ActiveRecord
 			// delete archive childs
 			if(array_key_exists('publish', $changedAttributes) && $changedAttributes['publish'] != $this->publish && $this->publish == 2) {
 				$models = self::find()
+					->select(['id', 'publish'])
 					->where(['parent_id'=>$this->id])
 					->all();
 				if(!empty($models)) {
