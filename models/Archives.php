@@ -57,9 +57,11 @@ class Archives extends \app\components\ActiveRecord
 	public $creationDisplayname;
 	public $modifiedDisplayname;
 
-	public $oldCode;
-	public $shortCode;
 	public $confirmCode;
+	public $shortCode;
+	public $oldCode;
+	public $oldConfirmCode;
+	public $oldShortCode;
 	public $updateCode = true;
 	public $media;
 	public $creator;
@@ -688,7 +690,7 @@ class Archives extends \app\components\ActiveRecord
 	public function afterFind()
 	{
 		$setting = \ommu\archive\models\ArchiveSetting::find()
-			->select(['maintenance_mode', 'reference_code_sikn', 'reference_code_separator'])
+			->select(['maintenance_mode'])
 			->where(['id' => 1])
 			->one();
 
@@ -698,21 +700,30 @@ class Archives extends \app\components\ActiveRecord
 		// $this->levelName = isset($this->level) ? $this->level->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
-		$this->oldCode = $this->code;
 		$this->code = preg_replace("/^[.-]/", '', preg_replace("/^(3400|23400-24)/", '', $this->code));
+		$this->oldCode = $this->code;
 		$parentCode = $this->parent->code;
-		if($this->parent->code == $this->parent->confirmCode)
-			$parentCode = join('.', $this->getReferenceCode(true));
-		$confirmCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
-		$parentConfirmCode = $this->parent->confirmCode;
-		if(preg_match("/^($parentConfirmCode)/", $confirmCode)) {
-			$shortCodeStatus = false;
-			$this->confirmCode = $confirmCode;
-		} else {
-			$shortCodeStatus = true;
-			$this->confirmCode = join('.', [$parentConfirmCode, $confirmCode]);
-		}
-		$this->shortCode = $shortCodeStatus ? $confirmCode : preg_replace("/^[.-]/", '', preg_replace("/^($parentConfirmCode)/", '', $this->confirmCode));
+		if($setting->maintenance_mode) {
+			if($this->parent->code == $this->parent->confirmCode)
+				$parentCode = preg_replace("/[.-]$/", '', join('.', $this->getReferenceCode(true)));
+			$confirmCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
+			$parentConfirmCode = $this->parent->confirmCode;
+			if(preg_match("/^($parentConfirmCode)/", $confirmCode)) {
+				$shortCodeStatus = false;
+				$this->confirmCode = $confirmCode;
+			} else {
+				$shortCodeStatus = true;
+				if(count(explode('.', $confirmCode)) == 1)
+					$this->confirmCode = join('.', [$parentConfirmCode, $confirmCode]);
+				else
+					$this->confirmCode = $confirmCode;
+			}
+			$this->shortCode = $shortCodeStatus ? $confirmCode : preg_replace("/^[.-]/", '', preg_replace("/^($parentConfirmCode)/", '', $this->confirmCode));
+		} else
+			$this->shortCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
+
+		$this->oldConfirmCode = $this->confirmCode;
+		$this->oldShortCode = $this->shortCode;
 
 		$this->media = array_flip($this->getRelatedMedia(true));
 		$this->creator = implode(',', $this->getRelatedCreator(true, 'title'));
@@ -748,14 +759,19 @@ class Archives extends \app\components\ActiveRecord
 			->where(['id' => 1])
 			->one();
 
+		parent::beforeSave($insert);
+
 		// set code
 		if($this->updateCode == true) {
 			if(strtolower($this->level->level_name_i) == 'fond')
 				$this->code = $this->shortCode;
 			else {
-				if($setting->maintenance_mode)
-					$this->code = join('.', [$this->parent->confirmCode, $this->shortCode]);
-				else
+				if($setting->maintenance_mode) {
+					if(count(explode('.', $this->shortCode)) == 1)
+						$this->code = join('.', [$this->parent->confirmCode, $this->shortCode]);
+					else
+						$this->code = $this->shortCode;
+				} else
 					$this->code = join('.', [$this->parent->code, $this->shortCode]);
 			}
 			// $this->code = strtolower($this->level->level_name_i) == 'fond' ? 
@@ -763,6 +779,24 @@ class Archives extends \app\components\ActiveRecord
 			// 	($setting->maintenance_mode ? 
 			// 		join('.', [$this->parent->confirmCode, $this->shortCode]) :
 			// 		join('.', [$this->parent->code, $this->shortCode]));
+		}
+	
+		// replace code
+		if(array_key_exists('code', $this->dirtyAttributes) && $this->dirtyAttributes['code'] != $this->oldCode) {
+			$models = self::find()
+				->select(['id', 'parent_id', 'level_id', 'code'])
+				->where(['parent_id'=>$this->id])
+				->all();
+			if(!empty($models)) {
+				foreach ($models as $model) {
+					if($setting->maintenance_mode)
+						$model->parent->confirmCode = $this->dirtyAttributes['code'];
+					else
+						$model->parent->code = $this->dirtyAttributes['code'];
+					$model->updateCode = true;
+					$model->update(false);
+				}
+			}
 		}
 		
 		if(!$insert) {
@@ -790,7 +824,7 @@ class Archives extends \app\components\ActiveRecord
 			// replace code
 			// if(array_key_exists('code', $changedAttributes) && $changedAttributes['code'] != $this->code) {
 			// 	$models = self::find()
-			// 		->select(['id', 'parent_id', 'code'])
+			// 		->select(['id', 'parent_id', 'level_id', 'code'])
 			// 		->where(['parent_id'=>$this->id])
 			// 		->all();
 			// 	if(!empty($models)) {
@@ -804,7 +838,7 @@ class Archives extends \app\components\ActiveRecord
 			// update sidkkas status
 			if(array_key_exists('sidkkas', $changedAttributes) && $changedAttributes['sidkkas'] != $this->sidkkas) {
 				$models = self::find()
-					->select(['id', 'sidkkas'])
+					->select(['id', 'sidkkas', 'parent_id', 'level_id', 'code'])
 					->where(['parent_id'=>$this->id])
 					->all();
 				if(!empty($models)) {
