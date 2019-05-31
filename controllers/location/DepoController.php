@@ -34,6 +34,27 @@ use ommu\archive\models\ArchiveLocation;
 
 class DepoController extends AdminController
 {
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function allowAction(): array {
+		return ['suggest'];
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function actions()
+	{
+		return [
+			'suggest' => [
+				'class' => 'ommu\archive\actions\LocationSuggestAction',
+				'type' => 'depo',
+			],
+		];
+	}
+
 	/**
 	 * {@inheritdoc}
 	 */

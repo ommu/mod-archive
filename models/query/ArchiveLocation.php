@@ -59,6 +59,15 @@ class ArchiveLocation extends \yii\db\ActiveQuery
 
 	/**
 	 * {@inheritdoc}
+	 */
+	public function suggest() 
+	{
+		return $this->select(['id', 'location_name'])
+			->published();
+	}
+
+	/**
+	 * {@inheritdoc}
 	 * @return \ommu\archive\models\ArchiveLocation|array|null
 	 */
 	public function one($db = null)

@@ -119,8 +119,11 @@ class AdminController extends Controller
 			$attributes = ArrayHelper::merge($attributes, ['parent_id'=>ArchiveLocation::getType(ArchiveLocation::TYPE_DEPO)]);
 		$model->setAttributeLabels($attributes);
 		$model->type = $this->type;
-		if($model->type != 'building')
+		if($this->type != 'building') {
 			$model->scenario = ArchiveLocation::SCENARIO_NOT_BUILDING;
+			if($this->type == 'room')
+				$model->scenario = ArchiveLocation::SCENARIO_ROOM;
+		}
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
@@ -155,8 +158,11 @@ class AdminController extends Controller
 	public function actionUpdate($id)
 	{
 		$model = $this->findModel($id);
-		if($model->type != 'building')
+		if($this->type != 'building') {
 			$model->scenario = ArchiveLocation::SCENARIO_NOT_BUILDING;
+			if($this->type == 'room')
+				$model->scenario = ArchiveLocation::SCENARIO_ROOM;
+		}
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());

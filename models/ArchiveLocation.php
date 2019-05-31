@@ -36,6 +36,8 @@ use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use ommu\users\models\Users;
+use yii\helpers\ArrayHelper;
+use yii\base\Event;
 
 class ArchiveLocation extends \app\components\ActiveRecord
 {
@@ -47,13 +49,16 @@ class ArchiveLocation extends \app\components\ActiveRecord
 	public $creationDisplayname;
 	public $modifiedDisplayname;
 
+	public $building;
 	public $storage;
 
 	const TYPE_BUILDING = 'building';
 	const TYPE_DEPO = 'depo';
 	const TYPE_ROOM = 'room';
 
-	const SCENARIO_NOT_BUILDING = 'adminCreate';
+	const SCENARIO_NOT_BUILDING = 'notBuildingForm';
+	const SCENARIO_ROOM = 'roomForm';
+	const EVENT_BEFORE_SAVE_ARCHIVE_LOCATION = 'BeforeSaveArchiveLocation';
 
 	/**
 	 * @return string the associated database table name
@@ -71,9 +76,10 @@ class ArchiveLocation extends \app\components\ActiveRecord
 		return [
 			[['type', 'location_name'], 'required'],
 			[['parent_id'], 'required', 'on' => self::SCENARIO_NOT_BUILDING],
-			[['publish', 'parent_id', 'creation_id', 'modified_id'], 'integer'],
+			[['parent_id', 'building'], 'required', 'on' => self::SCENARIO_ROOM],
+			[['publish', 'creation_id', 'modified_id'], 'integer'],
 			[['type', 'location_desc'], 'string'],
-			[['location_desc', 'storage'], 'safe'],
+			[['location_desc', 'building', 'storage'], 'safe'],
 			[['location_name'], 'string', 'max' => 128],
 		];
 	}
@@ -84,7 +90,7 @@ class ArchiveLocation extends \app\components\ActiveRecord
 	public function scenarios()
 	{
 		$scenarios = parent::scenarios();
-		$scenarios[self::SCENARIO_NOT_BUILDING] = ['publish', 'parent_id', 'location_name', 'location_desc', 'storage'];
+		$scenarios[self::SCENARIO_NOT_BUILDING] = ['publish', 'parent_id', 'location_name', 'location_desc', 'building', 'storage'];
 		return $scenarios;
 	}
 
@@ -108,6 +114,7 @@ class ArchiveLocation extends \app\components\ActiveRecord
 			'parentName' => Yii::t('app', 'Parent'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
+			'building' => Yii::t('app', 'Building'),
 			'storage' => Yii::t('app', 'Storage Unit'),
 		];
 	}
@@ -118,7 +125,7 @@ class ArchiveLocation extends \app\components\ActiveRecord
 	public function getRoomStorage($result=false, $val='id')
 	{
 		if($result == true)
-			return \yii\helpers\ArrayHelper::map($this->roomStorage, 'storage_id', $val=='id' ? 'id' : 'storage.storage_name_i');
+			return ArrayHelper::map($this->roomStorage, 'storage_id', $val=='id' ? 'id' : 'storage.storage_name_i');
 
 		return $this->hasMany(ArchiveRoomStorage::className(), ['room_id' => 'id']);
 	}
@@ -129,6 +136,14 @@ class ArchiveLocation extends \app\components\ActiveRecord
 	public function getParent()
 	{
 		return $this->hasOne(self::className(), ['id' => 'parent_id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getBuildingRltn()
+	{
+		return $this->hasOne(self::className(), ['id' => 'building']);
 	}
 
 	/**
@@ -311,7 +326,7 @@ class ArchiveLocation extends \app\components\ActiveRecord
 		$model = $model->orderBy('location_name ASC')->all();
 
 		if($array == true)
-			return \yii\helpers\ArrayHelper::map($model, 'id', 'location_name');
+			return ArrayHelper::map($model, 'id', 'location_name');
 
 		return $model;
 	}
@@ -343,6 +358,7 @@ class ArchiveLocation extends \app\components\ActiveRecord
 		// $this->parentName = isset($this->parent) ? $this->parent->location_name : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
+		$this->building = isset($this->parent) ? $this->parent->parent_id : null;
 		$this->storage = array_flip($this->getRoomStorage(true));
 	}
 
@@ -368,31 +384,32 @@ class ArchiveLocation extends \app\components\ActiveRecord
 	 */
 	public function beforeSave($insert)
 	{
+		parent::beforeSave($insert);
+
+		// insert new parent (building) information (in room manage)
+		if(!isset($this->buildingRltn) && $this->type == 'room') {
+			$model = new ArchiveLocation();
+			$model->type = 'building';
+			$model->location_name = $this->building;
+			if($model->save())
+				$this->building = $model->id;
+		}
+
+		// insert new parent (building|depo) information
+		if(!isset($this->parent) && $this->type != 'building') {
+			$model = new ArchiveLocation();
+			if($this->type == 'room')
+				$model->parent_id = $this->building;
+			$model->type = $this->type == 'depo' ? 'building' : 'depo';
+			$model->location_name = $this->parent_id;
+			if($model->save())
+				$this->parent_id = $model->id;
+		}
+
 		if(!$insert) {
-			$oldStorage = array_flip($this->getRoomStorage(true));
-			$storage = $this->storage;
-	
-			// insert difference storage
-			if(is_array($storage)) {
-				foreach ($storage as $val) {
-					if(in_array($val, $oldStorage)) {
-						unset($oldStorage[array_keys($oldStorage, $val)[0]]);
-						continue;
-					}
-	
-					$model = new ArchiveRoomStorage();
-					$model->room_id = $this->id;
-					$model->storage_id = $val;
-					$model->save();
-				}
-			}
-	
-			// drop difference storage
-			if(!empty($oldStorage)) {
-				foreach ($oldStorage as $key => $val) {
-					ArchiveRoomStorage::findOne($key)->delete();
-				}
-			}
+			// set room storage type
+			$event = new Event(['sender' => $this]);
+			Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARCHIVE_LOCATION, $event);
 		}
 
 		return true;
@@ -405,8 +422,10 @@ class ArchiveLocation extends \app\components\ActiveRecord
 	{
 		parent::afterSave($insert, $changedAttributes);
 		
-		// if($insert) {
-			
-		// }
+		if($insert) {
+			// set room storage type
+			$event = new Event(['sender' => $this]);
+			Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARCHIVE_LOCATION, $event);
+		}
 	}
 }
