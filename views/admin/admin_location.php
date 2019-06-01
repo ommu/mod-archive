@@ -1,0 +1,190 @@
+<?php
+/**
+ * Archives (archives)
+ * @var $this app\components\View
+ * @var $this ommu\archive\controllers\AdminController
+ * @var $model ommu\archive\models\ArchiveRelatedLocation
+ * @var $form app\components\widgets\ActiveForm
+ *
+ * @author Putra Sudaryanto <putra@sudaryanto.id>
+ * @contact (+62)856-299-4114
+ * @copyright Copyright (c) 2019 OMMU (www.ommu.co)
+ * @created date 31 May 2019, 21:35 WIB
+ * @link https://bitbucket.org/ommu/archive
+ *
+ */
+
+use yii\helpers\Url;
+use yii\web\JsExpression;
+use app\components\widgets\ActiveForm;
+use ommu\archive\models\ArchiveLocation;
+use ommu\archive\models\ArchiveStorage;
+use ommu\selectize\Selectize;
+use yii\helpers\ArrayHelper;
+
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = Yii::t('app', 'Storage Location');
+
+$js = <<<JS
+	var a, b, c;
+	var v_depo = '$model->depo';
+	var v_room = '$model->room_id';
+	var v_storage = '$model->storage_id';
+JS;
+	$this->registerJs($js, \yii\web\View::POS_END);
+?>
+
+<div class="archives-location">
+	<div class="archives-form">
+
+	<?php $form = ActiveForm::begin([
+		'options' => ['class'=>'form-horizontal form-label-left'],
+		'enableClientValidation' => false,
+		'enableAjaxValidation' => false,
+		//'enableClientScript' => true,
+	]);?>
+
+	<?php $getDepoUrl = Url::to(['location/depo/suggest']);
+	echo $form->field($model, 'building')
+		->widget(Selectize::className(), [
+			'cascade' => true,
+			'options' => [
+				'placeholder' => Yii::t('app', 'Select a building..'),
+			],
+			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a building..')], ArchiveLocation::getLocation(['publish'=>1, 'type'=>'building'])),
+			'pluginOptions' => [
+				'onChange' => new JsExpression('function(value) {
+					if (!value.length) return;
+					depo.disable(); 
+					depo.clearOptions();
+					depo.load(function(callback) {
+						a && a.abort();
+						a = $.ajax({
+							url: \''.$getDepoUrl.'\',
+							data: {\'parent\': value},
+							success: function(results) {
+								depo.removeOption(v_depo);
+								depo.showInput();
+								depo.enable();
+								callback(results);
+							},
+							error: function() {
+								callback();
+							}
+						})
+					});
+				}'),
+			],
+		])
+		->label($model->getAttributeLabel('building')); ?>
+		
+	<?php $getRoomUrl = Url::to(['location/room/suggest']);
+	echo $form->field($model, 'depo')
+		->widget(Selectize::className(), [
+			'cascade' => true,
+			'options' => [
+				'placeholder' => Yii::t('app', 'Select a depo..'),
+			],
+			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a depo..')], ArchiveLocation::getLocation(['publish'=>1, 'type'=>'depo'])),
+			'pluginOptions' => [
+				'valueField' => 'id',
+				'labelField' => 'label',
+				'searchField' => ['label'],
+				'persist' => false,
+				'onChange' => new JsExpression('function(value) {
+					v_depo = value;
+					if (!value.length) return;
+					room_id.disable(); 
+					room_id.clearOptions();
+					room_id.load(function(callback) {
+						b && b.abort();
+						b = $.ajax({
+							url: \''.$getRoomUrl.'\',
+							data: {\'parent\': value},
+							success: function(results) {
+								room_id.removeOption(v_room);
+								room_id.showInput();
+								room_id.enable();
+								callback(results);
+							},
+							error: function() {
+								callback();
+							}
+						})
+					});
+				}'),
+			],
+		])
+		->label($model->getAttributeLabel('depo')); ?>
+		
+	<?php $getRoomStorageUrl = Url::to(['location/room/storage']);
+	echo $form->field($model, 'room_id')
+		->widget(Selectize::className(), [
+			'cascade' => true,
+			'options' => [
+				'placeholder' => Yii::t('app', 'Select a room..'),
+			],
+			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a room..')], ArchiveLocation::getLocation(['publish'=>1, 'type'=>'room'])),
+			'pluginOptions' => [
+				'valueField' => 'id',
+				'labelField' => 'label',
+				'searchField' => ['label'],
+				'persist' => false,
+				'onChange' => new JsExpression('function(value) {
+					v_room = value;
+					if (!value.length) return;
+					storage_id.disable(); 
+					storage_id.clearOptions();
+					storage_id.load(function(callback) {
+						c && c.abort();
+						c = $.ajax({
+							url: \''.$getRoomStorageUrl.'\',
+							data: {\'id\': value},
+							success: function(results) {
+								storage_id.removeOption(v_storage);
+								storage_id.showInput();
+								storage_id.enable();
+								callback(results);
+							},
+							error: function() {
+								callback();
+							}
+						})
+					});
+				}'),
+			],
+		])
+		->label($model->getAttributeLabel('room_id')); ?>
+
+	<?php echo $form->field($model, 'location_desc')
+		->textarea(['rows'=>4, 'cols'=>50])
+		->label($model->getAttributeLabel('location_desc')); ?>
+
+	<?php echo $form->field($model, 'storage_id')
+		->widget(Selectize::className(), [
+			'cascade' => true,
+			'options' => [
+				'placeholder' => Yii::t('app', 'Select a storage..'),
+			],
+			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a storage..')], ArchiveStorage::getStorage(1)),
+			'pluginOptions' => [
+				'valueField' => 'id',
+				'labelField' => 'label',
+				'searchField' => ['label'],
+				'persist' => false,
+				'onChange' => new JsExpression('function(value) {
+					v_storage = value;
+				}'),
+			],
+		])
+		->label($model->getAttributeLabel('storage_id'));?>
+
+	<div class="ln_solid"></div>
+
+	<?php echo $form->field($model, 'submitButton')
+		->submitButton(); ?>
+
+	<?php ActiveForm::end(); ?>
+
+	</div>
+</div>

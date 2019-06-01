@@ -34,7 +34,6 @@ use ommu\archive\models\ArchiveLocation;
 
 class DepoController extends AdminController
 {
-
 	/**
 	 * {@inheritdoc}
 	 */

@@ -29,13 +29,14 @@
 namespace ommu\archive\controllers;
 
 use Yii;
+use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 use app\components\Controller;
 use yii\filters\VerbFilter;
 use mdm\admin\components\AccessControl;
 use ommu\archive\models\Archives;
 use ommu\archive\models\search\Archives as ArchivesSearch;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
+use ommu\archive\models\ArchiveRelatedLocation;
 
 class AdminController extends Controller
 {
@@ -312,5 +313,42 @@ class AdminController extends Controller
 			$data = $this->getData($model->parent, $data);
 
 		return $data;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function actionLocation($id)
+	{
+		$model = ArchiveRelatedLocation::find()
+			->where(['archive_id'=>$id])
+			->one();
+		if($model == null)
+			$model = new ArchiveRelatedLocation(['archive_id'=>$id]);
+
+		if(Yii::$app->request->isPost) {
+			$model->load(Yii::$app->request->post());
+			// $postData = Yii::$app->request->post();
+			// $model->load($postData);
+
+			if($model->save()) {
+				Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success updated location.', ['level-name'=>$model->archive->level->level_name_i, 'code'=>$model->archive->code]));
+				return $this->redirect(['location', 'id'=>$model->archive_id]);
+
+			} else {
+				if(Yii::$app->request->isAjax)
+					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+			}
+		}
+
+		if(strtolower($model->archive->level->level_name_i) == 'item')
+			unset($this->subMenu['childs']);
+
+		$this->view->title = Yii::t('app', 'Storage Location {level-name}: {title}', ['level-name' => $model->archive->level->level_name_i, 'title' => Archives::htmlHardDecode($model->archive->title)]);
+		$this->view->description = '';
+		$this->view->keywords = '';
+		return $this->render('admin_location', [
+			'model' => $model,
+		]);
 	}
 }

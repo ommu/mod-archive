@@ -123,7 +123,7 @@ echo $form->field($model, 'parent_id')
 <?php if($model->type == 'room') {
 echo $form->field($model, 'storage')
 	->widget(Selectize::className(), [
-		'items' =>ArchiveStorage::getStorage(1),
+		'items' => ArchiveStorage::getStorage(1),
 		'options' => [
 			'multiple' => true,
 		],
