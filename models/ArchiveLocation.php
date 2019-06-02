@@ -211,6 +211,7 @@ class ArchiveLocation extends \app\components\ActiveRecord
 		if($this->type != 'building') {
 			$this->templateColumns['parentName'] = [
 				'attribute' => 'parentName',
+				'label' => Inflector::humanize($this->type == 'depo' ? 'building' :'depo'),
 				'value' => function($model, $key, $index, $column) {
 					if($model->type == 'room')
 						return isset($model->parent) ? $model->parent->location_name.', '.$model->parent->parent->location_name : '-';
