@@ -16,6 +16,7 @@
  * @property integer $room_id
  * @property integer $storage_id
  * @property string $location_desc
+ * @property string $weight
  * @property string $creation_date
  * @property integer $creation_id
  *
@@ -61,7 +62,8 @@ class ArchiveRelatedLocation extends \app\components\ActiveRecord
 		return [
 			[['archive_id', 'room_id', 'storage_id', 'location_desc', 'building_id', 'depo_id'], 'required'],
 			[['archive_id', 'room_id', 'storage_id', 'creation_id'], 'integer'],
-			[['location_desc'], 'string'],
+			[['location_desc', 'weight'], 'string'],
+			[['weight'], 'safe'],
 			[['room_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLocation::className(), 'targetAttribute' => ['room_id' => 'id']],
 			[['storage_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveStorage::className(), 'targetAttribute' => ['storage_id' => 'id']],
 			[['archive_id'], 'exist', 'skipOnError' => true, 'targetClass' => Archives::className(), 'targetAttribute' => ['archive_id' => 'id']],
@@ -79,6 +81,7 @@ class ArchiveRelatedLocation extends \app\components\ActiveRecord
 			'room_id' => Yii::t('app', 'Room'),
 			'storage_id' => Yii::t('app', 'Storage'),
 			'location_desc' => Yii::t('app', 'Description'),
+			'weight' => Yii::t('app', 'Weight'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'archiveTitle' => Yii::t('app', 'Archive'),
@@ -193,6 +196,12 @@ class ArchiveRelatedLocation extends \app\components\ActiveRecord
 				},
 			];
 		}
+		$this->templateColumns['weight'] = [
+			'attribute' => 'weight',
+			'value' => function($model, $key, $index, $column) {
+				return $model->weight;
+			},
+		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
 			'value' => function($model, $key, $index, $column) {

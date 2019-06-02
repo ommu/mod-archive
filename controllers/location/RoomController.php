@@ -74,22 +74,14 @@ class RoomController extends AdminController
 
 		if($id == null) return [];
 
-		$model = ArchiveLocation::find()
-			->select('id')
-			->published()
-			->where(['id' => $id])
-			->andWhere(['type' => $this->type])
-			->one();
+		$model = ArchiveLocation::findOne($id);
 
-		$storageType = ArchiveStorage::getStorage(1);
 		$result = [];
-		if(!empty($model->storage)) {
-			foreach($model->storage as $val) {
-				if(!array_key_exists($val, $storageType))
-					continue;
+		if(!empty($storage = $model->getRoomStorage(true, 'title'))) {
+			foreach($storage as $key => $val) {
 				$result[] = [
-					'id' => $val,
-					'label' => $storageType[$val],
+					'id' => $key,
+					'label' => $val,
 				];
 			}
 		}

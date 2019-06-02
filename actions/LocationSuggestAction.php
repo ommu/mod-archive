@@ -41,7 +41,7 @@ class LocationSuggestAction extends \yii\base\Action
 
 		$model = ArchiveLocation::find()
 			->suggest()
-			->where(['parent_id' => $parent])
+			->andWhere(['parent_id' => $parent])
 			->andWhere(['type' => $this->type])
 			->all();
 

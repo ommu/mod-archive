@@ -79,13 +79,14 @@ JS;
 		->label($model->getAttributeLabel('building_id')); ?>
 		
 	<?php $getRoomUrl = Url::to(['location/room/suggest']);
+	$depo = $model->isNewRecord ? ArchiveLocation::getLocation(['publish'=>1, 'type'=>'depo']) : ArchiveLocation::getLocation(['publish'=>1, 'parent_id'=>$model->building_id, 'type'=>'depo']);
 	echo $form->field($model, 'depo_id')
 		->widget(Selectize::className(), [
 			'cascade' => true,
 			'options' => [
 				'placeholder' => Yii::t('app', 'Select a depo..'),
 			],
-			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a depo..')], ArchiveLocation::getLocation(['publish'=>1, 'type'=>'depo'])),
+			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a depo..')], $depo),
 			'pluginOptions' => [
 				'valueField' => 'id',
 				'labelField' => 'label',
@@ -118,13 +119,14 @@ JS;
 		->label($model->getAttributeLabel('depo_id')); ?>
 		
 	<?php $getRoomStorageUrl = Url::to(['location/room/storage']);
+	$room = $model->isNewRecord ? ArchiveLocation::getLocation(['publish'=>1, 'type'=>'room']) : ArchiveLocation::getLocation(['publish'=>1, 'parent_id'=>$model->depo_id, 'type'=>'room']);
 	echo $form->field($model, 'room_id')
 		->widget(Selectize::className(), [
 			'cascade' => true,
 			'options' => [
 				'placeholder' => Yii::t('app', 'Select a room..'),
 			],
-			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a room..')], ArchiveLocation::getLocation(['publish'=>1, 'type'=>'room'])),
+			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a room..')], $room),
 			'pluginOptions' => [
 				'valueField' => 'id',
 				'labelField' => 'label',
@@ -160,13 +162,14 @@ JS;
 		->textarea(['rows'=>4, 'cols'=>50])
 		->label($model->getAttributeLabel('location_desc')); ?>
 
-	<?php echo $form->field($model, 'storage_id')
+	<?php $storage = $model->isNewRecord ? ArchiveStorage::getStorage(1) : $model->room->getRoomStorage(true, 'title');
+	echo $form->field($model, 'storage_id')
 		->widget(Selectize::className(), [
 			'cascade' => true,
 			'options' => [
 				'placeholder' => Yii::t('app', 'Select a storage..'),
 			],
-			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a storage..')], ArchiveStorage::getStorage(1)),
+			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a storage..')], $storage),
 			'pluginOptions' => [
 				'valueField' => 'id',
 				'labelField' => 'label',
@@ -178,6 +181,10 @@ JS;
 			],
 		])
 		->label($model->getAttributeLabel('storage_id'));?>
+
+	<?php echo $form->field($model, 'weight')
+		->textInput(['maxlength'=>true])
+		->label($model->getAttributeLabel('weight')); ?>
 
 	<div class="ln_solid"></div>
 

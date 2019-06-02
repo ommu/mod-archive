@@ -321,6 +321,8 @@ class ArchiveLocation extends \app\components\ActiveRecord
 		$model = self::find();
 		if(isset($data['publish']))
 			$model->andWhere(['publish' => $data['publish']]);
+		if(isset($data['parent_id']))
+			$model->andWhere(['parent_id' => $data['parent_id']]);
 		$model->andWhere(['type' => isset($data['type']) ? $data['type'] : 'building']);
 
 		$model = $model->orderBy('location_name ASC')->all();
