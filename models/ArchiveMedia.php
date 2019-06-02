@@ -175,6 +175,16 @@ class ArchiveMedia extends \app\components\ActiveRecord
 				return $model->media_desc_i;
 			},
 		];
+		$this->templateColumns['archives'] = [
+			'attribute' => 'archives',
+			'value' => function($model, $key, $index, $column) {
+				$archives = $model->getArchives(true);
+				return Html::a($archives, ['admin/manage', 'mediaId'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
+			},
+			'filter' => false,
+			'contentOptions' => ['class'=>'center'],
+			'format' => 'html',
+		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
 			'value' => function($model, $key, $index, $column) {
@@ -213,16 +223,6 @@ class ArchiveMedia extends \app\components\ActiveRecord
 				return Yii::$app->formatter->asDatetime($model->updated_date, 'medium');
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
-		];
-		$this->templateColumns['archives'] = [
-			'attribute' => 'archives',
-			'value' => function($model, $key, $index, $column) {
-				$archives = $model->getArchives(true);
-				return Html::a($archives, ['admin/manage', 'mediaId'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
-			},
-			'filter' => false,
-			'contentOptions' => ['class'=>'center'],
-			'format' => 'html',
 		];
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [

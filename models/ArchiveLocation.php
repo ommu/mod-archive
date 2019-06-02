@@ -35,6 +35,7 @@ namespace ommu\archive\models;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\helpers\Inflector;
 use ommu\users\models\Users;
 use yii\helpers\ArrayHelper;
 use yii\base\Event;
@@ -116,7 +117,31 @@ class ArchiveLocation extends \app\components\ActiveRecord
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
 			'building' => Yii::t('app', 'Building'),
 			'storage' => Yii::t('app', 'Storage Unit'),
+			'childs' => Yii::t('app', 'Childs'),
 		];
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getChilds($count=false, $publish=1)
+	{
+		if($count == false) {
+			return $this->hasMany(ArchiveLocation::className(), ['parent_id' => 'id'])
+				->andOnCondition([sprintf('%s.publish', ArchiveLocation::tableName()) => $publish]);
+		}
+
+		$model = ArchiveLocation::find()
+			->where(['parent_id' => $this->id]);
+		if($publish == 0)
+			$model->unpublish();
+		elseif($publish == 1)
+			$model->published();
+		elseif($publish == 2)
+			$model->deleted();
+		$childs = $model->count();
+
+		return $childs ? $childs : 0;
 	}
 
 	/**
@@ -203,7 +228,7 @@ class ArchiveLocation extends \app\components\ActiveRecord
 		];
 		$this->templateColumns['location_name'] = [
 			'attribute' => 'location_name',
-			'header' => self::getType($this->type),
+			'label' => self::getType($this->type),
 			'value' => function($model, $key, $index, $column) {
 				return $model->location_name;
 			},
@@ -214,6 +239,31 @@ class ArchiveLocation extends \app\components\ActiveRecord
 				return $model->location_desc;
 			},
 		];
+		if($this->type == 'room') {
+			$this->templateColumns['storage'] = [
+				'attribute' => 'storage',
+				'label' => Yii::t('app', 'Storage'),
+				'value' => function($model, $key, $index, $column) {
+					return self::parseStorage($model->getRoomStorage(true, 'title'), ',');
+				},
+				'filter' => ArchiveStorage::getStorage(),
+				'format' => 'html',
+			];
+		}
+		if($this->type != 'room') {
+			$this->templateColumns['childs'] = [
+				'attribute' => 'childs',
+				'label' => Inflector::humanize($this->type == 'building' ? Inflector::pluralize('depo') : Inflector::pluralize('room')),
+				'value' => function($model, $key, $index, $column) {
+					$childs = $model->getChilds(true);
+					$controller = $this->type == 'building' ? 'depo' : 'room';
+					return $childs ? Html::a($childs, ['location/'.$controller.'/manage', 'parent'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} {title}', ['count'=>$childs, 'title'=>$controller])]) : '-';
+				},
+				'filter' => false,
+				'contentOptions' => ['class'=>'center'],
+				'format' => 'html',
+			];
+		}
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
 			'value' => function($model, $key, $index, $column) {
@@ -253,17 +303,6 @@ class ArchiveLocation extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
 		];
-		if($this->type == 'room') {
-			$this->templateColumns['storage'] = [
-				'attribute' => 'storage',
-				'header' => Yii::t('app', 'Storage'),
-				'value' => function($model, $key, $index, $column) {
-					return self::parseStorage($model->getRoomStorage(true, 'title'), ',');
-				},
-				'filter' => ArchiveStorage::getStorage(),
-				'format' => 'html',
-			];
-		}
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [
 				'attribute' => 'publish',

@@ -398,6 +398,18 @@ class Archives extends \app\components\ActiveRecord
 			},
 			'filter' => self::getImageType(),
 		];
+		if(ArchiveSetting::getInfo('fond_sidkkas')) {
+			if(!Yii::$app->request->get('id')) {
+				$this->templateColumns['sidkkas'] = [
+					'attribute' => 'sidkkas',
+					'value' => function($model, $key, $index, $column) {
+						return $this->filterYesNo($model->sidkkas);
+					},
+					'filter' => $this->filterYesNo(),
+					'contentOptions' => ['class'=>'center'],
+				];
+			}
+		}
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
 			'value' => function($model, $key, $index, $column) {
@@ -437,18 +449,6 @@ class Archives extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
 		];
-		if(ArchiveSetting::getInfo('fond_sidkkas')) {
-			if(!Yii::$app->request->get('id')) {
-				$this->templateColumns['sidkkas'] = [
-					'attribute' => 'sidkkas',
-					'value' => function($model, $key, $index, $column) {
-						return $this->filterYesNo($model->sidkkas);
-					},
-					'filter' => $this->filterYesNo(),
-					'contentOptions' => ['class'=>'center'],
-				];
-			}
-		}
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [
 				'attribute' => 'publish',

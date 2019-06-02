@@ -195,6 +195,16 @@ class ArchiveStorage extends \app\components\ActiveRecord
 				return $model->storage_desc_i;
 			},
 		];
+		$this->templateColumns['rooms'] = [
+			'attribute' => 'rooms',
+			'value' => function($model, $key, $index, $column) {
+				$rooms = $model->getRooms(true);
+				return Html::a($rooms, ['location/room/manage', 'storage'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} rooms', ['count'=>$rooms])]);
+			},
+			'filter' => false,
+			'contentOptions' => ['class'=>'center'],
+			'format' => 'html',
+		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
 			'value' => function($model, $key, $index, $column) {
@@ -233,16 +243,6 @@ class ArchiveStorage extends \app\components\ActiveRecord
 				return Yii::$app->formatter->asDatetime($model->updated_date, 'medium');
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
-		];
-		$this->templateColumns['rooms'] = [
-			'attribute' => 'rooms',
-			'value' => function($model, $key, $index, $column) {
-				$rooms = $model->getRooms(true);
-				return Html::a($rooms, ['location/room/manage', 'storage'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} rooms', ['count'=>$rooms])]);
-			},
-			'filter' => false,
-			'contentOptions' => ['class'=>'center'],
-			'format' => 'html',
 		];
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [
