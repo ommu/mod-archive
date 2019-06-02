@@ -125,7 +125,7 @@ class Archives extends ArchivesModel
 		$query->andFilterWhere([
 			't.id' => $this->id,
 			't.sidkkas' => $this->sidkkas,
-			't.parent_id' => $this->parent_id,
+			't.parent_id' => isset($params['parent']) ? $params['parent'] : $this->parent_id,
 			't.level_id' => isset($params['level']) ? $params['level'] : $this->level_id,
 			't.image_type' => $this->image_type,
 			'cast(t.creation_date as date)' => $this->creation_date,

@@ -109,7 +109,7 @@ class ArchiveLocation extends ArchiveLocationModel
 		// grid filtering conditions
 		$query->andFilterWhere([
 			't.id' => $this->id,
-			't.parent_id' => $this->parent_id,
+			't.parent_id' => isset($params['parent']) ? $params['parent'] : $this->parent_id,
 			't.type' => $this->type,
 			'cast(t.creation_date as date)' => $this->creation_date,
 			't.creation_id' => isset($params['creation']) ? $params['creation'] : $this->creation_id,
