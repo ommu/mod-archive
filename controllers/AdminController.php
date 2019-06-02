@@ -302,7 +302,7 @@ class AdminController extends Controller
 			'code' => $model->code,
 			'level' => $model->level->level_name_i,
 			'label' => $model->title,
-			'inode' => !empty($model->archives) ? true : false,
+			'inode' => $model->getArchives('count') ? true : false,
 			'view-url' => Url::to(['view', 'id'=>$model->id]),
 			'update-url' => Url::to(['update', 'id'=>$model->id]),
 		];
