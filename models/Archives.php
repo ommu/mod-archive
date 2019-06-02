@@ -719,6 +719,8 @@ class Archives extends \app\components\ActiveRecord
 			$items[] = Yii::t('app', 'Description: {location-desc}', ['location-desc'=>$model->location_desc]);
 		if(isset($model->storage))
 			$items[] = Yii::t('app', 'Storage: {storage-name}', ['storage-name'=>$model->storage->storage_name_i]);
+		if($model->weight != '')
+			$items[] = Yii::t('app', 'Weight: {weight}', ['weight'=>$model->weight]);
 
 		return Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']);
 	}
