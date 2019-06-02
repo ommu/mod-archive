@@ -21,7 +21,10 @@
  *
  * The followings are the available model relations:
  * @property ArchiveLocation $room
+ * @property ArchiveLocation $depo
+ * @property ArchiveLocation $building
  * @property Archives $archive
+ * @property ArchiveLocation $storage
  * @property Users $creation
  *
  */
@@ -39,8 +42,8 @@ class ArchiveRelatedLocation extends \app\components\ActiveRecord
 	public $roomLocationName;
 	public $creationDisplayname;
 
-	public $building;
-	public $depo;
+	public $building_id;
+	public $depo_id;
 
 	/**
 	 * @return string the associated database table name
@@ -56,7 +59,7 @@ class ArchiveRelatedLocation extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['archive_id', 'room_id', 'storage_id', 'location_desc', 'building', 'depo'], 'required'],
+			[['archive_id', 'room_id', 'storage_id', 'location_desc', 'building_id', 'depo_id'], 'required'],
 			[['archive_id', 'room_id', 'storage_id', 'creation_id'], 'integer'],
 			[['location_desc'], 'string'],
 			[['room_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLocation::className(), 'targetAttribute' => ['room_id' => 'id']],
@@ -81,8 +84,8 @@ class ArchiveRelatedLocation extends \app\components\ActiveRecord
 			'archiveTitle' => Yii::t('app', 'Archive'),
 			'roomLocationName' => Yii::t('app', 'Room'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
-			'building' => Yii::t('app', 'Building'),
-			'depo' => Yii::t('app', 'Depo'),
+			'building_id' => Yii::t('app', 'Building'),
+			'depo_id' => Yii::t('app', 'Depo'),
 		];
 	}
 
@@ -97,9 +100,27 @@ class ArchiveRelatedLocation extends \app\components\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
+	public function getDepo()
+	{
+		return $this->hasOne(ArchiveLocation::className(), ['id' => 'parent_id'])
+			->via('room');
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getBuilding()
+	{
+		return $this->hasOne(ArchiveLocation::className(), ['id' => 'parent_id'])
+			->via('depo');
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
 	public function getStorage()
 	{
-		return $this->hasOne(ArchiveLocation::className(), ['id' => 'storage_id']);
+		return $this->hasOne(ArchiveStorage::className(), ['id' => 'storage_id']);
 	}
 
 	/**
@@ -218,8 +239,8 @@ class ArchiveRelatedLocation extends \app\components\ActiveRecord
 		// $this->archiveTitle = isset($this->archive) ? $this->archive->title : '-';
 		// $this->roomLocationName = isset($this->room) ? $this->room->location_name : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
-		$this->building = isset($this->room) ? $this->room->parent->parent_id : null;
-		$this->depo = isset($this->room) ? $this->room->parent_id : null;
+		$this->building_id = isset($this->depo) ? $this->depo->parent_id : null;
+		$this->depo_id = isset($this->room) ? $this->room->parent_id : null;
 	}
 
 	/**

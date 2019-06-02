@@ -31,9 +31,14 @@
  * @property ArchiveRelatedCreator[] $relatedCreator
  * @property ArchiveRelatedRepository[] $relatedRepository
  * @property ArchiveRelatedSubject[] $relatedSubject
+ * @property ArchiveRelatedSubject[] $relatedFunction
+ * @property ArchiveRelatedLocation[] $relatedLocation
+ * @property Archives[] $archives
+ * @property Archives $parent
  * @property ArchiveLevel $level
  * @property Users $creation
  * @property Users $modified
+ * @property ArchiveRelatedLocation $location
  *
  */
 
@@ -186,6 +191,14 @@ class Archives extends \app\components\ActiveRecord
 		return $this->hasMany(ArchiveRelatedSubject::className(), ['archive_id' => 'id'])
 			->alias('functionRelation')
 			->andOnCondition([sprintf('%s.type', 'functionRelation') => 'function']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getRelatedLocation()
+	{
+		return $this->hasMany(ArchiveRelatedLocation::className(), ['archive_id' => 'id']);
 	}
 
 	/**
@@ -468,6 +481,97 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * function getLevel
+	 */
+	public function getChildLevels($isNewRecord=false)
+	{
+		$levels = ArchiveLevel::getLevel(1);
+		$child = $this->level->child;
+		if(!is_array($child))
+			$child = [];
+
+		$items = $child;
+		if(!$isNewRecord)
+			$items = ArrayHelper::merge(explode(',', $this->level_id), $items);
+
+		foreach ($levels as $key => $val) {
+			if(!ArrayHelper::isIn($key, $items))
+				ArrayHelper::remove($levels, $key);
+		}
+
+		return $levels;
+	}
+
+	/**
+	 * function getChilds
+	 */
+	public function getChilds()
+	{
+		if(strtolower($this->level->level_name_i) == 'item')
+			return [];
+
+		$childs = $this->getArchives('array');
+		if(empty($childs))
+			return [];
+
+		// $archives = self::find()
+		// 	->select(['id', 'level_id'])
+		// 	->where(['parent_id' => $this->id])
+		// 	->andWhere(['IN', 'publish', [0,1]])
+		// 	->all();
+
+		// if(!empty($archives)) {
+		// 	foreach ($archives as $archive) {
+		// 		if(strtolower($archive->level->level_name_i) != 'item') {
+		// 			$childArchives = $archive->getChilds();
+		// 			if(!empty($childArchives)) {
+		// 				foreach ($childArchives as $key => $val) {
+		// 					if(array_key_exists($key, $childs))
+		// 						$childs[$key] = $childs[$key] + $val;
+		// 					else
+		// 						$childs[$key] = $val;
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
+
+		if($this->medium)
+			return ArrayHelper::merge($childs, [0=>$this->medium]);
+
+		return $childs;
+	}
+
+	/**
+	 * function getReferenceCode
+	 */
+	public function getReferenceCode($result=false)
+	{
+		if($result == true)
+			return ArrayHelper::map($this->referenceCode, 'level', 'confirmCode');
+
+		$codes = [];
+		$levelAsKey = $this->level->level_name_i;
+		$codes[$levelAsKey]['id'] = $this->id;
+		$codes[$levelAsKey]['level'] = $levelAsKey;
+		$codes[$levelAsKey]['code'] = $this->code;
+		$codes[$levelAsKey]['confirmCode'] = $this->confirmCode;
+		$codes[$levelAsKey]['shortCode'] = $this->shortCode;
+		if(isset($this->parent))
+			$codes = ArrayHelper::merge($this->parent->getReferenceCode(), $codes);
+
+		return $codes;
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getLocation()
+	{
+		return $this->relatedLocation[0];
+	}
+
+	/**
 	 * function getPublish
 	 */
 	public static function getPublish($value=null)
@@ -499,28 +603,6 @@ class Archives extends \app\components\ActiveRecord
 			return $items[$value];
 		} else
 			return $items;
-	}
-
-	/**
-	 * function getLevel
-	 */
-	public function getChildLevels($isNewRecord=false)
-	{
-		$levels = ArchiveLevel::getLevel(1);
-		$child = $this->level->child;
-		if(!is_array($child))
-			$child = [];
-
-		$items = $child;
-		if(!$isNewRecord)
-			$items = ArrayHelper::merge(explode(',', $this->level_id), $items);
-
-		foreach ($levels as $key => $val) {
-			if(!ArrayHelper::isIn($key, $items))
-				ArrayHelper::remove($levels, $key);
-		}
-
-		return $levels;
 	}
 
 	/**
@@ -601,46 +683,6 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * function getChilds
-	 */
-	public function getChilds()
-	{
-		if(strtolower($this->level->level_name_i) == 'item')
-			return [];
-
-		$childs = $this->getArchives('array');
-		if(empty($childs))
-			return [];
-
-		// $archives = self::find()
-		// 	->select(['id', 'level_id'])
-		// 	->where(['parent_id' => $this->id])
-		// 	->andWhere(['IN', 'publish', [0,1]])
-		// 	->all();
-
-		// if(!empty($archives)) {
-		// 	foreach ($archives as $archive) {
-		// 		if(strtolower($archive->level->level_name_i) != 'item') {
-		// 			$childArchives = $archive->getChilds();
-		// 			if(!empty($childArchives)) {
-		// 				foreach ($childArchives as $key => $val) {
-		// 					if(array_key_exists($key, $childs))
-		// 						$childs[$key] = $childs[$key] + $val;
-		// 					else
-		// 						$childs[$key] = $val;
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
-
-		if($this->medium)
-			return ArrayHelper::merge($childs, [0=>$this->medium]);
-
-		return $childs;
-	}
-
-	/**
 	 * function parseChilds
 	 */
 	public static function parseChilds($childs, $id, $sep='li')
@@ -664,24 +706,21 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * function getReferenceCode
+	 * function parseLocation
 	 */
-	public function getReferenceCode($result=false)
+	public static function parseLocation($model)
 	{
-		if($result == true)
-			return ArrayHelper::map($this->referenceCode, 'level', 'confirmCode');
+		if($model == null)
+			return '-';
 
-		$codes = [];
-		$levelAsKey = $this->level->level_name_i;
-		$codes[$levelAsKey]['id'] = $this->id;
-		$codes[$levelAsKey]['level'] = $levelAsKey;
-		$codes[$levelAsKey]['code'] = $this->code;
-		$codes[$levelAsKey]['confirmCode'] = $this->confirmCode;
-		$codes[$levelAsKey]['shortCode'] = $this->shortCode;
-		if(isset($this->parent))
-			$codes = ArrayHelper::merge($this->parent->getReferenceCode(), $codes);
+		if(isset($model->room))
+			$items[] = Yii::t('app', 'Location: {room}, {depo}, {building}', ['room'=>$model->room->location_name, 'depo'=>$model->depo->location_name, 'building'=>$model->building->location_name]);
+		if($model->location_desc != '')
+			$items[] = Yii::t('app', 'Description: {location-desc}', ['location-desc'=>$model->location_desc]);
+		if(isset($model->storage))
+			$items[] = Yii::t('app', 'Storage: {storage-name}', ['storage-name'=>$model->storage->storage_name_i]);
 
-		return $codes;
+		return Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']);
 	}
 
 	/**

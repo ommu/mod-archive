@@ -97,9 +97,7 @@ $attributes = [
 	],
 	[
 		'attribute' => 'creator',
-		'value' => function ($model) {
-			return Archives::parseRelated($model->getRelatedCreator(true, 'title'), 'creator');
-		},
+		'value' => Archives::parseRelated($model->getRelatedCreator(true, 'title'), 'creator'),
 		'format' => 'html',
 	],
 	[
@@ -114,16 +112,12 @@ $attributes = [
 	],
 	[
 		'attribute' => 'subject',
-		'value' => function ($model) {
-			return Archives::parseSubject($model->getRelatedSubject(true, 'title'), 'subjectId');
-		},
+		'value' => Archives::parseSubject($model->getRelatedSubject(true, 'title'), 'subjectId'),
 		'format' => 'html',
 	],
 	[
 		'attribute' => 'function',
-		'value' => function ($model) {
-			return Archives::parseSubject($model->getRelatedFunction(true, 'title'), 'functionId');
-		},
+		'value' => Archives::parseSubject($model->getRelatedFunction(true, 'title'), 'functionId'),
 		'format' => 'html',
 	],
 	[
@@ -133,15 +127,18 @@ $attributes = [
 	],
 	[
 		'attribute' => 'media',
-		'value' => function ($model) {
-			return Archives::parseRelated($model->getRelatedMedia(true, 'title'));
-		},
+		'value' => Archives::parseRelated($model->getRelatedMedia(true, 'title')),
 		'format' => 'html',
 	],
 	[
 		'attribute' => 'image_type',
 		'value' => Archives::getImageType($model->image_type ? $model->image_type : '-'),
 		'visible' => in_array('image_type', $model->level->field) ? true : false,
+	],
+	[
+		'attribute' => 'location',
+		'value' => Archives::parseLocation($model->location),
+		'format' => 'html',
 	],
 	[
 		'attribute' => 'creation_date',

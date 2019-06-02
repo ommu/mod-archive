@@ -26,8 +26,8 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' =>
 $this->params['breadcrumbs'][] = Yii::t('app', 'Storage Location');
 
 $js = <<<JS
-	var a, b, c;
-	var v_depo = '$model->depo';
+	var building, depo, storage;
+	var v_depo = '$model->depo_id';
 	var v_room = '$model->room_id';
 	var v_storage = '$model->storage_id';
 JS;
@@ -45,7 +45,7 @@ JS;
 	]);?>
 
 	<?php $getDepoUrl = Url::to(['location/depo/suggest']);
-	echo $form->field($model, 'building')
+	echo $form->field($model, 'building_id')
 		->widget(Selectize::className(), [
 			'cascade' => true,
 			'options' => [
@@ -55,17 +55,17 @@ JS;
 			'pluginOptions' => [
 				'onChange' => new JsExpression('function(value) {
 					if (!value.length) return;
-					depo.disable(); 
-					depo.clearOptions();
-					depo.load(function(callback) {
-						a && a.abort();
-						a = $.ajax({
+					depo_id.disable(); 
+					depo_id.clearOptions();
+					depo_id.load(function(callback) {
+						building && building.abort();
+						building = $.ajax({
 							url: \''.$getDepoUrl.'\',
 							data: {\'parent\': value},
 							success: function(results) {
-								depo.removeOption(v_depo);
-								depo.showInput();
-								depo.enable();
+								depo_id.removeOption(v_depo);
+								depo_id.showInput();
+								depo_id.enable();
 								callback(results);
 							},
 							error: function() {
@@ -76,10 +76,10 @@ JS;
 				}'),
 			],
 		])
-		->label($model->getAttributeLabel('building')); ?>
+		->label($model->getAttributeLabel('building_id')); ?>
 		
 	<?php $getRoomUrl = Url::to(['location/room/suggest']);
-	echo $form->field($model, 'depo')
+	echo $form->field($model, 'depo_id')
 		->widget(Selectize::className(), [
 			'cascade' => true,
 			'options' => [
@@ -97,8 +97,8 @@ JS;
 					room_id.disable(); 
 					room_id.clearOptions();
 					room_id.load(function(callback) {
-						b && b.abort();
-						b = $.ajax({
+						depo && depo.abort();
+						depo = $.ajax({
 							url: \''.$getRoomUrl.'\',
 							data: {\'parent\': value},
 							success: function(results) {
@@ -115,7 +115,7 @@ JS;
 				}'),
 			],
 		])
-		->label($model->getAttributeLabel('depo')); ?>
+		->label($model->getAttributeLabel('depo_id')); ?>
 		
 	<?php $getRoomStorageUrl = Url::to(['location/room/storage']);
 	echo $form->field($model, 'room_id')
@@ -136,8 +136,8 @@ JS;
 					storage_id.disable(); 
 					storage_id.clearOptions();
 					storage_id.load(function(callback) {
-						c && c.abort();
-						c = $.ajax({
+						storage && storage.abort();
+						storage = $.ajax({
 							url: \''.$getRoomStorageUrl.'\',
 							data: {\'id\': value},
 							success: function(results) {
