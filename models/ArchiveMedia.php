@@ -261,7 +261,8 @@ class ArchiveMedia extends \app\components\ActiveRecord
 	 */
 	public static function getMedia($publish=null, $array=true) 
 	{
-		$model = self::find()->alias('t');
+		$model = self::find()->alias('t')
+			->select(['t.id', 't.media_name']);
 		$model->leftJoin(sprintf('%s title', SourceMessage::tableName()), 't.media_name=title.id');
 		if($publish != null)
 			$model->andWhere(['t.publish' => $publish]);

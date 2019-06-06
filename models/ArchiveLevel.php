@@ -296,7 +296,8 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	 */
 	public static function getLevel($publish=null, $array=true)
 	{
-		$model = self::find()->alias('t');
+		$model = self::find()->alias('t')
+			->select(['t.id', 't.level_name']);
 		$model->leftJoin(sprintf('%s title', SourceMessage::tableName()), 't.level_name=title.id');
 		if($publish != null)
 			$model->andWhere(['t.publish' => $publish]);

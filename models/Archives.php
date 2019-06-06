@@ -862,20 +862,6 @@ class Archives extends \app\components\ActiveRecord
 			Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARCHIVES, $event);
 
 		} else {
-			// replace code
-			// if(array_key_exists('code', $changedAttributes) && $changedAttributes['code'] != $this->code) {
-			// 	$models = self::find()
-			// 		->select(['id', 'parent_id', 'level_id', 'code'])
-			// 		->where(['parent_id'=>$this->id])
-			// 		->all();
-			// 	if(!empty($models)) {
-			// 		foreach ($models as $model) {
-			// 			$model->updateCode = true;
-			// 			$model->update(false);
-			// 		}
-			// 	}
-			// }
-
 			// update sidkkas status
 			if(array_key_exists('sidkkas', $changedAttributes) && $changedAttributes['sidkkas'] != $this->sidkkas) {
 				$models = self::find()
