@@ -29,8 +29,8 @@
 namespace ommu\archive\controllers\location;
 
 use Yii;
-use app\components\Controller;
 use yii\filters\VerbFilter;
+use app\components\Controller;
 use yii\helpers\Inflector;
 use mdm\admin\components\AccessControl;
 use ommu\archive\models\ArchiveLocation;
