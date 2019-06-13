@@ -171,6 +171,9 @@ class ArchiveStorage extends \app\components\ActiveRecord
 	{
 		parent::init();
 
+		if(!(Yii::$app instanceof \app\components\Application))
+			return;
+
 		$this->templateColumns['_no'] = [
 			'header' => Yii::t('app', 'No'),
 			'class' => 'yii\grid\SerialColumn',
