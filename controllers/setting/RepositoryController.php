@@ -78,7 +78,7 @@ class RepositoryController extends Controller
 	public function actions()
 	{
 		return [
-			'suggest' => 'ommu\archive\actions\CreatorSuggestAction',
+			'suggest' => 'ommu\archive\actions\RepositorySuggestAction',
 		];
 	}
 

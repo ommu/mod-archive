@@ -78,7 +78,7 @@ class CreatorController extends Controller
 	public function actions()
 	{
 		return [
-			'suggest' => 'ommu\archive\actions\RepositorySuggestAction',
+			'suggest' => 'ommu\archive\actions\CreatorSuggestAction',
 		];
 	}
 
