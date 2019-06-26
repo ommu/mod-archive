@@ -70,10 +70,14 @@ class Archives extends ArchivesModel
 			'creation creation', 
 			'modified modified', 
 			'relatedMedia relatedMedia', 
-			'relatedCreator.creator relatedCreator', 
-			'relatedRepository.repository relatedRepository', 
-			'relatedSubject.tag relatedSubject', 
-			'relatedFunction.tag relatedFunction'
+			'relatedCreator relatedCreator', 
+			'relatedRepository relatedRepository', 
+			'relatedSubject relatedSubject', 
+			'relatedFunction relatedFunction',
+			'relatedCreator.creator relatedCreatorRltn', 
+			'relatedRepository.repository relatedRepositoryRltn', 
+			'relatedSubject.tag relatedSubjectRltn', 
+			'relatedFunction.tag relatedFunctionRltn'
 		]);
 
 		// add conditions that should always apply here
@@ -146,10 +150,10 @@ class Archives extends ArchivesModel
 		}
 
 		if(isset($params['creatorId']) && $params['creatorId'])
-			$query->andFilterWhere(['relatedCreator.id' => $params['creatorId']]);
+			$query->andFilterWhere(['relatedCreator.creator_id' => $params['creatorId']]);
 
 		if(isset($params['repositoryId']) && $params['repositoryId'])
-			$query->andFilterWhere(['relatedRepository.id' => $params['repositoryId']]);
+			$query->andFilterWhere(['relatedRepository.repository_id' => $params['repositoryId']]);
 
 		if(isset($params['subjectId']) && $params['subjectId'])
 			$query->andFilterWhere(['relatedSubject.tag_id' => $params['subjectId']]);
@@ -163,10 +167,10 @@ class Archives extends ArchivesModel
 			->andFilterWhere(['like', 'level.message', $this->levelName])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
 			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname])
-			->andFilterWhere(['like', 'relatedCreator.creator_name', $this->creator])
-			->andFilterWhere(['like', 'relatedRepository.repository_name', $this->repository])
-			->andFilterWhere(['like', 'relatedSubject.body', $this->subject])
-			->andFilterWhere(['like', 'relatedFunction.body', $this->function]);
+			->andFilterWhere(['like', 'relatedCreatorRltn.creator_name', $this->creator])
+			->andFilterWhere(['like', 'relatedRepositoryRltn.repository_name', $this->repository])
+			->andFilterWhere(['like', 'relatedSubjectRltn.body', $this->subject])
+			->andFilterWhere(['like', 'relatedFunctionRltn.body', $this->function]);
 
 		return $dataProvider;
 	}

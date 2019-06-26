@@ -176,8 +176,8 @@ class Archives extends \app\components\ActiveRecord
 			return \yii\helpers\ArrayHelper::map($this->relatedSubject, 'tag_id', $val=='id' ? 'id' : 'tag.body');
 
 		return $this->hasMany(ArchiveRelatedSubject::className(), ['archive_id' => 'id'])
-			->alias('subjectRelation')
-			->andOnCondition([sprintf('%s.type', 'subjectRelation') => 'subject']);
+			->alias('relatedSubject')
+			->andOnCondition([sprintf('%s.type', 'relatedSubject') => 'subject']);
 	}
 
 	/**
@@ -189,8 +189,8 @@ class Archives extends \app\components\ActiveRecord
 			return \yii\helpers\ArrayHelper::map($this->relatedFunction, 'tag_id', $val=='id' ? 'id' : 'tag.body');
 
 		return $this->hasMany(ArchiveRelatedSubject::className(), ['archive_id' => 'id'])
-			->alias('functionRelation')
-			->andOnCondition([sprintf('%s.type', 'functionRelation') => 'function']);
+			->alias('relatedFunction')
+			->andOnCondition([sprintf('%s.type', 'relatedFunction') => 'function']);
 	}
 
 	/**
@@ -333,43 +333,35 @@ class Archives extends \app\components\ActiveRecord
 			},
 			'format' => 'html',
 		];
-		if(!Yii::$app->request->get('creatorId')) {
-			$this->templateColumns['creator'] = [
-				'attribute' => 'creator',
-				'label' => Yii::t('app', 'Creator'),
-				'value' => function($model, $key, $index, $column) {
-					return self::parseRelated($model->getRelatedCreator(true, 'title'), 'creator', ', ');
-				},
-				'format' => 'html',
-			];
-		}
-		if(!Yii::$app->request->get('repositoryId')) {
-			$this->templateColumns['repository'] = [
-				'attribute' => 'repository',
-				'value' => function($model, $key, $index, $column) {
-					return self::parseRelated($model->getRelatedRepository(true, 'title'), 'repository', ', ');
-				},
-				'format' => 'html',
-			];
-		}
-		if(!Yii::$app->request->get('subjectId')) {
-			$this->templateColumns['subject'] = [
-				'attribute' => 'subject',
-				'value' => function($model, $key, $index, $column) {
-					return self::parseSubject($model->getRelatedSubject(true, 'title'), 'subjectId', ', ');
-				},
-				'format' => 'html',
-			];
-		}
-		if(!Yii::$app->request->get('functionId')) {
-			$this->templateColumns['function'] = [
-				'attribute' => 'function',
-				'value' => function($model, $key, $index, $column) {
-					return self::parseSubject($model->getRelatedFunction(true, 'title'), 'functionId', ', ');
-				},
-				'format' => 'html',
-			];
-		}
+		$this->templateColumns['creator'] = [
+			'attribute' => 'creator',
+			'label' => Yii::t('app', 'Creator'),
+			'value' => function($model, $key, $index, $column) {
+				return self::parseRelated($model->getRelatedCreator(true, 'title'), 'creator', ', ');
+			},
+			'format' => 'html',
+		];
+		$this->templateColumns['repository'] = [
+			'attribute' => 'repository',
+			'value' => function($model, $key, $index, $column) {
+				return self::parseRelated($model->getRelatedRepository(true, 'title'), 'repository', ', ');
+			},
+			'format' => 'html',
+		];
+		$this->templateColumns['subject'] = [
+			'attribute' => 'subject',
+			'value' => function($model, $key, $index, $column) {
+				return self::parseSubject($model->getRelatedSubject(true, 'title'), 'subjectId', ', ');
+			},
+			'format' => 'html',
+		];
+		$this->templateColumns['function'] = [
+			'attribute' => 'function',
+			'value' => function($model, $key, $index, $column) {
+				return self::parseSubject($model->getRelatedFunction(true, 'title'), 'functionId', ', ');
+			},
+			'format' => 'html',
+		];
 		$this->templateColumns['medium'] = [
 			'attribute' => 'medium',
 			'label' => Yii::t('app', 'Medium'),
@@ -380,17 +372,15 @@ class Archives extends \app\components\ActiveRecord
 			'enableSorting' => false,
 			'format' => 'html',
 		];
-		if(!Yii::$app->request->get('mediaId')) {
-			$this->templateColumns['media'] = [
-				'attribute' => 'media',
-				'label' => Yii::t('app', 'Media'),
-				'value' => function($model, $key, $index, $column) {
-					return self::parseRelated($model->getRelatedMedia(true, 'title'), 'media', ', ');
-				},
-				'filter' => ArchiveMedia::getMedia(),
-				'format' => 'html',
-			];
-		}
+		$this->templateColumns['media'] = [
+			'attribute' => 'media',
+			'label' => Yii::t('app', 'Media'),
+			'value' => function($model, $key, $index, $column) {
+				return self::parseRelated($model->getRelatedMedia(true, 'title'), 'media', ', ');
+			},
+			'filter' => ArchiveMedia::getMedia(),
+			'format' => 'html',
+		];
 		$this->templateColumns['image_type'] = [
 			'attribute' => 'image_type',
 			'value' => function($model, $key, $index, $column) {
