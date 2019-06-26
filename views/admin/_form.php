@@ -70,7 +70,7 @@ $js = <<<JS
 		}
 	});
 JS;
-$this->registerJs($js, \yii\web\View::POS_READY);
+$this->registerJs($js, \app\components\View::POS_READY);
 
 $hintCondition = $model->isNewRecord && !$fond ? 'hint-tooltip' : '';
 $form = ActiveForm::begin([
@@ -159,6 +159,7 @@ if($fond) {
 			],
 			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a repository..')], ArchiveRepository::getRepository(1)),
 			'url' => $repositorySuggestUrl,
+			'queryParam' => 'term',
 			'pluginOptions' => [
 				'valueField' => 'id',
 				'labelField' => 'label',
@@ -178,6 +179,7 @@ if($fond) {
 		->widget(Selectize::className(), [
 			'cascade' => true,
 			'url' => $creatorSuggestUrl,
+			'queryParam' => 'term',
 			'pluginOptions' => [
 				'plugins' => ['remove_button'],
 				'valueField' => 'label',

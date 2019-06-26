@@ -30,7 +30,7 @@ $this->params['menu']['content'] = [
 
 <div class="archive-level-view">
 
-<?php 
+<?php
 $attributes = [
 	'id',
 	[

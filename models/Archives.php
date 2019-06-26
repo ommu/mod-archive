@@ -347,10 +347,7 @@ class Archives extends \app\components\ActiveRecord
 			$this->templateColumns['repository'] = [
 				'attribute' => 'repository',
 				'value' => function($model, $key, $index, $column) {
-					$repository = $model->getRelatedRepository(true, 'title');
-					if(empty($repository))
-						return '-';
-					return implode(', ', $repository);
+					return self::parseRelated($model->getRelatedRepository(true, 'title'), 'repository', ', ');
 				},
 				'format' => 'html',
 			];

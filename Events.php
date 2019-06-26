@@ -67,7 +67,11 @@ class Events extends \yii\base\BaseObject
 		// drop difference media
 		if(!empty($oldMedia)) {
 			foreach ($oldMedia as $key => $val) {
-				ArchiveRelatedMedia::findOne($key)->delete();
+				ArchiveRelatedMedia::find()
+					->select(['id'])
+					->andWhere(['id' => $key])
+					->one()
+					->delete();
 			}
 		}
 	}
@@ -115,7 +119,7 @@ class Events extends \yii\base\BaseObject
 			foreach ($oldCreator as $key => $val) {
 				ArchiveRelatedCreator::find()
 					->select(['id'])
-					->where(['archive_id'=>$archive->id, 'creator_id'=>$key])
+					->andWhere(['archive_id'=>$archive->id, 'creator_id'=>$key])
 					->one()
 					->delete();
 			}
@@ -166,7 +170,10 @@ class Events extends \yii\base\BaseObject
 				$model->save();
 			} else {
 				// drop old repository
-				ArchiveRelatedRepository::findOne(key($oldRepository))
+				ArchiveRelatedRepository::find()
+					->select(['id'])
+					->andWhere(['id'=>key($oldRepository)])
+					->one()
 					->delete();
 			}
 		}
@@ -256,7 +263,11 @@ class Events extends \yii\base\BaseObject
 		// drop difference storage
 		if(!empty($oldStorage)) {
 			foreach ($oldStorage as $key => $val) {
-				ArchiveRoomStorage::findOne($key)->delete();
+				ArchiveRoomStorage::find()
+					->select(['id'])
+					->andWhere(['id' => $key])
+					->one()
+					->delete();
 			}
 		}
 		

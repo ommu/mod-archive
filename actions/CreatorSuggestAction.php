@@ -33,7 +33,7 @@ class CreatorSuggestAction extends \yii\base\Action
 	 */
 	public function run()
 	{
-		$term = Yii::$app->request->get('query');
+		$term = Yii::$app->request->get('term');
 
 		if($term == null) return [];
 
