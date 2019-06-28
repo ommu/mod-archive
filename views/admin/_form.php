@@ -26,7 +26,7 @@ use ommu\archive\models\ArchiveRepository;
 
 $redactorOptions = [
 	'buttons' => ['html', 'format', 'bold', 'italic', 'deleted'],
-	'plugins' => ['fontcolor','imagemanager']
+	'plugins' => ['fontcolor', 'imagemanager']
 ];
 
 if(!$fond)
@@ -245,7 +245,7 @@ echo $form->field($model, 'subject')
 
 <?php $imageType = Archives::getImageType();
 	echo $form->field($model, 'image_type')
-		->radioList($imageType, ['prompt' => ''])
+		->radioList($imageType, ['prompt'=>''])
 		->label($model->getAttributeLabel('image_type'));?>
 
 <div class="ln_solid"></div>
@@ -253,7 +253,7 @@ echo $form->field($model, 'subject')
 
 $publish = Archives::getPublish();
 echo $form->field($model, 'publish')
-	->dropDownList($publish, ['prompt' => ''])
+	->dropDownList($publish, ['prompt'=>''])
 	->label($model->getAttributeLabel('publish')); ?>
 
 <?php if($setting->fond_sidkkas && ($fond || (!$model->isNewRecord && in_array('sidkkas', $model->level->field)))) {

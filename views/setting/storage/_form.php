@@ -32,7 +32,7 @@ use ommu\archive\models\ArchiveStorage;
 
 <?php $parentId = ArchiveStorage::getStorage();
 echo $form->field($model, 'parent_id')
-	->dropDownList($parentId, ['prompt' => ''])
+	->dropDownList($parentId, ['prompt'=>''])
 	->label($model->getAttributeLabel('parent_id')); ?>
 
 <?php echo $form->field($model, 'storage_name_i')
