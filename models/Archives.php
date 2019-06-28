@@ -208,11 +208,12 @@ class Archives extends \app\components\ActiveRecord
 	public function getArchives($type='relation', $publish=null)
 	{
 		if($type == 'relation') {
-			$model = $this->hasMany(Archives::className(), ['parent_id' => 'id']);
+			$model = $this->hasMany(Archives::className(), ['parent_id' => 'id'])
+				->alias('archives');
 			if($publish != null)
-				return $model->andOnCondition([sprintf('%s.publish', Archives::tableName()) => $publish]);
+				return $model->andOnCondition([sprintf('%s.publish', 'archives') => $publish]);
 			else
-				return $model->andOnCondition(['IN', sprintf('%s.publish', Archives::tableName()), [0,1]]);
+				return $model->andOnCondition(['IN', sprintf('%s.publish', 'archives'), [0,1]]);
 		}
 
 		$model = Archives::find()

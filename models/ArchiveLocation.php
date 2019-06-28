@@ -128,7 +128,8 @@ class ArchiveLocation extends \app\components\ActiveRecord
 	{
 		if($count == false) {
 			return $this->hasMany(ArchiveLocation::className(), ['parent_id' => 'id'])
-				->andOnCondition([sprintf('%s.publish', ArchiveLocation::tableName()) => $publish]);
+				->alias('childs')
+				->andOnCondition([sprintf('%s.publish', 'childs') => $publish]);
 		}
 
 		$model = ArchiveLocation::find()
