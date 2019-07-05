@@ -130,7 +130,7 @@ class StorageController extends Controller
 		$this->view->title = Yii::t('app', 'Create Storage');
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_create', [
+		return $this->oRender('admin_create', [
 			'model' => $model,
 		]);
 	}
@@ -163,7 +163,7 @@ class StorageController extends Controller
 		$this->view->title = Yii::t('app', 'Update Storage: {storage-name}', ['storage-name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_update', [
+		return $this->oRender('admin_update', [
 			'model' => $model,
 		]);
 	}

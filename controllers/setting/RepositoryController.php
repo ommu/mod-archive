@@ -147,7 +147,7 @@ class RepositoryController extends Controller
 		$this->view->title = Yii::t('app', 'Create Archival Institution');
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_create', [
+		return $this->oRender('admin_create', [
 			'model' => $model,
 		]);
 	}
@@ -180,7 +180,7 @@ class RepositoryController extends Controller
 		$this->view->title = Yii::t('app', 'Update Archival Institution: {repository-name}', ['repository-name' => $model->repository_name]);
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_update', [
+		return $this->oRender('admin_update', [
 			'model' => $model,
 		]);
 	}

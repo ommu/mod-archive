@@ -130,7 +130,7 @@ class LevelController extends Controller
 		$this->view->title = Yii::t('app', 'Create Level of Description');
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_create', [
+		return $this->oRender('admin_create', [
 			'model' => $model,
 		]);
 	}
@@ -163,7 +163,7 @@ class LevelController extends Controller
 		$this->view->title = Yii::t('app', 'Update Level of Description: {level-name}', ['level-name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_update', [
+		return $this->oRender('admin_update', [
 			'model' => $model,
 		]);
 	}

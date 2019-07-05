@@ -144,7 +144,7 @@ class AdminController extends Controller
 		$this->view->title = Yii::t('app', 'Create {title}', ['title' => $this->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_create', [
+		return $this->oRender('admin_create', [
 			'model' => $model,
 		]);
 	}
@@ -182,7 +182,7 @@ class AdminController extends Controller
 		$this->view->title = Yii::t('app', 'Update {title}: {location-name}', ['title' => $this->title, 'location-name' => $model->location_name]);
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_update', [
+		return $this->oRender('admin_update', [
 			'model' => $model,
 		]);
 	}

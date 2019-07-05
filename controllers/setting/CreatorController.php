@@ -147,7 +147,7 @@ class CreatorController extends Controller
 		$this->view->title = Yii::t('app', 'Create Authority Record');
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_create', [
+		return $this->oRender('admin_create', [
 			'model' => $model,
 		]);
 	}
@@ -180,7 +180,7 @@ class CreatorController extends Controller
 		$this->view->title = Yii::t('app', 'Update Authority Record: {creator-name}', ['creator-name' => $model->creator_name]);
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_update', [
+		return $this->oRender('admin_update', [
 			'model' => $model,
 		]);
 	}
