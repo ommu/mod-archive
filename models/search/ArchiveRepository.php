@@ -67,7 +67,8 @@ class ArchiveRepository extends ArchiveRepositoryModel
 		$query->joinWith([
 			'creation creation', 
 			'modified modified'
-		]);
+		])
+		->groupBy(['id']);
 
 		// add conditions that should always apply here
 		$dataParams = [

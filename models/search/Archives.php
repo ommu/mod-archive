@@ -78,7 +78,8 @@ class Archives extends ArchivesModel
 			'relatedRepository.repository relatedRepositoryRltn', 
 			'relatedSubject.tag relatedSubjectRltn', 
 			'relatedFunction.tag relatedFunctionRltn'
-		]);
+		])
+		->groupBy(['id']);
 
 		// add conditions that should always apply here
 		$dataParams = [

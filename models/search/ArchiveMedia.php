@@ -69,7 +69,8 @@ class ArchiveMedia extends ArchiveMediaModel
 			'description description', 
 			'creation creation', 
 			'modified modified'
-		]);
+		])
+		->groupBy(['id']);
 
 		// add conditions that should always apply here
 		$dataParams = [

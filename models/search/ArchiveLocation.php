@@ -69,7 +69,8 @@ class ArchiveLocation extends ArchiveLocationModel
 			'creation creation', 
 			'modified modified', 
 			'roomStorage roomStorage'
-		]);
+		])
+		->groupBy(['id']);
 
 		// add conditions that should always apply here
 		$dataParams = [
