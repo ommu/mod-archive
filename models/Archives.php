@@ -624,7 +624,7 @@ class Archives extends \app\components\ActiveRecord
 		if(!is_array($relatedMedia) || (is_array($relatedMedia) && empty($relatedMedia)))
 			return '-';
 
-		$items = self::getUrlFormat($relatedMedia, $controller, true);
+		$items = self::getRelatedUrl($relatedMedia, $controller, true);
 
 		if($sep == 'li') {
 			return Html::ul($items, ['item' => function($item, $index) {
@@ -636,9 +636,9 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * function getUrlFormat
+	 * function getRelatedUrl
 	 */
-	public static function getUrlFormat($relates, $controller, $hyperlink=false)
+	public static function getRelatedUrl($relates, $controller, $hyperlink=false)
 	{
 		$items = [];
 		foreach ($relates as $key => $val) {
