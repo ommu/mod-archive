@@ -54,11 +54,11 @@ array_push($columnData, [
 	'buttons' => [
 		'view' => function ($url, $model, $key) {
 			$context = $this->context;
-			return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, ['title' => Yii::t('app', 'Detail {title}', ['title'=>Yii::t('app', $context->title)]), 'class'=>'modal-btn']);
+			return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, ['title'=>Yii::t('app', 'Detail {title}', ['title'=>Yii::t('app', $context->title)]), 'class'=>'modal-btn']);
 		},
 		'update' => function ($url, $model, $key) {
 			$context = $this->context;
-			return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, ['title' => Yii::t('app', 'Update {title}', ['title'=>Yii::t('app', $context->title)]), 'class'=>'modal-btn']);
+			return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, ['title'=>Yii::t('app', 'Update {title}', ['title'=>Yii::t('app', $context->title)]), 'class'=>'modal-btn']);
 		},
 		'delete' => function ($url, $model, $key) {
 			$context = $this->context;
