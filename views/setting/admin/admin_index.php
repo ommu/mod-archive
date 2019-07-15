@@ -17,7 +17,6 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
-use ommu\archive\models\ArchiveSetting;
 
 $this->params['breadcrumbs'][] = Yii::t('app', 'Archive Settings');
 ?>
@@ -35,7 +34,7 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Archive Settings');
 			'license',
 			[
 				'attribute' => 'permission',
-				'value' => ArchiveSetting::getPermission($model->permission),
+				'value' => $model::getPermission($model->permission),
 			],
 			[
 				'attribute' => 'meta_description',
@@ -52,11 +51,11 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Archive Settings');
 			],
 			[
 				'attribute' => 'fond_sidkkas',
-				'value' => ArchiveSetting::getFondSidkkas($model->fond_sidkkas),
+				'value' => $model::getFondSidkkas($model->fond_sidkkas),
 			],
 			[
 				'attribute' => 'maintenance_mode',
-				'value' => ArchiveSetting::getFondSidkkas($model->maintenance_mode),
+				'value' => $model::getFondSidkkas($model->maintenance_mode),
 			],
 			[
 				'attribute' => 'modified_date',

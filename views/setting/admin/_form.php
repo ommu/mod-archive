@@ -16,7 +16,6 @@
 
 use yii\helpers\Html;
 use app\components\widgets\ActiveForm;
-use ommu\archive\models\ArchiveSetting;
 ?>
 
 <div class="archive-setting-form">
@@ -42,7 +41,7 @@ echo $form->field($model, 'license')
 	->label($model->getAttributeLabel('license'))
 	->hint(Yii::t('app', 'Enter the your license key that is provided to you when you purchased this plugin. If you do not know your license key, please contact support team.').'<br/>'.Yii::t('app', 'Format: XXXX-XXXX-XXXX-XXXX')); ?>
 
-<?php $permission = ArchiveSetting::getPermission();
+<?php $permission = $model::getPermission();
 echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hint}{input}{error}{endWrapper}'])
 	->radioList($permission)
 	->label($model->getAttributeLabel('permission'))
@@ -64,12 +63,12 @@ echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hi
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('reference_code_separator')); ?>
 
-<?php $fondSidkka = ArchiveSetting::getFondSidkkas();
+<?php $fondSidkka = $model::getFondSidkkas();
 echo $form->field($model, 'fond_sidkkas')
 	->dropDownList($fondSidkka, ['prompt'=>''])
 	->label($model->getAttributeLabel('fond_sidkkas')); ?>
 
-<?php $fondSidkka = ArchiveSetting::getFondSidkkas();
+<?php $fondSidkka = $model::getFondSidkkas();
 echo $form->field($model, 'maintenance_mode')
 	->dropDownList($fondSidkka, ['prompt'=>''])
 	->label($model->getAttributeLabel('maintenance_mode')); ?>
