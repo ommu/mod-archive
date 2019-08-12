@@ -5,7 +5,7 @@
  * This is the ActiveQuery class for [[\ommu\archive\models\ArchiveRelatedLocation]].
  * @see \ommu\archive\models\ArchiveRelatedLocation
  * 
- * @author Putra Sudaryanto <putra@sudaryanto.id>
+ * @author Putra Sudaryanto <putra@ommu.co>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2019 OMMU (www.ommu.co)
  * @created date 31 May 2019, 21:23 WIB

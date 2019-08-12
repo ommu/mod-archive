@@ -6,7 +6,7 @@
  * @var $model ommu\archive\models\ArchiveCreator
  * @var $searchModel ommu\archive\models\search\ArchiveCreator
  *
- * @author Putra Sudaryanto <putra@sudaryanto.id>
+ * @author Putra Sudaryanto <putra@ommu.co>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2019 OMMU (www.ommu.co)
  * @created date 4 April 2019, 15:05 WIB

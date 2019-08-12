@@ -5,7 +5,7 @@
  * This is the ActiveQuery class for [[\ommu\archive\models\ArchiveCreator]].
  * @see \ommu\archive\models\ArchiveCreator
  * 
- * @author Putra Sudaryanto <putra@sudaryanto.id>
+ * @author Putra Sudaryanto <putra@ommu.co>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2019 OMMU (www.ommu.co)
  * @created date 3 April 2019, 16:18 WIB
