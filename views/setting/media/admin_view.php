@@ -52,6 +52,15 @@ $attributes = [
 		'value' => $model->media_desc_i,
 	],
 	[
+		'attribute' => 'archives',
+		'value' => function ($model) {
+			$archives = $model->getArchives(true);
+			return Html::a($archives, ['admin/manage', 'mediaId'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
+		},
+		'format' => 'html',
+		'visible' => !$small,
+	],
+	[
 		'attribute' => 'creation_date',
 		'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),
 		'visible' => !$small,
@@ -74,15 +83,6 @@ $attributes = [
 	[
 		'attribute' => 'updated_date',
 		'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
-		'visible' => !$small,
-	],
-	[
-		'attribute' => 'archives',
-		'value' => function ($model) {
-			$archives = $model->getArchives(true);
-			return Html::a($archives, ['admin/manage', 'mediaId'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
-		},
-		'format' => 'html',
 		'visible' => !$small,
 	],
 	[

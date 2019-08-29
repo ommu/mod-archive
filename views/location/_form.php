@@ -35,7 +35,7 @@ use yii\helpers\ArrayHelper;
 			'encode' => false,
 		],
 	],
-]);?>
+]); ?>
 
 <?php //echo $form->errorSummary($model);?>
 

@@ -53,6 +53,15 @@ $attributes = [
 		'value' => $model->storage_desc_i,
 	],
 	[
+		'attribute' => 'storages',
+		'value' => function ($model) {
+			$storages = $model->getRooms(true);
+			return Html::a($storages, ['location/room/manage', 'storage'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} storages', ['count'=>$storages])]);
+		},
+		'format' => 'html',
+		'visible' => !$small,
+	],
+	[
 		'attribute' => 'creation_date',
 		'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),
 		'visible' => !$small,
@@ -75,15 +84,6 @@ $attributes = [
 	[
 		'attribute' => 'updated_date',
 		'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
-		'visible' => !$small,
-	],
-	[
-		'attribute' => 'storages',
-		'value' => function ($model) {
-			$storages = $model->getRooms(true);
-			return Html::a($storages, ['location/room/manage', 'storage'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} storages', ['count'=>$storages])]);
-		},
-		'format' => 'html',
 		'visible' => !$small,
 	],
 	[
