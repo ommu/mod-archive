@@ -133,7 +133,8 @@ class ArchiveLocation extends \app\components\ActiveRecord
 		}
 
 		$model = ArchiveLocation::find()
-			->where(['parent_id' => $this->id]);
+			->alias('t')
+			->where(['t.parent_id' => $this->id]);
 		if($publish == 0)
 			$model->unpublish();
 		elseif($publish == 1)

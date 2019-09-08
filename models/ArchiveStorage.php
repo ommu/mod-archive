@@ -109,7 +109,8 @@ class ArchiveStorage extends \app\components\ActiveRecord
 			return $this->hasMany(ArchiveRoomStorage::className(), ['storage_id' => 'id']);
 
 		$model = ArchiveRoomStorage::find()
-			->where(['storage_id' => $this->id]);
+			->alias('t')
+			->where(['t.storage_id' => $this->id]);
 		$rooms = $model->count();
 
 		return $rooms ? $rooms : 0;

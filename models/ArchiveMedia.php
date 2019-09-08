@@ -104,7 +104,8 @@ class ArchiveMedia extends \app\components\ActiveRecord
 			return $this->hasMany(ArchiveRelatedMedia::className(), ['media_id' => 'id']);
 
 		$model = ArchiveRelatedMedia::find()
-			->where(['media_id' => $this->id]);
+			->alias('t')
+			->where(['t.media_id' => $this->id]);
 		$archives = $model->count();
 
 		return $archives ? $archives : 0;

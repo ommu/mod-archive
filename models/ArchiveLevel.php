@@ -115,7 +115,8 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		}
 
 		$model = Archives::find()
-			->where(['level_id' => $this->id]);
+			->alias('t')
+			->where(['t.level_id' => $this->id]);
 		if($publish != null) {
 			if($publish == 0)
 				$model->unpublish();

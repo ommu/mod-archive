@@ -96,7 +96,8 @@ class ArchiveRepository extends \app\components\ActiveRecord
 			return $this->hasMany(ArchiveRelatedRepository::className(), ['repository_id' => 'id']);
 
 		$model = ArchiveRelatedRepository::find()
-			->where(['repository_id' => $this->id]);
+			->alias('t')
+			->where(['t.repository_id' => $this->id]);
 		$archives = $model->count();
 
 		return $archives ? $archives : 0;

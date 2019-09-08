@@ -57,6 +57,7 @@ $attributes = [
 		'attribute' => 'parent_id',
 		'value' => Archives::parseParent($model),
 		'format' => 'raw',
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'code',
@@ -163,7 +164,7 @@ $attributes = [
 	],
 	[
 		'attribute' => '',
-		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-primary']),
+		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-primary']),
 		'format' => 'html',
 		'visible' => !$small && Yii::$app->request->isAjax ? true : false,
 	],

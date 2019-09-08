@@ -96,7 +96,8 @@ class ArchiveCreator extends \app\components\ActiveRecord
 			return $this->hasMany(ArchiveRelatedCreator::className(), ['creator_id' => 'id']);
 
 		$model = ArchiveRelatedCreator::find()
-			->where(['creator_id' => $this->id]);
+			->alias('t')
+			->where(['t.creator_id' => $this->id]);
 		$archives = $model->count();
 
 		return $archives ? $archives : 0;
