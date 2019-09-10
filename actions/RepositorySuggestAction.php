@@ -38,8 +38,9 @@ class RepositorySuggestAction extends \yii\base\Action
 		if($term == null) return [];
 
 		$model = ArchiveRepository::find()
+			->alias('t')
 			->suggest()
-			->andWhere(['like', 'repository_name', $term])
+			->andWhere(['like', 't.repository_name', $term])
 			->limit(15)
 			->all();
 

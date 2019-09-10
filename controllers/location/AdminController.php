@@ -115,15 +115,29 @@ class AdminController extends Controller
 		$attributes = ['location_name'=>$this->title];
 		if($this->type == 'depo')
 			$attributes = ArrayHelper::merge($attributes, ['parent_id'=>ArchiveLocation::getType(ArchiveLocation::TYPE_BUILDING)]);
-		if($this->type == 'room')
+		else if($this->type == 'room')
 			$attributes = ArrayHelper::merge($attributes, ['parent_id'=>ArchiveLocation::getType(ArchiveLocation::TYPE_DEPO)]);
+		else if($this->type == 'rack') {
+			$attributes = ['location_name'=>Yii::t('app', '{rack} Number', ['rack'=>$this->title])];
+			$attributes = ArrayHelper::merge($attributes, [
+				'parent_id'=>ArchiveLocation::getType(ArchiveLocation::TYPE_ROOM),
+				'building'=>ArchiveLocation::getType(ArchiveLocation::TYPE_DEPO),
+			]);
+		}
 		$model->setAttributeLabels($attributes);
-		$model->type = $this->type;
+
 		if($this->type != 'building') {
 			$model->scenario = ArchiveLocation::SCENARIO_NOT_BUILDING;
 			if($this->type == 'room')
 				$model->scenario = ArchiveLocation::SCENARIO_ROOM;
+			else if($this->type == 'rack')
+				$model->scenario = ArchiveLocation::SCENARIO_RACK;
 		}
+
+		if(($id = Yii::$app->request->get('id')) != null)
+			$model->parent_id = $id;
+		$model->building = $model->parent->parent_id;
+		$model->type = $this->type;
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
@@ -133,8 +147,9 @@ class AdminController extends Controller
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Physical storage {title} success created.', ['title'=>strtolower($this->title)]));
-				return $this->redirect(['manage']);
-				//return $this->redirect(['view', 'id'=>$model->id]);
+				if(!Yii::$app->request->isAjax)
+					return $this->redirect(['manage']);
+				return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
 
 			} else {
 				if(Yii::$app->request->isAjax)
@@ -163,6 +178,8 @@ class AdminController extends Controller
 			$model->scenario = ArchiveLocation::SCENARIO_NOT_BUILDING;
 			if($this->type == 'room')
 				$model->scenario = ArchiveLocation::SCENARIO_ROOM;
+			else if($this->type == 'rack')
+				$model->scenario = ArchiveLocation::SCENARIO_RACK;
 		}
 
 		if(Yii::$app->request->isPost) {
@@ -173,7 +190,9 @@ class AdminController extends Controller
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Physical storage {title} success updated.', ['title'=>strtolower($this->title)]));
-				return $this->redirect(['manage']);
+				if(!Yii::$app->request->isAjax)
+					return $this->redirect(['manage']);
+				return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
 
 			} else {
 				if(Yii::$app->request->isAjax)

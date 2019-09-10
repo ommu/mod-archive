@@ -56,9 +56,12 @@ class ArchiveLocation extends \app\components\ActiveRecord
 	const TYPE_BUILDING = 'building';
 	const TYPE_DEPO = 'depo';
 	const TYPE_ROOM = 'room';
+	const TYPE_RACK = 'rack';
+
 
 	const SCENARIO_NOT_BUILDING = 'notBuildingForm';
 	const SCENARIO_ROOM = 'roomForm';
+	const SCENARIO_RACK = 'rackForm';
 	const EVENT_BEFORE_SAVE_ARCHIVE_LOCATION = 'BeforeSaveArchiveLocation';
 
 	/**
@@ -78,9 +81,10 @@ class ArchiveLocation extends \app\components\ActiveRecord
 			[['type', 'location_name'], 'required'],
 			[['parent_id'], 'required', 'on' => self::SCENARIO_NOT_BUILDING],
 			[['parent_id', 'building'], 'required', 'on' => self::SCENARIO_ROOM],
+			[['parent_id', 'building'], 'required', 'on' => self::SCENARIO_RACK],
 			[['publish', 'creation_id', 'modified_id'], 'integer'],
 			[['type', 'location_desc'], 'string'],
-			[['location_desc', 'building', 'storage'], 'safe'],
+			[['parent_id', 'location_desc', 'building', 'storage'], 'safe'],
 			[['location_name'], 'string', 'max' => 128],
 		];
 	}
@@ -92,6 +96,8 @@ class ArchiveLocation extends \app\components\ActiveRecord
 	{
 		$scenarios = parent::scenarios();
 		$scenarios[self::SCENARIO_NOT_BUILDING] = ['publish', 'parent_id', 'location_name', 'location_desc', 'building', 'storage'];
+		$scenarios[self::SCENARIO_ROOM] = ['publish', 'parent_id', 'location_name', 'location_desc', 'building', 'storage'];
+		$scenarios[self::SCENARIO_RACK] = ['publish', 'parent_id', 'location_name', 'building', 'storage'];
 		return $scenarios;
 	}
 
@@ -216,9 +222,9 @@ class ArchiveLocation extends \app\components\ActiveRecord
 		if($this->type != 'building') {
 			$this->templateColumns['parentName'] = [
 				'attribute' => 'parentName',
-				'label' => Inflector::humanize($this->type == 'depo' ? 'building' :'depo'),
+				'label' => Inflector::humanize($this->type == 'depo' ? 'building' : ($this->type == 'room' ? 'depo' : 'room')),
 				'value' => function($model, $key, $index, $column) {
-					if($model->type == 'room')
+					if(in_array($model->type, ['room', 'rack']))
 						return isset($model->parent) ? $model->parent->location_name.', '.$model->parent->parent->location_name : '-';
 					return isset($model->parent) ? $model->parent->location_name : '-';
 					// return $model->parentName;
@@ -256,18 +262,22 @@ class ArchiveLocation extends \app\components\ActiveRecord
 				'format' => 'html',
 			];
 		}
-		if($this->type != 'room') {
+		if($this->type != 'rack') {
 			$this->templateColumns['childs'] = [
 				'attribute' => 'childs',
 				'label' => Inflector::humanize($this->type == 'building' ? Inflector::pluralize('depo') : Inflector::pluralize('room')),
 				'value' => function($model, $key, $index, $column) {
 					$childs = $model->getChilds(true);
-					$controller = $this->type == 'building' ? 'depo' : 'room';
-					return $childs ? Html::a($childs, ['location/'.$controller.'/manage', 'parent'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} {title}', ['count'=>$childs, 'title'=>$controller])]) : '-';
+					$controller = 'depo';
+					if($this->type == 'depo')
+						$controller = 'room';
+					if($this->type == 'room')
+						$controller = 'rack';
+					return Html::a($childs, ['location/'.$controller.'/manage', 'parent'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} {title}', ['count'=>$childs, 'title'=>$controller]), 'data-pjax'=>0]);
 				},
 				'filter' => false,
 				'contentOptions' => ['class'=>'center'],
-				'format' => 'html',
+				'format' => 'raw',
 			];
 		}
 		$this->templateColumns['creation_date'] = [
@@ -352,6 +362,7 @@ class ArchiveLocation extends \app\components\ActiveRecord
 			'building' => Yii::t('app', 'Building'),
 			'depo' => Yii::t('app', 'Depo'),
 			'room' => Yii::t('app', 'Room'),
+			'rack' => Yii::t('app', 'Rack'),
 		);
 
 		if($value !== null)
@@ -373,6 +384,14 @@ class ArchiveLocation extends \app\components\ActiveRecord
 		$model->andWhere(['type' => isset($data['type']) ? $data['type'] : 'building']);
 
 		$model = $model->orderBy('location_name ASC')->all();
+
+		if(isset($data['isDepo'])) {
+			$items = [];
+			foreach ($model as $val) {
+				$items[$val->id] = $val->location_name.', '.$val->parent->location_name;
+			}
+			return $items;
+		}
 
 		if($array == true)
 			return ArrayHelper::map($model, 'id', 'location_name');

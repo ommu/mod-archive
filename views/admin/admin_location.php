@@ -184,7 +184,8 @@ JS;
 
 	<?php echo $form->field($model, 'weight')
 		->textInput(['maxlength'=>true])
-		->label($model->getAttributeLabel('weight')); ?>
+		->label($model->getAttributeLabel('weight'))
+		->hint(Yii::t('app', 'Weight in grams')); ?>
 
 	<div class="ln_solid"></div>
 

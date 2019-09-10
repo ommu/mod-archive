@@ -40,9 +40,10 @@ class LocationSuggestAction extends \yii\base\Action
 		if($parent == null) return [];
 
 		$model = ArchiveLocation::find()
+			->alias('t')
 			->suggest()
-			->andWhere(['parent_id' => $parent])
-			->andWhere(['type' => $this->type])
+			->andWhere(['t.parent_id' => $parent])
+			->andWhere(['t.type' => $this->type])
 			->all();
 
 		$result = [];

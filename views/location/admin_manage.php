@@ -22,8 +22,11 @@ use yii\widgets\Pjax;
 $this->params['breadcrumbs'][] = $this->title;
 
 $context = $this->context;
+$createLocationUrl = Url::to(['create']);
+if(($parent = Yii::$app->request->get('parent')) != null)
+	$createLocationUrl = Url::to(['create', 'id'=>$parent]);
 $this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Add {title}', ['title'=>$context->title]), 'url' => Url::to(['create']), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn modal-btn btn-success']],
+	['label' => Yii::t('app', 'Add {title}', ['title'=>$context->title]), 'url' => $createLocationUrl, 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn modal-btn btn-success']],
 ];
 $this->params['menu']['option'] = [
 	//['label' => Yii::t('app', 'Search'), 'url' => 'javascript:void(0);'],

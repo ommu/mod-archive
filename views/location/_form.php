@@ -39,29 +39,34 @@ use yii\helpers\ArrayHelper;
 
 <?php //echo $form->errorSummary($model);?>
 
-<?php if($model->type == 'room') {
+<?php if(in_array($model->type, ['room', 'rack'])) {
 $js = <<<JS
 	var depo;
 	var v_depo = '$model->parent_id';
 JS;
 $this->registerJs($js, \yii\web\View::POS_END);
 
-$parents = ArchiveLocation::getLocation(['publish'=>1, 'type'=>'building']);
-$getDepoUrl = Url::to(['location/depo/suggest']);
+$type = 'building';
+$buildingUrl = Url::to(['location/depo/suggest']);
+if($model->type == 'rack') {
+	$type = 'depo';
+	$buildingUrl = Url::to(['location/room/suggest']);
+}
+$parents = ArchiveLocation::getLocation(['publish'=>1, 'type'=>$type, 'isDepo'=>($type == 'depo' ? true : false)]);
 echo $form->field($model, 'building')
 	->widget(Selectize::className(), [
 		'cascade' => true,
 		'options' => [
-			'placeholder' => Yii::t('app', 'Select a building..'),
+			'placeholder' => Yii::t('app', 'Select a {type}..', ['type' => strtolower($model->getAttributeLabel('building'))]),
 		],
-		'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a building..')], $parents),
+		'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a {type}..', ['type' => strtolower($model->getAttributeLabel('building'))])], $parents),
 		'pluginOptions' => [
 			'valueField' => 'id',
 			'labelField' => 'label',
 			'searchField' => ['label'],
 			'persist' => false,
 			'createOnBlur' => false,
-			'create' => true,
+			'create' => $model->type == 'rack' ? false : true,
 			'onChange' => new \yii\web\JsExpression('function(value) {
 				if (!value.length) return;
 				parent_id.disable(); 
@@ -69,7 +74,7 @@ echo $form->field($model, 'building')
 				parent_id.load(function(callback) {
 					depo && depo.abort();
 					depo = $.ajax({
-						url: \''.$getDepoUrl.'\',
+						url: \''.$buildingUrl.'\',
 						data: {\'parent\': value},
 						success: function(results) {
 							parent_id.removeOption(v_depo);
@@ -89,17 +94,23 @@ echo $form->field($model, 'building')
 } ?>
 
 <?php if($model->type != 'building') {
-$parents = ArchiveLocation::getLocation(['publish'=>1, 'type'=>$model->type == 'depo' ? 'building' : 'depo']);
-$depoPluginOptions = [
+if($model->type == 'depo')
+	$type = 'building';
+else if($model->type == 'room')
+	$type = 'depo';
+else if($model->type == 'rack')
+	$type = 'room';
+$parents = ArchiveLocation::getLocation(['publish'=>1, 'type'=>$type]);
+$parentPluginOptions = [
 	'valueField' => 'id',
 	'labelField' => 'label',
 	'searchField' => ['label'],
 	'persist' => false,
 	'createOnBlur' => false,
-	'create' => true,
+	'create' => $model->type == 'rack' ? false : true,
 ];
-if($model->type == 'room') {
-	$depoPluginOptions = ArrayHelper::merge($depoPluginOptions, [
+if(in_array($model->type, ['room', 'rack'])) {
+	$parentPluginOptions = ArrayHelper::merge($parentPluginOptions, [
 		'onChange' => new \yii\web\JsExpression('function(value) {
 			v_depo = value;
 		}'),
@@ -107,12 +118,12 @@ if($model->type == 'room') {
 }
 echo $form->field($model, 'parent_id')
 	->widget(Selectize::className(), [
-		'cascade' => $model->type == 'room' ? true : false,
+		'cascade' => in_array($model->type, ['room', 'rack']) ? true : false,
 		'options' => [
 			'placeholder' => Yii::t('app', 'Select a {type}..', ['type' => strtolower($model->getAttributeLabel('parent_id'))]),
 		],
 		'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a {type}..', ['type' => strtolower($model->getAttributeLabel('parent_id'))])], $parents),
-		'pluginOptions' => $depoPluginOptions,
+		'pluginOptions' => $parentPluginOptions,
 	])
 	->label($model->getAttributeLabel('parent_id'));
 } ?>
@@ -121,20 +132,26 @@ echo $form->field($model, 'parent_id')
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('location_name')); ?>
 
-<?php echo $form->field($model, 'location_desc')
+<?php if($model->type != 'rack') {
+echo $form->field($model, 'location_desc')
 	->textarea(['rows'=>4, 'cols'=>50])
-	->label($model->getAttributeLabel('location_desc')); ?>
+	->label($model->getAttributeLabel('location_desc'));
+} ?>
 
-<?php if($model->type == 'room') {
+<?php if(in_array($model->type, ['room', 'rack'])) {
+$pluginOptions = [];
+if($model->type == 'room') {
+	$pluginOptions = [
+		'plugins' => ['remove_button'],
+	];
+}
 echo $form->field($model, 'storage')
 	->widget(Selectize::className(), [
 		'items' => ArchiveStorage::getStorage(1),
 		'options' => [
-			'multiple' => true,
+			'multiple' => $model->type == 'room' ? true : false,
 		],
-		'pluginOptions' => [
-			'plugins' => ['remove_button'],
-		],
+		'pluginOptions' => $pluginOptions,
 	])
 	->label($model->getAttributeLabel('storage'));
 } ?>

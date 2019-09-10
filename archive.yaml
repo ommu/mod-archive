@@ -45,6 +45,10 @@ location_submenu:
     label: Room(s)
     url: ['location/room']
     select: controller
+  rack:
+    label: Rack(s)
+    url: ['location/rack']
+    select: controller
 setting_submenu:
   update:
     label: Settings
