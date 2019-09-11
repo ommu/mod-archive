@@ -14,6 +14,7 @@
  * @property integer $id
  * @property integer $archive_id
  * @property integer $room_id
+ * @property integer $rack_id
  * @property integer $storage_id
  * @property string $location_desc
  * @property string $weight
@@ -41,6 +42,7 @@ class ArchiveRelatedLocation extends \app\components\ActiveRecord
 
 	public $archiveTitle;
 	public $roomLocationName;
+	public $rackLocationName;
 	public $creationDisplayname;
 
 	public $building_id;
@@ -60,11 +62,12 @@ class ArchiveRelatedLocation extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['archive_id', 'room_id', 'storage_id', 'location_desc', 'building_id', 'depo_id'], 'required'],
-			[['archive_id', 'room_id', 'storage_id', 'creation_id'], 'integer'],
+			[['archive_id', 'room_id', 'rack_id', 'storage_id', 'building_id', 'depo_id'], 'required'],
+			[['archive_id', 'room_id', 'rack_id', 'storage_id', 'creation_id'], 'integer'],
 			[['location_desc', 'weight'], 'string'],
-			[['weight'], 'safe'],
+			[['location_desc', 'weight'], 'safe'],
 			[['room_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLocation::className(), 'targetAttribute' => ['room_id' => 'id']],
+			[['rack_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLocation::className(), 'targetAttribute' => ['rack_id' => 'id']],
 			[['storage_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveStorage::className(), 'targetAttribute' => ['storage_id' => 'id']],
 			[['archive_id'], 'exist', 'skipOnError' => true, 'targetClass' => Archives::className(), 'targetAttribute' => ['archive_id' => 'id']],
 		];
@@ -79,8 +82,9 @@ class ArchiveRelatedLocation extends \app\components\ActiveRecord
 			'id' => Yii::t('app', 'ID'),
 			'archive_id' => Yii::t('app', 'Archive'),
 			'room_id' => Yii::t('app', 'Room'),
+			'rack_id' => Yii::t('app', 'Rack'),
 			'storage_id' => Yii::t('app', 'Storage'),
-			'location_desc' => Yii::t('app', 'Description'),
+			'location_desc' => Yii::t('app', 'Noted'),
 			'weight' => Yii::t('app', 'Weight'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
@@ -98,6 +102,14 @@ class ArchiveRelatedLocation extends \app\components\ActiveRecord
 	public function getRoom()
 	{
 		return $this->hasOne(ArchiveLocation::className(), ['id' => 'room_id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getRack()
+	{
+		return $this->hasOne(ArchiveLocation::className(), ['id' => 'rack_id']);
 	}
 
 	/**
@@ -184,6 +196,15 @@ class ArchiveRelatedLocation extends \app\components\ActiveRecord
 				},
 			];
 		}
+		if(!Yii::$app->request->get('rack')) {
+			$this->templateColumns['rackLocationName'] = [
+				'attribute' => 'rackLocationName',
+				'value' => function($model, $key, $index, $column) {
+					return isset($model->rack) ? $model->rack->location_name : '-';
+					// return $model->rackLocationName;
+				},
+			];
+		}
 		$this->templateColumns['location_desc'] = [
 			'attribute' => 'location_desc',
 			'value' => function($model, $key, $index, $column) {
@@ -195,7 +216,6 @@ class ArchiveRelatedLocation extends \app\components\ActiveRecord
 				'attribute' => 'storage_id',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->storage) ? $model->storage->storage_name_i : '-';
-					// return $model->roomLocationName;
 				},
 			];
 		}
@@ -252,6 +272,7 @@ class ArchiveRelatedLocation extends \app\components\ActiveRecord
 
 		// $this->archiveTitle = isset($this->archive) ? $this->archive->title : '-';
 		// $this->roomLocationName = isset($this->room) ? $this->room->location_name : '-';
+		// $this->rackLocationName = isset($this->rack) ? $this->rack->location_name : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		$this->building_id = isset($this->depo) ? $this->depo->parent_id : null;
 		$this->depo_id = isset($this->room) ? $this->room->parent_id : null;

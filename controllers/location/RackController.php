@@ -50,7 +50,7 @@ class RackController extends AdminController
 		return [
 			'suggest' => [
 				'class' => 'ommu\archive\actions\LocationSuggestAction',
-				'type' => 'room',
+				'type' => 'rack',
 			],
 		];
 	}

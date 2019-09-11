@@ -26,9 +26,10 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' =>
 $this->params['breadcrumbs'][] = Yii::t('app', 'Storage Location');
 
 $js = <<<JS
-	var building, depo, storage;
+	var building, depo, room, storage;
 	var v_depo = '$model->depo_id';
 	var v_room = '$model->room_id';
+	var v_rack = '$model->rack_id';
 	var v_storage = '$model->storage_id';
 JS;
 	$this->registerJs($js, \yii\web\View::POS_END);
@@ -118,7 +119,9 @@ JS;
 		])
 		->label($model->getAttributeLabel('depo_id')); ?>
 		
-	<?php $getRoomStorageUrl = Url::to(['location/room/storage']);
+	<?php 
+	$getRackUrl = Url::to(['location/rack/suggest']);
+	$getRoomStorageUrl = Url::to(['location/room/storage']);
 	$room = $model->isNewRecord ? ArchiveLocation::getLocation(['publish'=>1, 'type'=>'room']) : ArchiveLocation::getLocation(['publish'=>1, 'parent_id'=>$model->depo_id, 'type'=>'room']);
 	echo $form->field($model, 'room_id')
 		->widget(Selectize::className(), [
@@ -135,6 +138,24 @@ JS;
 				'onChange' => new JsExpression('function(value) {
 					v_room = value;
 					if (!value.length) return;
+					rack_id.disable(); 
+					rack_id.clearOptions();
+					rack_id.load(function(callback) {
+						depo && depo.abort();
+						depo = $.ajax({
+							url: \''.$getRackUrl.'\',
+							data: {\'parent\': value},
+							success: function(results) {
+								rack_id.removeOption(v_rack);
+								rack_id.showInput();
+								rack_id.enable();
+								callback(results);
+							},
+							error: function() {
+								callback();
+							}
+						})
+					});
 					storage_id.disable(); 
 					storage_id.clearOptions();
 					storage_id.load(function(callback) {
@@ -158,9 +179,25 @@ JS;
 		])
 		->label($model->getAttributeLabel('room_id')); ?>
 
-	<?php echo $form->field($model, 'location_desc')
-		->textarea(['rows'=>4, 'cols'=>50])
-		->label($model->getAttributeLabel('location_desc')); ?>
+	<?php $rack = $model->isNewRecord ? ArchiveLocation::getLocation(['publish'=>1, 'type'=>'rack']) : ArchiveLocation::getLocation(['publish'=>1, 'parent_id'=>$model->room_id, 'type'=>'rack']);
+	echo $form->field($model, 'rack_id')
+		->widget(Selectize::className(), [
+			'cascade' => true,
+			'options' => [
+				'placeholder' => Yii::t('app', 'Select a rack..'),
+			],
+			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a rack..')], $rack),
+			'pluginOptions' => [
+				'valueField' => 'id',
+				'labelField' => 'label',
+				'searchField' => ['label'],
+				'persist' => false,
+				'onChange' => new JsExpression('function(value) {
+					v_rack = value;
+				}'),
+			],
+		])
+		->label($model->getAttributeLabel('rack_id'));?>
 
 	<?php $storage = $model->isNewRecord ? ArchiveStorage::getStorage(1) : $model->room->getRoomStorage(true, 'title');
 	echo $form->field($model, 'storage_id')
@@ -186,6 +223,10 @@ JS;
 		->textInput(['maxlength'=>true])
 		->label($model->getAttributeLabel('weight'))
 		->hint(Yii::t('app', 'Weight in grams')); ?>
+
+	<?php echo $form->field($model, 'location_desc')
+		->textarea(['rows'=>4, 'cols'=>50])
+		->label($model->getAttributeLabel('location_desc')); ?>
 
 	<div class="ln_solid"></div>
 
