@@ -50,6 +50,14 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Archive Settings');
 				'value' => '"'.$model->reference_code_separator.'"',
 			],
 			[
+				'attribute' => 'image_type',
+				'value' => $model->image_type,
+			],
+			[
+				'attribute' => 'document_type',
+				'value' => $model->document_type,
+			],
+			[
 				'attribute' => 'fond_sidkkas',
 				'value' => $model::getFondSidkkas($model->fond_sidkkas),
 			],

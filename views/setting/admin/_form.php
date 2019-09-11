@@ -63,6 +63,16 @@ echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hi
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('reference_code_separator')); ?>
 
+<?php echo $form->field($model, 'image_type')
+	->textInput()
+	->label($model->getAttributeLabel('image_type'))
+	->hint(Yii::t('app', 'pisahkan jenis file dengan koma (,). example: "jpg, jpeg, bmp, gif, png"')); ?>
+
+<?php echo $form->field($model, 'document_type')
+	->textInput()
+	->label($model->getAttributeLabel('document_type'))
+	->hint(Yii::t('app', 'pisahkan jenis file dengan koma (,). example: "pdf, doc, docx"')); ?>
+
 <?php $fondSidkka = $model::getFondSidkkas();
 echo $form->field($model, 'fond_sidkkas')
 	->dropDownList($fondSidkka, ['prompt'=>''])

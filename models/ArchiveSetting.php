@@ -20,6 +20,8 @@
  * @property integer $maintenance_mode
  * @property string $reference_code_sikn
  * @property string $reference_code_separator
+ * @property string $image_type
+ * @property string $document_type
  * @property string $modified_date
  * @property integer $modified_id
  *
@@ -32,10 +34,12 @@ namespace ommu\archive\models;
 
 use Yii;
 use ommu\users\models\Users;
+use yii\helpers\Json;
 
 class ArchiveSetting extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
+	use \ommu\traits\FileTrait;
 
 	public $gridForbiddenColumn = [];
 
@@ -55,9 +59,10 @@ class ArchiveSetting extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['license', 'permission', 'meta_description', 'meta_keyword', 'fond_sidkkas', 'maintenance_mode', 'reference_code_separator'], 'required'],
+			[['license', 'permission', 'meta_description', 'meta_keyword', 'fond_sidkkas', 'maintenance_mode', 'reference_code_separator', 'image_type', 'document_type'], 'required'],
 			[['permission', 'fond_sidkkas', 'maintenance_mode', 'modified_id'], 'integer'],
 			[['meta_description', 'meta_keyword'], 'string'],
+			//[['image_type', 'document_type'], 'json'],
 			[['license', 'reference_code_sikn'], 'string', 'max' => 32],
 			[['reference_code_separator'], 'string', 'max' => 1],
 		];
@@ -78,6 +83,8 @@ class ArchiveSetting extends \app\components\ActiveRecord
 			'maintenance_mode' => Yii::t('app', 'Maintenance Mode'),
 			'reference_code_sikn' => Yii::t('app', 'SIKN Reference Code'),
 			'reference_code_separator' => Yii::t('app', 'Reference Code Level Separator'),
+			'image_type' => Yii::t('app', 'Image Type'),
+			'document_type' => Yii::t('app', 'Document Type'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
@@ -141,6 +148,18 @@ class ArchiveSetting extends \app\components\ActiveRecord
 			'attribute' => 'reference_code_separator',
 			'value' => function($model, $key, $index, $column) {
 				return $model->reference_code_separator;
+			},
+		];
+		$this->templateColumns['image_type'] = [
+			'attribute' => 'image_type',
+			'value' => function($model, $key, $index, $column) {
+				return $model->image_type;
+			},
+		];
+		$this->templateColumns['document_type'] = [
+			'attribute' => 'document_type',
+			'value' => function($model, $key, $index, $column) {
+				return $model->document_type;
 			},
 		];
 		$this->templateColumns['modified_date'] = [
@@ -236,6 +255,12 @@ class ArchiveSetting extends \app\components\ActiveRecord
 	{
 		parent::afterFind();
 
+		$image_type = Json::decode($this->image_type);
+		if(!empty($image_type))
+			$this->image_type = $this->formatFileType($image_type, false);
+		$document_type = Json::decode($this->document_type);
+		if(!empty($document_type))
+			$this->document_type = $this->formatFileType($document_type, false);
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
 	}
 
@@ -249,6 +274,18 @@ class ArchiveSetting extends \app\components\ActiveRecord
 				if($this->modified_id == null)
 					$this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
 			}
+		}
+		return true;
+	}
+
+	/**
+	 * before save attributes
+	 */
+	public function beforeSave($insert)
+	{
+		if(parent::beforeSave($insert)) {
+			$this->image_type = Json::encode($this->formatFileType($this->image_type));
+			$this->document_type = Json::encode($this->formatFileType($this->document_type));
 		}
 		return true;
 	}
