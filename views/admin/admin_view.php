@@ -134,7 +134,7 @@ $attributes = [
 	],
 	[
 		'attribute' => 'location',
-		'value' => Archives::parseLocation($model->location),
+		'value' => Archives::parseLocation($model->getRelatedLocation(false)),
 		'format' => 'html',
 	],
 	[

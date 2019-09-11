@@ -27,7 +27,7 @@ class Archives extends ArchivesModel
 	public function rules()
 	{
 		return [
-			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'media'], 'integer'],
+			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'media', 'location'], 'integer'],
 			[['title', 'code', 'medium', 'image_type', 'creation_date', 'modified_date', 'updated_date', 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository', 'subject', 'function'], 'safe'],
 		];
 	}
@@ -74,6 +74,7 @@ class Archives extends ArchivesModel
 			'relatedRepository relatedRepository', 
 			'relatedSubject relatedSubject', 
 			'relatedFunction relatedFunction',
+			'relatedLocation relatedLocation',
 			'relatedCreator.creator relatedCreatorRltn', 
 			'relatedRepository.repository relatedRepositoryRltn', 
 			'relatedSubject.tag relatedSubjectRltn', 
@@ -150,17 +151,17 @@ class Archives extends ArchivesModel
 				$query->andFilterWhere(['t.publish' => $this->publish]);
 		}
 
-		if(isset($params['creatorId']) && $params['creatorId'])
-			$query->andFilterWhere(['relatedCreator.creator_id' => $params['creatorId']]);
+		$query->andFilterWhere(['relatedCreator.creator_id' => $params['creatorId']]);
+		$query->andFilterWhere(['relatedRepository.repository_id' => $params['repositoryId']]);
+		$query->andFilterWhere(['relatedSubject.tag_id' => $params['subjectId']]);
+		$query->andFilterWhere(['relatedFunction.tag_id' => $params['functionId']]);
 
-		if(isset($params['repositoryId']) && $params['repositoryId'])
-			$query->andFilterWhere(['relatedRepository.repository_id' => $params['repositoryId']]);
-
-		if(isset($params['subjectId']) && $params['subjectId'])
-			$query->andFilterWhere(['relatedSubject.tag_id' => $params['subjectId']]);
-
-		if(isset($params['functionId']) && $params['functionId'])
-			$query->andFilterWhere(['relatedFunction.tag_id' => $params['functionId']]);
+		if(isset($params['location']) && $params['location'] != '') {
+			if($this->location == 1)
+				$query->andWhere(['is not', 'relatedLocation.id', null]);
+			else if($this->location == 0)
+				$query->andWhere(['is', 'relatedLocation.id', null]);
+		}
 
 		$query->andFilterWhere(['like', 't.title', $this->title])
 			->andFilterWhere(['like', 't.code', $this->code])

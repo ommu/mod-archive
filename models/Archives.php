@@ -38,7 +38,6 @@
  * @property ArchiveLevel $level
  * @property Users $creation
  * @property Users $modified
- * @property ArchiveRelatedLocation $location
  *
  */
 
@@ -68,11 +67,13 @@ class Archives extends \app\components\ActiveRecord
 	public $oldConfirmCode;
 	public $oldShortCode;
 	public $updateCode = true;
+
 	public $media;
 	public $creator;
 	public $repository;
 	public $subject;
 	public $function;
+	public $location;
 	public $group_childs;
 
 	const EVENT_BEFORE_SAVE_ARCHIVES = 'BeforeSaveArchives';
@@ -131,6 +132,7 @@ class Archives extends \app\components\ActiveRecord
 			'repository' => Yii::t('app', 'Repository'),
 			'subject' => Yii::t('app', 'Subject'),
 			'function' => Yii::t('app', 'Function'),
+			'location' => Yii::t('app', 'Location'),
 		];
 	}
 
@@ -196,9 +198,13 @@ class Archives extends \app\components\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getRelatedLocation()
+	public function getRelatedLocation($relation=true)
 	{
-		return $this->hasMany(ArchiveRelatedLocation::className(), ['archive_id' => 'id']);
+		if($relation == false)
+			return !empty($this->relatedLocation) ? $this->relatedLocation[0] : null;
+
+		return $this->hasMany(ArchiveRelatedLocation::className(), ['archive_id' => 'id'])
+			->alias('relatedLocation');
 	}
 
 	/**
@@ -401,6 +407,14 @@ class Archives extends \app\components\ActiveRecord
 				];
 			}
 		}
+		$this->templateColumns['location'] = [
+			'attribute' => 'location',
+			'value' => function($model, $key, $index, $column) {
+				return $this->filterYesNo($model->location);
+			},
+			'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class'=>'center'],
+		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
 			'value' => function($model, $key, $index, $column) {
@@ -557,14 +571,6 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getLocation()
-	{
-		return $this->relatedLocation[0];
-	}
-
-	/**
 	 * function getPublish
 	 */
 	public static function getPublish($value=null)
@@ -706,14 +712,16 @@ class Archives extends \app\components\ActiveRecord
 		if($model == null)
 			return '-';
 
+		if(isset($model->rack))
+			$items[] = Yii::t('app', 'Rack: {rack}', ['rack'=>$model->rack->location_name]);
 		if(isset($model->room))
 			$items[] = Yii::t('app', 'Location: {room}, {depo}, {building}', ['room'=>$model->room->location_name, 'depo'=>$model->depo->location_name, 'building'=>$model->building->location_name]);
-		if($model->location_desc != '')
-			$items[] = Yii::t('app', 'Description: {location-desc}', ['location-desc'=>$model->location_desc]);
 		if(isset($model->storage))
 			$items[] = Yii::t('app', 'Storage: {storage-name}', ['storage-name'=>$model->storage->storage_name_i]);
 		if($model->weight != '')
 			$items[] = Yii::t('app', 'Weight: {weight}', ['weight'=>$model->weight]);
+		if($model->location_desc != '')
+			$items[] = Yii::t('app', 'Noted: {location-desc}', ['location-desc'=>$model->location_desc]);
 
 		return Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']);
 	}
@@ -764,6 +772,7 @@ class Archives extends \app\components\ActiveRecord
 		$this->repository =  array_flip($this->getRelatedRepository(true));
 		$this->subject =  implode(',', $this->getRelatedSubject(true, 'title'));
 		$this->function =  implode(',', $this->getRelatedFunction(true, 'title'));
+		$this->location = $this->getRelatedLocation(false) != null ? 1 : 0;
 	}
 
 	/**
