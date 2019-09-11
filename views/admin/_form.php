@@ -42,7 +42,7 @@ if(!$fond)
 <div class="archives-form">
 
 <?php if($fond || !empty($level)) {
-	$creatorField = (!$fond && ($model->isNewRecord || (!$model->isNewRecord && strtolower($model->level->level_name_i) !== 'item'))) ? "creator.disable();\nmedia.disable();\n$('#image_type input[name=image_type]').attr('disabled', true);\n$('textarea#medium').attr('disabled', true);" : '';
+	$creatorField = (!$fond && ($model->isNewRecord || (!$model->isNewRecord && strtolower($model->level->level_name_i) !== 'item'))) ? "creator.disable();\nmedia.disable();\n$('#archive_type input[name=archive_type]').attr('disabled', true);\n$('textarea#medium').attr('disabled', true);" : '';
 $js = <<<JS
 	$creatorField
 	$('#shortcode').on('keyup', function (e) {
@@ -60,12 +60,12 @@ $js = <<<JS
 		if(levelId == 8) {
 			creator.enable();
 			media.enable();
-			$("#image_type input[name=image_type]").attr('disabled', false);
+			$("#archive_type input[name=archive_type]").attr('disabled', false);
 			$("textarea#medium").attr('disabled', false);
 		} else {
 			creator.disable();
 			media.disable();
-			$("#image_type input[name=image_type]").attr('disabled', true);
+			$("#archive_type input[name=archive_type]").attr('disabled', true);
 			$("textarea#medium").attr('disabled', true);
 		}
 	});
@@ -248,10 +248,10 @@ echo $form->field($model, 'subject')
 	])
 	->label($model->getAttributeLabel('media')); ?>
 
-<?php $imageType = Archives::getImageType();
-	echo $form->field($model, 'image_type')
+<?php $imageType = Archives::getArchiveType();
+	echo $form->field($model, 'archive_type')
 		->radioList($imageType, ['prompt'=>''])
-		->label($model->getAttributeLabel('image_type'));?>
+		->label($model->getAttributeLabel('archive_type'));?>
 
 <div class="ln_solid"></div>
 <?php }

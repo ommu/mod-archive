@@ -19,7 +19,7 @@
  * @property string $title
  * @property string $code
  * @property string $medium
- * @property string $image_type
+ * @property string $archive_type
  * @property string $creation_date
  * @property integer $creation_id
  * @property string $modified_date
@@ -54,7 +54,7 @@ class Archives extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 
-	public $gridForbiddenColumn = ['parentTitle', 'media', 'creator', 'repository', 'subject', 'function', 'image_type', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
+	public $gridForbiddenColumn = ['parentTitle', 'media', 'creator', 'repository', 'subject', 'function', 'archive_type', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
 	public $parentTitle;
 	public $levelName;
@@ -94,7 +94,7 @@ class Archives extends \app\components\ActiveRecord
 		return [
 			[['publish', 'level_id', 'title', 'shortCode'], 'required'],
 			[['publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id'], 'integer'],
-			[['title', 'image_type'], 'string'],
+			[['title', 'archive_type'], 'string'],
 			[['code', 'medium', 'media', 'creator', 'repository', 'subject', 'function'], 'safe'],
 			[['code'], 'string', 'max' => 255],
 			[['shortCode'], 'string', 'max' => 16],
@@ -116,7 +116,7 @@ class Archives extends \app\components\ActiveRecord
 			'title' => Yii::t('app', 'Title'),
 			'code' => Yii::t('app', 'Reference code'),
 			'medium' => Yii::t('app', 'Extent and medium'),
-			'image_type' => Yii::t('app', 'Image Type'),
+			'archive_type' => Yii::t('app', 'Archive Type'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
@@ -388,12 +388,12 @@ class Archives extends \app\components\ActiveRecord
 			'filter' => ArchiveMedia::getMedia(),
 			'format' => 'html',
 		];
-		$this->templateColumns['image_type'] = [
-			'attribute' => 'image_type',
+		$this->templateColumns['archive_type'] = [
+			'attribute' => 'archive_type',
 			'value' => function($model, $key, $index, $column) {
-				return self::getImageType($model->image_type ? $model->image_type : '-');
+				return self::getArchiveType($model->archive_type ? $model->archive_type : '-');
 			},
-			'filter' => self::getImageType(),
+			'filter' => self::getArchiveType(),
 		];
 		if(ArchiveSetting::getInfo('fond_sidkkas')) {
 			if(!Yii::$app->request->get('id')) {
@@ -587,9 +587,9 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * function getImageType
+	 * function getArchiveType
 	 */
-	public static function getImageType($value=null)
+	public static function getArchiveType($value=null)
 	{
 		$items = array(
 			'photo' => Yii::t('app', 'Image/Photo'),

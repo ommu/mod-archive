@@ -128,9 +128,9 @@ $attributes = [
 		'format' => 'html',
 	],
 	[
-		'attribute' => 'image_type',
-		'value' => Archives::getImageType($model->image_type ? $model->image_type : '-'),
-		'visible' => in_array('image_type', $model->level->field) ? true : false,
+		'attribute' => 'archive_type',
+		'value' => Archives::getArchiveType($model->archive_type ? $model->archive_type : '-'),
+		'visible' => in_array('archive_type', $model->level->field) ? true : false,
 	],
 	[
 		'attribute' => 'location',

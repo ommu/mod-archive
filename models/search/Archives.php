@@ -28,7 +28,7 @@ class Archives extends ArchivesModel
 	{
 		return [
 			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'media', 'location'], 'integer'],
-			[['title', 'code', 'medium', 'image_type', 'creation_date', 'modified_date', 'updated_date', 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository', 'subject', 'function'], 'safe'],
+			[['title', 'code', 'medium', 'archive_type', 'creation_date', 'modified_date', 'updated_date', 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository', 'subject', 'function'], 'safe'],
 		];
 	}
 
@@ -133,7 +133,7 @@ class Archives extends ArchivesModel
 			't.sidkkas' => $this->sidkkas,
 			't.parent_id' => isset($params['parent']) ? $params['parent'] : $this->parent_id,
 			't.level_id' => isset($params['level']) ? $params['level'] : $this->level_id,
-			't.image_type' => $this->image_type,
+			't.archive_type' => $this->archive_type,
 			'cast(t.creation_date as date)' => $this->creation_date,
 			't.creation_id' => isset($params['creation']) ? $params['creation'] : $this->creation_id,
 			'cast(t.modified_date as date)' => $this->modified_date,
