@@ -16,7 +16,6 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
-use ommu\archive\models\Archives;
 use yii\helpers\ArrayHelper;
 
 \ommu\archive\assets\AciTreeAsset::register($this);
@@ -47,7 +46,7 @@ $attributes = [
 	],
 	[
 		'attribute' => 'publish',
-		'value' => Archives::getPublish($model->publish),
+		'value' => $model::getPublish($model->publish),
 	],
 	[
 		'attribute' => 'sidkkas',
@@ -55,7 +54,7 @@ $attributes = [
 	],
 	[
 		'attribute' => 'parent_id',
-		'value' => Archives::parseParent($model),
+		'value' => $model::parseParent($model),
 		'format' => 'raw',
 		'visible' => !$small,
 	],
@@ -99,42 +98,51 @@ $attributes = [
 	],
 	[
 		'attribute' => 'creator',
-		'value' => Archives::parseRelated($model->getRelatedCreator(true, 'title'), 'creator'),
+		'value' => $model::parseRelated($model->getRelatedCreator(true, 'title'), 'creator'),
 		'format' => 'html',
 	],
 	[
 		'attribute' => 'repository',
-		'value' => Archives::parseRelated($model->getRelatedRepository(true, 'title'), 'repository', ', '),
+		'value' => $model::parseRelated($model->getRelatedRepository(true, 'title'), 'repository', ', '),
 		'format' => 'html',
 	],
 	[
 		'attribute' => 'subject',
-		'value' => Archives::parseSubject($model->getRelatedSubject(true, 'title'), 'subjectId'),
+		'value' => $model::parseSubject($model->getRelatedSubject(true, 'title'), 'subjectId'),
 		'format' => 'html',
 	],
 	[
 		'attribute' => 'function',
-		'value' => Archives::parseSubject($model->getRelatedFunction(true, 'title'), 'functionId'),
+		'value' => $model::parseSubject($model->getRelatedFunction(true, 'title'), 'functionId'),
 		'format' => 'html',
 	],
 	[
 		'attribute' => 'medium',
-		'value' => Archives::parseChilds($model->childs, $model->id),
+		'value' => $model::parseChilds($model->childs, $model->id),
 		'format' => 'html',
 	],
 	[
 		'attribute' => 'media',
-		'value' => Archives::parseRelated($model->getRelatedMedia(true, 'title')),
+		'value' => $model::parseRelated($model->getRelatedMedia(true, 'title')),
 		'format' => 'html',
 	],
 	[
 		'attribute' => 'archive_type',
-		'value' => Archives::getArchiveType($model->archive_type ? $model->archive_type : '-'),
+		'value' => $model::getArchiveType($model->archive_type ? $model->archive_type : '-'),
 		'visible' => in_array('archive_type', $model->level->field) ? true : false,
 	],
 	[
+		'attribute' => 'archive_file',
+		'value' => function ($model) {
+			$uploadPath = join('/', [$model::getUploadPath(false), $model->id]);
+			return $model->archive_file ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->archive_file])), ['alt'=>$model->archive_file, 'class'=>'mb-3']).'<br/>'.$model->archive_file : '-';
+		},
+		'format' => 'html',
+		'visible' => !$small,
+	],
+	[
 		'attribute' => 'location',
-		'value' => Archives::parseLocation($model->getRelatedLocation(false)),
+		'value' => $model::parseLocation($model->getRelatedLocation(false)),
 		'format' => 'html',
 	],
 	[

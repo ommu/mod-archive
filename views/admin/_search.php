@@ -45,6 +45,8 @@ use ommu\archive\models\ArchiveSetting;
 			echo $form->field($model, 'archive_type')
 			->dropDownList($imageType, ['prompt'=>'']);?>
 
+		<?php echo $form->field($model, 'archive_file');?>
+
 		<?php echo $form->field($model, 'creation_date')
 			->input('date');?>
 

@@ -28,7 +28,7 @@ class Archives extends ArchivesModel
 	{
 		return [
 			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'media', 'location'], 'integer'],
-			[['title', 'code', 'medium', 'archive_type', 'creation_date', 'modified_date', 'updated_date', 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository', 'subject', 'function'], 'safe'],
+			[['title', 'code', 'medium', 'archive_type', 'archive_file', 'creation_date', 'modified_date', 'updated_date', 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository', 'subject', 'function'], 'safe'],
 		];
 	}
 
@@ -165,6 +165,7 @@ class Archives extends ArchivesModel
 
 		$query->andFilterWhere(['like', 't.title', $this->title])
 			->andFilterWhere(['like', 't.code', $this->code])
+			->andFilterWhere(['like', 't.archive_file', $this->archive_file])
 			->andFilterWhere(['like', 'parent.title', $this->parentTitle])
 			->andFilterWhere(['like', 'level.message', $this->levelName])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])

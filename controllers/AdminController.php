@@ -37,6 +37,7 @@ use mdm\admin\components\AccessControl;
 use ommu\archive\models\Archives;
 use ommu\archive\models\search\Archives as ArchivesSearch;
 use ommu\archive\models\ArchiveRelatedLocation;
+use yii\web\UploadedFile;
 
 class AdminController extends Controller
 {
@@ -146,6 +147,7 @@ class AdminController extends Controller
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
+			$model->archive_file = UploadedFile::getInstance($model, 'archive_file');
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
 			// $model->order = $postData['order'] ? $postData['order'] : 0;
@@ -194,6 +196,7 @@ class AdminController extends Controller
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
+			$model->archive_file = UploadedFile::getInstance($model, 'archive_file');
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
 			// $model->order = $postData['order'] ? $postData['order'] : 0;

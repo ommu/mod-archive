@@ -18,7 +18,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use app\components\widgets\ActiveForm;
 use yii\redactor\widgets\Redactor;
-use ommu\archive\models\Archives;
 use ommu\archive\models\ArchiveMedia;
 use ommu\selectize\Selectize;
 use yii\helpers\ArrayHelper;
@@ -31,7 +30,6 @@ $redactorOptions = [
 
 if(!$fond)
 	$level = $model->isNewRecord ? $parent->getChildLevels(true) : $model->getChildLevels();
-
 // if($setting->maintenance_mode) {
 	echo '<div id="reference-code-box" class="hide"><pre>';
 	print_r($referenceCode);
@@ -42,7 +40,7 @@ if(!$fond)
 <div class="archives-form">
 
 <?php if($fond || !empty($level)) {
-	$creatorField = (!$fond && ($model->isNewRecord || (!$model->isNewRecord && strtolower($model->level->level_name_i) !== 'item'))) ? "creator.disable();\nmedia.disable();\n$('#archive_type input[name=archive_type]').attr('disabled', true);\n$('textarea#medium').attr('disabled', true);" : '';
+	$creatorField = (!$fond && strtolower($model->level->level_name_i) !== 'item') ? "creator.disable();\nmedia.disable();\n$('#archive_type input[name=archive_type]').attr('disabled', true);\n$('input#archive_file').attr('disabled', true);\n$('textarea#medium').attr('disabled', true);" : '';
 $js = <<<JS
 	$creatorField
 	$('#shortcode').on('keyup', function (e) {
@@ -61,11 +59,13 @@ $js = <<<JS
 			creator.enable();
 			media.enable();
 			$("#archive_type input[name=archive_type]").attr('disabled', false);
+			$("input#archive_file").attr('disabled', false);
 			$("textarea#medium").attr('disabled', false);
 		} else {
 			creator.disable();
 			media.disable();
 			$("#archive_type input[name=archive_type]").attr('disabled', true);
+			$("input#archive_file").attr('disabled', true);
 			$("textarea#medium").attr('disabled', true);
 		}
 	});
@@ -75,7 +75,7 @@ $this->registerJs($js, \app\components\View::POS_READY);
 $hintCondition = $model->isNewRecord && !$fond ? 'hint-tooltip' : '';
 $form = ActiveForm::begin([
 	'options' => ['class'=>'form-horizontal form-label-left '.$hintCondition],
-	'enableClientValidation' => true,
+	'enableClientValidation' => false,
 	'enableAjaxValidation' => false,
 	//'enableClientScript' => true,
 	'fieldConfig' => [
@@ -248,15 +248,21 @@ echo $form->field($model, 'subject')
 	])
 	->label($model->getAttributeLabel('media')); ?>
 
-<?php $imageType = Archives::getArchiveType();
+<?php $imageType = $model::getArchiveType();
 	echo $form->field($model, 'archive_type')
 		->radioList($imageType, ['prompt'=>''])
 		->label($model->getAttributeLabel('archive_type'));?>
 
+<?php $uploadPath = join('/', [$model::getUploadPath(false), $model->id]);
+$bannerFilename = !$model->isNewRecord && $model->old_archive_file != '' ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->old_archive_file])), ['alt'=>$model->old_archive_file, 'class'=>'mb-3']) : '';
+echo $form->field($model, 'archive_file', ['template'=> '{label}{beginWrapper}<div>'.$bannerFilename.'</div>{input}{error}{hint}{endWrapper}'])
+	->fileInput()
+	->label($model->getAttributeLabel('archive_file')); ?>
+
 <div class="ln_solid"></div>
 <?php }
 
-$publish = Archives::getPublish();
+$publish = $model::getPublish();
 echo $form->field($model, 'publish')
 	->dropDownList($publish, ['prompt'=>''])
 	->label($model->getAttributeLabel('publish')); ?>

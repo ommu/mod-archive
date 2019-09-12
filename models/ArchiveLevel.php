@@ -350,6 +350,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 			'repository' => Yii::t('app', 'Repository'),
 			'sidkkas' => Yii::t('app', 'SiDKKAS'),
 			'archive_type' => Yii::t('app', 'Archive Type'),
+			'archive_file' => Yii::t('app', 'Archive File'),
 		);
 
 		if($field !== null) {

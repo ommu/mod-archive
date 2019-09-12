@@ -20,6 +20,7 @@
  * @property string $code
  * @property string $medium
  * @property string $archive_type
+ * @property string $archive_file
  * @property string $creation_date
  * @property integer $creation_id
  * @property string $modified_date
@@ -48,14 +49,18 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use ommu\users\models\Users;
 use yii\helpers\ArrayHelper;
+use yii\web\UploadedFile;
+use thamtech\uuid\helpers\UuidHelper;
 use yii\base\Event;
 
 class Archives extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
+	use \ommu\traits\FileTrait;
 
-	public $gridForbiddenColumn = ['parentTitle', 'media', 'creator', 'repository', 'subject', 'function', 'archive_type', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
+	public $gridForbiddenColumn = ['parentTitle', 'media', 'creator', 'repository', 'subject', 'function', 'archive_type', 'archive_file', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
+	public $old_archive_file;
 	public $parentTitle;
 	public $levelName;
 	public $creationDisplayname;
@@ -95,7 +100,7 @@ class Archives extends \app\components\ActiveRecord
 			[['publish', 'level_id', 'title', 'shortCode'], 'required'],
 			[['publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id'], 'integer'],
 			[['title', 'archive_type'], 'string'],
-			[['code', 'medium', 'media', 'creator', 'repository', 'subject', 'function'], 'safe'],
+			[['code', 'medium', 'archive_file', 'media', 'creator', 'repository', 'subject', 'function'], 'safe'],
 			[['code'], 'string', 'max' => 255],
 			[['shortCode'], 'string', 'max' => 16],
 			[['level_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLevel::className(), 'targetAttribute' => ['level_id' => 'id']],
@@ -117,11 +122,13 @@ class Archives extends \app\components\ActiveRecord
 			'code' => Yii::t('app', 'Reference code'),
 			'medium' => Yii::t('app', 'Extent and medium'),
 			'archive_type' => Yii::t('app', 'Archive Type'),
+			'archive_file' => Yii::t('app', 'Archive File'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
+			'old_archive_file' => Yii::t('app', 'Old Filename'),
 			'parentTitle' => Yii::t('app', 'Archival Parent'),
 			'levelName' => Yii::t('app', 'Level of Description'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
@@ -395,6 +402,14 @@ class Archives extends \app\components\ActiveRecord
 			},
 			'filter' => self::getArchiveType(),
 		];
+		$this->templateColumns['archive_file'] = [
+			'attribute' => 'archive_file',
+			'value' => function($model, $key, $index, $column) {
+				$uploadPath = join('/', [self::getUploadPath(false), $model->id]);
+				return $model->archive_file ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->archive_file])), ['alt'=>$model->archive_file]) : '-';
+			},
+			'format' => 'html',
+		];
 		if(ArchiveSetting::getInfo('fond_sidkkas')) {
 			if(!Yii::$app->request->get('id')) {
 				$this->templateColumns['sidkkas'] = [
@@ -485,6 +500,31 @@ class Archives extends \app\components\ActiveRecord
 			$model = self::findOne($id);
 			return $model;
 		}
+	}
+
+	/**
+	 * function getSetting
+	 */
+	public function getSetting($field=[])
+	{
+		if(empty($field))
+			$field = ['fond_sidkkas', 'maintenance_mode', 'reference_code_sikn', 'reference_code_separator', 'image_type', 'document_type'];
+
+		$setting = ArchiveSetting::find()
+			->select($field)
+			->where(['id' => 1])
+			->one();
+		
+		return $setting;
+	}
+
+	/**
+	 * @param returnAlias set true jika ingin kembaliannya path alias atau false jika ingin string
+	 * relative path. default true.
+	 */
+	public static function getUploadPath($returnAlias=true) 
+	{
+		return ($returnAlias ? Yii::getAlias('@public/archive') : 'archive');
 	}
 
 	/**
@@ -731,13 +771,11 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function afterFind()
 	{
-		$setting = \ommu\archive\models\ArchiveSetting::find()
-			->select(['maintenance_mode'])
-			->where(['id' => 1])
-			->one();
+		$setting = $this->getSetting(['maintenance_mode']);
 
 		parent::afterFind();
 
+		$this->old_archive_file = $this->archive_file;
 		// $this->parentTitle = isset($this->parent) ? $this->parent->title : '-';
 		// $this->levelName = isset($this->level) ? $this->level->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
@@ -780,7 +818,24 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function beforeValidate()
 	{
+		$setting = $this->getSetting(['image_type', 'document_type']);
+
 		if(parent::beforeValidate()) {
+			// $this->archive_file = UploadedFile::getInstance($this, 'archive_file');
+			if($this->archive_file instanceof UploadedFile && !$this->archive_file->getHasError()) {
+				$imageFileType = $this->formatFileType($setting->image_type);
+				$documentFileType = $this->formatFileType($setting->document_type);
+				$fileType = ArrayHelper::merge($imageFileType, $documentFileType);
+
+				if(!in_array(strtolower($this->archive_file->getExtension()), $fileType)) {
+					$this->addError('archive_file', Yii::t('app', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {image-extensions} for photo and {document-extensions} for document', [
+						'name'=>$this->archive_file->name,
+						'image-extensions'=>$setting->image_type,
+						'document-extensions'=>$setting->document_type,
+					]));
+				}
+			}
+
 			if($this->isNewRecord) {
 				if($this->creation_id == null)
 					$this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
@@ -797,10 +852,7 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function beforeSave($insert)
 	{
-		$setting = \ommu\archive\models\ArchiveSetting::find()
-			->select(['maintenance_mode'])
-			->where(['id' => 1])
-			->one();
+		$setting = $this->getSetting(['maintenance_mode']);
 
 		parent::beforeSave($insert);
 
@@ -846,6 +898,23 @@ class Archives extends \app\components\ActiveRecord
 			// set archive media, creator repository, subject and function
 			$event = new Event(['sender' => $this]);
 			Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARCHIVES, $event);
+
+			$uploadPath = join('/', [self::getUploadPath(), $this->id]);
+			$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+			$this->createUploadDirectory(self::getUploadPath(), $this->id);
+
+			// $this->archive_file = UploadedFile::getInstance($this, 'archive_file');
+			if($this->archive_file instanceof UploadedFile && !$this->archive_file->getHasError()) {
+				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->archive_file->getExtension()); 
+				if($this->archive_file->saveAs(join('/', [$uploadPath, $fileName]))) {
+					if($this->old_archive_file != '' && file_exists(join('/', [$uploadPath, $this->old_archive_file])))
+						rename(join('/', [$uploadPath, $this->old_archive_file]), join('/', [$verwijderenPath.'-'.time().'_change_'.$this->old_archive_file]));
+					$this->archive_file = $fileName;
+				}
+			} else {
+				if($this->archive_file == '')
+					$this->archive_file = $this->old_archive_file;
+			}
 		}
 
 		return true;
@@ -862,6 +931,18 @@ class Archives extends \app\components\ActiveRecord
 			// set archive media, creator repository, subject and function
 			$event = new Event(['sender' => $this]);
 			Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARCHIVES, $event);
+
+			$uploadPath = join('/', [self::getUploadPath(), $this->id]);
+			$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+			$this->createUploadDirectory(self::getUploadPath(), $this->id);
+
+			// $this->archive_file = UploadedFile::getInstance($this, 'archive_file');
+			if($this->archive_file instanceof UploadedFile && !$this->archive_file->getHasError()) {
+				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->archive_file->getExtension()); 
+				if($this->archive_file->saveAs(join('/', [$uploadPath, $fileName]))) {
+					self::updateAll(['archive_file' => $fileName], ['id' => $this->id]);
+				}
+			}
 
 		} else {
 			// update sidkkas status
