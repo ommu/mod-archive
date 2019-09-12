@@ -27,7 +27,7 @@ class Archives extends ArchivesModel
 	public function rules()
 	{
 		return [
-			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'media', 'location'], 'integer'],
+			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'media', 'location', 'preview'], 'integer'],
 			[['title', 'code', 'medium', 'archive_type', 'archive_file', 'creation_date', 'modified_date', 'updated_date', 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository', 'subject', 'function'], 'safe'],
 		];
 	}
@@ -167,6 +167,13 @@ class Archives extends ArchivesModel
 				$query->andWhere(['is not', 'relatedLocation.id', null]);
 			else if($this->location == 0)
 				$query->andWhere(['is', 'relatedLocation.id', null]);
+		}
+
+		if(isset($params['preview']) && $params['preview'] != '') {
+			if($this->preview == 1)
+				$query->andWhere(['<>', 't.archive_file', '']);
+			else if($this->preview == 0)
+				$query->andWhere(['=', 't.archive_file', '']);
 		}
 
 		$query->andFilterWhere(['like', 't.title', $this->title])

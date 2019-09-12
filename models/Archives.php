@@ -79,6 +79,7 @@ class Archives extends \app\components\ActiveRecord
 	public $subject;
 	public $function;
 	public $location;
+	public $preview;
 	public $group_childs;
 
 	const EVENT_BEFORE_SAVE_ARCHIVES = 'BeforeSaveArchives';
@@ -140,6 +141,7 @@ class Archives extends \app\components\ActiveRecord
 			'subject' => Yii::t('app', 'Subject'),
 			'function' => Yii::t('app', 'Function'),
 			'location' => Yii::t('app', 'Location'),
+			'preview' => Yii::t('app', 'Preview'),
 		];
 	}
 
@@ -426,6 +428,14 @@ class Archives extends \app\components\ActiveRecord
 			'attribute' => 'location',
 			'value' => function($model, $key, $index, $column) {
 				return $this->filterYesNo($model->location);
+			},
+			'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class'=>'center'],
+		];
+		$this->templateColumns['preview'] = [
+			'attribute' => 'preview',
+			'value' => function($model, $key, $index, $column) {
+				return $this->filterYesNo($model->preview);
 			},
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class'=>'center'],
@@ -811,6 +821,7 @@ class Archives extends \app\components\ActiveRecord
 		$this->subject =  implode(',', $this->getRelatedSubject(true, 'title'));
 		$this->function =  implode(',', $this->getRelatedFunction(true, 'title'));
 		$this->location = $this->getRelatedLocation(false) != null ? 1 : 0;
+		$this->preview = $this->archive_file != '' ? 1 : 0;
 	}
 
 	/**
