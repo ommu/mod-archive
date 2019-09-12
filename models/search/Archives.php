@@ -75,6 +75,8 @@ class Archives extends ArchivesModel
 			'relatedSubject relatedSubject', 
 			'relatedFunction relatedFunction',
 			'relatedLocation relatedLocation',
+			'relatedLocation.room relatedLocationRoom',
+			'relatedLocation.room.parent relatedLocationDepo',
 			'relatedCreator.creator relatedCreatorRltn', 
 			'relatedRepository.repository relatedRepositoryRltn', 
 			'relatedSubject.tag relatedSubjectRltn', 
@@ -155,6 +157,10 @@ class Archives extends ArchivesModel
 		$query->andFilterWhere(['relatedRepository.repository_id' => $params['repositoryId']]);
 		$query->andFilterWhere(['relatedSubject.tag_id' => $params['subjectId']]);
 		$query->andFilterWhere(['relatedFunction.tag_id' => $params['functionId']]);
+		$query->andFilterWhere(['relatedLocation.rack_id' => $params['rackId']]);
+		$query->andFilterWhere(['relatedLocation.room_id' => $params['roomId']]);
+		$query->andFilterWhere(['relatedLocationRoom.parent_id' => $params['depoId']]);
+		$query->andFilterWhere(['relatedLocationDepo.parent_id' => $params['buildingId']]);
 
 		if(isset($params['location']) && $params['location'] != '') {
 			if($this->location == 1)
