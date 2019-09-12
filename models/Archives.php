@@ -987,4 +987,18 @@ class Archives extends \app\components\ActiveRecord
 			}
 		}
 	}
+
+	/**
+	 * After delete attributes
+	 */
+	public function afterDelete()
+	{
+		parent::afterDelete();
+
+		$uploadPath = join('/', [self::getUploadPath(), $this->id]);
+		$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+
+		if($this->archive_file != '' && file_exists(join('/', [$uploadPath, $this->archive_file])))
+			rename(join('/', [$uploadPath, $this->archive_file]), join('/', [$verwijderenPath, $this->id.'-'.time().'_deleted_'.$this->archive_file]));
+	}
 }

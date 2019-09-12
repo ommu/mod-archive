@@ -65,24 +65,32 @@ class Archives extends ArchivesModel
 		else
 			$query = ArchivesModel::find()->alias('t')->select($column);
 		$query->joinWith([
-			'parent parent', 
-			'level.title level', 
-			'creation creation', 
-			'modified modified', 
-			'relatedMedia relatedMedia', 
-			'relatedCreator relatedCreator', 
-			'relatedRepository relatedRepository', 
-			'relatedSubject relatedSubject', 
-			'relatedFunction relatedFunction',
-			'relatedLocation relatedLocation',
-			'relatedLocation.room relatedLocationRoom',
-			'relatedLocation.room.parent relatedLocationDepo',
-			'relatedCreator.creator relatedCreatorRltn', 
-			'relatedRepository.repository relatedRepositoryRltn', 
-			'relatedSubject.tag relatedSubjectRltn', 
-			'relatedFunction.tag relatedFunctionRltn'
-		])
-		->groupBy(['id']);
+			'parent parent'
+		]);
+		if((isset($params['sort']) && in_array($params['sort'], ['level_id', '-level_id'])) || (isset($params['levelName']) && $params['levelName'] != ''))
+			$query = $query->joinWith(['level.title level']);
+		if((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || (isset($params['creationDisplayname']) && $params['creationDisplayname'] != ''))
+			$query = $query->joinWith(['creation creation']);
+		if((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != ''))
+			$query = $query->joinWith(['modified modified']);
+		if(isset($params['media']) && $params['media'] != '')
+			$query = $query->joinWith(['relatedMedia relatedMedia']);
+		if((isset($params['creatorId']) && $params['creatorId'] != '') || (isset($params['creator']) && $params['creator'] != ''))
+			$query = $query->joinWith(['relatedCreator relatedCreator', 'relatedCreator.creator relatedCreatorRltn']);
+		if((isset($params['repositoryId']) && $params['repositoryId'] != '') || (isset($params['repository']) && $params['repository'] != ''))
+			$query = $query->joinWith(['relatedRepository relatedRepository', 'relatedRepository.repository relatedRepositoryRltn']);
+		if((isset($params['subjectId']) && $params['subjectId'] != '') || (isset($params['subject']) && $params['subject'] != ''))
+			$query = $query->joinWith(['relatedSubject relatedSubject', 'relatedSubject.tag relatedSubjectRltn']);
+		if((isset($params['functionId']) && $params['functionId'] != '') || (isset($params['function']) && $params['function'] != ''))
+			$query = $query->joinWith(['relatedFunction relatedFunction', 'relatedFunction.tag relatedFunctionRltn']);
+		if((isset($params['location']) && $params['location'] != '') || (isset($params['rackId']) && $params['rackId'] != '') || (isset($params['roomId']) && $params['roomId'] != '') || (isset($params['depoId']) && $params['depoId'] != '') || (isset($params['buildingId']) && $params['buildingId'] != ''))
+			$query = $query->joinWith(['relatedLocation relatedLocation']);
+		if(isset($params['depoId']) && $params['depoId'] != '')
+			$query = $query->joinWith(['relatedLocation.room relatedLocationRoom']);
+		if(isset($params['buildingId']) && $params['buildingId'] != '')
+			$query = $query->joinWith(['relatedLocation.room.parent relatedLocationDepo']);
+
+		$query = $query->groupBy(['id']);
 
 		// add conditions that should always apply here
 		$dataParams = [
@@ -183,7 +191,7 @@ class Archives extends ArchivesModel
 			->andFilterWhere(['like', 'level.message', $this->levelName])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
 			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname])
-			->andFilterWhere(['like', 'relatedCreatorRltn.creator_name', $this->creator])
+			->andFilterWhere(['like', 'relatedCreatorRltn.creator_namea', $this->creator])
 			->andFilterWhere(['like', 'relatedRepositoryRltn.repository_name', $this->repository])
 			->andFilterWhere(['like', 'relatedSubjectRltn.body', $this->subject])
 			->andFilterWhere(['like', 'relatedFunctionRltn.body', $this->function]);
