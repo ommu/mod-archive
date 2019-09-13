@@ -253,9 +253,21 @@ echo $form->field($model, 'subject')
 		->radioList($imageType, ['prompt'=>''])
 		->label($model->getAttributeLabel('archive_type'));?>
 
-<?php $uploadPath = join('/', [$model::getUploadPath(false), $model->id]);
-$bannerFilename = !$model->isNewRecord && $model->old_archive_file != '' ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->old_archive_file])), ['alt'=>$model->old_archive_file, 'class'=>'mb-3']) : '';
-echo $form->field($model, 'archive_file', ['template'=> '{label}{beginWrapper}<div>'.$bannerFilename.'</div>{input}{error}{hint}{endWrapper}'])
+<?php
+$uploadPath = join('/', [$model::getUploadPath(false), $model->id]);
+$extension = pathinfo($model->old_archive_file, PATHINFO_EXTENSION);
+$setting = $model->getSetting(['image_type', 'document_type']);
+$imageFileType = $model->formatFileType($setting->image_type);
+$documentFileType = $model->formatFileType($setting->document_type);
+
+$archiveFile = '';
+if(!$model->isNewRecord && $model->old_archive_file != '') {
+	if(in_array($extension, $imageFileType))
+		$archiveFile = Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->old_archive_file])), ['alt'=>$model->old_archive_file, 'class'=>'mb-3']);
+	if(in_array($extension, $documentFileType))
+		$archiveFile = Html::a($model->old_archive_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->old_archive_file])), ['title'=>$model->old_archive_file, 'class'=>'mb-3', 'style'=>'display: block;', 'target'=>'_blank']);
+}
+echo $form->field($model, 'archive_file', ['template'=> '{label}{beginWrapper}<div>'.$archiveFile.'</div>{input}{error}{hint}{endWrapper}'])
 	->fileInput()
 	->label($model->getAttributeLabel('archive_file')); ?>
 

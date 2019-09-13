@@ -35,7 +35,9 @@
 	"require": {
 		"php": "~7.0",
 		"yiisoft/yii2": "~2.0.13",
-		"npm-asset/acitree": "4.5.1"
+		"npm-asset/acitree": "4.5.1",
+		"npm-asset/pdfjs-dist": "~2.2"
+
 	},
 	"autoload": {
 		"psr-4": {

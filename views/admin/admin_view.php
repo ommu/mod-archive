@@ -134,10 +134,27 @@ $attributes = [
 	[
 		'attribute' => 'archive_file',
 		'value' => function ($model) {
+			if(!$model->archive_file)
+				return '-';
+			
 			$uploadPath = join('/', [$model::getUploadPath(false), $model->id]);
-			return $model->archive_file ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->archive_file])), ['alt'=>$model->archive_file, 'class'=>'mb-3']).'<br/>'.$model->archive_file : '-';
+			$extension = pathinfo($model->archive_file, PATHINFO_EXTENSION);
+			$setting = $model->getSetting(['image_type', 'document_type']);
+			$imageFileType = $model->formatFileType($setting->image_type);
+			$documentFileType = $model->formatFileType($setting->document_type);
+
+			$filePath = Url::to(join('/', ['@webpublic', $uploadPath, $model->archive_file]));
+			// $filePath = Url::to(join('/', ['@webpublic', 'siks', 'example-preview-pdf.pdf']));
+
+			if(in_array($extension, $imageFileType))
+				return Html::img($filePath, ['alt'=>$model->archive_file, 'class'=>'mb-3']).'<br/>'.$model->archive_file;
+			if(in_array($extension, $documentFileType)) {
+				return \app\components\widgets\PreviewPDF::widget([
+					'url' => $filePath,
+				]);
+			}
 		},
-		'format' => 'html',
+		'format' => 'raw',
 		'visible' => !$small,
 	],
 	[
