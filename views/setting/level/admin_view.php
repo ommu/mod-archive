@@ -18,7 +18,9 @@ use yii\helpers\Url;
 use yii\widgets\DetailView;
 use ommu\archive\models\ArchiveLevel;
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Levels'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['admin/index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Settings'), 'url' => ['setting/admin/index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Levels of Description'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->title->message;
 
 if(!$small) {

@@ -22,7 +22,8 @@ use ommu\archive\models\ArchiveStorage;
 use ommu\selectize\Selectize;
 use yii\helpers\ArrayHelper;
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model->archive::htmlHardDecode($model->archive->code), 'url' => ['view', 'id'=>$model->archive->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Storage Location');
 
 $js = <<<JS

@@ -82,7 +82,7 @@ class AdminController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Archive Settings');
+		$this->view->title = Yii::t('app', 'Settings');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_index', [
@@ -110,7 +110,9 @@ class AdminController extends Controller
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Archive setting success updated.'));
-				return $this->redirect(['index']);
+				if(!Yii::$app->request->isAjax)
+					return $this->redirect(['update']);
+				return $this->redirect(Yii::$app->request->referrer ?: ['index']);
 
 			} else {
 				if(Yii::$app->request->isAjax)
@@ -118,7 +120,7 @@ class AdminController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Archive Settings');
+		$this->view->title = Yii::t('app', 'Update');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [

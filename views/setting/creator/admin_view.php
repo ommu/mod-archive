@@ -17,6 +17,8 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
 
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['admin/index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Settings'), 'url' => ['setting/admin/index']];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Creators'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->creator_name;
 

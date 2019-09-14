@@ -19,8 +19,13 @@ use yii\helpers\ArrayHelper;
 
 \ommu\archive\assets\AciTreeAsset::register($this);
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = Yii::t('app', 'Create');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['index']];
+if($parent) {
+	$this->params['breadcrumbs'][] = ['label' => $parent::htmlHardDecode($parent->code), 'url' => ['view', 'id'=>$parent->id]];
+	$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Childs'), 'url' => ['manage', 'id'=>$parent->id]];
+	$this->params['breadcrumbs'][] = Yii::t('app', 'Create');
+} else
+	$this->params['breadcrumbs'][] = Yii::t('app', 'Create Fond');
 
 $this->params['menu']['content'] = [
 	['label' => Yii::t('app', 'Back to Inventaris'), 'url' => Url::to(['index']), 'icon' => 'tasks', 'htmlOptions' => ['class'=>'btn btn-success']],

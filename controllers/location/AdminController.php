@@ -94,13 +94,27 @@ class AdminController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
+		if(($parent = Yii::$app->request->get('parent')) != null) {
+			$parent = ArchiveLocation::findOne($parent);
+			if($parent->type == 'building')
+				$attributes = ['location_name'=>$parent::getType($parent::TYPE_BUILDING), 'id'=>$parent::getType($parent::TYPE_DEPO)];
+			else if($parent->type == 'depo')
+				$attributes = ['location_name'=>$parent::getType($parent::TYPE_DEPO), 'id'=>$parent::getType($parent::TYPE_ROOM)];
+			else if($parent->type == 'room')
+				$attributes = ['location_name'=>$parent::getType($parent::TYPE_ROOM), 'id'=>$parent::getType($parent::TYPE_RACK)];
+			$parent->setAttributeLabels($attributes);
+		}
+
 		$this->view->title = Yii::t('app', Inflector::pluralize($this->title));
+		if($parent)
+			$this->view->title = Yii::t('app', '{location} in {parent}: {parent-name}', ['location'=>Inflector::pluralize($this->title), 'parent'=>$parent->getAttributeLabel('location_name'), 'parent-name'=>$parent->location_name]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
+			'parent' => $parent,
 		]);
 	}
 

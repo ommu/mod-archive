@@ -19,12 +19,21 @@ use yii\helpers\Url;
 use app\components\grid\GridView;
 use yii\widgets\Pjax;
 
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['admin/index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Location'), 'url' => ['location/admin/index']];
+if($parent) {
+	$controller = strtolower($parent->getAttributeLabel('location_name'));
+	if($controller == 'building')
+		$controller = 'admin';
+	$this->params['breadcrumbs'][] = ['label' => $parent->getAttributeLabel('location_name').': '.$parent->location_name, 'url' => ['location/'.$controller.'/view', 'id'=>$parent->id]];
+	$this->params['breadcrumbs'][] = $parent->getAttributeLabel('id');
+} else
+	$this->params['breadcrumbs'][] = $this->title;
 
 $context = $this->context;
 $createLocationUrl = Url::to(['create']);
-if(($parent = Yii::$app->request->get('parent')) != null)
-	$createLocationUrl = Url::to(['create', 'id'=>$parent]);
+if($parent)
+	$createLocationUrl = Url::to(['create', 'id'=>$parent->id]);
 $this->params['menu']['content'] = [
 	['label' => Yii::t('app', 'Add {title}', ['title'=>$context->title]), 'url' => $createLocationUrl, 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn modal-btn btn-success']],
 ];

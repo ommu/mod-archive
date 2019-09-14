@@ -21,7 +21,13 @@ use yii\widgets\Pjax;
 use yii\widgets\DetailView;
 use ommu\archive\models\ArchiveLevel;
 
-$this->params['breadcrumbs'][] = $this->title;
+if(!$parent)
+	$this->params['breadcrumbs'][] = $this->title;
+else {
+	$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['index']];
+	$this->params['breadcrumbs'][] = ['label' => $parent::htmlHardDecode($parent->code), 'url' => ['view', 'id'=>$parent->id]];
+	$this->params['breadcrumbs'][] = Yii::t('app', 'Childs');
+}
 
 if(($id = Yii::$app->request->get('id')) != null) {
 	$this->params['menu']['content'] = [

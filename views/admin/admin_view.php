@@ -20,8 +20,8 @@ use yii\helpers\ArrayHelper;
 
 \ommu\archive\assets\AciTreeAsset::register($this);
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archives'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $model->title;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = $model::htmlHardDecode($model->code);
 
 if(!$small) {
 $this->params['menu']['content'] = [

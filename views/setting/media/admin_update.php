@@ -16,7 +16,9 @@
 
 use yii\helpers\Url;
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Media'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['admin/index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Settings'), 'url' => ['setting/admin/index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Media Type'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->title->message, 'url' => ['view', 'id'=>$model->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 

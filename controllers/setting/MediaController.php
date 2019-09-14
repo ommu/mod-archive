@@ -128,7 +128,7 @@ class MediaController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Create Media');
+		$this->view->title = Yii::t('app', 'Create Media Type');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_create', [

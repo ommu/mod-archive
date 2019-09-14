@@ -16,7 +16,9 @@
 
 use yii\helpers\Url;
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Locations'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['admin/index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Location'), 'url' => ['location/admin/index']];
+$this->params['breadcrumbs'][] = ['label' => $model->getAttributeLabel('location_name'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->location_name, 'url' => ['view', 'id'=>$model->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 

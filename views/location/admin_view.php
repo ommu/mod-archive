@@ -18,7 +18,9 @@ use yii\helpers\Url;
 use yii\widgets\DetailView;
 use ommu\archive\models\ArchiveLocation;
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Locations'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['admin/index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Location'), 'url' => ['location/admin/index']];
+$this->params['breadcrumbs'][] = ['label' => $model->getAttributeLabel('location_name'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->location_name;
 
 if(!$small) {

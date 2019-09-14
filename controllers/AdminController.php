@@ -114,7 +114,7 @@ class AdminController extends Controller
 				unset($this->subMenu['childs']);
 		}
 
-		$this->view->title = $parent ?  Yii::t('app', 'Childs {level-name}: {title}', ['level-name' => $parent->level->level_name_i, 'title' => Archives::htmlHardDecode($parent->title)]) : Yii::t('app', 'Archives');
+		$this->view->title = $parent ?  Yii::t('app', 'Inventory Childs {level-name}: {title}', ['level-name' => $parent->level->level_name_i, 'title' => Archives::htmlHardDecode($parent->title)]) : Yii::t('app', 'Inventory');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
@@ -125,6 +125,7 @@ class AdminController extends Controller
 			'media' => $media,
 			'creator' => $creator,
 			'repository' => $repository,
+			'parent' => $parent,
 		]);
 	}
 
