@@ -407,10 +407,12 @@ class Archives extends \app\components\ActiveRecord
 		$this->templateColumns['archive_file'] = [
 			'attribute' => 'archive_file',
 			'value' => function($model, $key, $index, $column) {
+				if(!$model->archive_file)
+					return '-';
 				$uploadPath = join('/', [self::getUploadPath(false), $model->id]);
-				return $model->archive_file ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->archive_file])), ['alt'=>$model->archive_file]) : '-';
+				return Html::a($model->archive_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->archive_file])), ['title'=>$model->archive_file, 'data-pjax'=>0, 'target'=>'_blank']);
 			},
-			'format' => 'html',
+			'format' => 'raw',
 		];
 		if(ArchiveSetting::getInfo('fond_sidkkas')) {
 			if(!Yii::$app->request->get('id')) {
@@ -888,7 +890,7 @@ class Archives extends \app\components\ActiveRecord
 		}
 	
 		// replace code
-		if(array_key_exists('code', $this->dirtyAttributes) && $this->dirtyAttributes['code'] != $this->oldCode) {
+		if(!$insert && (array_key_exists('code', $this->dirtyAttributes) && $this->dirtyAttributes['code'] != $this->oldCode) && $this->getArchives('count') != 0) {
 			$models = self::find()
 				->select(['id', 'parent_id', 'level_id', 'code'])
 				->where(['parent_id'=>$this->id])

@@ -135,26 +135,26 @@ class AdminController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$parent = Yii::$app->request->get('id');
+		$id = Yii::$app->request->get('id');
 		$setting = \ommu\archive\models\ArchiveSetting::find()
 			->select(['fond_sidkkas', 'maintenance_mode', 'reference_code_sikn', 'reference_code_separator'])
 			->where(['id' => 1])
 			->one();
 
 		$model = new Archives();
-		if(!$parent)
+		if(!$id)
 			$model = new Archives(['level_id'=>1]);
 
 		if(Yii::$app->request->isPost) {
-			$model->load(Yii::$app->request->post());
+			$postData = Yii::$app->request->post();
+			$model->load($postData);
 			$model->archive_file = UploadedFile::getInstance($model, 'archive_file');
-			// $postData = Yii::$app->request->post();
-			// $model->load($postData);
-			// $model->order = $postData['order'] ? $postData['order'] : 0;
+			if(!($model->archive_file instanceof UploadedFile && !$model->archive_file->getHasError()))
+				$model->archive_file = $postData['archive_file'] ? $postData['archive_file'] : '';
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success created.', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]));
-				if($parent)
+				if($id)
 					return $this->redirect(['create', 'id'=>$model->parent_id]);
 				else
 					return $this->redirect(['view', 'id'=>$model->id]);
@@ -165,8 +165,8 @@ class AdminController extends Controller
 			}
 		}
 
-		if($parent != null)
-			$parent = Archives::findOne($parent);
+		if($id != null)
+			$parent = Archives::findOne($id);
 
 		$this->view->title = $parent ? Yii::t('app', 'Add New Child Levels {level-name}: {title}', ['level-name' => $parent->level->level_name_i, 'title' => Archives::htmlHardDecode($parent->title)]) : Yii::t('app', 'Create Fond');
 		$this->view->description = '';
