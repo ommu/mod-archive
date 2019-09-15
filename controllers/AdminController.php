@@ -112,6 +112,8 @@ class AdminController extends Controller
 			$parent = Archives::findOne($id);
 			if(strtolower($parent->level->level_name_i) == 'item')
 				unset($this->subMenu['childs']);
+			if(!in_array('location', $parent->level->field))
+				unset($this->subMenu['location']);
 		}
 
 		$this->view->title = $parent ?  Yii::t('app', 'Inventory Childs {level-name}: {title}', ['level-name' => $parent->level->level_name_i, 'title' => Archives::htmlHardDecode($parent->title)]) : Yii::t('app', 'Inventory');
@@ -166,8 +168,11 @@ class AdminController extends Controller
 			}
 		}
 
-		if($id != null)
+		if($id != null) {
 			$parent = Archives::findOne($id);
+			if(!in_array('location', $parent->level->field))
+				unset($this->subMenu['location']);
+		}
 
 		$this->view->title = $parent ? Yii::t('app', 'Add New Child Levels {level-name}: {title}', ['level-name' => $parent->level->level_name_i, 'title' => Archives::htmlHardDecode($parent->title)]) : Yii::t('app', 'Create Fond');
 		$this->view->description = '';
@@ -214,6 +219,8 @@ class AdminController extends Controller
 
 		if(strtolower($model->level->level_name_i) == 'item')
 			unset($this->subMenu['childs']);
+		if(!in_array('location', $model->level->field))
+			unset($this->subMenu['location']);
 
 		$this->view->title = Yii::t('app', 'Update {level-name}: {title}', ['level-name' => $model->level->level_name_i, 'title' => Archives::htmlHardDecode($model->title)]);
 		$this->view->description = '';
@@ -236,12 +243,15 @@ class AdminController extends Controller
 
 		if(strtolower($model->level->level_name_i) == 'item')
 			unset($this->subMenu['childs']);
+		if(!in_array('location', $model->level->field))
+			unset($this->subMenu['location']);
 
 		$this->view->title = Yii::t('app', 'Detail {level-name}: {title}', ['level-name' => $model->level->level_name_i, 'title' => Archives::htmlHardDecode($model->title)]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
 			'model' => $model,
+			'fond' => $model->level_id == 1 ? true : false,
 		]);
 	}
 
@@ -332,6 +342,11 @@ class AdminController extends Controller
 		if($model == null)
 			$model = new ArchiveRelatedLocation(['archive_id'=>$id]);
 
+		if(strtolower($model->archive->level->level_name_i) == 'item')
+			unset($this->subMenu['childs']);
+		if(!in_array('location', $model->archive->level->field))
+			unset($this->subMenu['location']);
+
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
 			// $postData = Yii::$app->request->post();
@@ -340,7 +355,9 @@ class AdminController extends Controller
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success updated location.', ['level-name'=>$model->archive->level->level_name_i, 'code'=>$model->archive->code]));
-				return $this->redirect(['location', 'id'=>$model->archive_id]);
+				if(!Yii::$app->request->isAjax)
+					return $this->redirect(['location', 'id'=>$model->archive_id]);
+				return $this->redirect(Yii::$app->request->referrer ?: ['location', 'id'=>$model->archive_id]);
 
 			} else {
 				if(Yii::$app->request->isAjax)
@@ -354,7 +371,7 @@ class AdminController extends Controller
 		$this->view->title = Yii::t('app', 'Storage Location {level-name}: {title}', ['level-name' => $model->archive->level->level_name_i, 'title' => Archives::htmlHardDecode($model->archive->title)]);
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_location', [
+		return $this->oRender('admin_location', [
 			'model' => $model,
 		]);
 	}

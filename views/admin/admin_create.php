@@ -27,16 +27,10 @@ if($parent) {
 } else
 	$this->params['breadcrumbs'][] = Yii::t('app', 'Create Fond');
 
-$this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Back to Inventaris'), 'url' => Url::to(['index']), 'icon' => 'tasks', 'htmlOptions' => ['class'=>'btn btn-success']],
-];
 if($parent) {
-	$this->params['menu']['content'] = ArrayHelper::merge(
-		$this->params['menu']['content'], 
-		[
-			['label' => Yii::t('app', 'Show Reference Code'), 'url' => 'javascript:void(0);', 'icon' => 'code', 'htmlOptions' => ['class'=>'btn btn-warning', 'id'=>'reference-code']],
-		]
-	);
+	$this->params['menu']['content'] = [
+		['label' => Yii::t('app', 'Show Reference Code'), 'url' => 'javascript:void(0);', 'icon' => 'code', 'htmlOptions' => ['class'=>'btn btn-warning', 'id'=>'reference-code']],
+	];
 
 	$treeDataUrl = Url::to(['data', 'id'=>$parent->id]);
 $js = <<<JS

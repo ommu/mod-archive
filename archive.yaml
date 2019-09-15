@@ -11,16 +11,16 @@ archive_submenu:
       0: 'admin/update'
       id: $_GET*id
     select: action
-  childs:
-    label: Childs
-    url:
-      0: 'admin/manage'
-      id: $_GET*id
-    select: action
   location:
     label: Storage Location
     url:
       0: 'admin/location'
+      id: $_GET*id
+    select: action
+  childs:
+    label: Childs
+    url:
+      0: 'admin/manage'
       id: $_GET*id
     select: action
   delete:

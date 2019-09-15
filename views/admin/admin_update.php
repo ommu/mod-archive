@@ -24,11 +24,14 @@ $this->params['breadcrumbs'][] = ['label' => $model::htmlHardDecode($model->code
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 
 $this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Back to Inventaris'), 'url' => Url::to(['index']), 'icon' => 'tasks', 'htmlOptions' => ['class'=>'btn btn-success']],
+	['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
+	['label' => Yii::t('app', 'Update'), 'url' => Url::to(['update', 'id'=>$model->id]), 'icon' => 'pencil', 'htmlOptions' => ['class'=>'btn btn-primary']],
+	'location' => ['label' => Yii::t('app', 'Location'), 'url' => Url::to(['location', 'id'=>$model->id]), 'icon' => 'archive', 'htmlOptions' => ['class'=>'btn btn-info']],
+	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
 ];
 if(!$fond) {
 	$this->params['menu']['content'] = ArrayHelper::merge(
-		$this->params['menu']['content'], 
+		$this->params['menu']['content'],
 		[
 			['label' => Yii::t('app', 'Show Reference Code'), 'url' => 'javascript:void(0);', 'icon' => 'code', 'htmlOptions' => ['class'=>'btn btn-warning', 'id'=>'reference-code']],
 		]
@@ -41,6 +44,8 @@ $js = <<<JS
 JS;
 	$this->registerJs($js, \yii\web\View::POS_HEAD);
 }
+if(!in_array('location', $model->level->field))
+	unset($this->params['menu']['content']['location']);
 ?>
 
 <div class="archives-update">
