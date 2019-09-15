@@ -157,10 +157,10 @@ class AdminController extends Controller
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success created.', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]));
-				if($id)
+				if($id && empty($model->level->child))
 					return $this->redirect(['create', 'id'=>$model->parent_id]);
-				else
-					return $this->redirect(['view', 'id'=>$model->id]);
+
+				return $this->redirect(['view', 'id'=>$model->id]);
 
 			} else {
 				if(Yii::$app->request->isAjax)
