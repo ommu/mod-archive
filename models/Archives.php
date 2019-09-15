@@ -623,6 +623,19 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * function getIsNewArchive
+	 */
+	public function getIsNewFile(): bool
+	{
+		if($this->archive_file != '' && $this->archive_file == $this->_file_preview_path)
+			return false;
+		if($this->archive_file != '' && $this->_file_preview_path == null && preg_match("/^(archive)/", $this->archive_file))
+			return false;
+		
+		return true;
+	}
+
+	/**
 	 * function getPublish
 	 */
 	public static function getPublish($value=null)

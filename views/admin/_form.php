@@ -257,11 +257,19 @@ echo $form->field($model, 'subject')
 		->label($model->getAttributeLabel('archive_type'));?>
 
 <?php
-$uploadPath = join('/', [$model::getUploadPath(false), $model->id]);
 $extension = pathinfo($model->old_archive_file, PATHINFO_EXTENSION);
-$setting = $model->getSetting(['image_type', 'document_type']);
+$setting = $model->getSetting(['maintenance_mode', 'maintenance_document_path', 'maintenance_image_path', 'image_type', 'document_type']);
 $imageFileType = $model->formatFileType($setting->image_type);
 $documentFileType = $model->formatFileType($setting->document_type);
+
+if($model->isNewFile)
+	$uploadPath = join('/', [$model::getUploadPath(false), $model->id]);
+else {
+	if(in_array($extension, $imageFileType))
+		$uploadPath = join('/', [$model::getUploadPath(false), $setting->maintenance_image_path]);
+	if(in_array($extension, $documentFileType))
+		$uploadPath = join('/', [$model::getUploadPath(false), $setting->maintenance_document_path]);
+}
 
 $archiveFile = '';
 if(!$model->isNewRecord && $model->old_archive_file != '') {
