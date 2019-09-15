@@ -40,7 +40,7 @@ if(!$fond)
 <div class="archives-form">
 
 <?php if($fond || !empty($level)) {
-	$creatorField = (!$fond && strtolower($model->level->level_name_i) !== 'item') ? "creator.disable();\nmedia.disable();\n$('#archive_type input[name=archive_type]').attr('disabled', true);\n$('input#archive_file').attr('disabled', true);\n$('textarea#medium').attr('disabled', true);" : '';
+	$creatorField = (!$fond && !isset($model->level) || !empty($model->level->child)) ? "creator.disable();\nmedia.disable();\n$('#archive_type input[name=archive_type]').attr('disabled', true);\n$('input#archive_file').attr('disabled', true);\n$('textarea#medium').attr('disabled', true);" : '';
 $js = <<<JS
 	$creatorField
 	$('#shortcode').on('keyup', function (e) {
@@ -150,7 +150,7 @@ if($fond) {
 	->hint(Yii::t('app', 'Provide either a formal title or a concise supplied title in accordance with the rules of multilevel description and national conventions.')); ?>
 
 <?php if(!$fond) {
-	echo $form->field($model, 'medium', ['options' => ['class'=>(strtolower($model->level->level_name_i) != 'item') ? 'form-group row field-item hide' : 'form-group row field-item']])
+	echo $form->field($model, 'medium', ['options' => ['class'=>(!isset($model->level) || !empty($model->level->child)) ? 'form-group row field-item hide' : 'form-group row field-item']])
 		->textarea(['rows'=>2, 'cols'=>50])
 		->label($model->getAttributeLabel('medium'))
 		->hint(Yii::t('app', 'Record the extent of the unit of description by giving the number of physical or logical units in arabic numerals and the unit of measurement. Give the specific medium (media) of the unit of description. Separate multiple extents with a linebreak.')); ?>
@@ -183,7 +183,7 @@ if($fond) {
 
 <?php if(!$fond) {
 	$creatorSuggestUrl = Url::to(['setting/creator/suggest']);
-	echo $form->field($model, 'creator', ['options' => ['class'=>(strtolower($model->level->level_name_i) != 'item') ? 'form-group row field-item hide' : 'form-group row field-item']])
+	echo $form->field($model, 'creator', ['options' => ['class'=>(!isset($model->level) || !empty($model->level->child)) ? 'form-group row field-item hide' : 'form-group row field-item']])
 		->widget(Selectize::className(), [
 			'cascade' => true,
 			'url' => $creatorSuggestUrl,
@@ -202,7 +202,7 @@ if($fond) {
 		->hint(Yii::t('app', 'Record the name of the organization(s) or the individual(s) responsible for the creation, accumulation and maintenance of the records in the unit of description. Search for an existing name in the authority records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new authority record.'));
 } ?>
 
-<div class="ln_solid <?php echo (!$fond && strtolower($model->level->level_name_i) != 'item') ? 'field-item hide' : 'field-item';?>"></div>
+<div class="ln_solid <?php echo (!$fond && !isset($model->level) || !empty($model->level->child)) ? 'field-item hide' : 'field-item';?>"></div>
 
 <?php $subjectSuggestUrl = Url::to(['/admin/tag/suggest']);
 echo $form->field($model, 'subject')
@@ -238,7 +238,7 @@ echo $form->field($model, 'subject')
 <div class="ln_solid"></div>
 
 <?php if(!$fond) {?>
-<?php echo $form->field($model, 'media', ['options' => ['class'=>(strtolower($model->level->level_name_i) != 'item') ? 'form-group row field-item hide' : 'form-group row field-item']])
+<?php echo $form->field($model, 'media', ['options' => ['class'=>(!isset($model->level) || !empty($model->level->child)) ? 'form-group row field-item hide' : 'form-group row field-item']])
 	->widget(Selectize::className(), [
 		'cascade' => true,
 		'items' => ArchiveMedia::getMedia(1),
@@ -252,7 +252,7 @@ echo $form->field($model, 'subject')
 	->label($model->getAttributeLabel('media')); ?>
 
 <?php $imageType = $model::getArchiveType();
-	echo $form->field($model, 'archive_type', ['options' => ['class'=>(strtolower($model->level->level_name_i) != 'item') ? 'form-group row field-item hide' : 'form-group row field-item']])
+	echo $form->field($model, 'archive_type', ['options' => ['class'=>(!isset($model->level) || !empty($model->level->child)) ? 'form-group row field-item hide' : 'form-group row field-item']])
 		->radioList($imageType, ['prompt'=>''])
 		->label($model->getAttributeLabel('archive_type'));?>
 
@@ -270,11 +270,11 @@ if(!$model->isNewRecord && $model->old_archive_file != '') {
 	if(in_array($extension, $documentFileType))
 		$archiveFile = Html::a($model->old_archive_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->old_archive_file])), ['title'=>$model->old_archive_file, 'class'=>'mb-3', 'style'=>'display: block;', 'target'=>'_blank']);
 }
-echo $form->field($model, 'archive_file', ['template'=> '{label}{beginWrapper}<div>'.$archiveFile.'</div>{input}{error}{hint}{endWrapper}', 'options' => ['class'=>(strtolower($model->level->level_name_i) != 'item') ? 'form-group row field-item hide' : 'form-group row field-item']])
+echo $form->field($model, 'archive_file', ['template'=> '{label}{beginWrapper}<div>'.$archiveFile.'</div>{input}{error}{hint}{endWrapper}', 'options' => ['class'=>(!isset($model->level) || !empty($model->level->child)) ? 'form-group row field-item hide' : 'form-group row field-item']])
 	->fileInput()
 	->label($model->getAttributeLabel('archive_file')); ?>
 
-<div class="ln_solid <?php echo (strtolower($model->level->level_name_i) != 'item') ? 'field-item hide' : 'field-item';?>"></div>
+<div class="ln_solid <?php echo (!isset($model->level) || !empty($model->level->child)) ? 'field-item hide' : 'field-item';?>"></div>
 <?php }
 
 $publish = $model::getPublish();

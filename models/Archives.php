@@ -566,7 +566,7 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function getChilds()
 	{
-		if(strtolower($this->level->level_name_i) == 'item')
+		if(empty($this->level->child))
 			return [];
 
 		$childs = $this->getArchives('array');
@@ -581,7 +581,7 @@ class Archives extends \app\components\ActiveRecord
 
 		// if(!empty($archives)) {
 		// 	foreach ($archives as $archive) {
-		// 		if(strtolower($archive->level->level_name_i) != 'item') {
+		// 		if(!empty($archive->level->child)) {
 		// 			$childArchives = $archive->getChilds();
 		// 			if(!empty($childArchives)) {
 		// 				foreach ($childArchives as $key => $val) {

@@ -110,7 +110,7 @@ class AdminController extends Controller
 
 		if($id != null) {
 			$parent = Archives::findOne($id);
-			if(strtolower($parent->level->level_name_i) == 'item')
+			if(empty($parent->level->child))
 				unset($this->subMenu['childs']);
 			if(!in_array('location', $parent->level->field))
 				unset($this->subMenu['location']);
@@ -217,7 +217,7 @@ class AdminController extends Controller
 			}
 		}
 
-		if(strtolower($model->level->level_name_i) == 'item')
+		if(empty($model->level->child))
 			unset($this->subMenu['childs']);
 		if(!in_array('location', $model->level->field))
 			unset($this->subMenu['location']);
@@ -241,7 +241,7 @@ class AdminController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		if(strtolower($model->level->level_name_i) == 'item')
+		if(empty($model->level->child))
 			unset($this->subMenu['childs']);
 		if(!in_array('location', $model->level->field))
 			unset($this->subMenu['location']);
@@ -342,11 +342,6 @@ class AdminController extends Controller
 		if($model == null)
 			$model = new ArchiveRelatedLocation(['archive_id'=>$id]);
 
-		if(strtolower($model->archive->level->level_name_i) == 'item')
-			unset($this->subMenu['childs']);
-		if(!in_array('location', $model->archive->level->field))
-			unset($this->subMenu['location']);
-
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
 			// $postData = Yii::$app->request->post();
@@ -365,8 +360,10 @@ class AdminController extends Controller
 			}
 		}
 
-		if(strtolower($model->archive->level->level_name_i) == 'item')
+		if(empty($model->archive->level->child))
 			unset($this->subMenu['childs']);
+		if(!in_array('location', $model->archive->level->field))
+			unset($this->subMenu['location']);
 
 		$this->view->title = Yii::t('app', 'Storage Location {level-name}: {title}', ['level-name' => $model->archive->level->level_name_i, 'title' => Archives::htmlHardDecode($model->archive->title)]);
 		$this->view->description = '';
