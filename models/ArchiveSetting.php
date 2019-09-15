@@ -18,6 +18,9 @@
  * @property string $meta_keyword
  * @property integer $fond_sidkkas
  * @property integer $maintenance_mode
+ * @property string $maintenance_document_path
+ * @property string $maintenance_image_path
+ * @property string $production_date
  * @property string $reference_code_sikn
  * @property string $reference_code_separator
  * @property string $image_type
@@ -59,11 +62,12 @@ class ArchiveSetting extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['license', 'permission', 'meta_description', 'meta_keyword', 'fond_sidkkas', 'maintenance_mode', 'reference_code_separator', 'image_type', 'document_type'], 'required'],
+			[['license', 'permission', 'meta_description', 'meta_keyword', 'fond_sidkkas', 'maintenance_mode', 'production_date', 'reference_code_separator', 'image_type', 'document_type'], 'required'],
 			[['permission', 'fond_sidkkas', 'maintenance_mode', 'modified_id'], 'integer'],
-			[['meta_description', 'meta_keyword'], 'string'],
+			[['meta_description', 'meta_keyword', 'maintenance_document_path', 'maintenance_image_path', 'production_date'], 'string'],
+			[['maintenance_document_path', 'maintenance_image_path'], 'safe'],
 			//[['image_type', 'document_type'], 'json'],
-			[['license', 'reference_code_sikn'], 'string', 'max' => 32],
+			[['license', 'maintenance_document_path', 'maintenance_image_path', 'reference_code_sikn'], 'string', 'max' => 32],
 			[['reference_code_separator'], 'string', 'max' => 1],
 		];
 	}
@@ -81,6 +85,9 @@ class ArchiveSetting extends \app\components\ActiveRecord
 			'meta_keyword' => Yii::t('app', 'Meta Keyword'),
 			'fond_sidkkas' => Yii::t('app', 'Fond Sidkkas'),
 			'maintenance_mode' => Yii::t('app', 'Maintenance Mode'),
+			'maintenance_document_path' => Yii::t('app', 'Maintenance Document Path'),
+			'maintenance_image_path' => Yii::t('app', 'Maintenance Image Path'),
+			'production_date' => Yii::t('app', 'Production Date'),
 			'reference_code_sikn' => Yii::t('app', 'SIKN Reference Code'),
 			'reference_code_separator' => Yii::t('app', 'Reference Code Level Separator'),
 			'image_type' => Yii::t('app', 'Image Type'),
@@ -137,6 +144,25 @@ class ArchiveSetting extends \app\components\ActiveRecord
 			'value' => function($model, $key, $index, $column) {
 				return $model->meta_keyword;
 			},
+		];
+		$this->templateColumns['maintenance_document_path'] = [
+			'attribute' => 'maintenance_document_path',
+			'value' => function($model, $key, $index, $column) {
+				return $model->maintenance_document_path;
+			},
+		];
+		$this->templateColumns['maintenance_image_path'] = [
+			'attribute' => 'maintenance_image_path',
+			'value' => function($model, $key, $index, $column) {
+				return $model->maintenance_image_path;
+			},
+		];
+		$this->templateColumns['production_date'] = [
+			'attribute' => 'production_date',
+			'value' => function($model, $key, $index, $column) {
+				return Yii::$app->formatter->asDate($model->production_date, 'medium');
+			},
+			'filter' => $this->filterDatepicker($this, 'production_date'),
 		];
 		$this->templateColumns['reference_code_sikn'] = [
 			'attribute' => 'reference_code_sikn',
@@ -284,6 +310,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
 	public function beforeSave($insert)
 	{
 		if(parent::beforeSave($insert)) {
+			$this->production_date = Yii::$app->formatter->asDate($this->production_date, 'php:Y-m-d');
 			$this->image_type = Json::encode($this->formatFileType($this->image_type));
 			$this->document_type = Json::encode($this->formatFileType($this->document_type));
 		}

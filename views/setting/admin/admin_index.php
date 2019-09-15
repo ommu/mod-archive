@@ -63,8 +63,20 @@ $this->params['breadcrumbs'][] = $this->title;
 				'value' => $model::getFondSidkkas($model->fond_sidkkas),
 			],
 			[
+				'attribute' => 'production_date',
+				'value' => Yii::$app->formatter->asDate($model->production_date, 'medium'),
+			],
+			[
 				'attribute' => 'maintenance_mode',
 				'value' => $model::getFondSidkkas($model->maintenance_mode),
+			],
+			[
+				'attribute' => 'maintenance_document_path',
+				'value' => $model->maintenance_document_path ? $model->maintenance_document_path : '-',
+			],
+			[
+				'attribute' => 'maintenance_image_path',
+				'value' => $model->maintenance_image_path ? $model->maintenance_image_path : '-',
 			],
 			[
 				'attribute' => 'modified_date',

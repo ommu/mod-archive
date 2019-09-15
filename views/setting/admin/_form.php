@@ -55,6 +55,8 @@ echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hi
 	->textarea(['rows'=>6, 'cols'=>50])
 	->label($model->getAttributeLabel('meta_keyword')); ?>
 
+<div class="ln_solid"></div>
+
 <?php echo $form->field($model, 'reference_code_sikn')
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('reference_code_sikn')); ?>
@@ -62,6 +64,8 @@ echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hi
 <?php echo $form->field($model, 'reference_code_separator')
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('reference_code_separator')); ?>
+
+<div class="ln_solid"></div>
 
 <?php echo $form->field($model, 'image_type')
 	->textInput()
@@ -73,15 +77,33 @@ echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hi
 	->label($model->getAttributeLabel('document_type'))
 	->hint(Yii::t('app', 'pisahkan jenis file dengan koma (,). example: "pdf, doc, docx"')); ?>
 
+<div class="ln_solid"></div>
+
 <?php $fondSidkka = $model::getFondSidkkas();
 echo $form->field($model, 'fond_sidkkas')
 	->dropDownList($fondSidkka, ['prompt'=>''])
 	->label($model->getAttributeLabel('fond_sidkkas')); ?>
 
+<?php if($model->isNewRecord && !$model->getErrors())
+	$model->production_date = Yii::$app->formatter->asDate('now', 'php:Y-m-d');
+echo $form->field($model, 'production_date')
+	->textInput(['type'=>'date'])
+	->label($model->getAttributeLabel('production_date')); ?>
+
+<div class="ln_solid"></div>
+
 <?php $fondSidkka = $model::getFondSidkkas();
 echo $form->field($model, 'maintenance_mode')
 	->dropDownList($fondSidkka, ['prompt'=>''])
 	->label($model->getAttributeLabel('maintenance_mode')); ?>
+
+<?php echo $form->field($model, 'maintenance_document_path')
+	->textInput(['maxlength'=>true])
+	->label($model->getAttributeLabel('maintenance_document_path')); ?>
+
+<?php echo $form->field($model, 'maintenance_image_path')
+	->textInput(['maxlength'=>true])
+	->label($model->getAttributeLabel('maintenance_image_path')); ?>
 
 <div class="ln_solid"></div>
 
