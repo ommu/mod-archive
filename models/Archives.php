@@ -409,7 +409,21 @@ class Archives extends \app\components\ActiveRecord
 			'value' => function($model, $key, $index, $column) {
 				if(!$model->archive_file)
 					return '-';
-				$uploadPath = join('/', [self::getUploadPath(false), $model->id]);
+
+				$extension = pathinfo($model->old_archive_file, PATHINFO_EXTENSION);
+				$setting = $model->getSetting(['maintenance_mode', 'maintenance_document_path', 'maintenance_image_path', 'image_type', 'document_type']);
+				$imageFileType = $model->formatFileType($setting->image_type);
+				$documentFileType = $model->formatFileType($setting->document_type);
+
+				if($model->isNewFile)
+					$uploadPath = join('/', [$model::getUploadPath(false), $model->id]);
+				else {
+					if(in_array($extension, $imageFileType))
+						$uploadPath = join('/', [$model::getUploadPath(false), $setting->maintenance_image_path]);
+					if(in_array($extension, $documentFileType))
+						$uploadPath = join('/', [$model::getUploadPath(false), $setting->maintenance_document_path]);
+				}
+
 				return Html::a($model->archive_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->archive_file])), ['title'=>$model->archive_file, 'data-pjax'=>0, 'target'=>'_blank']);
 			},
 			'format' => 'raw',
