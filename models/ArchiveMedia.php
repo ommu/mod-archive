@@ -183,11 +183,11 @@ class ArchiveMedia extends \app\components\ActiveRecord
 			'attribute' => 'archives',
 			'value' => function($model, $key, $index, $column) {
 				$archives = $model->getArchives(true);
-				return Html::a($archives, ['admin/manage', 'mediaId'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
+				return Html::a($archives, ['admin/manage', 'mediaId'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives]), 'data-pjax'=>0]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],
-			'format' => 'html',
+			'format' => 'raw',
 		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',

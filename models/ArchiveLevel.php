@@ -202,7 +202,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		$this->templateColumns['child'] = [
 			'attribute' => 'child',
 			'value' => function($model, $key, $index, $column) {
-				return ArchiveLevel::getChild($model->child, ',');
+				return $model::getChild($model->child, ',');
 			},
 			'filter' => false,
 			'format' => 'html',
@@ -210,7 +210,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		$this->templateColumns['field'] = [
 			'attribute' => 'field',
 			'value' => function($model, $key, $index, $column) {
-				return ArchiveLevel::getField($model->field, ',');
+				return $model::getField($model->field, ',');
 			},
 			'filter' => false,
 			'format' => 'html',
@@ -219,11 +219,11 @@ class ArchiveLevel extends \app\components\ActiveRecord
 			'attribute' => 'archives',
 			'value' => function($model, $key, $index, $column) {
 				$archives = $model->getArchives(true);
-				return $archives ? Html::a($archives, ['admin/manage', 'level'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]) : '-';
+				return Html::a($archives, ['admin/manage', 'level'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives]), 'data-pjax'=>0]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],
-			'format' => 'html',
+			'format' => 'raw',
 		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',

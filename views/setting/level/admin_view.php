@@ -63,6 +63,7 @@ $attributes = [
 		'attribute' => 'field',
 		'value' => ArchiveLevel::getField($model->field),
 		'format' => 'html',
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'archives',
@@ -71,6 +72,7 @@ $attributes = [
 			return $archives ? Html::a($archives, ['admin/manage', 'level'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]) : '-';
 		},
 		'format' => 'html',
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'creation_date',

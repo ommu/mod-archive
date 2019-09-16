@@ -155,6 +155,16 @@ class ArchiveCreator extends \app\components\ActiveRecord
 				return $model->creator_desc;
 			},
 		];
+		$this->templateColumns['archives'] = [
+			'attribute' => 'archives',
+			'value' => function($model, $key, $index, $column) {
+				$archives = $model->getArchives(true);
+				return Html::a($archives, ['admin/manage', 'creatorId'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives]), 'data-pjax'=>0]);
+			},
+			'filter' => false,
+			'contentOptions' => ['class'=>'center'],
+			'format' => 'raw',
+		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
 			'value' => function($model, $key, $index, $column) {
@@ -193,16 +203,6 @@ class ArchiveCreator extends \app\components\ActiveRecord
 				return Yii::$app->formatter->asDatetime($model->updated_date, 'medium');
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
-		];
-		$this->templateColumns['archives'] = [
-			'attribute' => 'archives',
-			'value' => function($model, $key, $index, $column) {
-				$archives = $model->getArchives(true);
-				return Html::a($archives, ['admin/manage', 'creatorId'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives])]);
-			},
-			'filter' => false,
-			'contentOptions' => ['class'=>'center'],
-			'format' => 'html',
 		];
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [

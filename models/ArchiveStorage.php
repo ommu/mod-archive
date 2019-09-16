@@ -203,11 +203,11 @@ class ArchiveStorage extends \app\components\ActiveRecord
 			'attribute' => 'rooms',
 			'value' => function($model, $key, $index, $column) {
 				$rooms = $model->getRooms(true);
-				return Html::a($rooms, ['location/room/manage', 'storage'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} rooms', ['count'=>$rooms])]);
+				return Html::a($rooms, ['location/room/manage', 'storage'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} rooms', ['count'=>$rooms]), 'data-pjax'=>0]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],
-			'format' => 'html',
+			'format' => 'raw',
 		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',

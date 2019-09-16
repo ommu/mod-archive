@@ -18,8 +18,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use app\components\grid\GridView;
 use yii\widgets\Pjax;
-use yii\widgets\DetailView;
-use ommu\archive\models\ArchiveLevel;
 
 if(!$parent)
 	$this->params['breadcrumbs'][] = $this->title;
@@ -47,110 +45,17 @@ $this->params['menu']['option'] = [
 <div class="archives-manage">
 <?php Pjax::begin(); ?>
 
-<?php if($level != null) {
-$model = $level;
-echo DetailView::widget([
-	'model' => $model,
-	'options' => [
-		'class'=>'table table-striped detail-view',
-	],
-	'attributes' => [
-		[
-			'attribute' => 'level_name_i',
-			'value' => function ($model) {
-				if($model->level_name_i != '')
-					return Html::a($model->level_name_i, ['setting/level/view', 'id'=>$model->id], ['title'=>$model->level_name_i, 'class'=>'modal-btn']);
-				return $model->level_name_i;
-			},
-			'format' => 'html',
-		],
-		[
-			'attribute' => 'level_desc_i',
-			'value' => $model->level_desc_i,
-		],
-		[
-			'attribute' => 'child',
-			'value' => ArchiveLevel::getChild($model->child),
-			'format' => 'html',
-		],
-	],
-]);
-}?>
+<?php if($level != null)
+	echo $this->render('/setting/level/admin_view', ['model'=>$level, 'small'=>true]); ?>
 
-<?php if($media != null) {
-$model = $media;
-echo DetailView::widget([
-	'model' => $model,
-	'options' => [
-		'class'=>'table table-striped detail-view',
-	],
-	'attributes' => [
-		[
-			'attribute' => 'media_name_i',
-			'value' => function ($model) {
-				if($model->media_name_i != '')
-					return Html::a($model->media_name_i, ['setting/media/view', 'id'=>$model->id], ['title'=>$model->media_name_i, 'class'=>'modal-btn']);
-				return $model->media_name_i;
-			},
-			'format' => 'html',
-		],
-		[
-			'attribute' => 'media_desc_i',
-			'value' => $model->media_desc_i,
-		],
-	],
-]);
-}?>
+<?php if($media != null)
+	echo $this->render('/setting/media/admin_view', ['model'=>$media, 'small'=>true]); ?>
 
-<?php if($creator != null) {
-$model = $creator;
-echo DetailView::widget([
-	'model' => $model,
-	'options' => [
-		'class'=>'table table-striped detail-view',
-	],
-	'attributes' => [
-		[
-			'attribute' => 'creator_name',
-			'value' => function ($model) {
-				if($model->creator_name != '')
-					return Html::a($model->creator_name, ['setting/creator/view', 'id'=>$model->id], ['title'=>$model->creator_name, 'class'=>'modal-btn']);
-				return $model->creator_name;
-			},
-			'format' => 'html',
-		],
-		[
-			'attribute' => 'creator_desc',
-			'value' => $model->creator_desc ? $model->creator_desc : '-',
-		],
-	],
-]);
-}?>
+<?php if($creator != null)
+	echo $this->render('/setting/creator/admin_view', ['model'=>$creator, 'small'=>true]); ?>
 
-<?php if($repository != null) {
-$model = $repository;
-echo DetailView::widget([
-	'model' => $model,
-	'options' => [
-		'class'=>'table table-striped detail-view',
-	],
-	'attributes' => [
-		[
-			'attribute' => 'repository_name',
-			'value' => function ($model) {
-				if($model->repository_name != '')
-					return Html::a($model->repository_name, ['setting/repository/view', 'id'=>$model->id], ['title'=>$model->repository_name, 'class'=>'modal-btn']);
-				return $model->repository_name;
-			},
-			'format' => 'html',
-		],
-		[
-			'attribute' => 'repository_desc',
-			'value' => $model->repository_desc ? $model->repository_desc : '-',
-		],
-	],
-]);
-}?>
+<?php if($repository != null)
+	echo $this->render('/setting/repository/admin_view', ['model'=>$repository, 'small'=>true]); ?>
 
 <?php //echo $this->render('_search', ['model'=>$searchModel]); ?>
 
