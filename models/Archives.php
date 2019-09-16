@@ -20,6 +20,7 @@
  * @property string $code
  * @property string $medium
  * @property string $archive_type
+ * @property string $archive_date
  * @property string $archive_file
  * @property string $creation_date
  * @property integer $creation_id
@@ -100,8 +101,8 @@ class Archives extends \app\components\ActiveRecord
 		return [
 			[['publish', 'level_id', 'title', 'shortCode'], 'required'],
 			[['publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id'], 'integer'],
-			[['title', 'archive_type'], 'string'],
-			[['code', 'medium', 'archive_file', 'media', 'creator', 'repository', 'subject', 'function'], 'safe'],
+			[['title', 'archive_type', 'archive_date'], 'string'],
+			[['code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'media', 'creator', 'repository', 'subject', 'function'], 'safe'],
 			[['code'], 'string', 'max' => 255],
 			[['shortCode'], 'string', 'max' => 16],
 			[['level_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLevel::className(), 'targetAttribute' => ['level_id' => 'id']],
@@ -123,6 +124,7 @@ class Archives extends \app\components\ActiveRecord
 			'code' => Yii::t('app', 'Reference code'),
 			'medium' => Yii::t('app', 'Extent and medium'),
 			'archive_type' => Yii::t('app', 'Archive Type'),
+			'archive_date' => Yii::t('app', 'Archive Date'),
 			'archive_file' => Yii::t('app', 'Archive File'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
@@ -386,7 +388,7 @@ class Archives extends \app\components\ActiveRecord
 			},
 			'filter' => false,
 			'enableSorting' => false,
-			'format' => 'html',
+			'format' => 'raw',
 		];
 		$this->templateColumns['media'] = [
 			'attribute' => 'media',
@@ -403,6 +405,17 @@ class Archives extends \app\components\ActiveRecord
 				return self::getArchiveType($model->archive_type ? $model->archive_type : '-');
 			},
 			'filter' => self::getArchiveType(),
+		];
+		$this->templateColumns['archive_date'] = [
+			'attribute' => 'archive_date',
+			'value' => function($model, $key, $index, $column) {
+				if(empty($model->level->child))
+					return Yii::$app->formatter->asDate($model->archive_date, 'long');
+				if(strtolower($model->level->level_name_i) == 'fond')
+					return Yii::$app->formatter->asDate($model->archive_date, 'php:Y');
+				return Yii::$app->formatter->asDate($model->archive_date, 'long');
+			},
+			'filter' => $this->filterDatepicker($this, 'archive_date'),
 		];
 		$this->templateColumns['archive_file'] = [
 			'attribute' => 'archive_file',
@@ -774,7 +787,7 @@ class Archives extends \app\components\ActiveRecord
 		foreach ($childs as $key => $val) {
 			$i++;
 			$title = $val." ".$levels[$key];
-			$return[] = $i == 1 ? Html::a($title, ['admin/manage', 'id'=>$id], ['title'=>$title]) : $title;
+			$return[] = $i == 1 ? Html::a($title, ['admin/manage', 'id'=>$id], ['title'=>$title, 'data-pjax'=>0]) : $title;
 		}
 
 		if($sep == 'li')
@@ -819,6 +832,15 @@ class Archives extends \app\components\ActiveRecord
 		// $this->levelName = isset($this->level) ? $this->level->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
+
+		if(($archive_date = Yii::$app->formatter->asDate($this->archive_date, 'php:Y-m-d')) == '-')
+			$this->archive_date = '';
+		if($this->archive_date != '') {
+			$this->archive_date = $archive_date;
+			if(strtolower($this->level->level_name_i) == 'fond')
+				$this->archive_date = Yii::$app->formatter->asDate($this->archive_date, 'php:Y');
+		}
+
 		$this->code = preg_replace("/^[.-]/", '', preg_replace("/^(3400|23400-24)/", '', $this->code));
 		$this->oldCode = $this->code;
 		$parentCode = $this->parent->code;
@@ -932,6 +954,13 @@ class Archives extends \app\components\ActiveRecord
 					$model->update(false);
 				}
 			}
+		}
+
+		if($this->archive_date != '') {
+			if(strtolower($this->level->level_name_i) == 'fond')
+				$this->archive_date = join('-', [$this->archive_date, '01', '01']);
+
+			$this->archive_date = Yii::$app->formatter->asDate($this->archive_date, 'php:Y-m-d');
 		}
 		
 		if(!$insert) {

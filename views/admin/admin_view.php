@@ -127,6 +127,17 @@ $attributes = [
 		'visible' => !$small && in_array('archive_type', $model->level->field) ? true : false,
 	],
 	[
+		'attribute' => 'archive_date',
+		'value' => function ($model) {
+			if(empty($model->level->child))
+				return Yii::$app->formatter->asDate($model->archive_date, 'long');
+			if(strtolower($model->level->level_name_i) == 'fond')
+				return Yii::$app->formatter->asDate($model->archive_date, 'php:Y');
+			return Yii::$app->formatter->asDate($model->archive_date, 'long');
+		},
+		'visible' => !$small,
+	],
+	[
 		'attribute' => 'archive_file',
 		'value' => function ($model) {
 			if(!$model->archive_file)

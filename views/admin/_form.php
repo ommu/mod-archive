@@ -40,7 +40,7 @@ if(!$fond)
 <div class="archives-form">
 
 <?php if($fond || !empty($level)) {
-	$creatorField = (!$fond && !isset($model->level) || !empty($model->level->child)) ? "creator.disable();\nmedia.disable();\n$('#archive_type input[name=archive_type]').attr('disabled', true);\n$('input#archive_file').attr('disabled', true);\n$('textarea#medium').attr('disabled', true);" : '';
+	$creatorField = (!$fond && (!isset($model->level) || !empty($model->level->child))) ? "creator.disable();\nmedia.disable();\n$('textarea#medium').attr('disabled', true);\n$('#archive_type input[name=archive_type]').attr('disabled', true);\n$('input#archive_date').attr('disabled', true);\n$('input#archive_file').attr('disabled', true);" : '';
 $js = <<<JS
 	$creatorField
 	$('#shortcode').on('keyup', function (e) {
@@ -59,16 +59,18 @@ $js = <<<JS
 			creator.enable();
 			media.enable();
 			$('.field-item').removeClass('hide');
-			$("#archive_type input[name=archive_type]").attr('disabled', false);
-			$("input#archive_file").attr('disabled', false);
 			$("textarea#medium").attr('disabled', false);
+			$("#archive_type input[name=archive_type]").attr('disabled', false);
+			$("input#archive_date").attr('disabled', false);
+			$("input#archive_file").attr('disabled', false);
 		} else {
 			creator.disable();
 			media.disable();
 			$('.field-item').addClass('hide');
-			$("#archive_type input[name=archive_type]").attr('disabled', true);
-			$("input#archive_file").attr('disabled', true);
 			$("textarea#medium").attr('disabled', true);
+			$("#archive_type input[name=archive_type]").attr('disabled', true);
+			$("input#archive_date").attr('disabled', true);
+			$("input#archive_file").attr('disabled', true);
 		}
 	});
 JS;
@@ -156,6 +158,10 @@ if($fond) {
 		->hint(Yii::t('app', 'Record the extent of the unit of description by giving the number of physical or logical units in arabic numerals and the unit of measurement. Give the specific medium (media) of the unit of description. Separate multiple extents with a linebreak.')); ?>
 <?php }?>
 
+<?php echo $form->field($model, 'archive_date', ['options' => ['class'=>(!$fond && (!isset($model->level) || !empty($model->level->child))) ? 'form-group row field-item hide' : 'form-group row field-item']])
+	->textInput(!$fond ? ['type'=>'date'] : ['type'=>'number', 'min'=>0, 'maxlength'=>4])
+	->label($model->getAttributeLabel('archive_date')); ?>
+
 <div class="ln_solid"></div>
 
 <?php if($fond) {
@@ -202,7 +208,7 @@ if($fond) {
 		->hint(Yii::t('app', 'Record the name of the organization(s) or the individual(s) responsible for the creation, accumulation and maintenance of the records in the unit of description. Search for an existing name in the authority records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new authority record.'));
 } ?>
 
-<div class="ln_solid <?php echo (!$fond && !isset($model->level) || !empty($model->level->child)) ? 'field-item hide' : 'field-item';?>"></div>
+<div class="ln_solid <?php echo (!$fond && (!isset($model->level) || !empty($model->level->child))) ? 'field-item hide' : 'field-item';?>"></div>
 
 <?php $subjectSuggestUrl = Url::to(['/admin/tag/suggest']);
 echo $form->field($model, 'subject')
