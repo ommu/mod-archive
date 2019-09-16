@@ -19,6 +19,7 @@
  * @property integer $fond_sidkkas
  * @property string $reference_code_sikn
  * @property string $reference_code_separator
+ * @property integer $short_code
  * @property string $production_date
  * @property string $image_type
  * @property string $document_type
@@ -62,8 +63,8 @@ class ArchiveSetting extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['license', 'permission', 'meta_description', 'meta_keyword', 'fond_sidkkas', 'reference_code_separator', 'production_date', 'image_type', 'document_type', 'maintenance_mode'], 'required'],
-			[['permission', 'fond_sidkkas', 'maintenance_mode', 'modified_id'], 'integer'],
+			[['license', 'permission', 'meta_description', 'meta_keyword', 'fond_sidkkas', 'reference_code_separator', 'short_code', 'production_date', 'image_type', 'document_type', 'maintenance_mode'], 'required'],
+			[['permission', 'fond_sidkkas', 'short_code', 'maintenance_mode', 'modified_id'], 'integer'],
 			[['meta_description', 'meta_keyword', 'production_date', 'maintenance_image_path', 'maintenance_document_path'], 'string'],
 			[['reference_code_sikn', 'maintenance_image_path', 'maintenance_document_path'], 'safe'],
 			//[['image_type', 'document_type'], 'json'],
@@ -86,6 +87,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
 			'fond_sidkkas' => Yii::t('app', 'Fond Sidkkas'),
 			'reference_code_sikn' => Yii::t('app', 'SIKN Reference Code'),
 			'reference_code_separator' => Yii::t('app', 'Reference Code Level Separator'),
+			'short_code' => Yii::t('app', 'Short Code'),
 			'production_date' => Yii::t('app', 'Production Date'),
 			'image_type' => Yii::t('app', 'Image Type'),
 			'document_type' => Yii::t('app', 'Document Type'),
@@ -208,6 +210,14 @@ class ArchiveSetting extends \app\components\ActiveRecord
 			'attribute' => 'fond_sidkkas',
 			'value' => function($model, $key, $index, $column) {
 				return self::getFondSidkkas($model->fond_sidkkas);
+			},
+			'filter' => self::getFondSidkkas(),
+			'contentOptions' => ['class'=>'center'],
+		];
+		$this->templateColumns['short_code'] = [
+			'attribute' => 'short_code',
+			'value' => function($model, $key, $index, $column) {
+				return self::getFondSidkkas($model->short_code);
 			},
 			'filter' => self::getFondSidkkas(),
 			'contentOptions' => ['class'=>'center'],

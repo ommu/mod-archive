@@ -65,6 +65,11 @@ echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hi
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('reference_code_separator')); ?>
 
+<?php $fondSidkkas = $model::getFondSidkkas();
+echo $form->field($model, 'short_code')
+	->dropDownList($fondSidkkas, ['prompt'=>''])
+	->label($model->getAttributeLabel('short_code')); ?>
+
 <div class="ln_solid"></div>
 
 <?php echo $form->field($model, 'image_type')
@@ -79,9 +84,8 @@ echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hi
 
 <div class="ln_solid"></div>
 
-<?php $fondSidkka = $model::getFondSidkkas();
-echo $form->field($model, 'fond_sidkkas')
-	->dropDownList($fondSidkka, ['prompt'=>''])
+<?php echo $form->field($model, 'fond_sidkkas')
+	->dropDownList($fondSidkkas, ['prompt'=>''])
 	->label($model->getAttributeLabel('fond_sidkkas')); ?>
 
 <?php if($model->isNewRecord && !$model->getErrors())
@@ -92,9 +96,8 @@ echo $form->field($model, 'production_date')
 
 <div class="ln_solid"></div>
 
-<?php $fondSidkka = $model::getFondSidkkas();
-echo $form->field($model, 'maintenance_mode')
-	->dropDownList($fondSidkka, ['prompt'=>''])
+<?php echo $form->field($model, 'maintenance_mode')
+	->dropDownList($fondSidkkas, ['prompt'=>''])
 	->label($model->getAttributeLabel('maintenance_mode')); ?>
 
 <?php echo $form->field($model, 'maintenance_image_path')

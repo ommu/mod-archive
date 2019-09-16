@@ -424,7 +424,7 @@ class Archives extends \app\components\ActiveRecord
 					return '-';
 
 				$extension = pathinfo($model->old_archive_file, PATHINFO_EXTENSION);
-				$setting = $model->getSetting(['maintenance_mode', 'maintenance_document_path', 'maintenance_image_path', 'image_type', 'document_type']);
+				$setting = $model->getSetting(['image_type', 'document_type', 'maintenance_mode', 'maintenance_image_path', 'maintenance_document_path']);
 				$imageFileType = $model->formatFileType($setting->image_type);
 				$documentFileType = $model->formatFileType($setting->document_type);
 

@@ -55,6 +55,10 @@ $this->params['breadcrumbs'][] = $this->title;
 				'value' => '"'.$model->reference_code_separator.'"',
 			],
 			[
+				'attribute' => 'short_code',
+				'value' => $model::getFondSidkkas($model->short_code),
+			],
+			[
 				'attribute' => 'production_date',
 				'value' => Yii::$app->formatter->asDate($model->production_date, 'medium'),
 			],
