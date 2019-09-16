@@ -20,6 +20,7 @@ use yii\helpers\ArrayHelper;
 
 \ommu\archive\assets\AciTreeAsset::register($this);
 
+if(!$small) {
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model::htmlHardDecode($model->code);
 
@@ -30,7 +31,8 @@ $this->params['menu']['content'] = [
 	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
 ];
 if(!in_array('location', $model->level->field))
-	unset($this->params['menu']['content']['location']); ?>
+	unset($this->params['menu']['content']['location']);
+} ?>
 
 <div class="archives-view">
 
