@@ -97,13 +97,13 @@ echo $form->field($model, 'maintenance_mode')
 	->dropDownList($fondSidkka, ['prompt'=>''])
 	->label($model->getAttributeLabel('maintenance_mode')); ?>
 
-<?php echo $form->field($model, 'maintenance_document_path')
-	->textInput(['maxlength'=>true])
-	->label($model->getAttributeLabel('maintenance_document_path')); ?>
-
 <?php echo $form->field($model, 'maintenance_image_path')
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('maintenance_image_path')); ?>
+
+<?php echo $form->field($model, 'maintenance_document_path')
+	->textInput(['maxlength'=>true])
+	->label($model->getAttributeLabel('maintenance_document_path')); ?>
 
 <div class="ln_solid"></div>
 
