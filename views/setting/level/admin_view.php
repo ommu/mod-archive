@@ -16,7 +16,6 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
-use ommu\archive\models\ArchiveLevel;
 
 if(!$small) {
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['admin/index']];
@@ -56,12 +55,12 @@ $attributes = [
 	],
 	[
 		'attribute' => 'child',
-		'value' => ArchiveLevel::getChild($model->child),
+		'value' => $model::getChild($model->child),
 		'format' => 'html',
 	],
 	[
 		'attribute' => 'field',
-		'value' => ArchiveLevel::getField($model->field),
+		'value' => $model::getField($model->field),
 		'format' => 'html',
 		'visible' => !$small,
 	],
