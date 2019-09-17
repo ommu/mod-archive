@@ -53,6 +53,7 @@ use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
 use thamtech\uuid\helpers\UuidHelper;
 use yii\base\Event;
+use yii\helpers\Inflector;
 
 class Archives extends \app\components\ActiveRecord
 {
@@ -816,6 +817,42 @@ class Archives extends \app\components\ActiveRecord
 			$items[] = Yii::t('app', 'Noted: {location-desc}', ['location-desc'=>$model->location_desc]);
 
 		return Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']);
+	}
+
+	/**
+	 * function getLongCode
+	 */
+	public static function parseCode($model, $link=false)
+	{
+		$setting = ArchiveSetting::find()
+			->select(['short_code', 'reference_code_sikn', 'reference_code_separator', 'maintenance_mode'])
+			->where(['id' => 1])
+			->one();
+		$reference_code_separator = ' '.$setting->reference_code_separator.' ';
+		$title = $model::htmlHardDecode($model->title);
+
+		if($setting->short_code)
+			return join(' ', [$setting->reference_code_sikn, !$setting->maintenance_mode ? $model->code : $model->confirmCode]);
+
+		if($link == true) {
+			$count = count($model->referenceCode);
+			$i = 0;
+			$coder = [];
+			foreach ($model->referenceCode as $key => $val) {
+				$i++;
+				$code = $setting->maintenance_mode ? $val['confirmCode'] : $val['code'];
+				if($i == $count)
+					$coder[] = '<span class="badge badge-success">'.$code.'</span>';
+				else
+					$coder[] = Html::a($code, ['/archive/site/view', 'id'=>$val['id'], 't'=>Inflector::slug($title)], ['title'=>$title, 'class'=>'text-dark-gray']);
+			}
+			return join(' ', [$setting->reference_code_sikn, join($reference_code_separator, $coder)]);
+		}
+
+		if($setting->maintenance_mode)
+			return join(' ', [$setting->reference_code_sikn, join($reference_code_separator, ArrayHelper::map($model->referenceCode, 'level', 'confirmCode'))]);
+
+		return join(' ', [$setting->reference_code_sikn, join($reference_code_separator, ArrayHelper::map($model->referenceCode, 'level', 'code'))]);
 	}
 
 	/**

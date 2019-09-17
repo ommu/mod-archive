@@ -260,7 +260,8 @@ echo $form->field($model, 'subject')
 <?php $imageType = $model::getArchiveType();
 	echo $form->field($model, 'archive_type', ['options' => ['class'=>(!isset($model->level) || !empty($model->level->child)) ? 'form-group row field-item hide' : 'form-group row field-item']])
 		->radioList($imageType, ['prompt'=>''])
-		->label($model->getAttributeLabel('archive_type'));?>
+		->label($model->getAttributeLabel('archive_type'));
+} ?>
 
 <?php
 $extension = pathinfo($model->old_archive_file, PATHINFO_EXTENSION);
@@ -284,13 +285,13 @@ if(!$model->isNewRecord && $model->old_archive_file != '') {
 	if(in_array($extension, $documentFileType))
 		$archiveFile = Html::a($model->old_archive_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->old_archive_file])), ['title'=>$model->old_archive_file, 'class'=>'mb-3', 'style'=>'display: block;', 'target'=>'_blank']);
 }
-echo $form->field($model, 'archive_file', ['template'=> '{label}{beginWrapper}<div>'.$archiveFile.'</div>{input}{error}{hint}{endWrapper}', 'options' => ['class'=>(!isset($model->level) || !empty($model->level->child)) ? 'form-group row field-item hide' : 'form-group row field-item']])
+echo $form->field($model, 'archive_file', ['template'=> '{label}{beginWrapper}<div>'.$archiveFile.'</div>{input}{error}{hint}{endWrapper}', 'options' => ['class'=>($fond || !(!$fond && !isset($model->level) || !empty($model->level->child))) ? 'form-group row field-item' : 'form-group row field-item hide']])
 	->fileInput()
 	->label($model->getAttributeLabel('archive_file')); ?>
 
-<div class="ln_solid <?php echo (!isset($model->level) || !empty($model->level->child)) ? 'field-item hide' : 'field-item';?>"></div>
-<?php }
+<div class="ln_solid <?php echo ($fond || !(!$fond && !isset($model->level) || !empty($model->level->child))) ? 'field-item' : 'field-item hide';?>"></div>
 
+<?php
 $publish = $model::getPublish();
 echo $form->field($model, 'publish')
 	->dropDownList($publish, ['prompt'=>''])
