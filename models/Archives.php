@@ -145,6 +145,7 @@ class Archives extends \app\components\ActiveRecord
 			'function' => Yii::t('app', 'Function'),
 			'location' => Yii::t('app', 'Location'),
 			'preview' => Yii::t('app', 'Preview'),
+			'published_date' => Yii::t('app', 'Published Date'),
 		];
 	}
 
@@ -235,8 +236,9 @@ class Archives extends \app\components\ActiveRecord
 		}
 
 		$model = Archives::find()
-			->select(['id'])
-			->where(['parent_id' => $this->id]);
+			->alias('t')
+			->select(['t.id'])
+			->where(['t.parent_id' => $this->id]);
 		if($publish != null) {
 			if($publish == 0)
 				$model->unpublish();
@@ -245,11 +247,11 @@ class Archives extends \app\components\ActiveRecord
 			elseif($publish == 2)
 				$model->deleted();
 		} else
-			$model->andWhere(['IN', 'publish', [0,1]]);
+			$model->andWhere(['IN', 't.publish', [0,1]]);
 
 		if($type == 'array') {
-			$model->select(['level_id', 'count(id) as group_childs'])
-				->groupBy(['level_id']);
+			$model->select(['t.level_id', 'count(id) as group_childs'])
+				->groupBy(['t.level_id']);
 			$archives = $model->all();
 
 			return ArrayHelper::map($archives, 'level_id', 'group_childs');
@@ -592,38 +594,43 @@ class Archives extends \app\components\ActiveRecord
 	/**
 	 * function getChilds
 	 */
-	public function getChilds()
+	public function getChilds($sublevel=false, $back3nd=true)
 	{
 		if(empty($this->level->child))
 			return [];
 
-		$childs = $this->getArchives('array');
+		$childs = $this->getArchives('array', $back3nd ? null : 1);
 		if(empty($childs))
 			return [];
 
-		// $archives = self::find()
-		// 	->select(['id', 'level_id'])
-		// 	->where(['parent_id' => $this->id])
-		// 	->andWhere(['IN', 'publish', [0,1]])
-		// 	->all();
+		if($sublevel == true) {
+			$archives = self::find()
+				->select(['id', 'level_id']);
+			if($back3nd)
+				$archives->andWhere(['IN', 'publish', [0,1]]);
+			else
+				$archives->andWhere(['publish' => 1]);
+			$archives = $archives->andWhere(['parent_id' => $this->id])
+				->all();
+	
+			if(!empty($archives)) {
+				foreach ($archives as $archive) {
+					if(!empty($archive->level->child)) {
+						$childArchives = $archive->getChilds($sublevel, $back3nd);
+						if(!empty($childArchives)) {
+							foreach ($childArchives as $key => $val) {
+								if(array_key_exists($key, $childs))
+									$childs[$key] = $childs[$key] + $val;
+								else
+									$childs[$key] = $val;
+							}
+						}
+					}
+				}
+			}
+		}
 
-		// if(!empty($archives)) {
-		// 	foreach ($archives as $archive) {
-		// 		if(!empty($archive->level->child)) {
-		// 			$childArchives = $archive->getChilds();
-		// 			if(!empty($childArchives)) {
-		// 				foreach ($childArchives as $key => $val) {
-		// 					if(array_key_exists($key, $childs))
-		// 						$childs[$key] = $childs[$key] + $val;
-		// 					else
-		// 						$childs[$key] = $val;
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
-
-		if($this->medium)
+		if($this->medium && empty($this->level->child))
 			return ArrayHelper::merge($childs, [0=>$this->medium]);
 
 		return $childs;
@@ -700,7 +707,7 @@ class Archives extends \app\components\ActiveRecord
 	/**
 	 * function parseParent
 	 */
-	public static function parseParent($model) 
+	public static function parseParent($model, $aciTree=true)
 	{
 		if(!isset($model->parent))
 			return Yii::$app->request->isAjax ? '-' : '<div id="tree" class="aciTree"></div>';
@@ -714,7 +721,11 @@ class Archives extends \app\components\ActiveRecord
 
 		if(Yii::$app->request->isAjax)
 			return Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']);
-		return Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']).'<hr/><div id="tree" class="aciTree"></div>';
+		
+		$return = Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']);
+		if($aciTree)
+			$return .= '<hr/><div id="tree" class="aciTree"></div>';
+		return $return;
 	}
 
 	/**
@@ -777,7 +788,7 @@ class Archives extends \app\components\ActiveRecord
 	/**
 	 * function parseChilds
 	 */
-	public static function parseChilds($childs, $id, $sep='li')
+	public static function parseChilds($childs, $id=null, $sep='li')
 	{
 		if(empty($childs))
 			return '-';
@@ -788,13 +799,13 @@ class Archives extends \app\components\ActiveRecord
 		foreach ($childs as $key => $val) {
 			$i++;
 			$title = $val." ".$levels[$key];
-			$return[] = $i == 1 ? Html::a($title, ['admin/manage', 'id'=>$id], ['title'=>$title, 'data-pjax'=>0]) : $title;
+			$return[] = $i == 1 ? ($id != null ? Html::a($title, ['admin/manage', 'id'=>$id], ['title'=>$title, 'data-pjax'=>0]) : $title) : $title;
 		}
 
 		if($sep == 'li')
 			return Html::ul($return, ['encode'=>false, 'class'=>'list-boxed']);
 
-		return implode(', ', $childs);
+		return implode(', ', $return);
 	}
 
 	/**
@@ -822,19 +833,24 @@ class Archives extends \app\components\ActiveRecord
 	/**
 	 * function getLongCode
 	 */
-	public static function parseCode($model, $link=false)
+	public static function parseCode($model, $param=[])
 	{
 		$setting = ArchiveSetting::find()
 			->select(['short_code', 'reference_code_sikn', 'reference_code_separator', 'maintenance_mode'])
 			->where(['id' => 1])
 			->one();
+
+		$short_code = $setting->short_code;
+		if(isset($param['short']))
+			$short_code = $param['short'] ? 1 : 0;
+
 		$reference_code_separator = ' '.$setting->reference_code_separator.' ';
 		$title = $model::htmlHardDecode($model->title);
 
-		if($setting->short_code)
+		if($short_code)
 			return join(' ', [$setting->reference_code_sikn, !$setting->maintenance_mode ? $model->code : $model->confirmCode]);
 
-		if($link == true) {
+		if(isset($param['link']) && $param['link']) {
 			$count = count($model->referenceCode);
 			$i = 0;
 			$coder = [];
