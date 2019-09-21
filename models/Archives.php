@@ -387,7 +387,7 @@ class Archives extends \app\components\ActiveRecord
 			'attribute' => 'medium',
 			'label' => Yii::t('app', 'Medium'),
 			'value' => function($model, $key, $index, $column) {
-				return self::parseChilds($model->childs, $model->id);
+				return self::parseChilds($model->getChilds(['sublevel'=>false, 'back3nd'=>true]), $model->id);
 			},
 			'filter' => false,
 			'enableSorting' => false,
@@ -593,8 +593,10 @@ class Archives extends \app\components\ActiveRecord
 
 	/**
 	 * function getChilds
+	 * @param sublevel true|false default:false
+	 * @param back3nd true|false default:true
 	 */
-	public function getChilds($sublevel=false, $back3nd=true)
+	public function getChilds($param=[])
 	{
 		if(empty($this->level->child))
 			return [];
@@ -603,7 +605,19 @@ class Archives extends \app\components\ActiveRecord
 		if(empty($childs))
 			return [];
 
-		if($sublevel == true) {
+		$setting = ArchiveSetting::find()
+			->select(['medium_sublevel'])
+			->where(['id' => 1])
+			->one();
+
+		$sublevel = $setting->medium_sublevel;
+		$back3nd = 1;
+		if(isset($param['sublevel']))
+			$sublevel = $param['sublevel'] ? 1 : 0;
+		if(isset($param['back3nd']))
+			$back3nd = $param['back3nd'] ? 1 : 0;
+
+		if($sublevel) {
 			$archives = self::find()
 				->select(['id', 'level_id']);
 			if($back3nd)
@@ -616,7 +630,7 @@ class Archives extends \app\components\ActiveRecord
 			if(!empty($archives)) {
 				foreach ($archives as $archive) {
 					if(!empty($archive->level->child)) {
-						$childArchives = $archive->getChilds($sublevel, $back3nd);
+						$childArchives = $archive->getChilds(['sublevel'=>$sublevel, 'back3nd'=>$back3nd]);
 						if(!empty($childArchives)) {
 							foreach ($childArchives as $key => $val) {
 								if(array_key_exists($key, $childs))
@@ -832,6 +846,8 @@ class Archives extends \app\components\ActiveRecord
 
 	/**
 	 * function getLongCode
+	 * @param short true|false 
+	 * @param link true|false 
 	 */
 	public static function parseCode($model, $param=[])
 	{

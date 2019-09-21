@@ -103,7 +103,7 @@ $attributes = [
 	],
 	[
 		'attribute' => 'medium',
-		'value' => $model::parseChilds($model->childs, $model->id),
+		'value' => $model::parseChilds($model->getChilds(['sublevel'=>false, 'back3nd'=>true]), $model->id),
 		'format' => 'html',
 	],
 	[

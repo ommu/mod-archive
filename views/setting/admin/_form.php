@@ -70,6 +70,11 @@ echo $form->field($model, 'short_code')
 	->dropDownList($fondSidkkas, ['prompt'=>''])
 	->label($model->getAttributeLabel('short_code')); ?>
 
+<?php $fondSidkkas = $model::getFondSidkkas();
+echo $form->field($model, 'medium_sublevel')
+	->dropDownList($fondSidkkas, ['prompt'=>''])
+	->label($model->getAttributeLabel('medium_sublevel')); ?>
+
 <div class="ln_solid"></div>
 
 <?php echo $form->field($model, 'image_type')

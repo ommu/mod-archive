@@ -59,6 +59,10 @@ $this->params['breadcrumbs'][] = $this->title;
 				'value' => $model::getFondSidkkas($model->short_code),
 			],
 			[
+				'attribute' => 'medium_sublevel',
+				'value' => $model::getFondSidkkas($model->medium_sublevel),
+			],
+			[
 				'attribute' => 'production_date',
 				'value' => Yii::$app->formatter->asDate($model->production_date, 'medium'),
 			],
