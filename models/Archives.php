@@ -601,10 +601,6 @@ class Archives extends \app\components\ActiveRecord
 		if(empty($this->level->child))
 			return [];
 
-		$childs = $this->getArchives('array', $back3nd ? null : 1);
-		if(empty($childs))
-			return [];
-
 		$setting = ArchiveSetting::find()
 			->select(['medium_sublevel'])
 			->where(['id' => 1])
@@ -616,6 +612,10 @@ class Archives extends \app\components\ActiveRecord
 			$sublevel = $param['sublevel'] ? 1 : 0;
 		if(isset($param['back3nd']))
 			$back3nd = $param['back3nd'] ? 1 : 0;
+
+		$childs = $this->getArchives('array', $back3nd ? null : 1);
+		if(empty($childs))
+			return [];
 
 		if($sublevel) {
 			$archives = self::find()
