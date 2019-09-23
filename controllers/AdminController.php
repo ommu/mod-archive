@@ -151,6 +151,7 @@ class AdminController extends Controller
 		if(Yii::$app->request->isPost) {
 			$postData = Yii::$app->request->post();
 			$model->load($postData);
+			$model->archive_date = $postData['archive_date'] ? $postData['archive_date'] : '';
 			$model->archive_file = UploadedFile::getInstance($model, 'archive_file');
 			if(!($model->archive_file instanceof UploadedFile && !$model->archive_file->getHasError()))
 				$model->archive_file = $postData['archive_file'] ? $postData['archive_file'] : '';
