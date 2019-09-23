@@ -124,7 +124,7 @@ class Archives extends ArchivesModel
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
-			'defaultOrder' => ['id' => SORT_DESC],
+			'defaultOrder' => isset($params['id']) ? ['code' => SORT_ASC] : ['id' => SORT_DESC],
 		]);
 
 		if(Yii::$app->request->get('id'))
