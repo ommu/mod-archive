@@ -151,10 +151,10 @@ class AdminController extends Controller
 		if(Yii::$app->request->isPost) {
 			$postData = Yii::$app->request->post();
 			$model->load($postData);
-			$model->archive_date = $postData['archive_date'] ? $postData['archive_date'] : '';
 			$model->archive_file = UploadedFile::getInstance($model, 'archive_file');
 			if(!($model->archive_file instanceof UploadedFile && !$model->archive_file->getHasError()))
 				$model->archive_file = $postData['archive_file'] ? $postData['archive_file'] : '';
+			$model->archive_date = $postData['archive_date'] ? $postData['archive_date'] : '0000-00-00';
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success created.', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]));
