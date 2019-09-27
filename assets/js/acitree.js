@@ -20,9 +20,15 @@ jQuery(document).ready(function ($) {
 		selectable: true,
 		itemHook: function(parent, item, itemData, level) {
 			// set a custom item label to show the branch level
-			this.setLabel(item, {
-				label: itemData.level + ': ' + itemData.code + itemData.label + '<a class="modal-btn" href="'+itemData['view-url']+'" title="Detail '+itemData.level+': '+itemData.code+'">Detail</a> | <a href="'+itemData['update-url']+'" title="Update '+itemData.level+': '+itemData.code+'">Update</a>',
-			});
+			if(itemData.level.toLowerCase() == 'item') {
+				this.setLabel(item, {
+					label: itemData.level + ': ' + itemData.code + itemData.label + '<br/><a class="modal-btn" href="'+itemData['view-url']+'" title="Info '+itemData.level+': '+itemData.code+'">Info</a> | <a href="'+itemData['update-url']+'" title="Update '+itemData.level+': '+itemData.code+'">Update</a>',
+				});
+			} else {
+				this.setLabel(item, {
+					label: itemData.level + ': ' + itemData.code + itemData.label + '<br/><a class="modal-btn" href="'+itemData['view-url']+'" title="Info '+itemData.level+': '+itemData.code+'">Info</a> | <a href="'+itemData['update-url']+'" title="Update '+itemData.level+': '+itemData.code+'">Update</a> | <a href="'+itemData['child-url']+'" title="Childs '+itemData.level+': '+itemData.code+'">Childs</a>',
+				});
+			}
 		}
 	});
 });

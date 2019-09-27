@@ -116,7 +116,7 @@ class AdminController extends Controller
 				unset($this->subMenu['location']);
 		}
 
-		$this->view->title = $parent ?  Yii::t('app', 'Inventory Childs {level-name}: {title}', ['level-name' => $parent->level->level_name_i, 'title' => Archives::htmlHardDecode($parent->title)]) : Yii::t('app', 'Inventory');
+		$this->view->title = $parent ?  Yii::t('app', 'Inventory Childs {level-name}: {title}', ['level-name' => $parent->level->level_name_i, 'title' => $parent::htmlHardDecode($parent->title)]) : Yii::t('app', 'Inventory');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
@@ -175,7 +175,7 @@ class AdminController extends Controller
 				unset($this->subMenu['location']);
 		}
 
-		$this->view->title = $parent ? Yii::t('app', 'Add New Child Levels {level-name}: {title}', ['level-name' => $parent->level->level_name_i, 'title' => Archives::htmlHardDecode($parent->title)]) : Yii::t('app', 'Create Fond');
+		$this->view->title = $parent ? Yii::t('app', 'Add New Child Levels {level-name}: {title}', ['level-name' => $parent->level->level_name_i, 'title' => $model::htmlHardDecode($parent->title)]) : Yii::t('app', 'Create Fond');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
@@ -223,7 +223,7 @@ class AdminController extends Controller
 		if(!in_array('location', $model->level->field))
 			unset($this->subMenu['location']);
 
-		$this->view->title = Yii::t('app', 'Update {level-name}: {title}', ['level-name' => $model->level->level_name_i, 'title' => Archives::htmlHardDecode($model->title)]);
+		$this->view->title = Yii::t('app', 'Update {level-name}: {title}', ['level-name' => $model->level->level_name_i, 'title' => $model::htmlHardDecode($model->title)]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
@@ -247,7 +247,7 @@ class AdminController extends Controller
 		if(!in_array('location', $model->level->field))
 			unset($this->subMenu['location']);
 
-		$this->view->title = Yii::t('app', 'Detail {level-name}: {title}', ['level-name' => $model->level->level_name_i, 'title' => Archives::htmlHardDecode($model->title)]);
+		$this->view->title = Yii::t('app', 'Detail {level-name}: {title}', ['level-name' => $model->level->level_name_i, 'title' => $model::htmlHardDecode($model->title)]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
@@ -318,10 +318,11 @@ class AdminController extends Controller
 			'id' => $model->id,
 			'code' => $model->code,
 			'level' => $model->level->level_name_i,
-			'label' => $model->title,
+			'label' => $model::htmlHardDecode($model->title),
 			'inode' => $model->getArchives('count') ? true : false,
 			'view-url' => Url::to(['view', 'id'=>$model->id]),
 			'update-url' => Url::to(['update', 'id'=>$model->id]),
+			'child-url' => Url::to(['manage', 'id'=>$model->id]),
 		];
 		if(!empty($codes))
 			$data = ArrayHelper::merge($data, ['open'=>true, 'branch'=>[$codes]]);
@@ -366,7 +367,7 @@ class AdminController extends Controller
 		if(!in_array('location', $model->archive->level->field))
 			unset($this->subMenu['location']);
 
-		$this->view->title = Yii::t('app', 'Storage Location {level-name}: {title}', ['level-name' => $model->archive->level->level_name_i, 'title' => Archives::htmlHardDecode($model->archive->title)]);
+		$this->view->title = Yii::t('app', 'Storage Location {level-name}: {title}', ['level-name' => $model->archive->level->level_name_i, 'title' => $model->archive::htmlHardDecode($model->archive->title)]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_location', [
