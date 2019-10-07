@@ -17,8 +17,8 @@
 use yii\helpers\Url;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['admin/index']];
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Settings'), 'url' => ['setting/admin/index']];
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Repositories'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Setting'), 'url' => ['setting/admin/index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Repository'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Create');
 ?>
 

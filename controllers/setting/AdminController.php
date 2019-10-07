@@ -120,7 +120,7 @@ class AdminController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Update');
+		$this->view->title = Yii::t('app', 'Settings');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [

@@ -92,7 +92,7 @@ class MediaController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		$this->view->title = Yii::t('app', 'Media Type');
+		$this->view->title = Yii::t('app', 'Media Types');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [

@@ -92,7 +92,7 @@ class LevelController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		$this->view->title = Yii::t('app', 'Levels of Description');
+		$this->view->title = Yii::t('app', 'Levels of Descriptions');
 		$this->view->description = Yii::t('app', 'Create the levels of description to be included in the inventory list. If no levels are added, the inventory list link will not be displayed.');
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [

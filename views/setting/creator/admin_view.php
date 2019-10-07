@@ -19,8 +19,8 @@ use yii\widgets\DetailView;
 
 if(!$small) {
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['admin/index']];
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Settings'), 'url' => ['setting/admin/index']];
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Creators'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Setting'), 'url' => ['setting/admin/index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Creator'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->creator_name;
 
 $this->params['menu']['content'] = [
