@@ -42,7 +42,9 @@ use app\components\widgets\ActiveForm;
 	->textarea(['rows'=>4, 'cols'=>50])
 	->label($model->getAttributeLabel('repository_desc')); ?>
 
-<?php echo $form->field($model, 'publish')
+<?php if($model->isNewRecord && !$model->getErrors())
+	$model->publish = 1;
+echo $form->field($model, 'publish')
 	->checkbox()
 	->label($model->getAttributeLabel('publish')); ?>
 

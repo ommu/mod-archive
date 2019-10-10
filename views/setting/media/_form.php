@@ -42,7 +42,9 @@ use app\components\widgets\ActiveForm;
 	->textarea(['rows'=>4, 'cols'=>50, 'maxlength'=>true])
 	->label($model->getAttributeLabel('media_desc_i')); ?>
 
-<?php echo $form->field($model, 'publish')
+<?php if($model->isNewRecord && !$model->getErrors())
+	$model->publish = 1;
+echo $form->field($model, 'publish')
 	->checkbox()
 	->label($model->getAttributeLabel('publish')); ?>
 

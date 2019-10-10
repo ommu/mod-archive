@@ -291,8 +291,7 @@ echo $form->field($model, 'archive_file', ['template'=> '{label}{beginWrapper}<d
 
 <div class="ln_solid <?php echo ($fond || !(!$fond && !isset($model->level) || !empty($model->level->child))) ? 'field-item' : 'field-item hide';?>"></div>
 
-<?php
-$publish = $model::getPublish();
+<?php $publish = $model::getPublish();
 echo $form->field($model, 'publish')
 	->dropDownList($publish, ['prompt'=>''])
 	->label($model->getAttributeLabel('publish')); ?>
