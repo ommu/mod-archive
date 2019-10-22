@@ -315,6 +315,9 @@ class Archives extends \app\components\ActiveRecord
 		if(!(Yii::$app instanceof \app\components\Application))
 			return;
 
+		if(!$this->hasMethod('search'))
+			return;
+
 		$this->templateColumns['_no'] = [
 			'header' => '#',
 			'class' => 'yii\grid\SerialColumn',
