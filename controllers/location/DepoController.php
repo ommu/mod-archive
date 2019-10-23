@@ -29,7 +29,6 @@
 namespace ommu\archive\controllers\location;
 
 use Yii;
-use ommu\archive\controllers\location\AdminController;
 use ommu\archive\models\ArchiveLocation;
 
 class DepoController extends AdminController
