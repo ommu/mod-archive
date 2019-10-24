@@ -126,25 +126,23 @@ class ArchiveRelatedMedia extends \app\components\ActiveRecord
 			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		if(!Yii::$app->request->get('archive')) {
-			$this->templateColumns['archiveTitle'] = [
-				'attribute' => 'archiveTitle',
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->archive) ? $model->archive->title : '-';
-					// return $model->archiveTitle;
-				},
-			];
-		}
-		if(!Yii::$app->request->get('media')) {
-			$this->templateColumns['media_id'] = [
-				'attribute' => 'media_id',
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->media) ? $model->media->title->message : '-';
-					// return $model->mediaName;
-				},
-				'filter' => ArchiveMedia::getMedia(),
-			];
-		}
+		$this->templateColumns['archiveTitle'] = [
+			'attribute' => 'archiveTitle',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->archive) ? $model->archive->title : '-';
+				// return $model->archiveTitle;
+			},
+			'visible' => !Yii::$app->request->get('archive') ? true : false,
+		];
+		$this->templateColumns['media_id'] = [
+			'attribute' => 'media_id',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->media) ? $model->media->title->message : '-';
+				// return $model->mediaName;
+			},
+			'filter' => ArchiveMedia::getMedia(),
+			'visible' => !Yii::$app->request->get('media') ? true : false,
+		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
 			'value' => function($model, $key, $index, $column) {
@@ -152,15 +150,14 @@ class ArchiveRelatedMedia extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'creation_date'),
 		];
-		if(!Yii::$app->request->get('creation')) {
-			$this->templateColumns['creationDisplayname'] = [
-				'attribute' => 'creationDisplayname',
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->creation) ? $model->creation->displayname : '-';
-					// return $model->creationDisplayname;
-				},
-			];
-		}
+		$this->templateColumns['creationDisplayname'] = [
+			'attribute' => 'creationDisplayname',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->creation) ? $model->creation->displayname : '-';
+				// return $model->creationDisplayname;
+			},
+			'visible' => !Yii::$app->request->get('creation') ? true : false,
+		];
 	}
 
 	/**

@@ -323,27 +323,25 @@ class Archives extends \app\components\ActiveRecord
 			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		if(!Yii::$app->request->get('parent')) {
-			$this->templateColumns['parentTitle'] = [
-				'attribute' => 'parentTitle',
-				'label' => Yii::t('app', 'Parent'),
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->parent) ? $model->parent->title : '-';
-				},
-				'format' => 'html',
-			];
-		}
-		if(!Yii::$app->request->get('level')) {
-			$this->templateColumns['level_id'] = [
-				'attribute' => 'level_id',
-				'label' => Yii::t('app', 'Level'),
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->level) ? $model->level->title->message : '-';
-					// return $model->levelName;
-				},
-				'filter' => ArchiveLevel::getLevel(),
-			];
-		}
+		$this->templateColumns['parentTitle'] = [
+			'attribute' => 'parentTitle',
+			'label' => Yii::t('app', 'Parent'),
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->parent) ? $model->parent->title : '-';
+			},
+			'format' => 'html',
+			'visible' => !Yii::$app->request->get('parent') ? true : false,
+		];
+		$this->templateColumns['level_id'] = [
+			'attribute' => 'level_id',
+			'label' => Yii::t('app', 'Level'),
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->level) ? $model->level->title->message : '-';
+				// return $model->levelName;
+			},
+			'filter' => ArchiveLevel::getLevel(),
+			'visible' => !Yii::$app->request->get('level') ? true : false,
+		];
 		$this->templateColumns['code'] = [
 			'attribute' => 'code',
 			'value' => function($model, $key, $index, $column) {
@@ -448,16 +446,15 @@ class Archives extends \app\components\ActiveRecord
 			'format' => 'raw',
 		];
 		if(ArchiveSetting::getInfo('fond_sidkkas')) {
-			if(!Yii::$app->request->get('id')) {
-				$this->templateColumns['sidkkas'] = [
-					'attribute' => 'sidkkas',
-					'value' => function($model, $key, $index, $column) {
-						return $this->filterYesNo($model->sidkkas);
-					},
-					'filter' => $this->filterYesNo(),
-					'contentOptions' => ['class'=>'center'],
-				];
-			}
+			$this->templateColumns['sidkkas'] = [
+				'attribute' => 'sidkkas',
+				'value' => function($model, $key, $index, $column) {
+					return $this->filterYesNo($model->sidkkas);
+				},
+				'filter' => $this->filterYesNo(),
+				'contentOptions' => ['class'=>'center'],
+				'visible' => !Yii::$app->request->get('id') ? true : false,
+			];
 		}
 		$this->templateColumns['location'] = [
 			'attribute' => 'location',
@@ -482,15 +479,14 @@ class Archives extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'creation_date'),
 		];
-		if(!Yii::$app->request->get('creation')) {
-			$this->templateColumns['creationDisplayname'] = [
-				'attribute' => 'creationDisplayname',
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->creation) ? $model->creation->displayname : '-';
-					// return $model->creationDisplayname;
-				},
-			];
-		}
+		$this->templateColumns['creationDisplayname'] = [
+			'attribute' => 'creationDisplayname',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->creation) ? $model->creation->displayname : '-';
+				// return $model->creationDisplayname;
+			},
+			'visible' => !Yii::$app->request->get('creation') ? true : false,
+		];
 		$this->templateColumns['modified_date'] = [
 			'attribute' => 'modified_date',
 			'value' => function($model, $key, $index, $column) {
@@ -498,15 +494,14 @@ class Archives extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'modified_date'),
 		];
-		if(!Yii::$app->request->get('modified')) {
-			$this->templateColumns['modifiedDisplayname'] = [
-				'attribute' => 'modifiedDisplayname',
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->modified) ? $model->modified->displayname : '-';
-					// return $model->modifiedDisplayname;
-				},
-			];
-		}
+		$this->templateColumns['modifiedDisplayname'] = [
+			'attribute' => 'modifiedDisplayname',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->modified) ? $model->modified->displayname : '-';
+				// return $model->modifiedDisplayname;
+			},
+			'visible' => !Yii::$app->request->get('modified') ? true : false,
+		];
 		$this->templateColumns['updated_date'] = [
 			'attribute' => 'updated_date',
 			'value' => function($model, $key, $index, $column) {
@@ -514,17 +509,16 @@ class Archives extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
 		];
-		if(!Yii::$app->request->get('trash')) {
-			$this->templateColumns['publish'] = [
-				'attribute' => 'publish',
-				'label' => Yii::t('app', 'Status'),
-				'value' => function($model, $key, $index, $column) {
-					return self::getPublish($model->publish);
-				},
-				'filter' => self::getPublish(),
-				'contentOptions' => ['class'=>'center'],
-			];
-		}
+		$this->templateColumns['publish'] = [
+			'attribute' => 'publish',
+			'label' => Yii::t('app', 'Status'),
+			'value' => function($model, $key, $index, $column) {
+				return self::getPublish($model->publish);
+			},
+			'filter' => self::getPublish(),
+			'contentOptions' => ['class'=>'center'],
+			'visible' => !Yii::$app->request->get('trash') ? true : false,
+		];
 	}
 
 	/**

@@ -181,47 +181,44 @@ class ArchiveRelatedLocation extends \app\components\ActiveRecord
 			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		if(!Yii::$app->request->get('archive')) {
-			$this->templateColumns['archiveTitle'] = [
-				'attribute' => 'archiveTitle',
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->archive) ? $model->archive->title : '-';
-					// return $model->archiveTitle;
-				},
-			];
-		}
-		if(!Yii::$app->request->get('room')) {
-			$this->templateColumns['roomLocationName'] = [
-				'attribute' => 'roomLocationName',
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->room) ? $model->room->location_name : '-';
-					// return $model->roomLocationName;
-				},
-			];
-		}
-		if(!Yii::$app->request->get('rack')) {
-			$this->templateColumns['rackLocationName'] = [
-				'attribute' => 'rackLocationName',
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->rack) ? $model->rack->location_name : '-';
-					// return $model->rackLocationName;
-				},
-			];
-		}
+		$this->templateColumns['archiveTitle'] = [
+			'attribute' => 'archiveTitle',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->archive) ? $model->archive->title : '-';
+				// return $model->archiveTitle;
+			},
+			'visible' => !Yii::$app->request->get('archive') ? true : false,
+		];
+		$this->templateColumns['roomLocationName'] = [
+			'attribute' => 'roomLocationName',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->room) ? $model->room->location_name : '-';
+				// return $model->roomLocationName;
+			},
+			'creator' => !Yii::$app->request->get('room') ? true : false,
+		];
+		$this->templateColumns['rackLocationName'] = [
+			'attribute' => 'rackLocationName',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->rack) ? $model->rack->location_name : '-';
+				// return $model->rackLocationName;
+			},
+			'creator' => !Yii::$app->request->get('rack') ? true : false,
+		];
 		$this->templateColumns['location_desc'] = [
 			'attribute' => 'location_desc',
 			'value' => function($model, $key, $index, $column) {
 				return $model->location_desc;
 			},
 		];
-		if(!Yii::$app->request->get('storage')) {
-			$this->templateColumns['storage_id'] = [
-				'attribute' => 'storage_id',
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->storage) ? $model->storage->storage_name_i : '-';
-				},
-			];
-		}
+		$this->templateColumns['storage_id'] = [
+			'attribute' => 'storage_id',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->storage) ? $model->storage->storage_name_i : '-';
+			},
+			'creator' => !Yii::$app->request->get('storage') ? true : false,
+		]
+	}
 		$this->templateColumns['weight'] = [
 			'attribute' => 'weight',
 			'value' => function($model, $key, $index, $column) {
@@ -235,15 +232,14 @@ class ArchiveRelatedLocation extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'creation_date'),
 		];
-		if(!Yii::$app->request->get('creation')) {
-			$this->templateColumns['creationDisplayname'] = [
-				'attribute' => 'creationDisplayname',
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->creation) ? $model->creation->displayname : '-';
-					// return $model->creationDisplayname;
-				},
-			];
-		}
+		$this->templateColumns['creationDisplayname'] = [
+			'attribute' => 'creationDisplayname',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->creation) ? $model->creation->displayname : '-';
+				// return $model->creationDisplayname;
+			},
+			'visible' => !Yii::$app->request->get('creation') ? true : false,
+		];
 	}
 
 	/**
