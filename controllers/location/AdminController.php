@@ -29,12 +29,12 @@
 namespace ommu\archive\controllers\location;
 
 use Yii;
-use yii\filters\VerbFilter;
 use app\components\Controller;
-use yii\helpers\Inflector;
 use mdm\admin\components\AccessControl;
+use yii\filters\VerbFilter;
 use ommu\archive\models\ArchiveLocation;
 use ommu\archive\models\search\ArchiveLocation as ArchiveLocationSearch;
+use yii\helpers\Inflector;
 use yii\helpers\ArrayHelper;
 
 class AdminController extends Controller

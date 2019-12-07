@@ -217,8 +217,7 @@ class ArchiveRelatedLocation extends \app\components\ActiveRecord
 				return isset($model->storage) ? $model->storage->storage_name_i : '-';
 			},
 			'creator' => !Yii::$app->request->get('storage') ? true : false,
-		]
-	}
+		];
 		$this->templateColumns['weight'] = [
 			'attribute' => 'weight',
 			'value' => function($model, $key, $index, $column) {

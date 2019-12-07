@@ -392,6 +392,7 @@ class Archives extends \app\components\ActiveRecord
 			},
 			'filter' => false,
 			'enableSorting' => false,
+			'contentOptions' => ['class'=>'text-nowrap'],
 			'format' => 'raw',
 		];
 		$this->templateColumns['media'] = [

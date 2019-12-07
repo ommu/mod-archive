@@ -29,9 +29,9 @@
 namespace ommu\archive\controllers\setting;
 
 use Yii;
-use yii\filters\VerbFilter;
 use app\components\Controller;
 use mdm\admin\components\AccessControl;
+use yii\filters\VerbFilter;
 use ommu\archive\models\ArchiveLevel;
 use ommu\archive\models\search\ArchiveLevel as ArchiveLevelSearch;
 
