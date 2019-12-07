@@ -237,7 +237,7 @@ JS;
 		->textarea(['rows'=>4, 'cols'=>50])
 		->label($model->getAttributeLabel('location_desc')); ?>
 
-	<div class="ln_solid"></div>
+	<hr/>
 
 	<?php echo $form->field($model, 'submitButton')
 		->submitButton(); ?>

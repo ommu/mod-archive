@@ -55,7 +55,7 @@ echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hi
 	->textarea(['rows'=>6, 'cols'=>50])
 	->label($model->getAttributeLabel('meta_keyword')); ?>
 
-<div class="ln_solid"></div>
+<hr/>
 
 <?php echo $form->field($model, 'reference_code_sikn')
 	->textInput(['maxlength'=>true])
@@ -75,7 +75,7 @@ echo $form->field($model, 'medium_sublevel')
 	->dropDownList($fondSidkkas, ['prompt'=>''])
 	->label($model->getAttributeLabel('medium_sublevel')); ?>
 
-<div class="ln_solid"></div>
+<hr/>
 
 <?php echo $form->field($model, 'image_type')
 	->textInput()
@@ -87,7 +87,7 @@ echo $form->field($model, 'medium_sublevel')
 	->label($model->getAttributeLabel('document_type'))
 	->hint(Yii::t('app', 'pisahkan jenis file dengan koma (,). example: "pdf, doc, docx"')); ?>
 
-<div class="ln_solid"></div>
+<hr/>
 
 <?php echo $form->field($model, 'fond_sidkkas')
 	->dropDownList($fondSidkkas, ['prompt'=>''])
@@ -99,7 +99,7 @@ echo $form->field($model, 'production_date')
 	->textInput(['type'=>'date'])
 	->label($model->getAttributeLabel('production_date')); ?>
 
-<div class="ln_solid"></div>
+<hr/>
 
 <?php echo $form->field($model, 'maintenance_mode')
 	->dropDownList($fondSidkkas, ['prompt'=>''])
@@ -113,7 +113,7 @@ echo $form->field($model, 'production_date')
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('maintenance_document_path')); ?>
 
-<div class="ln_solid"></div>
+<hr/>
 
 <?php echo $form->field($model, 'submitButton')
 	->submitButton(); ?>

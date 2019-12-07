@@ -162,7 +162,7 @@ if($fond) {
 	->textInput(!$fond ? ['type'=>'date'] : ['type'=>'number', 'min'=>0, 'maxlength'=>4])
 	->label($model->getAttributeLabel('archive_date')); ?>
 
-<div class="ln_solid"></div>
+<hr/>
 
 <?php if($fond) {
 	$repositorySuggestUrl = Url::to(['setting/repository/suggest']);
@@ -241,7 +241,7 @@ echo $form->field($model, 'subject')
 	])
 	->label($model->getAttributeLabel('function'));?>
 
-<div class="ln_solid"></div>
+<hr/>
 
 <?php if(!$fond) {?>
 <?php echo $form->field($model, 'media', ['options' => ['class'=>(!isset($model->level) || !empty($model->level->child)) ? 'form-group row field-item hide' : 'form-group row field-item']])
@@ -302,7 +302,7 @@ echo $form->field($model, 'publish')
 		->label($model->getAttributeLabel('sidkkas'));
 } ?>
 
-<div class="ln_solid"></div>
+<hr/>
 
 <?php echo $form->field($model, 'submitButton')
 	->submitButton(); ?>
