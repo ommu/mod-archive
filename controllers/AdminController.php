@@ -160,9 +160,13 @@ class AdminController extends Controller
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success created.', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]));
-				if($id && empty($model->level->child))
+				if($id && empty($model->level->child)) {
+					if($model->backToManage)
+						return $this->redirect(['manage', 'parent'=>$model->parent_id]);
 					return $this->redirect(['create', 'id'=>$model->parent_id]);
-
+				}
+				if($model->backToManage)
+					return $this->redirect(['manage', 'parent'=>$model->parent_id]);
 				return $this->redirect(['view', 'id'=>$model->id]);
 
 			} else {
@@ -329,7 +333,7 @@ class AdminController extends Controller
 			'inode' => $model->getArchives('count') ? true : false,
 			'view-url' => Url::to(['view', 'id'=>$model->id]),
 			'update-url' => Url::to(['update', 'id'=>$model->id]),
-			'child-url' => Url::to(['manage', 'id'=>$model->id]),
+			'child-url' => Url::to(['manage', 'parent'=>$model->id]),
 		];
 		if(!empty($codes))
 			$data = ArrayHelper::merge($data, ['open'=>true, 'branch'=>[$codes]]);
