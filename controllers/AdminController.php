@@ -47,7 +47,7 @@ class AdminController extends Controller
 	public function init()
 	{
 		parent::init();
-		if(Yii::$app->request->get('id'))
+		if(Yii::$app->request->get('id') || Yii::$app->request->get('parent'))
 			$this->subMenu = $this->module->params['archive_submenu'];
 	}
 
@@ -85,8 +85,8 @@ class AdminController extends Controller
 	public function actionManage()
 	{
 		$searchModel = new ArchivesSearch();
-		if(($id = Yii::$app->request->get('id')) != null)
-			$searchModel = new ArchivesSearch(['parent_id'=>$id]);
+		if(($parent = Yii::$app->request->get('parent')) != null)
+			$searchModel = new ArchivesSearch(['parent_id'=>$parent]);
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 		$gridColumn = Yii::$app->request->get('GridColumn', null);
@@ -99,8 +99,9 @@ class AdminController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		if(($level = Yii::$app->request->get('level')) != null)
-			$level = \ommu\archive\models\ArchiveLevel::findOne($level);
+		$level = null;
+		if(Yii::$app->request->get('level') && Yii::$app->request->get('data') == 'yes')
+			$level = \ommu\archive\models\ArchiveLevel::findOne(Yii::$app->request->get('level'));
 		if(($media = Yii::$app->request->get('mediaId')) != null)
 			$media = \ommu\archive\models\ArchiveMedia::findOne($media);
 		if(($creator = Yii::$app->request->get('creatorId')) != null)
@@ -108,15 +109,16 @@ class AdminController extends Controller
 		if(($repository = Yii::$app->request->get('repositoryId')) != null)
 			$repository = \ommu\archive\models\ArchiveRepository::findOne($repository);
 
-		if($id != null) {
-			$parent = Archives::findOne($id);
+		if($parent != null) {
+			$this->subMenuParam = $parent;
+			$parent = Archives::findOne($parent);
 			if(empty($parent->level->child))
 				unset($this->subMenu['childs']);
 			if(!in_array('location', $parent->level->field))
 				unset($this->subMenu['location']);
 		}
 
-		$this->view->title = $parent ?  Yii::t('app', 'Inventory Childs {level-name}: {title}', ['level-name' => $parent->level->level_name_i, 'title' => $parent::htmlHardDecode($parent->title)]) : Yii::t('app', 'Inventory');
+		$this->view->title = $parent ?  Yii::t('app', 'Inventory Childs: {level-name} {title}', ['level-name' => $parent->level->level_name_i, 'title' => $parent::htmlHardDecode($parent->title)]) : Yii::t('app', 'Inventory');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
@@ -210,6 +212,11 @@ class AdminController extends Controller
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success updated.', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]));
+				if($model->backToManage) {
+					if(strtolower($model->level->level_name_i) == 'fond')
+						return $this->redirect(['manage', 'level'=>$model->level_id]);
+					return $this->redirect(['manage', 'parent'=>$model->parent_id]);
+				}
 				return $this->redirect(['update', 'id'=>$model->id]);
 
 			} else {

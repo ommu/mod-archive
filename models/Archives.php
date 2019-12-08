@@ -84,6 +84,8 @@ class Archives extends \app\components\ActiveRecord
 	public $preview;
 	public $group_childs;
 
+	public $backToManage;
+
 	const EVENT_BEFORE_SAVE_ARCHIVES = 'BeforeSaveArchives';
 
 	/**
@@ -103,7 +105,7 @@ class Archives extends \app\components\ActiveRecord
 			[['publish', 'level_id', 'title', 'shortCode'], 'required'],
 			[['publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id'], 'integer'],
 			[['title', 'archive_type', 'archive_date'], 'string'],
-			[['code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'media', 'creator', 'repository', 'subject', 'function'], 'safe'],
+			[['code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
 			[['code'], 'string', 'max' => 255],
 			[['shortCode'], 'string', 'max' => 16],
 			[['level_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLevel::className(), 'targetAttribute' => ['level_id' => 'id']],
@@ -146,6 +148,7 @@ class Archives extends \app\components\ActiveRecord
 			'location' => Yii::t('app', 'Location'),
 			'preview' => Yii::t('app', 'Preview'),
 			'published_date' => Yii::t('app', 'Published Date'),
+			'backToManage' => Yii::t('app', 'Back to Manage'),
 		];
 	}
 
@@ -340,7 +343,7 @@ class Archives extends \app\components\ActiveRecord
 				// return $model->levelName;
 			},
 			'filter' => ArchiveLevel::getLevel(),
-			'visible' => !Yii::$app->request->get('level') ? true : false,
+			'visible' => Yii::$app->request->get('level') && Yii::$app->request->get('data') == 'yes' ? false : true,
 		];
 		$this->templateColumns['code'] = [
 			'attribute' => 'code',
@@ -388,6 +391,8 @@ class Archives extends \app\components\ActiveRecord
 			'attribute' => 'medium',
 			'label' => Yii::t('app', 'Medium'),
 			'value' => function($model, $key, $index, $column) {
+				if(strtolower($model->level->level_name_i) == 'item')
+					return $model->medium ? $model->medium : '-';
 				return self::parseChilds($model->getChilds(['sublevel'=>false, 'back3nd'=>true]), $model->id);
 			},
 			'filter' => false,

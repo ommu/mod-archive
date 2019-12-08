@@ -304,6 +304,13 @@ echo $form->field($model, 'publish')
 
 <hr/>
 
+<?php $model->backToManage = 1;
+echo $form->field($model, 'backToManage')
+	->checkbox()
+	->label($model->getAttributeLabel('backToManage')); ?>
+
+<hr/>
+
 <?php echo $form->field($model, 'submitButton')
 	->submitButton(); ?>
 

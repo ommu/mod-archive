@@ -27,9 +27,9 @@ else {
 	$this->params['breadcrumbs'][] = Yii::t('app', 'Childs');
 }
 
-if(($id = Yii::$app->request->get('id')) != null) {
+if($parent) {
 	$this->params['menu']['content'] = [
-		['label' => Yii::t('app', 'Add New Child Levels'), 'url' => Url::to(['create', 'id'=>$id]), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
+		['label' => Yii::t('app', 'Add New Child Levels'), 'url' => Url::to(['create', 'id'=>$parent->id]), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
 	];
 } else {
 	$this->params['menu']['content'] = [

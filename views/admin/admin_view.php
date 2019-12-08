@@ -102,7 +102,11 @@ $attributes = [
 	],
 	[
 		'attribute' => 'medium',
-		'value' => $model::parseChilds($model->getChilds(['sublevel'=>false, 'back3nd'=>true]), $model->id),
+		'value' => function ($model) {
+			if(strtolower($model->level->level_name_i) == 'item')
+				return $model->medium ? $model->medium : '-';
+			return $model::parseChilds($model->getChilds(['sublevel'=>false, 'back3nd'=>true]), $model->id);
+		},
 		'format' => 'html',
 	],
 	[

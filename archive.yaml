@@ -21,7 +21,7 @@ archive_submenu:
     label: Childs
     url:
       0: 'admin/manage'
-      id: $_GET*id
+      parent: $_GET*id
     select: action
   delete:
     label: Delete
