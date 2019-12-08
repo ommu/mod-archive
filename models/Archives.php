@@ -816,7 +816,7 @@ class Archives extends \app\components\ActiveRecord
 		foreach ($childs as $key => $val) {
 			$i++;
 			$title = $val." ".$levels[$key];
-			$return[] = $i == 1 ? ($id != null ? Html::a($title, ['admin/manage', 'id'=>$id], ['title'=>$title, 'data-pjax'=>0]) : $title) : $title;
+			$return[] = $i == 1 ? ($id != null ? Html::a($title, ['admin/manage', 'parent'=>$id], ['title'=>$title, 'data-pjax'=>0]) : $title) : $title;
 		}
 
 		if($sep == 'li')
