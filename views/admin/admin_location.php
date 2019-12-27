@@ -3,7 +3,7 @@
  * Archives (archives)
  * @var $this app\components\View
  * @var $this ommu\archive\controllers\AdminController
- * @var $model ommu\archive\models\ArchiveRelatedLocation
+ * @var $model ommu\archiveLocation\models\ArchiveLocations
  * @var $form app\components\widgets\ActiveForm
  *
  * @author Putra Sudaryanto <putra@ommu.co>
@@ -17,8 +17,8 @@
 use yii\helpers\Url;
 use yii\web\JsExpression;
 use app\components\widgets\ActiveForm;
-use ommu\archive\models\ArchiveLocation;
-use ommu\archive\models\ArchiveStorage;
+use ommu\archiveLocation\models\ArchiveLocationBuilding;
+use ommu\archiveLocation\models\ArchiveLocationStorage;
 use ommu\selectize\Selectize;
 use yii\helpers\ArrayHelper;
 
@@ -27,8 +27,6 @@ $this->params['breadcrumbs'][] = ['label' => $model->archive::htmlHardDecode($mo
 $this->params['breadcrumbs'][] = Yii::t('app', 'Storage Location');
 
 $this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Info'), 'url' => Url::to(['view', 'id'=>$model->archive_id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
-	['label' => Yii::t('app', 'Update'), 'url' => Url::to(['update', 'id'=>$model->archive_id]), 'icon' => 'pencil', 'htmlOptions' => ['class'=>'btn btn-primary']],
 	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->archive_id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
 ];
 if(!in_array('location', $model->archive->level->field))
@@ -54,14 +52,14 @@ JS;
 		//'enableClientScript' => true,
 	]);?>
 
-	<?php $getDepoUrl = Url::to(['location/depo/suggest']);
+	<?php $getDepoUrl = Url::to(['/archive-location/depo/suggest']);
 	echo $form->field($model, 'building_id')
 		->widget(Selectize::className(), [
 			'cascade' => true,
 			'options' => [
 				'placeholder' => Yii::t('app', 'Select a building..'),
 			],
-			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a building..')], ArchiveLocation::getLocation(['publish'=>1, 'type'=>'building'])),
+			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a building..')], ArchiveLocationBuilding::getLocation(['publish'=>1, 'type'=>'building'])),
 			'pluginOptions' => [
 				'onChange' => new JsExpression('function(value) {
 					if (!value.length) return;
@@ -88,8 +86,8 @@ JS;
 		])
 		->label($model->getAttributeLabel('building_id')); ?>
 		
-	<?php $getRoomUrl = Url::to(['location/room/suggest']);
-	$depo = $model->isNewRecord ? ArchiveLocation::getLocation(['publish'=>1, 'type'=>'depo']) : ArchiveLocation::getLocation(['publish'=>1, 'parent_id'=>$model->building_id, 'type'=>'depo']);
+	<?php $getRoomUrl = Url::to(['/archive-location/room/suggest']);
+	$depo = $model->isNewRecord ? ArchiveLocationBuilding::getLocation(['publish'=>1, 'type'=>'depo']) : ArchiveLocationBuilding::getLocation(['publish'=>1, 'parent_id'=>$model->building_id, 'type'=>'depo']);
 	echo $form->field($model, 'depo_id')
 		->widget(Selectize::className(), [
 			'cascade' => true,
@@ -129,9 +127,9 @@ JS;
 		->label($model->getAttributeLabel('depo_id')); ?>
 		
 	<?php 
-	$getRackUrl = Url::to(['location/rack/suggest']);
-	$getRoomStorageUrl = Url::to(['location/room/storage']);
-	$room = $model->isNewRecord ? ArchiveLocation::getLocation(['publish'=>1, 'type'=>'room']) : ArchiveLocation::getLocation(['publish'=>1, 'parent_id'=>$model->depo_id, 'type'=>'room']);
+	$getRackUrl = Url::to(['/archive-location/rack/suggest']);
+	$getRoomStorageUrl = Url::to(['/archive-location/room/storage']);
+	$room = $model->isNewRecord ? ArchiveLocationBuilding::getLocation(['publish'=>1, 'type'=>'room']) : ArchiveLocationBuilding::getLocation(['publish'=>1, 'parent_id'=>$model->depo_id, 'type'=>'room']);
 	echo $form->field($model, 'room_id')
 		->widget(Selectize::className(), [
 			'cascade' => true,
@@ -188,7 +186,7 @@ JS;
 		])
 		->label($model->getAttributeLabel('room_id')); ?>
 
-	<?php $rack = $model->isNewRecord ? ArchiveLocation::getLocation(['publish'=>1, 'type'=>'rack']) : ArchiveLocation::getLocation(['publish'=>1, 'parent_id'=>$model->room_id, 'type'=>'rack']);
+	<?php $rack = $model->isNewRecord ? ArchiveLocationBuilding::getLocation(['publish'=>1, 'type'=>'rack']) : ArchiveLocationBuilding::getLocation(['publish'=>1, 'parent_id'=>$model->room_id, 'type'=>'rack']);
 	echo $form->field($model, 'rack_id')
 		->widget(Selectize::className(), [
 			'cascade' => true,
@@ -208,7 +206,7 @@ JS;
 		])
 		->label($model->getAttributeLabel('rack_id'));?>
 
-	<?php $storage = $model->isNewRecord ? ArchiveStorage::getStorage(1) : $model->room->getRoomStorage(true, 'title');
+	<?php $storage = $model->isNewRecord ? ArchiveLocationStorage::getStorage(1) : $model->room->getRoomStorage(true, 'title');
 	echo $form->field($model, 'storage_id')
 		->widget(Selectize::className(), [
 			'cascade' => true,

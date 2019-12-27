@@ -32,23 +32,6 @@ archive_submenu:
       data-confirm: Are you sure you want to delete this item?
       data-method: post
     select: action
-location_submenu:
-  build:
-    label: Building
-    url: ['location/admin']
-    select: controller
-  depo:
-    label: Depo(s)
-    url: ['location/depo']
-    select: controller
-  room:
-    label: Room(s)
-    url: ['location/room']
-    select: controller
-  rack:
-    label: Rack(s)
-    url: ['location/rack']
-    select: controller
 setting_submenu:
   update:
     label: Settings
@@ -69,8 +52,4 @@ setting_submenu:
   repository:
     label: Repositories
     url: ['setting/repository']
-    select: controller
-  storage:
-    label: Storages
-    url: ['setting/storage']
     select: controller

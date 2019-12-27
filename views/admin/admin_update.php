@@ -24,8 +24,6 @@ $this->params['breadcrumbs'][] = ['label' => $model::htmlHardDecode($model->code
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 
 $this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Info'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
-	'location' => ['label' => Yii::t('app', 'Location'), 'url' => Url::to(['location', 'id'=>$model->id]), 'icon' => 'archive', 'htmlOptions' => ['class'=>'btn btn-info']],
 	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
 ];
 if(!$fond) {

@@ -34,7 +34,7 @@
  * @property ArchiveRelatedRepository[] $relatedRepository
  * @property ArchiveRelatedSubject[] $relatedSubject
  * @property ArchiveRelatedSubject[] $relatedFunction
- * @property ArchiveRelatedLocation[] $relatedLocation
+ * @property ArchiveLocations[] $relatedLocation
  * @property Archives[] $archives
  * @property Archives $parent
  * @property ArchiveLevel $level
@@ -54,6 +54,7 @@ use yii\web\UploadedFile;
 use thamtech\uuid\helpers\UuidHelper;
 use yii\base\Event;
 use yii\helpers\Inflector;
+use ommu\archiveLocation\models\ArchiveLocations;
 
 class Archives extends \app\components\ActiveRecord
 {
@@ -219,7 +220,7 @@ class Archives extends \app\components\ActiveRecord
 		if($relation == false)
 			return !empty($this->relatedLocation) ? $this->relatedLocation[0] : null;
 
-		return $this->hasMany(ArchiveRelatedLocation::className(), ['archive_id' => 'id'])
+		return $this->hasMany(ArchiveLocations::className(), ['archive_id' => 'id'])
 			->alias('relatedLocation');
 	}
 
@@ -675,7 +676,7 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * function getIsNewArchive
+	 * function getIsNewFile
 	 */
 	public function getIsNewFile(): bool
 	{

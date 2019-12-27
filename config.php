@@ -12,7 +12,6 @@
 
 use ommu\archive\Events;
 use ommu\archive\models\Archives;
-use ommu\archive\models\ArchiveLocation;
 
 return [
 	'id' => 'archive',
@@ -22,11 +21,6 @@ return [
 			'class'    => Archives::className(),
 			'event'    => Archives::EVENT_BEFORE_SAVE_ARCHIVES,
 			'callback' => [Events::className(), 'onBeforeSaveArchives']
-		],
-		[
-			'class'    => ArchiveLocation::className(),
-			'event'    => ArchiveLocation::EVENT_BEFORE_SAVE_ARCHIVE_LOCATION,
-			'callback' => [Events::className(), 'onBeforeSaveArchiveLocation']
 		],
 	],
 ];

@@ -23,7 +23,6 @@ use ommu\archive\models\ArchiveRelatedCreator;
 use ommu\archive\models\ArchiveRelatedRepository;
 use ommu\archive\models\ArchiveRelatedSubject;
 use ommu\core\models\CoreTags;
-use ommu\archive\models\ArchiveRoomStorage;
 
 class Events extends \yii\base\BaseObject
 {
@@ -234,42 +233,5 @@ class Events extends \yii\base\BaseObject
 					->delete();
 			}
 		}
-	}
-	/**
-	 * {@inheritdoc}
-	 */
-	public static function onBeforeSaveArchiveLocation($event)
-	{
-		$location = $event->sender;
-
-		$oldStorage = array_flip($location->getRoomStorage(true));
-		$storage = $location->storage;
-
-		// insert difference storage
-		if(is_array($storage)) {
-			foreach ($storage as $val) {
-				if(in_array($val, $oldStorage)) {
-					unset($oldStorage[array_keys($oldStorage, $val)[0]]);
-					continue;
-				}
-
-				$model = new ArchiveRoomStorage();
-				$model->room_id = $location->id;
-				$model->storage_id = $val;
-				$model->save();
-			}
-		}
-
-		// drop difference storage
-		if(!empty($oldStorage)) {
-			foreach ($oldStorage as $key => $val) {
-				ArchiveRoomStorage::find()
-					->select(['id'])
-					->andWhere(['id' => $key])
-					->one()
-					->delete();
-			}
-		}
-		
 	}
 }

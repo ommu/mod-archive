@@ -36,7 +36,7 @@ use ommu\archive\models\Archives;
 use ommu\archive\models\search\Archives as ArchivesSearch;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
-use ommu\archive\models\ArchiveRelatedLocation;
+use ommu\archiveLocation\models\ArchiveLocations;
 use yii\web\UploadedFile;
 
 class AdminController extends Controller
@@ -349,11 +349,11 @@ class AdminController extends Controller
 	 */
 	public function actionLocation($id)
 	{
-		$model = ArchiveRelatedLocation::find()
+		$model = ArchiveLocations::find()
 			->where(['archive_id'=>$id])
 			->one();
 		if($model == null)
-			$model = new ArchiveRelatedLocation(['archive_id'=>$id]);
+			$model = new ArchiveLocations(['archive_id'=>$id]);
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
