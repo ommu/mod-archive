@@ -1113,7 +1113,7 @@ class Archives extends \app\components\ActiveRecord
 				if(!empty($models)) {
 					foreach ($models as $model) {
 						$model->updateCode = false;
-						$model->publish = 2;
+						$model->publish = $this->publish;
 						$model->update(false);
 					}
 				}
