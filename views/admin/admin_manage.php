@@ -19,11 +19,12 @@ use yii\helpers\Url;
 use app\components\grid\GridView;
 use yii\widgets\Pjax;
 
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'SIKS'), 'url' => ['/archive/fond/index']];
 if(!$parent)
 	$this->params['breadcrumbs'][] = $this->title;
 else {
 	$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['index']];
-	$this->params['breadcrumbs'][] = ['label' => $parent::htmlHardDecode($parent->code), 'url' => ['view', 'id'=>$parent->id]];
+	$this->params['breadcrumbs'][] = ['label' => Yii::t('app', '{level-name} {code}', ['level-name'=>$parent->level->level_name_i, 'code'=>$parent->code]), 'url' => ['view', 'id'=>$parent->id]];
 	$this->params['breadcrumbs'][] = Yii::t('app', 'Childs');
 }
 
@@ -32,9 +33,11 @@ if($parent) {
 		['label' => Yii::t('app', 'Add New Child Levels'), 'url' => Url::to(['create', 'id'=>$parent->id]), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
 	];
 } else {
-	$this->params['menu']['content'] = [
-		['label' => Yii::t('app', 'Add Fond'), 'url' => Url::to(['create']), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
-	];
+	if($isFond == true) {
+		$this->params['menu']['content'] = [
+			['label' => Yii::t('app', 'Add Fond'), 'url' => Url::to(['create']), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
+		];
+	}
 }
 $this->params['menu']['option'] = [
 	//['label' => Yii::t('app', 'Search'), 'url' => 'javascript:void(0);'],

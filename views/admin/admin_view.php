@@ -21,8 +21,9 @@ use yii\helpers\ArrayHelper;
 \ommu\archive\assets\AciTreeAsset::register($this);
 
 if(!$small) {
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $model::htmlHardDecode($model->code);
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'SIKS'), 'url' => ['/archive/fond/index']];
+$this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]);
 
 $this->params['menu']['content'] = [
 	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
@@ -58,7 +59,7 @@ $attributes = [
 		'attribute' => 'parent_id',
 		'value' => $model::parseParent($model),
 		'format' => 'raw',
-		'visible' => !$small && !$fond,
+		'visible' => !$small && !$isFond,
 	],
 	[
 		'attribute' => 'levelName',

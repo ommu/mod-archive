@@ -22,8 +22,9 @@ use ommu\archiveLocation\models\ArchiveLocationStorage;
 use ommu\selectize\Selectize;
 use yii\helpers\ArrayHelper;
 
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'SIKS'), 'url' => ['/archive/fond/index']];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->archive::htmlHardDecode($model->archive->code), 'url' => ['view', 'id'=>$model->archive->id]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', '{level-name} {code}', ['level-name'=>$model->archive->level->level_name_i, 'code'=>$model->archive->code]), 'url' => ['view', 'id'=>$model->archive->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Storage Location');
 
 $this->params['menu']['content'] = [

@@ -19,13 +19,13 @@ use yii\helpers\ArrayHelper;
 
 \ommu\archive\assets\AciTreeAsset::register($this);
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'SIKS'), 'url' => ['/archive/fond/index']];
+$this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => ['index']];
 if($parent) {
-	$this->params['breadcrumbs'][] = ['label' => $parent::htmlHardDecode($parent->code), 'url' => ['view', 'id'=>$parent->id]];
-	$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Childs'), 'url' => ['manage', 'id'=>$parent->id]];
-	$this->params['breadcrumbs'][] = Yii::t('app', 'Create');
-} else
-	$this->params['breadcrumbs'][] = Yii::t('app', 'Create Fond');
+	$this->params['breadcrumbs'][] = ['label' => Yii::t('app', '{level-name} {code}', ['level-name'=>$parent->level->level_name_i, 'code'=>$parent->code]), 'url' => ['view', 'id'=>$parent->id]];
+	$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Childs'), 'url' => ['manage', 'parent'=>$parent->id]];
+}
+$this->params['breadcrumbs'][] = Yii::t('app', 'Create');
 
 if($parent) {
 	$this->params['menu']['content'] = [
@@ -49,9 +49,9 @@ echo !Yii::$app->request->isAjax && $parent ? '<div id="tree" class="aciTree hid
 echo $this->render('_form', [
 	'model' => $model,
 	'setting' => $setting,
-	'fond' => $fond,
 	'parent' => $parent,
 	'referenceCode' => $parent->referenceCode,
+	'isFond' => $isFond,
 ]); ?>
 
 </div>

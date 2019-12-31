@@ -36,6 +36,14 @@ class FondController extends AdminController
 	/**
 	 * {@inheritdoc}
 	 */
+	public function isFond()
+	{
+		return true;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function getViewPath()
 	{
 		return $this->module->getViewPath() . DIRECTORY_SEPARATOR . 'admin';

@@ -19,14 +19,15 @@ use yii\helpers\ArrayHelper;
 
 \ommu\archive\assets\AciTreeAsset::register($this);
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model::htmlHardDecode($model->code), 'url' => ['view', 'id'=>$model->id]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'SIKS'), 'url' => ['/archive/fond/index']];
+$this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]), 'url' => ['view', 'id'=>$model->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 
 $this->params['menu']['content'] = [
 	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
 ];
-if(!$fond) {
+if(!$isFond) {
 	$this->params['menu']['content'] = ArrayHelper::merge(
 		$this->params['menu']['content'],
 		[
@@ -48,13 +49,13 @@ if(!in_array('location', $model->level->field))
 <div class="archives-update">
 
 <?php
-echo !Yii::$app->request->isAjax && !$fond ? '<div id="tree" class="aciTree hide mb-4"></div>' : '';
+echo !Yii::$app->request->isAjax && !$isFond ? '<div id="tree" class="aciTree hide mb-4"></div>' : '';
 
 echo $this->render('_form', [
 	'model' => $model,
 	'setting' => $setting,
-	'fond' => $fond,
 	'referenceCode' => $model->referenceCode,
+	'isFond' => $isFond,
 ]); ?>
 
 </div>
