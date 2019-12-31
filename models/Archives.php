@@ -109,7 +109,7 @@ class Archives extends \app\components\ActiveRecord
 			[['title', 'archive_type', 'archive_date'], 'string'],
 			[['code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
 			[['code'], 'string', 'max' => 255],
-			[['shortCode'], 'string', 'max' => 16],
+			[['shortCode'], 'string', 'max' => 32],
 			[['level_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLevel::className(), 'targetAttribute' => ['level_id' => 'id']],
 		];
 	}
@@ -389,6 +389,17 @@ class Archives extends \app\components\ActiveRecord
 			},
 			'format' => 'html',
 		];
+		$this->templateColumns['archive_date'] = [
+			'attribute' => 'archive_date',
+			'value' => function($model, $key, $index, $column) {
+				if(empty($model->level->child))
+					return Yii::$app->formatter->asDate($model->archive_date, 'long');
+				if(strtolower($model->level->level_name_i) == 'fond')
+					return Yii::$app->formatter->asDate($model->archive_date, 'php:Y');
+				return Yii::$app->formatter->asDate($model->archive_date, 'long');
+			},
+			'filter' => $this->filterDatepicker($this, 'archive_date'),
+		];
 		$this->templateColumns['medium'] = [
 			'attribute' => 'medium',
 			'label' => Yii::t('app', 'Medium'),
@@ -417,17 +428,6 @@ class Archives extends \app\components\ActiveRecord
 				return self::getArchiveType($model->archive_type ? $model->archive_type : '-');
 			},
 			'filter' => self::getArchiveType(),
-		];
-		$this->templateColumns['archive_date'] = [
-			'attribute' => 'archive_date',
-			'value' => function($model, $key, $index, $column) {
-				if(empty($model->level->child))
-					return Yii::$app->formatter->asDate($model->archive_date, 'long');
-				if(strtolower($model->level->level_name_i) == 'fond')
-					return Yii::$app->formatter->asDate($model->archive_date, 'php:Y');
-				return Yii::$app->formatter->asDate($model->archive_date, 'long');
-			},
-			'filter' => $this->filterDatepicker($this, 'archive_date'),
 		];
 		$this->templateColumns['archive_file'] = [
 			'attribute' => 'archive_file',
@@ -471,6 +471,7 @@ class Archives extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class'=>'center'],
+			'visible' => !$this->isFond ? true : false,
 		];
 		$this->templateColumns['preview'] = [
 			'attribute' => 'preview',
