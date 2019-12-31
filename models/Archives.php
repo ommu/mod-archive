@@ -86,6 +86,7 @@ class Archives extends \app\components\ActiveRecord
 	public $group_childs;
 
 	public $backToManage;
+	public $isFond = true;
 
 	const EVENT_BEFORE_SAVE_ARCHIVES = 'BeforeSaveArchives';
 
@@ -344,7 +345,7 @@ class Archives extends \app\components\ActiveRecord
 				// return $model->levelName;
 			},
 			'filter' => ArchiveLevel::getLevel(),
-			'visible' => Yii::$app->request->get('level') && Yii::$app->request->get('data') == 'yes' ? false : true,
+			'visible' => $this->isFond || (!$this->isFond && Yii::$app->request->get('level') && Yii::$app->request->get('data') == 'yes') ? false : true,
 		];
 		$this->templateColumns['code'] = [
 			'attribute' => 'code',

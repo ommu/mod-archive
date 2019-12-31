@@ -185,6 +185,9 @@ class Archives extends ArchivesModel
 				$query->andWhere(['=', 't.archive_file', '']);
 		}
 
+		if($this->isFond)
+			$query->andWhere(['t.level_id' => 1]);
+
 		$query->andFilterWhere(['like', 't.title', $this->title])
 			->andFilterWhere(['like', 't.code', $this->code])
 			->andFilterWhere(['like', 't.archive_file', $this->archive_file])
