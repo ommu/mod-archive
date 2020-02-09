@@ -81,8 +81,8 @@ class Archives extends \app\components\ActiveRecord
 	public $repository;
 	public $subject;
 	public $function;
-	public $location;
 	public $preview;
+	public $location;
 	public $group_childs;
 
 	public $backToManage;
@@ -105,7 +105,7 @@ class Archives extends \app\components\ActiveRecord
 	{
 		return [
 			[['publish', 'level_id', 'title', 'shortCode'], 'required'],
-			[['publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id'], 'integer'],
+			[['publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'backToManage'], 'integer'],
 			[['title', 'archive_type', 'archive_date'], 'string'],
 			[['code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
 			[['code'], 'string', 'max' => 255],
@@ -147,8 +147,8 @@ class Archives extends \app\components\ActiveRecord
 			'repository' => Yii::t('app', 'Repository'),
 			'subject' => Yii::t('app', 'Subject'),
 			'function' => Yii::t('app', 'Function'),
-			'location' => Yii::t('app', 'Location'),
 			'preview' => Yii::t('app', 'Preview'),
+			'location' => Yii::t('app', 'Location'),
 			'published_date' => Yii::t('app', 'Published Date'),
 			'backToManage' => Yii::t('app', 'Back to Manage'),
 		];
@@ -464,6 +464,14 @@ class Archives extends \app\components\ActiveRecord
 				'visible' => !Yii::$app->request->get('id') ? true : false,
 			];
 		}
+		$this->templateColumns['preview'] = [
+			'attribute' => 'preview',
+			'value' => function($model, $key, $index, $column) {
+				return $this->filterYesNo($model->preview);
+			},
+			'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class'=>'center'],
+		];
 		$this->templateColumns['location'] = [
 			'attribute' => 'location',
 			'value' => function($model, $key, $index, $column) {
@@ -472,14 +480,6 @@ class Archives extends \app\components\ActiveRecord
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class'=>'center'],
 			'visible' => !$this->isFond ? true : false,
-		];
-		$this->templateColumns['preview'] = [
-			'attribute' => 'preview',
-			'value' => function($model, $key, $index, $column) {
-				return $this->filterYesNo($model->preview);
-			},
-			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'center'],
 		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
@@ -946,8 +946,8 @@ class Archives extends \app\components\ActiveRecord
 		$this->repository =  array_flip($this->getRelatedRepository(true));
 		$this->subject =  implode(',', $this->getRelatedSubject(true, 'title'));
 		$this->function =  implode(',', $this->getRelatedFunction(true, 'title'));
-		$this->location = $this->getRelatedLocation(false) != null ? 1 : 0;
 		$this->preview = $this->archive_file != '' ? 1 : 0;
+		$this->location = $this->getRelatedLocation(false) != null ? 1 : 0;
 	}
 
 	/**

@@ -281,9 +281,9 @@ else {
 $archiveFile = '';
 if(!$model->isNewRecord && $model->old_archive_file != '') {
 	if(in_array($extension, $imageFileType))
-		$archiveFile = Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->old_archive_file])), ['alt'=>$model->old_archive_file, 'class'=>'mb-3']);
+		$archiveFile = Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->old_archive_file])), ['alt'=>$model->old_archive_file, 'class'=>'d-block border border-width-3 mb-3']).$model->old_archive_file.'<hr/>';
 	if(in_array($extension, $documentFileType))
-		$archiveFile = Html::a($model->old_archive_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->old_archive_file])), ['title'=>$model->old_archive_file, 'class'=>'mb-3', 'style'=>'display: block;', 'target'=>'_blank']);
+		$archiveFile = Html::a($model->old_archive_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->old_archive_file])), ['title'=>$model->old_archive_file, 'class'=>'d-block mb-3', 'target'=>'_blank']);
 }
 echo $form->field($model, 'archive_file', ['template'=> '{label}{beginWrapper}<div>'.$archiveFile.'</div>{input}{error}{hint}{endWrapper}', 'options' => ['class'=>($isFond || !(!$isFond && !isset($model->level) || !empty($model->level->child))) ? 'form-group row field-item' : 'form-group row field-item hide']])
 	->fileInput()

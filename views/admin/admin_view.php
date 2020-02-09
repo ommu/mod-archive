@@ -168,6 +168,8 @@ $attributes = [
 			if(in_array($extension, $documentFileType)) {
 				return \app\components\widgets\PreviewPDF::widget([
 					'url' => $filePath,
+					'navigationOptions' => ['class'=>'summary mb-4'],
+					'previewOptions' => ['class'=>'preview-pdf border border-width-3'],
 				]);
 			}
 		},
