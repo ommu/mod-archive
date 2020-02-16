@@ -126,7 +126,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
 		$this->templateColumns['_no'] = [
 			'header' => '#',
 			'class' => 'yii\grid\SerialColumn',
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 		];
 		$this->templateColumns['license'] = [
 			'attribute' => 'license',
@@ -216,7 +216,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
 				return self::getFondSidkkas($model->fond_sidkkas);
 			},
 			'filter' => self::getFondSidkkas(),
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 		];
 		$this->templateColumns['short_code'] = [
 			'attribute' => 'short_code',
@@ -224,7 +224,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
 				return self::getFondSidkkas($model->short_code);
 			},
 			'filter' => self::getFondSidkkas(),
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 		];
 		$this->templateColumns['medium_sublevel'] = [
 			'attribute' => 'medium_sublevel',
@@ -232,7 +232,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
 				return self::getFondSidkkas($model->medium_sublevel);
 			},
 			'filter' => self::getFondSidkkas(),
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 		];
 		$this->templateColumns['maintenance_mode'] = [
 			'attribute' => 'maintenance_mode',
@@ -240,7 +240,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
 				return self::getFondSidkkas($model->maintenance_mode);
 			},
 			'filter' => self::getFondSidkkas(),
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 		];
 	}
 

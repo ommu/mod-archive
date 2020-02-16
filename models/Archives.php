@@ -326,7 +326,7 @@ class Archives extends \app\components\ActiveRecord
 		$this->templateColumns['_no'] = [
 			'header' => '#',
 			'class' => 'yii\grid\SerialColumn',
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 		];
 		$this->templateColumns['parentTitle'] = [
 			'attribute' => 'parentTitle',
@@ -460,7 +460,7 @@ class Archives extends \app\components\ActiveRecord
 					return $this->filterYesNo($model->sidkkas);
 				},
 				'filter' => $this->filterYesNo(),
-				'contentOptions' => ['class'=>'center'],
+				'contentOptions' => ['class'=>'text-center'],
 				'visible' => !Yii::$app->request->get('id') ? true : false,
 			];
 		}
@@ -470,7 +470,7 @@ class Archives extends \app\components\ActiveRecord
 				return $this->filterYesNo($model->preview);
 			},
 			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 		];
 		$this->templateColumns['location'] = [
 			'attribute' => 'location',
@@ -478,7 +478,7 @@ class Archives extends \app\components\ActiveRecord
 				return $this->filterYesNo($model->location);
 			},
 			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 			'visible' => !$this->isFond ? true : false,
 		];
 		$this->templateColumns['creation_date'] = [
@@ -525,7 +525,7 @@ class Archives extends \app\components\ActiveRecord
 				return self::getPublish($model->publish);
 			},
 			'filter' => self::getPublish(),
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 			'visible' => !Yii::$app->request->get('trash') ? true : false,
 		];
 	}
