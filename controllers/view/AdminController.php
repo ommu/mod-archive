@@ -41,9 +41,11 @@ class AdminController extends Controller
 	 */
 	public function init()
 	{
-		parent::init();
-		if(Yii::$app->request->get('archive') || Yii::$app->request->get('id'))
+        parent::init();
+
+		if(Yii::$app->request->get('archive') || Yii::$app->request->get('id')) {
 			$this->subMenu = $this->module->params['archive_submenu'];
+        }
 
 		$setting = ArchiveSetting::find()
 			->select(['breadcrumb_param'])
@@ -102,7 +104,10 @@ class AdminController extends Controller
 		if(($archive = Yii::$app->request->get('archive')) != null) {
 			$this->subMenuParam = $archive;
 			$archive = \ommu\archive\models\Archives::findOne($archive);
-            $archive->isArchive = $archive->fond_id ? true : false;
+            $archive->isFond = $archive->level_id == 1 ? true : false;
+            if($archive->isFond == true) {
+                $this->subMenu = $this->module->params['fond_submenu'];
+            }
 		}
 		if(($user = Yii::$app->request->get('user')) != null) {
 			$user = \ommu\users\models\Users::findOne($user);
@@ -186,7 +191,7 @@ class AdminController extends Controller
 	protected function findModel($id)
 	{
 		if(($model = ArchiveViews::findOne($id)) !== null) {
-            $model->archive->isArchive = $model->archive->fond_id ? true : false;
+            $model->archive->isFond = $model->archive->level_id == 1 ? true : false;
 
 			return $model;
         }

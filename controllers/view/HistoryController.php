@@ -40,9 +40,11 @@ class HistoryController extends Controller
 	 */
 	public function init()
 	{
-		parent::init();
-		if(Yii::$app->request->get('view') || Yii::$app->request->get('id'))
+        parent::init();
+
+		if(Yii::$app->request->get('view') || Yii::$app->request->get('id')) {
 			$this->subMenu = $this->module->params['archive_submenu'];
+        }
 
 		$setting = ArchiveSetting::find()
 			->select(['breadcrumb_param'])
@@ -104,7 +106,10 @@ class HistoryController extends Controller
 		if(($view = Yii::$app->request->get('view')) != null) {
 			$view = \ommu\archive\models\ArchiveViews::findOne($view);
 			$this->subMenuParam = $view->archive_id;
-            $view->archive->isArchive = $view->archive->fond_id ? true : false;
+            $view->archive->isFond = $view->archive->level_id == 1 ? true : false;
+            if($view->archive->isFond == true) {
+                $this->subMenu = $this->module->params['fond_submenu'];
+            }
 		}
 		if($archive) {
 			$this->subMenuParam = $archive;
@@ -169,7 +174,7 @@ class HistoryController extends Controller
 	protected function findModel($id)
 	{
 		if(($model = ArchiveViewHistory::findOne($id)) !== null) {
-			$model->view->archive->isArchive = $model->view->archive->fond_id ? true : false;
+			$model->view->archive->isFond = $model->view->archive->level_id == 1 ? true : false;
 
 			return $model;
         }

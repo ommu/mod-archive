@@ -28,10 +28,6 @@ if(!$small) {
     $this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => ['index']];
     $this->params['breadcrumbs'][] = $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]);
 
-    $this->params['menu']['content'] = [
-        ['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
-    ];
-
     if(!in_array('location', $model->level->field)) {
         unset($this->params['menu']['content']['location']);
     }
@@ -59,6 +55,7 @@ $attributes = [
 	[
 		'attribute' => 'sidkkas',
 		'value' => $model->filterYesNo($model->sidkkas),
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'parent_id',

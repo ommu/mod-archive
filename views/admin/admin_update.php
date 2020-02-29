@@ -27,16 +27,10 @@ $this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Fond') : Y
 $this->params['breadcrumbs'][] = ['label' => $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]), 'url' => ['view', 'id'=>$model->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 
-$this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
-];
 if(!$isFond) {
-	$this->params['menu']['content'] = ArrayHelper::merge(
-		$this->params['menu']['content'],
-		[
-			['label' => Yii::t('app', 'Show Reference Code'), 'url' => 'javascript:void(0);', 'icon' => 'code', 'htmlOptions' => ['class'=>'btn btn-warning', 'id'=>'reference-code']],
-		]
-	);
+	$this->params['menu']['content'] = [
+        ['label' => Yii::t('app', 'Show Reference Code'), 'url' => 'javascript:void(0);', 'icon' => 'code', 'htmlOptions' => ['class'=>'btn btn-warning', 'id'=>'reference-code']],
+    ];
 
 	$treeDataUrl = Url::to(['data', 'id'=>$model->parent_id]);
 $js = <<<JS

@@ -48,8 +48,14 @@ class AdminController extends Controller
 	public function init()
 	{
 		parent::init();
-		if(Yii::$app->request->get('id') || Yii::$app->request->get('parent'))
-			$this->subMenu = $this->module->params['archive_submenu'];
+
+        if(Yii::$app->request->get('parent') || Yii::$app->request->get('id')) {
+            if($this->isFond() == true) {
+                $this->subMenu = $this->module->params['fond_submenu'];
+            } else {
+                $this->subMenu = $this->module->params['archive_submenu'];
+            }
+        }
 
 		$setting = ArchiveSetting::find()
 			->select(['breadcrumb_param'])
@@ -246,6 +252,7 @@ class AdminController extends Controller
 		if(!in_array('location', $model->level->field))
 			unset($this->subMenu['location']);
 
+        $this->subMenuParam = $model->id;
 		$this->view->title = Yii::t('app', 'Update {level-name}: {code}', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]);
 		$this->view->description = '';
 		$this->view->keywords = '';
@@ -270,6 +277,7 @@ class AdminController extends Controller
 		if(!in_array('location', $model->level->field))
 			unset($this->subMenu['location']);
 
+        $this->subMenuParam = $model->id;
 		$this->view->title = Yii::t('app', 'Detail {level-name}: {code}', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]);
 		$this->view->description = '';
 		$this->view->keywords = '';
@@ -305,8 +313,11 @@ class AdminController extends Controller
 	 */
 	protected function findModel($id)
 	{
-		if(($model = Archives::findOne($id)) !== null)
+		if(($model = Archives::findOne($id)) !== null) {
+            $model->isFond = $this->isFond();
+
 			return $model;
+        }
 
 		throw new \yii\web\NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
 	}
@@ -372,8 +383,12 @@ class AdminController extends Controller
 		$model = ArchiveLocations::find()
 			->where(['archive_id'=>$id])
 			->one();
-		if($model == null)
+		$newRecord = false;
+		if($model == null) {
+			$newRecord = true;
 			$model = new ArchiveLocations(['archive_id'=>$id]);
+        }
+		$model->archive->isFond = $this->isFond();
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
@@ -398,11 +413,31 @@ class AdminController extends Controller
 		if(!in_array('location', $model->archive->level->field))
 			unset($this->subMenu['location']);
 
+        $this->subMenuParam = $model->archive_id;
 		$this->view->title = Yii::t('app', 'Storage Location {level-name}: {code}', ['level-name'=>$model->archive->level->level_name_i, 'code'=>$model->archive->code]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_location', [
 			'model' => $model,
+			'newRecord' => $newRecord,
 		]);
+	}
+
+	/**
+	 * Deletes an existing Archives model.
+	 * If deletion is successful, the browser will be redirected to the 'index' page.
+	 * @param integer $id
+	 * @return mixed
+	 */
+	public function actionResetLocation($id)
+	{
+		if(($model = ArchiveLocations::find()->where(['id'=>$id])->one()) === null)
+			throw new \yii\web\NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+
+        $model->archive->isFond = $this->isFond();
+		$model->delete();
+
+		Yii::$app->session->setFlash('success', Yii::t('app', '{label} success reset location.', ['label'=>!$model->archive->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory')]));
+		return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
 	}
 }

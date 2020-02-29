@@ -24,10 +24,10 @@ if($context->breadcrumbApp) {
     $this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
 if($archive != null) {
-    $this->params['breadcrumbs'][] = ['label' => $archive->isArchive ? Yii::t('app', 'Archive') : Yii::t('app', 'Archive List'), 'url' => $archive->isArchive ? ['/admin/index'] : ['/book/index']];
-    $this->params['breadcrumbs'][] = ['label' => $archive->isArchive ? $archive::htmlHardDecode($archive->title) : $archive->fond_code, 'url' => ['admin/view', 'id'=>$archive->id]];
+    $this->params['breadcrumbs'][] = ['label' => $archive->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => $archive->isFond ? ['fond/index'] : ['admin/index']];
+    $this->params['breadcrumbs'][] = ['label' => $archive->isFond ? $archive->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$archive->level->level_name_i, 'code'=>$archive->code]), 'url' => [($archive->isFond ? 'fond' : 'admin').'/view', 'id'=>$archive->id]];
 } else {
-    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Archive'), 'url' => ['/admin/index']];
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['admin/index']];
 }
 $this->params['breadcrumbs'][] = $this->title;
 

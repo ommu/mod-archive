@@ -26,15 +26,19 @@ $context = $this->context;
 if($context->breadcrumbApp) {
 	$this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', '{level-name} {code}', ['level-name'=>$model->archive->level->level_name_i, 'code'=>$model->archive->code]), 'url' => ['view', 'id'=>$model->archive->id]];
+$this->params['breadcrumbs'][] = ['label' => $model->archive->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => $model->archive->isFond ? ['fond/index'] : ['admin/index']];
+$this->params['breadcrumbs'][] = ['label' => $model->archive->isFond ? $model->archive->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$model->archive->level->level_name_i, 'code'=>$model->archive->code]), 'url' => ['view', 'id'=>$model->archive->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Storage Location');
 
-$this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->archive_id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
-];
-if(!in_array('location', $model->archive->level->field))
+if(!$newRecord) {
+    $this->params['menu']['content'] = [
+        ['label' => Yii::t('app', 'Reset Location'), 'url' => Url::to(['reset-location', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to reset location this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
+    ];
+}
+
+if(!in_array('location', $model->archive->level->field)) {
 	unset($this->params['menu']['content']['location']);
+}
 
 $js = <<<JS
 	var building, depo, room, storage;

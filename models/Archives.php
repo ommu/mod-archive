@@ -64,6 +64,8 @@ class Archives extends \app\components\ActiveRecord
 	public $gridForbiddenColumn = ['parentTitle', 'media', 'creator', 'repository', 'subject', 'function', 'archive_type', 'archive_file', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
 	public $old_archive_file;
+	public $isFond = true;
+
 	public $parentTitle;
 	public $levelName;
 	public $creationDisplayname;
@@ -86,7 +88,6 @@ class Archives extends \app\components\ActiveRecord
 	public $group_childs;
 
 	public $backToManage;
-	public $isFond = true;
 
 	const EVENT_BEFORE_SAVE_ARCHIVES = 'BeforeSaveArchives';
 
