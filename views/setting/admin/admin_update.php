@@ -16,8 +16,17 @@
 
 use yii\helpers\Url;
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'SIKS'), 'url' => ['/archive/fond/index']];
-$this->params['breadcrumbs'][] = Yii::t('app', 'Settings');
+if($breadcrumb) {
+    $context = $this->context;
+    if($context->breadcrumbApp) {
+        $this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
+    }
+    $this->params['breadcrumbs'][] = Yii::t('app', 'Settings');
+}
+
+$this->params['menu']['content'] = [
+	['label' => Yii::t('app', 'Reset'), 'url' => Url::to(['delete']), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to reset this setting?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
+];
 ?>
 
 <div class="archive-setting-update">

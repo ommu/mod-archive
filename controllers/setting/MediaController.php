@@ -34,6 +34,7 @@ use mdm\admin\components\AccessControl;
 use yii\filters\VerbFilter;
 use ommu\archive\models\ArchiveMedia;
 use ommu\archive\models\search\ArchiveMedia as ArchiveMediaSearch;
+use ommu\archive\models\ArchiveSetting;
 
 class MediaController extends Controller
 {
@@ -44,6 +45,13 @@ class MediaController extends Controller
 	{
 		parent::init();
 		$this->subMenu = $this->module->params['setting_submenu'];
+
+		$setting = ArchiveSetting::find()
+			->select(['breadcrumb_param'])
+			->where(['id' => 1])
+			->one();
+		$this->breadcrumbApp = $setting->breadcrumb;
+		$this->breadcrumbAppParam = $setting->getBreadcrumbAppParam();
 	}
 
 	/**

@@ -21,15 +21,20 @@ use yii\helpers\ArrayHelper;
 \ommu\archive\assets\AciTreeAsset::register($this);
 
 if(!$small) {
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'SIKS'), 'url' => ['/archive/fond/index']];
-$this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]);
+    $context = $this->context;
+    if($context->breadcrumbApp) {
+        $this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
+    }
+    $this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => ['index']];
+    $this->params['breadcrumbs'][] = $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]);
 
-$this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
-];
-if(!in_array('location', $model->level->field))
-	unset($this->params['menu']['content']['location']);
+    $this->params['menu']['content'] = [
+        ['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
+    ];
+
+    if(!in_array('location', $model->level->field)) {
+        unset($this->params['menu']['content']['location']);
+    }
 } ?>
 
 <div class="archives-view">
@@ -118,6 +123,7 @@ $attributes = [
 		'attribute' => 'repository',
 		'value' => $model::parseRelated($model->getRelatedRepository(true, 'title'), 'repository', ', '),
 		'format' => 'html',
+		'visible' => !$small && in_array('repository', $model->level->field) ? true : false,
 	],
 	[
 		'attribute' => 'media',
@@ -190,11 +196,13 @@ $attributes = [
 		'attribute' => 'subject',
 		'value' => $model::parseSubject($model->getRelatedSubject(true, 'title'), 'subjectId'),
 		'format' => 'html',
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'function',
 		'value' => $model::parseSubject($model->getRelatedFunction(true, 'title'), 'functionId'),
 		'format' => 'html',
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'creation_date',

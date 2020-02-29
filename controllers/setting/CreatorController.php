@@ -34,6 +34,7 @@ use mdm\admin\components\AccessControl;
 use yii\filters\VerbFilter;
 use ommu\archive\models\ArchiveCreator;
 use ommu\archive\models\search\ArchiveCreator as ArchiveCreatorSearch;
+use ommu\archive\models\ArchiveSetting;
 
 class CreatorController extends Controller
 {
@@ -44,6 +45,13 @@ class CreatorController extends Controller
 	{
 		parent::init();
 		$this->subMenu = $this->module->params['setting_submenu'];
+
+		$setting = ArchiveSetting::find()
+			->select(['breadcrumb_param'])
+			->where(['id' => 1])
+			->one();
+		$this->breadcrumbApp = $setting->breadcrumb;
+		$this->breadcrumbAppParam = $setting->getBreadcrumbAppParam();
 	}
 
 	/**

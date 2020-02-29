@@ -27,6 +27,7 @@
  * @property integer $maintenance_mode
  * @property string $maintenance_image_path
  * @property string $maintenance_document_path
+ * @property string $breadcrumb_param
  * @property string $modified_date
  * @property integer $modified_id
  *
@@ -38,6 +39,7 @@
 namespace ommu\archive\models;
 
 use Yii;
+use yii\helpers\Html;
 use ommu\users\models\Users;
 use yii\helpers\Json;
 
@@ -47,6 +49,8 @@ class ArchiveSetting extends \app\components\ActiveRecord
 	use \ommu\traits\FileTrait;
 
 	public $gridForbiddenColumn = [];
+
+	public $breadcrumb;
 
 	public $modifiedDisplayname;
 
@@ -64,11 +68,11 @@ class ArchiveSetting extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['license', 'permission', 'meta_description', 'meta_keyword', 'fond_sidkkas', 'reference_code_separator', 'short_code', 'medium_sublevel', 'production_date', 'image_type', 'document_type', 'maintenance_mode'], 'required'],
+			[['license', 'permission', 'meta_description', 'meta_keyword', 'fond_sidkkas', 'reference_code_separator', 'short_code', 'medium_sublevel', 'production_date', 'image_type', 'document_type', 'maintenance_mode', 'breadcrumb_param'], 'required'],
 			[['permission', 'fond_sidkkas', 'short_code', 'medium_sublevel', 'maintenance_mode', 'modified_id'], 'integer'],
 			[['meta_description', 'meta_keyword', 'production_date', 'maintenance_image_path', 'maintenance_document_path'], 'string'],
 			[['reference_code_sikn', 'maintenance_image_path', 'maintenance_document_path'], 'safe'],
-			//[['image_type', 'document_type'], 'json'],
+			//[['image_type', 'document_type', 'breadcrumb_param'], 'json'],
 			[['license', 'reference_code_sikn', 'maintenance_image_path', 'maintenance_document_path'], 'string', 'max' => 32],
 			[['reference_code_separator'], 'string', 'max' => 1],
 		];
@@ -96,9 +100,13 @@ class ArchiveSetting extends \app\components\ActiveRecord
 			'maintenance_mode' => Yii::t('app', 'Maintenance Mode'),
 			'maintenance_image_path' => Yii::t('app', 'Maintenance Image Path'),
 			'maintenance_document_path' => Yii::t('app', 'Maintenance Document Path'),
+			'breadcrumb_param' => Yii::t('app', 'Breadcrumb Param'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
+			'breadcrumb' => Yii::t('app', 'Breadcrumb Apps'),
+			'breadcrumb_status' => Yii::t('app', 'Breadcrumb Apps Status'),
+			'breadcrumb_app' => Yii::t('app', 'Breadcrumb Apps Name and URL'),
 		];
 	}
 
@@ -242,6 +250,12 @@ class ArchiveSetting extends \app\components\ActiveRecord
 			'filter' => self::getFondSidkkas(),
 			'contentOptions' => ['class'=>'text-center'],
 		];
+		$this->templateColumns['breadcrumb_param'] = [
+			'attribute' => 'breadcrumb_param',
+			'value' => function($model, $key, $index, $column) {
+				return $model::parseBreadcrumbApps($model->breadcrumb_param);
+			},
+		];
 	}
 
 	/**
@@ -302,6 +316,68 @@ class ArchiveSetting extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * function getBreadcrumbStatus
+	 */
+	public static function getBreadcrumbStatus($value=null)
+	{
+		$items = array(
+			'1' => Yii::t('app', 'Enable'),
+			'0' => Yii::t('app', 'Disable'),
+		);
+
+		if($value !== null)
+			return $items[$value];
+		else
+			return $items;
+	}
+
+	/**
+	 * function getBreadcrumbApps
+	 */
+	public function getBreadcrumbApps(): bool
+	{
+		if(!is_array($this->breadcrumb_param))
+			return false;
+
+		if($this->breadcrumb_param['status'] != 1)
+			return false;
+
+		unset($this->breadcrumb_param['status']);
+		if(!($this->breadcrumb_param['name'] != '' && $this->breadcrumb_param['url'] != ''))
+			return false;
+
+		return true;
+	}
+
+	/**
+	 * function getBreadcrumbAppParam
+	 */
+	public function getBreadcrumbAppParam()
+	{
+		if(!$this->getBreadcrumbApps())
+			return [];
+
+		$params = $this->breadcrumb_param;
+		unset($params['status']);
+		return $params;
+	}
+
+	/**
+	 * function parseBreadcrumbApps
+	 */
+	public static function parseBreadcrumbApps($params)
+	{
+        if(!empty($params)) {
+            unset($params['status']);
+        }
+
+		if($params == null)
+			return '-';
+
+		return Html::ul($params, ['encode'=>false, 'class'=>'list-boxed']);
+	}
+
+	/**
 	 * after find attributes
 	 */
 	public function afterFind()
@@ -315,6 +391,16 @@ class ArchiveSetting extends \app\components\ActiveRecord
 		if(!empty($document_type))
 			$this->document_type = $this->formatFileType($document_type, false);
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
+
+        if($this->breadcrumb_param == '') {
+            $breadcrumb_param = [];
+        } else {
+            $breadcrumb_param = Json::decode($this->breadcrumb_param);
+        }
+		if(!empty($breadcrumb_param))
+			$this->breadcrumb_param = $breadcrumb_param;
+
+		$this->breadcrumb = $this->getBreadcrumbApps() ? 1 : 0;
 	}
 
 	/**
@@ -326,6 +412,12 @@ class ArchiveSetting extends \app\components\ActiveRecord
 			if(!$this->isNewRecord) {
 				if($this->modified_id == null)
 					$this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+			}
+			if($this->breadcrumb_param['status'] == '')
+				$this->addError('breadcrumb_param', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('breadcrumb_status')]));
+			else {
+				if($this->breadcrumb_param['status'] == 1 && !$this->getBreadcrumbApps())
+					$this->addError('breadcrumb_param', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('breadcrumb_app')]));
 			}
 		}
 		return true;
@@ -340,6 +432,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
 			$this->production_date = Yii::$app->formatter->asDate($this->production_date, 'php:Y-m-d');
 			$this->image_type = Json::encode($this->formatFileType($this->image_type));
 			$this->document_type = Json::encode($this->formatFileType($this->document_type));
+			$this->breadcrumb_param = Json::encode($this->breadcrumb_param);
 		}
 		return true;
 	}

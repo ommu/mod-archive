@@ -38,6 +38,13 @@ class AdminController extends Controller
 	{
 		parent::init();
 		$this->subMenu = $this->module->params['setting_submenu'];
+
+		$setting = ArchiveSetting::find()
+			->select(['breadcrumb_param'])
+			->where(['id' => 1])
+			->one();
+		$this->breadcrumbApp = $setting->breadcrumb;
+		$this->breadcrumbAppParam = $setting->getBreadcrumbAppParam();
 	}
 
 	/**
@@ -125,6 +132,7 @@ class AdminController extends Controller
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
 			'model' => $model,
+			'breadcrumb' => true,
 		]);
 	}
 

@@ -115,6 +115,19 @@ echo $form->field($model, 'production_date')
 
 <hr/>
 
+<?php $breadcrumbAppsName = $form->field($model, 'breadcrumb_param[name]', ['template' => '{beginWrapper}<div class="h6 mt-0 mb-3">App Name</div>{input}{endWrapper}', 'horizontalCssClasses' => ['wrapper'=>'col-sm-4 col-xs-6 col-sm-offset-3 mt-4'], 'options' => ['tag' => null]])
+	->label($model->getAttributeLabel('breadcrumb_param[name]')); ?>
+
+<?php $breadcrumbAppsUrl = $form->field($model, 'breadcrumb_param[url]', ['template' => '{beginWrapper}<div class="h6 mt-0 mb-3">App URL</div>{input}{endWrapper}', 'horizontalCssClasses' => ['wrapper'=>'col-sm-5 col-xs-6 mt-4'], 'options' => ['tag' => null]])
+	->label($model->getAttributeLabel('breadcrumb_param[url]')); ?>
+
+<?php $status = $model::getBreadcrumbStatus();
+echo $form->field($model, 'breadcrumb_param[status]', ['template' => '{label}{beginWrapper}<div class="h6 mt-3 mb-3">Status</div>{input}{endWrapper}'.$breadcrumbAppsName.$breadcrumbAppsUrl.'{error}{hint}', 'horizontalCssClasses' => ['error'=>'col-sm-6 col-xs-12 col-sm-offset-3', 'hint'=>'col-sm-6 col-xs-12 col-sm-offset-3']])
+	->dropDownList($status, ['prompt'=>''])
+	->label($model->getAttributeLabel('breadcrumb')); ?>
+
+<hr/>
+
 <?php echo $form->field($model, 'submitButton')
 	->submitButton(); ?>
 

@@ -38,6 +38,7 @@ use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use ommu\archiveLocation\models\ArchiveLocations;
 use yii\web\UploadedFile;
+use ommu\archive\models\ArchiveSetting;
 
 class AdminController extends Controller
 {
@@ -49,6 +50,13 @@ class AdminController extends Controller
 		parent::init();
 		if(Yii::$app->request->get('id') || Yii::$app->request->get('parent'))
 			$this->subMenu = $this->module->params['archive_submenu'];
+
+		$setting = ArchiveSetting::find()
+			->select(['breadcrumb_param'])
+			->where(['id' => 1])
+			->one();
+		$this->breadcrumbApp = $setting->breadcrumb;
+		$this->breadcrumbAppParam = $setting->getBreadcrumbAppParam();
 	}
 
 	/**
