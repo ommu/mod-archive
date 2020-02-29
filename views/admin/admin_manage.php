@@ -26,8 +26,8 @@ if($context->breadcrumbApp) {
 if(!$parent)
 	$this->params['breadcrumbs'][] = $this->title;
 else {
-	$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['index']];
-	$this->params['breadcrumbs'][] = ['label' => Yii::t('app', '{level-name} {code}', ['level-name'=>$parent->level->level_name_i, 'code'=>$parent->code]), 'url' => ['view', 'id'=>$parent->id]];
+	$this->params['breadcrumbs'][] = ['label' => $parent->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => $parent->isFond ? ['fond/index'] : ['admin/index']];
+	$this->params['breadcrumbs'][] = ['label' => $parent->isFond ? $parent->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$parent->level->level_name_i, 'code'=>$parent->code]), 'url' => [($parent->isFond ? 'fond' : 'admin').'/view', 'id'=>$parent->id]];
 	$this->params['breadcrumbs'][] = Yii::t('app', 'Childs');
 }
 

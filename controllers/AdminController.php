@@ -126,6 +126,7 @@ class AdminController extends Controller
 		if($parent != null) {
 			$this->subMenuParam = $parent;
 			$parent = Archives::findOne($parent);
+            $parent->isFond = $parent->level_id == 1 ? true : false;
 			if(empty($parent->level->child))
 				unset($this->subMenu['childs']);
 			if(!in_array('location', $parent->level->field))
