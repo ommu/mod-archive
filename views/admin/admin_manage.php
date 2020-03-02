@@ -33,7 +33,7 @@ else {
 
 if($parent) {
 	$this->params['menu']['content'] = [
-		['label' => Yii::t('app', 'Add New Child Levels'), 'url' => Url::to(['create', 'id'=>$parent->id]), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
+		['label' => Yii::t('app', 'Add New Child Levels'), 'url' => Url::to(['admin/create', 'id'=>$parent->id]), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
 	];
 } else {
 	if($isFond == true) {

@@ -152,6 +152,7 @@ class Archives extends \app\components\ActiveRecord
 			'location' => Yii::t('app', 'Location'),
 			'published_date' => Yii::t('app', 'Published Date'),
 			'backToManage' => Yii::t('app', 'Back to Manage'),
+			'views' => Yii::t('app', 'Views'),
 		];
 	}
 
@@ -300,6 +301,30 @@ class Archives extends \app\components\ActiveRecord
 	public function getModified()
 	{
 		return $this->hasOne(Users::className(), ['user_id' => 'modified_id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getViews($count=false, $publish=1)
+	{
+		if($count == false)
+			return $this->hasMany(ArchiveViews::className(), ['archive_id' => 'id'])
+				->alias('views')
+				->andOnCondition([sprintf('%s.publish', 'views') => $publish]);
+
+		$model = ArchiveViews::find()
+			->alias('t')
+			->where(['t.archive_id' => $this->id]);
+		if($publish == 0)
+			$model->unpublish();
+		elseif($publish == 1)
+			$model->published();
+		elseif($publish == 2)
+			$model->deleted();
+		$views = $model->sum('views');
+
+		return $views ? $views : 0;
 	}
 
 	/**
@@ -452,6 +477,16 @@ class Archives extends \app\components\ActiveRecord
 
 				return Html::a($model->archive_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->archive_file])), ['title'=>$model->archive_file, 'data-pjax'=>0, 'target'=>'_blank']);
 			},
+			'format' => 'raw',
+		];
+		$this->templateColumns['views'] = [
+			'attribute' => 'views',
+			'value' => function($model, $key, $index, $column) {
+				$views = $model->getViews(true);
+				return Html::a($views, ['view/admin/manage', 'archive'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} views', ['count'=>$views]), 'data-pjax'=>0]);
+			},
+			'filter' => false,
+			'contentOptions' => ['class'=>'text-center'],
 			'format' => 'raw',
 		];
 		if(ArchiveSetting::getInfo('fond_sidkkas')) {

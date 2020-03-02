@@ -47,10 +47,12 @@ $attributes = [
 	[
 		'attribute' => 'id',
 		'value' => $model->id,
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'publish',
 		'value' => $model::getPublish($model->publish),
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'sidkkas',
@@ -102,15 +104,6 @@ $attributes = [
 		'format' => 'html',
 	],
 	[
-		'attribute' => 'medium',
-		'value' => function ($model) {
-			if(strtolower($model->level->level_name_i) == 'item')
-				return $model->medium ? $model->medium : '-';
-			return $model::parseChilds($model->getChilds(['sublevel'=>false, 'back3nd'=>true]), $model->id);
-		},
-		'format' => 'html',
-	],
-	[
 		'attribute' => 'creator',
 		'value' => $model::parseRelated($model->getRelatedCreator(true, 'title'), 'creator'),
 		'format' => 'html',
@@ -132,17 +125,6 @@ $attributes = [
 		'attribute' => 'archive_type',
 		'value' => $model::getArchiveType($model->archive_type ? $model->archive_type : '-'),
 		'visible' => !$small && in_array('archive_type', $model->level->field) ? true : false,
-	],
-	[
-		'attribute' => 'archive_date',
-		'value' => function ($model) {
-			if(empty($model->level->child))
-				return Yii::$app->formatter->asDate($model->archive_date, 'long');
-			if(strtolower($model->level->level_name_i) == 'fond')
-				return Yii::$app->formatter->asDate($model->archive_date, 'php:Y');
-			return Yii::$app->formatter->asDate($model->archive_date, 'long');
-		},
-		'visible' => !$small,
 	],
 	[
 		'attribute' => 'archive_file',
@@ -180,6 +162,29 @@ $attributes = [
 		'visible' => !$small && in_array('archive_file', $model->level->field) ? true : false,
 	],
 	[
+		'attribute' => 'archive_date',
+		'value' => function ($model) {
+			if(empty($model->level->child))
+				return Yii::$app->formatter->asDate($model->archive_date, 'long');
+			if(strtolower($model->level->level_name_i) == 'fond')
+				return Yii::$app->formatter->asDate($model->archive_date, 'php:Y');
+			return Yii::$app->formatter->asDate($model->archive_date, 'long');
+		},
+		'visible' => !$small,
+	],
+	[
+		'attribute' => 'subject',
+		'value' => $model::parseSubject($model->getRelatedSubject(true, 'title'), 'subjectId'),
+		'format' => 'html',
+		'visible' => !$small && in_array('subject', $model->level->field),
+	],
+	[
+		'attribute' => 'function',
+		'value' => $model::parseSubject($model->getRelatedFunction(true, 'title'), 'functionId'),
+		'format' => 'html',
+		'visible' => !$small && in_array('function', $model->level->field),
+	],
+	[
 		'attribute' => 'location',
 		'value' => function ($model) {
 			if(($location = $model->getRelatedLocation(false)) != null)
@@ -190,17 +195,23 @@ $attributes = [
 		'visible' => !$small && in_array('location', $model->level->field) ? true : false,
 	],
 	[
-		'attribute' => 'subject',
-		'value' => $model::parseSubject($model->getRelatedSubject(true, 'title'), 'subjectId'),
+		'attribute' => 'medium',
+		'value' => function ($model) {
+			if(strtolower($model->level->level_name_i) == 'item')
+				return $model->medium ? $model->medium : '-';
+			return $model::parseChilds($model->getChilds(['sublevel'=>false, 'back3nd'=>true]), $model->id);
+		},
 		'format' => 'html',
-		'visible' => !$small,
 	],
-	[
-		'attribute' => 'function',
-		'value' => $model::parseSubject($model->getRelatedFunction(true, 'title'), 'functionId'),
-		'format' => 'html',
+    [
+        'attribute' => 'views',
+        'value' => function ($model) {
+            $views = $model->getViews(true);
+            return Html::a($views, ['view/admin/manage', 'archive'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} views', ['count'=>$views]), 'data-pjax'=>0]);
+        },
+        'format' => 'html',
 		'visible' => !$small,
-	],
+    ],
 	[
 		'attribute' => 'creation_date',
 		'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),

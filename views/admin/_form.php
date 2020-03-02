@@ -40,7 +40,39 @@ if(!$isFond)
 <div class="archives-form">
 
 <?php if($isFond || !empty($level)) {
-	$creatorField = (!$isFond && (!isset($model->level) || !empty($model->level->child))) ? "creator.disable();\nmedia.disable();\n$('textarea#medium').attr('disabled', true);\n$('#archive_type input[name=archive_type]').attr('disabled', true);\n$('input#archive_date').attr('disabled', true);\n$('input#archive_file').attr('disabled', true);" : '';
+    $creatorField = (!$isFond && (!isset($model->level) || !empty($model->level->child))) ? "
+    creator.disable();
+    $('input#archive_date').attr('disabled', true);
+    $('#archive_type input[name=archive_type]').attr('disabled', true);
+    $('input#archive_file').attr('disabled', true);
+    media.disable();
+    subject.disable();
+    $('textarea#medium').attr('disabled', true);
+    " : '';
+    $levelChangeField = (!$isFond && (!isset($model->level) || !empty($model->level->child))) ? "
+	$('#level_id').on('change', function (e) {
+		var levelId = $(this).val();
+		if(levelId == 8) {
+			creator.enable();
+			$('.field-item').removeClass('hide');
+			$('input#archive_date').attr('disabled', false);
+			$('#archive_type input[name=archive_type]').attr('disabled', false);
+			$('input#archive_file').attr('disabled', false);
+			media.enable();
+            subject.enable();
+			$('textarea#medium').attr('disabled', false);
+		} else {
+			creator.disable();
+			$('.field-item').addClass('hide');
+			$('input#archive_date').attr('disabled', true);
+			$('#archive_type input[name=archive_type]').attr('disabled', true);
+			$('input#archive_file').attr('disabled', true);
+			media.disable();
+            subject.disable();
+			$('textarea#medium').attr('disabled', true);
+		}
+	});
+    " : '';
 $js = <<<JS
 	$creatorField
 	$('#shortcode').on('keyup', function (e) {
@@ -53,26 +85,7 @@ $js = <<<JS
 	$('#reference-code').on('click', function (e) {
 		$('#tree').toggleClass('show hide');
 	});
-	$('#level_id').on('change', function (e) {
-		var levelId = $(this).val();
-		if(levelId == 8) {
-			creator.enable();
-			media.enable();
-			$('.field-item').removeClass('hide');
-			$("textarea#medium").attr('disabled', false);
-			$("#archive_type input[name=archive_type]").attr('disabled', false);
-			$("input#archive_date").attr('disabled', false);
-			$("input#archive_file").attr('disabled', false);
-		} else {
-			creator.disable();
-			media.disable();
-			$('.field-item').addClass('hide');
-			$("textarea#medium").attr('disabled', true);
-			$("#archive_type input[name=archive_type]").attr('disabled', true);
-			$("input#archive_date").attr('disabled', true);
-			$("input#archive_file").attr('disabled', true);
-		}
-	});
+	$levelChangeField
 JS;
 $this->registerJs($js, \app\components\View::POS_READY);
 
@@ -151,67 +164,89 @@ if($isFond) {
 	->label($model->getAttributeLabel('title'))
 	->hint(Yii::t('app', 'Provide either a formal title or a concise supplied title in accordance with the rules of multilevel description and national conventions.')); ?>
 
-<?php if(!$isFond) {
-	echo $form->field($model, 'medium', ['options' => ['class'=>(!isset($model->level) || !empty($model->level->child)) ? 'form-group row field-item hide' : 'form-group row field-item']])
-		->textarea(['rows'=>2, 'cols'=>50])
-		->label($model->getAttributeLabel('medium'))
-		->hint(Yii::t('app', 'Record the extent of the unit of description by giving the number of physical or logical units in arabic numerals and the unit of measurement. Give the specific medium (media) of the unit of description. Separate multiple extents with a linebreak.')); ?>
-<?php }?>
+<?php
+$fondMedium = $isFond && in_array('medium', $model->level->field) ? true : false;
+echo ($fondMedium || !$isFond) ? $form->field($model, 'medium', ['options' => ['class'=>'form-group row field-item'.(!$isFond && (!isset($model->level) || !empty($model->level->child)) ? ' hide' : '').'']])
+    ->textarea(['rows'=>2, 'cols'=>50])
+    ->label($model->getAttributeLabel('medium'))
+    ->hint(Yii::t('app', 'Record the extent of the unit of description by giving the number of physical or logical units in arabic numerals and the unit of measurement. Give the specific medium (media) of the unit of description. Separate multiple extents with a linebreak.')) : ''; ?>
 
-<?php echo $form->field($model, 'archive_date', ['options' => ['class'=>(!$isFond && (!isset($model->level) || !empty($model->level->child))) ? 'form-group row field-item hide' : 'form-group row field-item']])
+<?php
+$fondArchiveDate = $isFond && in_array('archive_date', $model->level->field) ? true : false;
+echo ($fondArchiveDate || !$isFond) ? $form->field($model, 'archive_date', ['options' => ['class'=>'form-group row field-item'.(!$isFond && (!isset($model->level) || !empty($model->level->child)) ? ' hide' : '').'']])
 	->textInput(!$isFond ? ['type'=>'date'] : ['type'=>'number', 'min'=>0, 'maxlength'=>4])
-	->label($model->getAttributeLabel('archive_date')); ?>
+	->label($model->getAttributeLabel('archive_date')) : ''; ?>
 
 <hr/>
 
-<?php if($isFond) {
-	$repositorySuggestUrl = Url::to(['setting/repository/suggest']);
-	echo $form->field($model, 'repository')
-		->widget(Selectize::className(), [
-			'options' => [
-				'placeholder' => Yii::t('app', 'Select a repository..'),
-			],
-			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a repository..')], ArchiveRepository::getRepository(1)),
-			'url' => $repositorySuggestUrl,
-			'queryParam' => 'term',
-			'pluginOptions' => [
-				'valueField' => 'id',
-				'labelField' => 'label',
-				'searchField' => ['label'],
-				'persist' => false,
-				'createOnBlur' => false,
-				'create' => true,
-			],
-		])
-		->label($model->getAttributeLabel('repository'))
-		->hint(Yii::t('app', 'Record the name of the organization which has custody of the archival material. Search for an existing name in the archival institution records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new archival institution record.'));
-} ?>
+<?php
+$fondRepository = $isFond && in_array('repository', $model->level->field) ? true : false;
+$repositorySuggestUrl = Url::to(['setting/repository/suggest']);
+echo ($fondRepository || !$isFond) ? $form->field($model, 'repository', ['options' => ['class'=>'form-group row field-item'.(!$isFond && (!isset($model->level) || !empty($model->level->child) || !in_array('repository', $model->level->field)) ? ' hide' : '')]])
+    ->widget(Selectize::className(), [
+        'options' => [
+            'placeholder' => Yii::t('app', 'Select a repository..'),
+        ],
+        'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a repository..')], ArchiveRepository::getRepository(1)),
+        'url' => $repositorySuggestUrl,
+        'queryParam' => 'term',
+        'pluginOptions' => [
+            'valueField' => 'id',
+            'labelField' => 'label',
+            'searchField' => ['label'],
+            'persist' => false,
+            'createOnBlur' => false,
+            'create' => true,
+        ],
+    ])
+    ->label($model->getAttributeLabel('repository'))
+    ->hint(Yii::t('app', 'Record the name of the organization which has custody of the archival material. Search for an existing name in the archival institution records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new archival institution record.')) : ''; ?>
 
-<?php if(!$isFond) {
-	$creatorSuggestUrl = Url::to(['setting/creator/suggest']);
-	echo $form->field($model, 'creator', ['options' => ['class'=>(!isset($model->level) || !empty($model->level->child)) ? 'form-group row field-item hide' : 'form-group row field-item']])
-		->widget(Selectize::className(), [
-			'cascade' => true,
-			'url' => $creatorSuggestUrl,
-			'queryParam' => 'term',
-			'pluginOptions' => [
-				'plugins' => ['remove_button'],
-				'valueField' => 'label',
-				'labelField' => 'label',
-				'searchField' => ['label'],
-				'persist' => false,
-				'createOnBlur' => false,
-				'create' => true,
-			],
-		])
-		->label($model->getAttributeLabel('creator'))
-		->hint(Yii::t('app', 'Record the name of the organization(s) or the individual(s) responsible for the creation, accumulation and maintenance of the records in the unit of description. Search for an existing name in the authority records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new authority record.'));
-} ?>
+<?php
+$fondCreator = $isFond && in_array('creator', $model->level->field) ? true : false;
+$creatorSuggestUrl = Url::to(['setting/creator/suggest']);
+echo ($fondCreator || !$isFond) ? $form->field($model, 'creator', ['options' => ['class'=>'form-group row field-item'.(!$isFond && (!isset($model->level) || !empty($model->level->child)) ? ' hide' : '')]])
+    ->widget(Selectize::className(), [
+        'cascade' => true,
+        'url' => $creatorSuggestUrl,
+        'queryParam' => 'term',
+        'pluginOptions' => [
+            'plugins' => ['remove_button'],
+            'valueField' => 'label',
+            'labelField' => 'label',
+            'searchField' => ['label'],
+            'persist' => false,
+            'createOnBlur' => false,
+            'create' => true,
+        ],
+    ])
+    ->label($model->getAttributeLabel('creator'))
+    ->hint(Yii::t('app', 'Record the name of the organization(s) or the individual(s) responsible for the creation, accumulation and maintenance of the records in the unit of description. Search for an existing name in the authority records by typing the first few characters of the name. Alternatively, type a new name to create and link to a new authority record.')) : ''; ?>
 
-<div class="ln_solid <?php echo (!$isFond && (!isset($model->level) || !empty($model->level->child))) ? 'field-item hide' : 'field-item';?>"></div>
+<div class="ln_solid field-item <?php echo (!$fondRepository && !$fondCreator && (!$isFond && (!isset($model->level) || !empty($model->level->child)))) ? 'hide' : '';?>"></div>
 
-<?php $subjectSuggestUrl = Url::to(['/admin/tag/suggest']);
-echo $form->field($model, 'subject')
+<?php
+$fondSubject = $isFond && in_array('subject', $model->level->field) ? true : false;
+$subjectSuggestUrl = Url::to(['/admin/tag/suggest']);
+echo ($fondSubject || !$isFond) ? $form->field($model, 'subject', ['options' => ['class'=>'form-group row field-item'.(!$isFond && (!isset($model->level) || !empty($model->level->child)) ? ' hide' : '')]])
+	->widget(Selectize::className(), [
+        'cascade' => true,
+		'url' => $subjectSuggestUrl,
+		'queryParam' => 'term',
+		'pluginOptions' => [
+			'valueField' => 'label',
+			'labelField' => 'label',
+			'searchField' => ['label'],
+			'persist' => false,
+			'createOnBlur' => false,
+			'create' => true,
+		],
+	])
+	->label($model->getAttributeLabel('subject')) : '';?>
+
+<?php
+$fondFunction = $isFond && in_array('function', $model->level->field) ? true : false;
+echo ($fondFunction || !$isFond) ? $form->field($model, 'function', ['options' => ['class'=>'form-group row field-item'.(!$isFond && (!isset($model->level) || !empty($model->level->child)) ? ' hide' : '')]])
 	->widget(Selectize::className(), [
 		'url' => $subjectSuggestUrl,
 		'queryParam' => 'term',
@@ -224,27 +259,13 @@ echo $form->field($model, 'subject')
 			'create' => true,
 		],
 	])
-	->label($model->getAttributeLabel('subject'));?>
+	->label($model->getAttributeLabel('function')) : '';?>
 
-<?php echo $form->field($model, 'function')
-	->widget(Selectize::className(), [
-		'url' => $subjectSuggestUrl,
-		'queryParam' => 'term',
-		'pluginOptions' => [
-			'valueField' => 'label',
-			'labelField' => 'label',
-			'searchField' => ['label'],
-			'persist' => false,
-			'createOnBlur' => false,
-			'create' => true,
-		],
-	])
-	->label($model->getAttributeLabel('function'));?>
+<div class="ln_solid field-item <?php echo (!$fondSubject && !$fondFunction && (!$isFond && (!isset($model->level) || !empty($model->level->child)))) ? 'hide' : '';?>"></div>
 
-<hr/>
-
-<?php if(!$isFond) {?>
-<?php echo $form->field($model, 'media', ['options' => ['class'=>(!isset($model->level) || !empty($model->level->child)) ? 'form-group row field-item hide' : 'form-group row field-item']])
+<?php
+$fondMedia = $isFond && in_array('media', $model->level->field) ? true : false;
+echo ($fondMedia || !$isFond) ? $form->field($model, 'media', ['options' => ['class'=>'form-group row field-item'.(!$isFond && (!isset($model->level) || !empty($model->level->child)) ? ' hide' : '')]])
 	->widget(Selectize::className(), [
 		'cascade' => true,
 		'items' => ArchiveMedia::getMedia(1),
@@ -255,13 +276,14 @@ echo $form->field($model, 'subject')
 			'plugins' => ['remove_button'],
 		],
 	])
-	->label($model->getAttributeLabel('media')); ?>
+	->label($model->getAttributeLabel('media')) : '';?>
 
-<?php $imageType = $model::getArchiveType();
-	echo $form->field($model, 'archive_type', ['options' => ['class'=>(!isset($model->level) || !empty($model->level->child)) ? 'form-group row field-item hide' : 'form-group row field-item']])
-		->radioList($imageType, ['prompt'=>''])
-		->label($model->getAttributeLabel('archive_type'));
-} ?>
+<?php
+$fondArchiveType = $isFond && in_array('archive_type', $model->level->field) ? true : false;
+$imageType = $model::getArchiveType();
+echo ($fondArchiveType || !$isFond) ? $form->field($model, 'archive_type', ['options' => ['class'=>'form-group row field-item'.(!$isFond && (!isset($model->level) || !empty($model->level->child)) ? ' hide' : '')]])
+    ->radioList($imageType, ['prompt'=>''])
+    ->label($model->getAttributeLabel('archive_type')) : '';?>
 
 <?php
 $extension = pathinfo($model->old_archive_file, PATHINFO_EXTENSION);
@@ -285,22 +307,24 @@ if(!$model->isNewRecord && $model->old_archive_file != '') {
 	if(in_array($extension, $documentFileType))
 		$archiveFile = Html::a($model->old_archive_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->old_archive_file])), ['title'=>$model->old_archive_file, 'class'=>'d-block mb-3', 'target'=>'_blank']);
 }
-echo $form->field($model, 'archive_file', ['template'=> '{label}{beginWrapper}<div>'.$archiveFile.'</div>{input}{error}{hint}{endWrapper}', 'options' => ['class'=>($isFond || !(!$isFond && !isset($model->level) || !empty($model->level->child))) ? 'form-group row field-item' : 'form-group row field-item hide']])
-	->fileInput()
-	->label($model->getAttributeLabel('archive_file')); ?>
 
-<div class="ln_solid <?php echo ($isFond || !(!$isFond && !isset($model->level) || !empty($model->level->child))) ? 'field-item' : 'field-item hide';?>"></div>
+$fondArchiveFile = $isFond && in_array('archive_file', $model->level->field) ? true : false;
+echo ($fondArchiveFile || !$isFond) ? $form->field($model, 'archive_file', ['template'=> '{label}{beginWrapper}<div>'.$archiveFile.'</div>{input}{error}{hint}{endWrapper}', 'options' => ['class'=>'form-group row field-item'.(!$isFond && (!isset($model->level) || !empty($model->level->child)) ? ' hide' : '')]])
+	->fileInput()
+	->label($model->getAttributeLabel('archive_file')) : ''; ?>
+
+<div class="ln_solid field-item <?php echo ($isFond || !(!$isFond && !isset($model->level) || !empty($model->level->child))) ? '' : 'hide';?>"></div>
 
 <?php $publish = $model::getPublish();
 echo $form->field($model, 'publish')
 	->dropDownList($publish, ['prompt'=>''])
 	->label($model->getAttributeLabel('publish')); ?>
 
-<?php if($setting->fond_sidkkas && ($isFond || (!$model->isNewRecord && in_array('sidkkas', $model->level->field)))) {
-	echo $form->field($model, 'sidkkas')
-		->checkbox()
-		->label($model->getAttributeLabel('sidkkas'));
-} ?>
+<?php
+$fondSidkkas = $isFond && in_array('sidkkas', $model->level->field) ? true : false;
+echo ($setting->fond_sidkkas && ($fondSidkkas || !$isFond)) ? $form->field($model, 'sidkkas')
+    ->checkbox()
+    ->label($model->getAttributeLabel('sidkkas')) : '';?>
 
 <hr/>
 

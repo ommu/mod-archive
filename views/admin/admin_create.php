@@ -23,10 +23,14 @@ $context = $this->context;
 if($context->breadcrumbApp) {
 	$this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
-$this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => !$parent || $parent->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => !$parent || $parent->isFond ? ['fond/index']: ['admin/index']];
 if($parent) {
-	$this->params['breadcrumbs'][] = ['label' => Yii::t('app', '{level-name} {code}', ['level-name'=>$parent->level->level_name_i, 'code'=>$parent->code]), 'url' => ['view', 'id'=>$parent->id]];
-	$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Childs'), 'url' => ['manage', 'parent'=>$parent->id]];
+    $parentTitle = Yii::t('app', '{level-name} {code}', ['level-name'=>$parent->level->level_name_i, 'code'=>$parent->code]);
+    if($parent->isFond == true) {
+        $parentTitle = $parent->code;
+    }
+	$this->params['breadcrumbs'][] = ['label' => $parentTitle, 'url' => [($parent->isFond ? 'fond' : 'admin').'/view', 'id'=>$parent->id]];
+	$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Childs'), 'url' => [($parent->isFond ? 'fond' : 'admin').'/manage', 'parent'=>$parent->id]];
 }
 $this->params['breadcrumbs'][] = Yii::t('app', 'Create');
 

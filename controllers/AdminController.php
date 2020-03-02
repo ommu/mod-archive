@@ -131,9 +131,18 @@ class AdminController extends Controller
 				unset($this->subMenu['childs']);
 			if(!in_array('location', $parent->level->field))
 				unset($this->subMenu['location']);
-		}
+        }
 
-		$this->view->title = $parent ?  Yii::t('app', 'Inventory Childs: {level-name} {code}', ['level-name'=>$parent->level->level_name_i, 'code'=>$parent->code]) : ($this->isFond() ? Yii::t('app', 'Fonds') : Yii::t('app', 'Inventories'));
+        $title = $this->isFond() ? Yii::t('app', 'Fonds') : Yii::t('app', 'Inventories');
+        if($parent) {
+            if($parent->isFond == true) {
+                $title = Yii::t('app', 'Fond Childs: {code}', ['code'=>$parent->code]);
+            } else {
+                $title = Yii::t('app', 'Inventory Childs: {level-name} {code}', ['level-name'=>$parent->level->level_name_i, 'code'=>$parent->code]);
+            }
+        }
+
+		$this->view->title = $title;
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
@@ -195,7 +204,11 @@ class AdminController extends Controller
 		}
 
 		if($id != null) {
-			$parent = Archives::findOne($id);
+            $parent = Archives::findOne($id);
+            $parent->isFond = $parent->level_id == 1 ? true : false;
+            if($parent->isFond == true) {
+                $this->subMenu = $this->module->params['fond_submenu'];
+            }
 			if(!in_array('location', $parent->level->field))
 				unset($this->subMenu['location']);
 		}
