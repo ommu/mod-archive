@@ -261,7 +261,7 @@ echo ($fondFunction || !$isFond) ? $form->field($model, 'function', ['options' =
 	])
 	->label($model->getAttributeLabel('function')) : '';?>
 
-<div class="ln_solid field-item <?php echo (!$fondSubject && !$fondFunction && (!$isFond && (!isset($model->level) || !empty($model->level->child)))) ? 'hide' : '';?>"></div>
+<div class="ln_solid field-item <?php echo (!$fondSubject && !$fondFunction && ($isFond || !$isFond && (!isset($model->level) || !empty($model->level->child)))) ? 'hide' : '';?>"></div>
 
 <?php
 $fondMedia = $isFond && in_array('media', $model->level->field) ? true : false;
