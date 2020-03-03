@@ -66,11 +66,6 @@ class Archives extends \app\components\ActiveRecord
 	public $old_archive_file;
 	public $isFond = true;
 
-	public $parentTitle;
-	public $levelName;
-	public $creationDisplayname;
-	public $modifiedDisplayname;
-
 	public $confirmCode;
 	public $shortCode;
 	public $oldCode;
@@ -86,6 +81,11 @@ class Archives extends \app\components\ActiveRecord
 	public $preview;
 	public $location;
 	public $group_childs;
+
+	public $parentTitle;
+	public $levelName;
+	public $creationDisplayname;
+	public $modifiedDisplayname;
 
 	public $backToManage;
 
@@ -110,6 +110,7 @@ class Archives extends \app\components\ActiveRecord
 			[['title', 'archive_type', 'archive_date'], 'string'],
 			[['code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
 			[['code'], 'string', 'max' => 255],
+			[['archive_date'], 'string', 'max' => 64],
 			[['shortCode'], 'string', 'max' => 32],
 			[['level_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLevel::className(), 'targetAttribute' => ['level_id' => 'id']],
 		];
@@ -418,13 +419,8 @@ class Archives extends \app\components\ActiveRecord
 		$this->templateColumns['archive_date'] = [
 			'attribute' => 'archive_date',
 			'value' => function($model, $key, $index, $column) {
-				if(empty($model->level->child))
-					return Yii::$app->formatter->asDate($model->archive_date, 'long');
-				if(strtolower($model->level->level_name_i) == 'fond')
-					return Yii::$app->formatter->asDate($model->archive_date, 'php:Y');
-				return Yii::$app->formatter->asDate($model->archive_date, 'long');
+				return $model->archive_date;
 			},
-			'filter' => $this->filterDatepicker($this, 'archive_date'),
 		];
 		$this->templateColumns['medium'] = [
 			'attribute' => 'medium',
@@ -944,14 +940,6 @@ class Archives extends \app\components\ActiveRecord
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
 
-		if(($archive_date = Yii::$app->formatter->asDate($this->archive_date, 'php:Y-m-d')) == '-')
-			$this->archive_date = '';
-		if($this->archive_date != '') {
-			$this->archive_date = $archive_date;
-			if(strtolower($this->level->level_name_i) == 'fond')
-				$this->archive_date = Yii::$app->formatter->asDate($this->archive_date, 'php:Y');
-		}
-
 		$this->code = preg_replace("/^[.-]/", '', preg_replace("/^(3400|23400-24)/", '', $this->code));
 		$this->oldCode = $this->code;
 		$parentCode = $this->parent->code;
@@ -1065,13 +1053,6 @@ class Archives extends \app\components\ActiveRecord
 					$model->update(false);
 				}
 			}
-		}
-
-		if($this->archive_date != '') {
-			if(strtolower($this->level->level_name_i) == 'fond')
-				$this->archive_date = join('-', [$this->archive_date, '01', '01']);
-
-			$this->archive_date = Yii::$app->formatter->asDate($this->archive_date, 'php:Y-m-d');
 		}
 		
 		if(!$insert) {

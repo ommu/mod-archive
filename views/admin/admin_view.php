@@ -116,6 +116,11 @@ $attributes = [
 		'visible' => !$small && in_array('repository', $model->level->field) ? true : false,
 	],
 	[
+		'attribute' => 'archive_date',
+		'value' => $model->archive_date ? $model->archive_date : '-',
+		'visible' => !$small,
+	],
+	[
 		'attribute' => 'media',
 		'value' => $model::parseRelated($model->getRelatedMedia(true, 'title')),
 		'format' => 'html',
@@ -160,17 +165,6 @@ $attributes = [
 		},
 		'format' => 'raw',
 		'visible' => !$small && in_array('archive_file', $model->level->field) ? true : false,
-	],
-	[
-		'attribute' => 'archive_date',
-		'value' => function ($model) {
-			if(empty($model->level->child))
-				return Yii::$app->formatter->asDate($model->archive_date, 'long');
-			if(strtolower($model->level->level_name_i) == 'fond')
-				return Yii::$app->formatter->asDate($model->archive_date, 'php:Y');
-			return Yii::$app->formatter->asDate($model->archive_date, 'long');
-		},
-		'visible' => !$small,
 	],
 	[
 		'attribute' => 'subject',

@@ -144,7 +144,6 @@ class Archives extends ArchivesModel
 			't.parent_id' => isset($params['parent']) ? $params['parent'] : $this->parent_id,
 			't.level_id' => isset($params['level']) ? $params['level'] : $this->level_id,
 			't.archive_type' => $this->archive_type,
-			'cast(t.archive_date as date)' => $this->archive_date,
 			'cast(t.creation_date as date)' => $this->creation_date,
 			't.creation_id' => isset($params['creation']) ? $params['creation'] : $this->creation_id,
 			'cast(t.modified_date as date)' => $this->modified_date,
@@ -190,6 +189,7 @@ class Archives extends ArchivesModel
 
 		$query->andFilterWhere(['like', 't.title', $this->title])
 			->andFilterWhere(['like', 't.code', $this->code])
+			->andFilterWhere(['like', 't.archive_date', $this->archive_date])
 			->andFilterWhere(['like', 't.archive_file', $this->archive_file])
 			->andFilterWhere(['like', 'parent.title', $this->parentTitle])
 			->andFilterWhere(['like', 'level.message', $this->levelName])
