@@ -40,7 +40,7 @@ if(!$isFond)
 <div class="archives-form">
 
 <?php if($isFond || !empty($level)) {
-    $creatorField = (!$isFond) ? "
+    $creatorField = (!$isFond && (!isset($model->level) || !empty($model->level->child))) ? "
     creator.disable();
     $('input#archive_date').attr('disabled', true);
     $('#archive_type input[name=archive_type]').attr('disabled', true);
@@ -50,56 +50,57 @@ if(!$isFond)
     $('textarea#medium').attr('disabled', true);
     " : '';
     $levelChangeField = (!$isFond) ? "
-	$('#level_id').on('change', function (e) {
-		var levelId = $(this).val();
-		if(levelId == 8) {
-			creator.enable();
-			$('.field-item').removeClass('hide');
-			$('input#archive_date').attr('disabled', false);
-			$('#archive_type input[name=archive_type]').attr('disabled', false);
-			$('input#archive_file').attr('disabled', false);
-			media.enable();
+    $('#level_id').on('change', function (e) {
+        var levelId = $(this).val();
+        if(levelId == 8) {
+            creator.enable();
+            $('.field-item').removeClass('hide');
+            $('input#archive_date').attr('disabled', false);
+            $('#archive_type input[name=archive_type]').attr('disabled', false);
+            $('input#archive_file').attr('disabled', false);
+            media.enable();
             subject.enable();
-			$('textarea#medium').attr('disabled', false);
-		} else {
-			creator.disable();
-			$('.field-item').addClass('hide');
-			$('input#archive_date').attr('disabled', true);
-			$('#archive_type input[name=archive_type]').attr('disabled', true);
-			$('input#archive_file').attr('disabled', true);
-			media.disable();
+            $('textarea#medium').attr('disabled', false);
+        } else {
+            creator.disable();
+            $('.field-item').addClass('hide');
+            $('input#archive_date').attr('disabled', true);
+            $('#archive_type input[name=archive_type]').attr('disabled', true);
+            $('input#archive_file').attr('disabled', true);
+            media.disable();
             subject.disable();
-			$('textarea#medium').attr('disabled', true);
-		}
-	});
+            $('textarea#medium').attr('disabled', true);
+        }
+        $('.field-item.field-repository').addClass('hide');
+    });
     " : '';
 $js = <<<JS
-	$creatorField
-	$('#shortcode').on('keyup', function (e) {
-		var shortCode = $(this).val();
-		var parentCode = $(this).parent().find('.item').text();
-		if(shortCode == '')
-			var shortCode = 'XXX';
-		$('.reference-code').html(parentCode+shortCode);
-	});
-	$('#reference-code').on('click', function (e) {
-		$('#tree').toggleClass('show hide');
-	});
-	$levelChangeField
+    $creatorField
+    $('#shortcode').on('keyup', function (e) {
+        var shortCode = $(this).val();
+        var parentCode = $(this).parent().find('.item').text();
+        if(shortCode == '')
+            var shortCode = 'XXX';
+        $('.reference-code').html(parentCode+shortCode);
+    });
+    $('#reference-code').on('click', function (e) {
+        $('#tree').toggleClass('show hide');
+    });
+    $levelChangeField
 JS;
 $this->registerJs($js, \app\components\View::POS_READY);
 
 $hintCondition = $model->isNewRecord && !$isFond ? 'hint-tooltip' : '';
 $form = ActiveForm::begin([
-	'options' => ['class'=>'form-horizontal form-label-left '.$hintCondition],
-	'enableClientValidation' => false,
-	'enableAjaxValidation' => false,
-	//'enableClientScript' => true,
-	'fieldConfig' => [
-		'errorOptions' => [
-			'encode' => false,
-		],
-	],
+    'options' => ['class'=>'form-horizontal form-label-left '.$hintCondition],
+    'enableClientValidation' => false,
+    'enableAjaxValidation' => false,
+    //'enableClientScript' => true,
+    'fieldConfig' => [
+        'errorOptions' => [
+            'encode' => false,
+        ],
+    ],
 ]);
 ?>
 
@@ -286,26 +287,25 @@ echo ($fondArchiveType || !$isFond) ? $form->field($model, 'archive_type', ['opt
     ->label($model->getAttributeLabel('archive_type')) : '';?>
 
 <?php
-$extension = pathinfo($model->old_archive_file, PATHINFO_EXTENSION);
 $setting = $model->getSetting(['image_type', 'document_type', 'maintenance_mode', 'maintenance_document_path', 'maintenance_image_path']);
+$extension = pathinfo($model->old_archive_file, PATHINFO_EXTENSION);
 $imageFileType = $model->formatFileType($setting->image_type);
 $documentFileType = $model->formatFileType($setting->document_type);
+$isDocument = in_array($extension, $documentFileType) ? true : false;
 
 if($model->isNewFile)
 	$uploadPath = join('/', [$model::getUploadPath(false), $model->id]);
 else {
-	if(in_array($extension, $imageFileType))
-		$uploadPath = join('/', [$model::getUploadPath(false), $setting->maintenance_image_path]);
-	if(in_array($extension, $documentFileType))
-		$uploadPath = join('/', [$model::getUploadPath(false), $setting->maintenance_document_path]);
+    $uploadPath = join('/', [$model::getUploadPath(false), ($isDocument == true ? $setting->maintenance_document_path : $setting->maintenance_image_path)]);
 }
 
 $archiveFile = '';
 if(!$model->isNewRecord && $model->old_archive_file != '') {
-	if(in_array($extension, $imageFileType))
+	if($isDocument == true) {
+        $archiveFile = Html::a($model->old_archive_file, Url::to(['preview', 'id'=>$model->id]), ['title'=>$model->old_archive_file, 'class'=>'d-block mb-3 modal-btn']);
+    } else {
 		$archiveFile = Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->old_archive_file])), ['alt'=>$model->old_archive_file, 'class'=>'d-block border border-width-3 mb-3']).$model->old_archive_file.'<hr/>';
-	if(in_array($extension, $documentFileType))
-		$archiveFile = Html::a($model->old_archive_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->old_archive_file])), ['title'=>$model->old_archive_file, 'class'=>'d-block mb-3', 'target'=>'_blank']);
+    }
 }
 
 $fondArchiveFile = $isFond && in_array('archive_file', $model->level->field) ? true : false;

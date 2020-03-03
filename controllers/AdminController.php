@@ -15,6 +15,9 @@
  *	Delete
  *	RunAction
  *	Publish
+ *	Location
+ *	ResetLocation
+ *	Preview
  *
  *	findModel
  *
@@ -292,6 +295,7 @@ class AdminController extends Controller
 			unset($this->subMenu['location']);
 
         $this->subMenuParam = $model->id;
+		$this->view->cards = false;
 		$this->view->title = Yii::t('app', 'Detail {level-name}: {code}', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]);
 		$this->view->description = '';
 		$this->view->keywords = '';
@@ -453,5 +457,22 @@ class AdminController extends Controller
 
 		Yii::$app->session->setFlash('success', Yii::t('app', '{label} success reset location.', ['label'=>!$model->archive->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory')]));
 		return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
+	}
+
+	/**
+	 * Displays a single Archives model.
+	 * @param integer $id
+	 * @return mixed
+	 */
+	public function actionPreview($id)
+	{
+		$model = $this->findModel($id);
+
+		$this->view->title = Yii::t('app', 'Preview {level-name}: {code}', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]);
+		$this->view->description = '';
+		$this->view->keywords = '';
+		return $this->oRender('admin_preview_document', [
+			'model' => $model,
+		]);
 	}
 }
