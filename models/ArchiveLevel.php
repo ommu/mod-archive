@@ -48,7 +48,8 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	public $gridForbiddenColumn = ['level_desc_i', 'child', 'field', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
 	public $level_name_i;
-	public $level_desc_i;
+    public $level_desc_i;
+
 	public $creationDisplayname;
 	public $modifiedDisplayname;
 

@@ -81,13 +81,12 @@ class Archives extends \app\components\ActiveRecord
 	public $preview;
 	public $location;
 	public $group_childs;
+	public $backToManage;
 
 	public $parentTitle;
 	public $levelName;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
-
-	public $backToManage;
 
 	const EVENT_BEFORE_SAVE_ARCHIVES = 'BeforeSaveArchives';
 

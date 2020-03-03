@@ -27,10 +27,11 @@ use Yii;
 
 class ArchiveViewHistory extends \app\components\ActiveRecord
 {
-	public $gridForbiddenColumn = [];
+    public $gridForbiddenColumn = [];
+
+	public $counts;
 
 	public $archiveTitle;
-	public $counts;
 
 	/**
 	 * @return string the associated database table name
