@@ -20,7 +20,7 @@ fond_submenu:
   childs:
     label: Childs
     url:
-      0: 'fond/manage'
+      0: 'admin/manage'
       parent: $_GET*id
     select: action
   views:
