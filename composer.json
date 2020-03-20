@@ -1,6 +1,6 @@
 {
 	"name": "ommu/archive",
-	"description": "Archive Module from Ommu Platform",
+	"description": "Archive Module from OMMU",
 	"type": "ommu-module",
 	"keywords": [
 		"module",
@@ -27,8 +27,8 @@
 	"authors": [
 		{
 			"name": "Putra Sudaryanto",
-			"email": "putra@ommu.co",
-			"homepage": "https://ommu.co",
+			"email": "putra@ommu.id",
+			"homepage": "https://ommu.id",
 			"role": "Creator"
 		}
 	],

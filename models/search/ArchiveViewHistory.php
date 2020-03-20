@@ -4,9 +4,9 @@
  *
  * ArchiveViewHistory represents the model behind the search form about `ommu\archive\models\ArchiveViewHistory`.
  *
- * @author Putra Sudaryanto <putra@ommu.co>
+ * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2020 OMMU (www.ommu.co)
+ * @copyright Copyright (c) 2020 OMMU (www.ommu.id)
  * @created date 12 Fabruary 2020, 08:42 WIB
  * @link https://bitbucket.org/ommu/archive
  *

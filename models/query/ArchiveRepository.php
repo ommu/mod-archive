@@ -5,9 +5,9 @@
  * This is the ActiveQuery class for [[\ommu\archive\models\ArchiveRepository]].
  * @see \ommu\archive\models\ArchiveRepository
  * 
- * @author Putra Sudaryanto <putra@ommu.co>
+ * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2019 OMMU (www.ommu.co)
+ * @copyright Copyright (c) 2019 OMMU (www.ommu.id)
  * @created date 3 April 2019, 16:19 WIB
  * @link https://bitbucket.org/ommu/archive
  *
