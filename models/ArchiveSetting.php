@@ -40,7 +40,7 @@ namespace ommu\archive\models;
 
 use Yii;
 use yii\helpers\Html;
-use ommu\users\models\Users;
+use app\models\Users;
 use yii\helpers\Json;
 
 class ArchiveSetting extends \app\components\ActiveRecord

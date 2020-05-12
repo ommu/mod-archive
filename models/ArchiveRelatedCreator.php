@@ -27,7 +27,7 @@
 namespace ommu\archive\models;
 
 use Yii;
-use ommu\users\models\Users;
+use app\models\Users;
 
 class ArchiveRelatedCreator extends \app\components\ActiveRecord
 {

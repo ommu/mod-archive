@@ -33,7 +33,7 @@ namespace ommu\archive\models;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use ommu\users\models\Users;
+use app\models\Users;
 
 class ArchiveRepository extends \app\components\ActiveRecord
 {

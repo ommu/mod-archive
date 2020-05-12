@@ -48,7 +48,7 @@ namespace ommu\archive\models;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use ommu\users\models\Users;
+use app\models\Users;
 use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
 use thamtech\uuid\helpers\UuidHelper;
