@@ -43,8 +43,9 @@ class LevelController extends Controller
 	 */
 	public function init()
 	{
-		parent::init();
-		$this->subMenu = $this->module->params['setting_submenu'];
+        parent::init();
+
+        $this->subMenu = $this->module->params['setting_submenu'];
 
 		$setting = ArchiveSetting::find()
 			->select(['breadcrumb_param'])
@@ -59,18 +60,18 @@ class LevelController extends Controller
 	 */
 	public function behaviors()
 	{
-		return [
-			'access' => [
-				'class' => AccessControl::className(),
-			],
-			'verbs' => [
-				'class' => VerbFilter::className(),
-				'actions' => [
-					'delete' => ['POST'],
-					'publish' => ['POST'],
-				],
-			],
-		];
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['POST'],
+                    'publish' => ['POST'],
+                ],
+            ],
+        ];
 	}
 
 	/**
@@ -78,7 +79,7 @@ class LevelController extends Controller
 	 */
 	public function actionIndex()
 	{
-		return $this->redirect(['manage']);
+        return $this->redirect(['manage']);
 	}
 
 	/**
@@ -118,25 +119,25 @@ class LevelController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model = new ArchiveLevel();
+        $model = new ArchiveLevel();
 
         if (Yii::$app->request->isPost) {
-			$model->load(Yii::$app->request->post());
-			// $postData = Yii::$app->request->post();
-			// $model->load($postData);
-			// $model->order = $postData['order'] ? $postData['order'] : 0;
+            $model->load(Yii::$app->request->post());
+            // $postData = Yii::$app->request->post();
+            // $model->load($postData);
+            // $model->order = $postData['order'] ? $postData['order'] : 0;
 
             if ($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Level of description success created.'));
-				return $this->redirect(['manage']);
-				//return $this->redirect(['view', 'id'=>$model->id]);
+                Yii::$app->session->setFlash('success', Yii::t('app', 'Level of description success created.'));
+                return $this->redirect(['manage']);
+                //return $this->redirect(['view', 'id'=>$model->id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {
                     return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
                 }
-			}
-		}
+            }
+        }
 
 		$this->view->title = Yii::t('app', 'Create Level of Description');
 		$this->view->description = '';
@@ -157,21 +158,21 @@ class LevelController extends Controller
 		$model = $this->findModel($id);
 
         if (Yii::$app->request->isPost) {
-			$model->load(Yii::$app->request->post());
-			// $postData = Yii::$app->request->post();
-			// $model->load($postData);
-			// $model->order = $postData['order'] ? $postData['order'] : 0;
+            $model->load(Yii::$app->request->post());
+            // $postData = Yii::$app->request->post();
+            // $model->load($postData);
+            // $model->order = $postData['order'] ? $postData['order'] : 0;
 
             if ($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Level of description success updated.'));
-				return $this->redirect(['manage']);
+                Yii::$app->session->setFlash('success', Yii::t('app', 'Level of description success updated.'));
+                return $this->redirect(['manage']);
 
             } else {
                 if (Yii::$app->request->isAjax) {
                     return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
                 }
-			}
-		}
+            }
+        }
 
 		$this->view->title = Yii::t('app', 'Update Level of Description: {level-name}', ['level-name' => $model->title->message]);
 		$this->view->description = '';
@@ -188,7 +189,7 @@ class LevelController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$model = $this->findModel($id);
+        $model = $this->findModel($id);
 
 		$this->view->title = Yii::t('app', 'Detail Level of Description: {level-name}', ['level-name' => $model->title->message]);
 		$this->view->description = '';

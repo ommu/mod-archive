@@ -50,7 +50,7 @@ class AdminController extends Controller
 	 */
 	public function init()
 	{
-		parent::init();
+        parent::init();
 
         if (Yii::$app->request->get('parent') || Yii::$app->request->get('id')) {
             if ($this->isFond() == true) {
@@ -73,18 +73,18 @@ class AdminController extends Controller
 	 */
 	public function behaviors()
 	{
-		return [
-			'access' => [
-				'class' => AccessControl::className(),
-			],
-			'verbs' => [
-				'class' => VerbFilter::className(),
-				'actions' => [
-					'delete' => ['POST'],
-					'publish' => ['POST'],
-				],
-			],
-		];
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['POST'],
+                    'publish' => ['POST'],
+                ],
+            ],
+        ];
 	}
 
 	/**
@@ -92,7 +92,7 @@ class AdminController extends Controller
 	 */
 	public function actionIndex()
 	{
-		return $this->redirect(['manage']);
+        return $this->redirect(['manage']);
 	}
 
 	/**
@@ -132,17 +132,17 @@ class AdminController extends Controller
 			$level = \ommu\archive\models\ArchiveLevel::findOne(Yii::$app->request->get('level'));
         }
         if (($media = Yii::$app->request->get('mediaId')) != null) {
-			$media = \ommu\archive\models\ArchiveMedia::findOne($media);
+            $media = \ommu\archive\models\ArchiveMedia::findOne($media);
         }
         if (($creator = Yii::$app->request->get('creatorId')) != null) {
-			$creator = \ommu\archive\models\ArchiveCreator::findOne($creator);
+            $creator = \ommu\archive\models\ArchiveCreator::findOne($creator);
         }
         if (($repository = Yii::$app->request->get('repositoryId')) != null) {
-			$repository = \ommu\archive\models\ArchiveRepository::findOne($repository);
+            $repository = \ommu\archive\models\ArchiveRepository::findOne($repository);
         }
 
         if ($parent != null) {
-			$this->subMenuParam = $parent;
+            $this->subMenuParam = $parent;
 			$parent = Archives::findOne($parent);
             $parent->isFond = $parent->level_id == 1 ? true : false;
             if ($parent->isFond == true) {
@@ -204,15 +204,15 @@ class AdminController extends Controller
         }
 
         if (Yii::$app->request->isPost) {
-			$postData = Yii::$app->request->post();
-			$model->load($postData);
-			$model->archive_file = UploadedFile::getInstance($model, 'archive_file');
+            $postData = Yii::$app->request->post();
+            $model->load($postData);
+            $model->archive_file = UploadedFile::getInstance($model, 'archive_file');
             if (!($model->archive_file instanceof UploadedFile && !$model->archive_file->getHasError())) {
-				$model->archive_file = $postData['archive_file'] ? $postData['archive_file'] : '';
+                $model->archive_file = $postData['archive_file'] ? $postData['archive_file'] : '';
             }
 
             if ($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success created.', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]));
+                Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success created.', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]));
                 if ($id && empty($model->level->child)) {
                     if ($model->backToManage) {
 						return $this->redirect(['manage', 'parent'=>$model->parent_id]);
@@ -222,14 +222,14 @@ class AdminController extends Controller
                 if ($model->backToManage) {
 					return $this->redirect(['manage', 'parent'=>$model->parent_id]);
                 }
-				return $this->redirect(['view', 'id'=>$model->id]);
+                return $this->redirect(['view', 'id'=>$model->id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {
                     return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
                 }
-			}
-		}
+            }
+        }
 
         if ($id != null) {
             $parent = Archives::findOne($id);
@@ -270,14 +270,14 @@ class AdminController extends Controller
 		$model = $this->findModel($id);
 
         if (Yii::$app->request->isPost) {
-			$model->load(Yii::$app->request->post());
-			$model->archive_file = UploadedFile::getInstance($model, 'archive_file');
-			// $postData = Yii::$app->request->post();
-			// $model->load($postData);
-			// $model->order = $postData['order'] ? $postData['order'] : 0;
+            $model->load(Yii::$app->request->post());
+            $model->archive_file = UploadedFile::getInstance($model, 'archive_file');
+            // $postData = Yii::$app->request->post();
+            // $model->load($postData);
+            // $model->order = $postData['order'] ? $postData['order'] : 0;
 
             if ($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success updated.', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]));
+                Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success updated.', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]));
                 if ($model->backToManage) {
                     if (strtolower($model->level->level_name_i) == 'fond') {
 						return $this->redirect(['manage', 'level'=>$model->level_id]);
@@ -290,8 +290,8 @@ class AdminController extends Controller
                 if (Yii::$app->request->isAjax) {
                     return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
                 }
-			}
-		}
+            }
+        }
 
         if (empty($model->level->child)) {
             unset($this->subMenu['childs']);
@@ -318,7 +318,7 @@ class AdminController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$model = $this->findModel($id);
+        $model = $this->findModel($id);
 
         if (empty($model->level->child)) {
             unset($this->subMenu['childs']);
@@ -444,24 +444,24 @@ class AdminController extends Controller
 		$model->archive->isFond = $this->isFond();
 
         if (Yii::$app->request->isPost) {
-			$model->load(Yii::$app->request->post());
-			// $postData = Yii::$app->request->post();
-			// $model->load($postData);
-			// $model->order = $postData['order'] ? $postData['order'] : 0;
+            $model->load(Yii::$app->request->post());
+            // $postData = Yii::$app->request->post();
+            // $model->load($postData);
+            // $model->order = $postData['order'] ? $postData['order'] : 0;
 
             if ($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success updated location.', ['level-name'=>$model->archive->level->level_name_i, 'code'=>$model->archive->code]));
+                Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success updated location.', ['level-name'=>$model->archive->level->level_name_i, 'code'=>$model->archive->code]));
                 if (!Yii::$app->request->isAjax) {
 					return $this->redirect(['location', 'id'=>$model->archive_id]);
                 }
-				return $this->redirect(Yii::$app->request->referrer ?: ['location', 'id'=>$model->archive_id]);
+                return $this->redirect(Yii::$app->request->referrer ?: ['location', 'id'=>$model->archive_id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {
                     return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
                 }
-			}
-		}
+            }
+        }
 
         if (empty($model->archive->level->child)) {
 			unset($this->subMenu['childs']);

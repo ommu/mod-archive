@@ -352,7 +352,7 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function init()
 	{
-		parent::init();
+        parent::init();
 
         if (!(Yii::$app instanceof \app\components\Application)) {
             return;
@@ -1138,8 +1138,8 @@ class Archives extends \app\components\ActiveRecord
                 if ($this->archive_file == '') {
                     $this->archive_file = $this->old_archive_file;
                 }
-			}
-		}
+            }
+        }
 
 		return true;
 	}

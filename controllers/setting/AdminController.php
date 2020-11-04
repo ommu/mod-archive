@@ -36,8 +36,9 @@ class AdminController extends Controller
 	 */
 	public function init()
 	{
-		parent::init();
-		$this->subMenu = $this->module->params['setting_submenu'];
+        parent::init();
+
+        $this->subMenu = $this->module->params['setting_submenu'];
 
 		$setting = ArchiveSetting::find()
 			->select(['breadcrumb_param'])
@@ -52,17 +53,17 @@ class AdminController extends Controller
 	 */
 	public function behaviors()
 	{
-		return [
-			'access' => [
-				'class' => AccessControl::className(),
-			],
-			'verbs' => [
-				'class' => VerbFilter::className(),
-				'actions' => [
-					'delete' => ['POST'],
-				],
-			],
-		];
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ];
 	}
 
 	/**
@@ -76,20 +77,20 @@ class AdminController extends Controller
         }
 
         if (Yii::$app->request->isPost) {
-			$model->load(Yii::$app->request->post());
-			// $postData = Yii::$app->request->post();
-			// $model->load($postData);
-			// $model->order = $postData['order'] ? $postData['order'] : 0;
+            $model->load(Yii::$app->request->post());
+            // $postData = Yii::$app->request->post();
+            // $model->load($postData);
+            // $model->order = $postData['order'] ? $postData['order'] : 0;
 
             if ($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Archive setting success updated.'));
-				return $this->redirect(['index']);
+                Yii::$app->session->setFlash('success', Yii::t('app', 'Archive setting success updated.'));
+                return $this->redirect(['index']);
             } else {
                 if (Yii::$app->request->isAjax) {
                     return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
                 }
-			}
-		}
+            }
+        }
 
 		$this->view->title = Yii::t('app', 'Inventory Settings');
 		$this->view->description = '';
@@ -113,24 +114,24 @@ class AdminController extends Controller
         }
 
         if (Yii::$app->request->isPost) {
-			$model->load(Yii::$app->request->post());
-			// $postData = Yii::$app->request->post();
-			// $model->load($postData);
-			// $model->order = $postData['order'] ? $postData['order'] : 0;
+            $model->load(Yii::$app->request->post());
+            // $postData = Yii::$app->request->post();
+            // $model->load($postData);
+            // $model->order = $postData['order'] ? $postData['order'] : 0;
 
             if ($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Archive setting success updated.'));
+                Yii::$app->session->setFlash('success', Yii::t('app', 'Archive setting success updated.'));
                 if (!Yii::$app->request->isAjax) {
                     return $this->redirect(['update']);
                 }
-				return $this->redirect(Yii::$app->request->referrer ?: ['index']);
+                return $this->redirect(Yii::$app->request->referrer ?: ['index']);
 
             } else {
                 if (Yii::$app->request->isAjax) {
                     return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
                 }
-			}
-		}
+            }
+        }
 
 		$this->view->title = Yii::t('app', 'Inventory Settings');
 		$this->view->description = '';

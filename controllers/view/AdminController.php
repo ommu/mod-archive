@@ -60,18 +60,18 @@ class AdminController extends Controller
 	 */
 	public function behaviors()
 	{
-		return [
-			'access' => [
-				'class' => AccessControl::className(),
-			],
-			'verbs' => [
-				'class' => VerbFilter::className(),
-				'actions' => [
-					'delete' => ['POST'],
-					'publish' => ['POST'],
-				],
-			],
-		];
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['POST'],
+                    'publish' => ['POST'],
+                ],
+            ],
+        ];
 	}
 
 	/**
@@ -79,7 +79,7 @@ class AdminController extends Controller
 	 */
 	public function actionIndex()
 	{
-		return $this->redirect(['manage']);
+        return $this->redirect(['manage']);
 	}
 
 	/**
@@ -103,7 +103,7 @@ class AdminController extends Controller
         $columns = $searchModel->getGridColumn($cols);
 
         if (($archive = Yii::$app->request->get('archive')) != null) {
-			$this->subMenuParam = $archive;
+            $this->subMenuParam = $archive;
 			$archive = \ommu\archive\models\Archives::findOne($archive);
             $archive->isFond = $archive->level_id == 1 ? true : false;
             if ($archive->isFond == true) {
@@ -111,7 +111,7 @@ class AdminController extends Controller
             }
 		}
         if (($user = Yii::$app->request->get('user')) != null) {
-			$user = \app\models\Users::findOne($user);
+            $user = \app\models\Users::findOne($user);
         }
 
 		$this->view->title = Yii::t('app', 'Views');
@@ -133,7 +133,7 @@ class AdminController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$model = $this->findModel($id);
+        $model = $this->findModel($id);
 
         if (!Yii::$app->request->isAjax) {
 			$this->subMenuParam = $model->archive_id;

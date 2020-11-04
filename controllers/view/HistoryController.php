@@ -59,17 +59,17 @@ class HistoryController extends Controller
 	 */
 	public function behaviors()
 	{
-		return [
-			'access' => [
-				'class' => AccessControl::className(),
-			],
-			'verbs' => [
-				'class' => VerbFilter::className(),
-				'actions' => [
-					'delete' => ['POST'],
-				],
-			],
-		];
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ];
 	}
 
 	/**
@@ -77,7 +77,7 @@ class HistoryController extends Controller
 	 */
 	public function actionIndex()
 	{
-		return $this->redirect(['manage']);
+        return $this->redirect(['manage']);
 	}
 
 	/**
@@ -105,7 +105,7 @@ class HistoryController extends Controller
         $columns = $searchModel->getGridColumn($cols);
 
         if (($view = Yii::$app->request->get('view')) != null) {
-			$view = \ommu\archive\models\ArchiveViews::findOne($view);
+            $view = \ommu\archive\models\ArchiveViews::findOne($view);
 			$this->subMenuParam = $view->archive_id;
             $view->archive->isFond = $view->archive->level_id == 1 ? true : false;
             if ($view->archive->isFond == true) {
@@ -136,7 +136,7 @@ class HistoryController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$model = $this->findModel($id);
+        $model = $this->findModel($id);
 
         if (!Yii::$app->request->isAjax) {
 			$this->subMenuParam = $model->view->archive_id;
