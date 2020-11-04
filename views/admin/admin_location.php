@@ -23,20 +23,20 @@ use ommu\selectize\Selectize;
 use yii\helpers\ArrayHelper;
 
 $context = $this->context;
-if($context->breadcrumbApp) {
+if ($context->breadcrumbApp) {
 	$this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
 $this->params['breadcrumbs'][] = ['label' => $model->archive->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => $model->archive->isFond ? ['fond/index'] : ['admin/index']];
 $this->params['breadcrumbs'][] = ['label' => $model->archive->isFond ? $model->archive->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$model->archive->level->level_name_i, 'code'=>$model->archive->code]), 'url' => ['view', 'id'=>$model->archive->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Storage Location');
 
-if(!$newRecord) {
+if (!$newRecord) {
     $this->params['menu']['content'] = [
         ['label' => Yii::t('app', 'Reset Location'), 'url' => Url::to(['reset-location', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to reset location this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
     ];
 }
 
-if(!in_array('location', $model->archive->level->field)) {
+if (!in_array('location', $model->archive->level->field)) {
 	unset($this->params['menu']['content']['location']);
 }
 
@@ -70,8 +70,8 @@ JS;
 			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a building..')], ArchiveLocationBuilding::getLocation(['publish'=>1, 'type'=>'building'])),
 			'pluginOptions' => [
 				'onChange' => new JsExpression('function(value) {
-					if (!value.length) return;
-					depo_id.disable(); 
+                    if (!value.length) return;
+					depo_id.disable();
 					depo_id.clearOptions();
 					depo_id.load(function(callback) {
 						building && building.abort();
@@ -110,8 +110,8 @@ JS;
 				'persist' => false,
 				'onChange' => new JsExpression('function(value) {
 					v_depo = value;
-					if (!value.length) return;
-					room_id.disable(); 
+                    if (!value.length) return;
+					room_id.disable();
 					room_id.clearOptions();
 					room_id.load(function(callback) {
 						depo && depo.abort();
@@ -152,8 +152,8 @@ JS;
 				'persist' => false,
 				'onChange' => new JsExpression('function(value) {
 					v_room = value;
-					if (!value.length) return;
-					rack_id.disable(); 
+                    if (!value.length) return;
+					rack_id.disable();
 					rack_id.clearOptions();
 					rack_id.load(function(callback) {
 						depo && depo.abort();
@@ -171,7 +171,7 @@ JS;
 							}
 						})
 					});
-					storage_id.disable(); 
+					storage_id.disable();
 					storage_id.clearOptions();
 					storage_id.load(function(callback) {
 						storage && storage.abort();

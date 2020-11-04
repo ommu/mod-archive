@@ -20,13 +20,13 @@ use yii\helpers\ArrayHelper;
 \ommu\archive\assets\AciTreeAsset::register($this);
 
 $context = $this->context;
-if($context->breadcrumbApp) {
+if ($context->breadcrumbApp) {
 	$this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
 $this->params['breadcrumbs'][] = ['label' => !$parent || $parent->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => !$parent || $parent->isFond ? ['fond/index']: ['admin/index']];
-if($parent) {
+if ($parent) {
     $parentTitle = Yii::t('app', '{level-name} {code}', ['level-name'=>$parent->level->level_name_i, 'code'=>$parent->code]);
-    if($parent->isFond == true) {
+    if ($parent->isFond == true) {
         $parentTitle = $parent->code;
     }
 	$this->params['breadcrumbs'][] = ['label' => $parentTitle, 'url' => [($parent->isFond ? 'fond' : 'admin').'/view', 'id'=>$parent->id]];
@@ -34,7 +34,7 @@ if($parent) {
 }
 $this->params['breadcrumbs'][] = Yii::t('app', 'Create');
 
-if($parent) {
+if ($parent) {
 	$this->params['menu']['content'] = [
 		['label' => Yii::t('app', 'Show Reference Code'), 'url' => 'javascript:void(0);', 'icon' => 'code', 'htmlOptions' => ['class'=>'btn btn-warning', 'id'=>'reference-code']],
 	];
@@ -45,8 +45,7 @@ $js = <<<JS
 	var selectedId = '$parent->id';
 JS;
 	$this->registerJs($js, \yii\web\View::POS_HEAD);
-}
-?>
+} ?>
 
 <div class="archives-create">
 

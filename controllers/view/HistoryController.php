@@ -42,7 +42,7 @@ class HistoryController extends Controller
 	{
         parent::init();
 
-		if(Yii::$app->request->get('view') || Yii::$app->request->get('id')) {
+        if (Yii::$app->request->get('view') || Yii::$app->request->get('id')) {
 			$this->subMenu = $this->module->params['archive_submenu'];
         }
 
@@ -86,32 +86,33 @@ class HistoryController extends Controller
 	 */
 	public function actionManage()
 	{
-		$searchModel = new ArchiveViewHistorySearch();
+        $searchModel = new ArchiveViewHistorySearch();
         $queryParams = Yii::$app->request->queryParams;
-        if(($archive = Yii::$app->request->get('archiveId')) != null) {
+        if (($archive = Yii::$app->request->get('archiveId')) != null) {
             $queryParams = ArrayHelper::merge(Yii::$app->request->queryParams, ['archiveId'=>$archive]);
         }
 		$dataProvider = $searchModel->search($queryParams);
 
-		$gridColumn = Yii::$app->request->get('GridColumn', null);
-		$cols = [];
-		if($gridColumn != null && count($gridColumn) > 0) {
-			foreach($gridColumn as $key => $val) {
-				if($gridColumn[$key] == 1)
-					$cols[] = $key;
-			}
-		}
-		$columns = $searchModel->getGridColumn($cols);
+        $gridColumn = Yii::$app->request->get('GridColumn', null);
+        $cols = [];
+        if ($gridColumn != null && count($gridColumn) > 0) {
+            foreach ($gridColumn as $key => $val) {
+                if ($gridColumn[$key] == 1) {
+                    $cols[] = $key;
+                }
+            }
+        }
+        $columns = $searchModel->getGridColumn($cols);
 
-		if(($view = Yii::$app->request->get('view')) != null) {
+        if (($view = Yii::$app->request->get('view')) != null) {
 			$view = \ommu\archive\models\ArchiveViews::findOne($view);
 			$this->subMenuParam = $view->archive_id;
             $view->archive->isFond = $view->archive->level_id == 1 ? true : false;
-            if($view->archive->isFond == true) {
+            if ($view->archive->isFond == true) {
                 $this->subMenu = $this->module->params['fond_submenu'];
             }
 		}
-		if($archive) {
+        if ($archive) {
 			$this->subMenuParam = $archive;
 			$archive = \ommu\archive\models\Archives::findOne($archive);
 		}
@@ -137,7 +138,7 @@ class HistoryController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		if(!Yii::$app->request->isAjax) {
+        if (!Yii::$app->request->isAjax) {
 			$this->subMenuParam = $model->view->archive_id;
 		}
 
@@ -173,7 +174,7 @@ class HistoryController extends Controller
 	 */
 	protected function findModel($id)
 	{
-		if(($model = ArchiveViewHistory::findOne($id)) !== null) {
+        if (($model = ArchiveViewHistory::findOne($id)) !== null) {
 			$model->view->archive->isFond = $model->view->archive->level_id == 1 ? true : false;
 
 			return $model;

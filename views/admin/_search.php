@@ -62,10 +62,10 @@ use ommu\archive\models\ArchiveSetting;
 		<?php echo $form->field($model, 'updated_date')
 			->input('date');?>
 
-		<?php if(ArchiveSetting::getInfo('fond_sidkkas')) {
+		<?php if (ArchiveSetting::getInfo('fond_sidkkas')) {
 			echo $form->field($model, 'sidkkas')
 				->dropDownList($model->filterYesNo(), ['prompt'=>'']);
-		}?>
+		} ?>
 
 		<?php echo $form->field($model, 'publish')
 			->dropDownList($model->filterYesNo(), ['prompt'=>'']);?>

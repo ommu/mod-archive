@@ -5,8 +5,8 @@ jQuery(document).ready(function ($) {
 	$('#tree').on('acitree', function(event, api, item, eventName, options) {
 		var itemId = api.getId(item);
 		// do some stuff on init
-		if (eventName == 'added') {
-			if(itemId == selectedId) {
+        if (eventName == 'added') {
+            if (itemId == selectedId) {
 				// then select it
 				api.select(item);
 			}
@@ -20,7 +20,7 @@ jQuery(document).ready(function ($) {
 		selectable: true,
 		itemHook: function(parent, item, itemData, level) {
 			// set a custom item label to show the branch level
-			if(itemData.level.toLowerCase() == 'item') {
+            if (itemData.level.toLowerCase() == 'item') {
 				this.setLabel(item, {
 					label: itemData.level + ': ' + itemData.code +'<br/>'+ itemData.label + '<br/><a class="modal-btn" href="'+itemData['view-url']+'" title="Info '+itemData.level+': '+itemData.code+'">Info</a> | <a href="'+itemData['update-url']+'" title="Update '+itemData.level+': '+itemData.code+'">Update</a>',
 				});

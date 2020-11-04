@@ -20,15 +20,15 @@ use yii\helpers\ArrayHelper;
 
 \ommu\archive\assets\AciTreeAsset::register($this);
 
-if(!$small) {
+if (!$small) {
     $context = $this->context;
-    if($context->breadcrumbApp) {
+    if ($context->breadcrumbApp) {
         $this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
     }
     $this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => ['index']];
     $this->params['breadcrumbs'][] = $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]);
 
-    if(!in_array('location', $model->level->field)) {
+    if (!in_array('location', $model->level->field)) {
         unset($this->params['menu']['content']['location']);
     }
 } ?>
@@ -69,8 +69,9 @@ $attributes = [
 		'attribute' => 'levelName',
 		'value' => function ($model) {
 			$levelName = isset($model->level) ? $model->level->title->message : '-';
-			if($levelName != '-')
+            if ($levelName != '-') {
 				return Html::a($levelName, ['setting/level/view', 'id'=>$model->level_id], ['title'=>$levelName, 'class'=>'modal-btn']);
+            }
 			return $levelName;
 		},
 		'format' => 'html',
@@ -82,7 +83,7 @@ $attributes = [
 				->select(['maintenance_mode', 'reference_code_sikn', 'reference_code_separator'])
 				->where(['id' => 1])
 				->one();
-			if(!$setting->maintenance_mode) {
+            if (!$setting->maintenance_mode) {
 				$referenceCode = $model->referenceCode;
 				array_multisort($referenceCode);
 				return $setting->reference_code_sikn.' '.preg_replace("/($model->code)$/", '<span class="text-primary">'.$model->code.'</span>', join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'code')));
@@ -91,8 +92,9 @@ $attributes = [
 				array_multisort($referenceCode);
 				$oldReferenceCodeTemplate = $setting->reference_code_sikn.' '.preg_replace("/($model->shortCode)$/", '<span class="text-danger">'.$model->shortCode.'</span>', $model->code);
 				$newReferenceCodeTemplate = $setting->reference_code_sikn.' '.preg_replace("/($model->confirmCode)$/", '<span class="text-primary">'.$model->confirmCode.'</span>', join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'confirmCode')));
-				if($model->code == $model->confirmCode)
-					return '//OLD//NEW// '.$newReferenceCodeTemplate;
+                if ($model->code == $model->confirmCode) {
+                    return '//OLD//NEW// '.$newReferenceCodeTemplate;
+                }
 				return '//OLD// '.$oldReferenceCodeTemplate.'<br/>//NEW// '.$newReferenceCodeTemplate;
 			}
 		},
@@ -146,8 +148,9 @@ $attributes = [
 	[
 		'attribute' => 'location',
 		'value' => function ($model) {
-			if(($location = $model->getRelatedLocation(false)) != null)
-				return $model::parseLocation($location);
+            if (($location = $model->getRelatedLocation(false)) != null) {
+                return $model::parseLocation($location);
+            }
 			return Html::a(Yii::t('app', 'Add archive location'), ['location', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', 'Add archive location'), 'class'=>'modal-btn']);
 		},
 		'format' => 'html',
@@ -156,8 +159,9 @@ $attributes = [
 	[
 		'attribute' => 'medium',
 		'value' => function ($model) {
-			if(strtolower($model->level->level_name_i) == 'item')
-				return $model->medium ? $model->medium : '-';
+            if (strtolower($model->level->level_name_i) == 'item') {
+                return $model->medium ? $model->medium : '-';
+            }
 			return $model::parseChilds($model->getChilds(['sublevel'=>false, 'back3nd'=>true]), $model->id);
 		},
 		'format' => 'html',

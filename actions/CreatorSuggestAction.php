@@ -21,11 +21,11 @@ class CreatorSuggestAction extends \yii\base\Action
 	 */
 	protected function beforeRun()
 	{
-		if (parent::beforeRun()) {
+        if (parent::beforeRun()) {
 			Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 			Yii::$app->response->charset = 'UTF-8';
-		}
-		return true;
+        }
+        return true;
 	}
 
 	/**
@@ -35,17 +35,17 @@ class CreatorSuggestAction extends \yii\base\Action
 	{
 		$term = Yii::$app->request->get('term');
 
-		if($term == null) return [];
+        if ($term == null) return [];
 
 		$model = ArchiveCreator::find()
-			->alias('t')
+            ->alias('t')
 			->suggest()
 			->andWhere(['like', 't.creator_name', $term])
 			->limit(15)
 			->all();
 
 		$result = [];
-		foreach($model as $val) {
+        foreach ($model as $val) {
 			$result[] = [
 				'id' => $val->id, 
 				'label' => $val->creator_name,

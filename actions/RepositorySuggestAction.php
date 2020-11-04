@@ -21,11 +21,11 @@ class RepositorySuggestAction extends \yii\base\Action
 	 */
 	protected function beforeRun()
 	{
-		if (parent::beforeRun()) {
+        if (parent::beforeRun()) {
 			Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 			Yii::$app->response->charset = 'UTF-8';
-		}
-		return true;
+        }
+        return true;
 	}
 
 	/**
@@ -35,17 +35,17 @@ class RepositorySuggestAction extends \yii\base\Action
 	{
 		$term = Yii::$app->request->get('term');
 
-		if($term == null) return [];
+        if ($term == null) return [];
 
 		$model = ArchiveRepository::find()
-			->alias('t')
+            ->alias('t')
 			->suggest()
 			->andWhere(['like', 't.repository_name', $term])
 			->limit(15)
 			->all();
 
 		$result = [];
-		foreach($model as $val) {
+        foreach ($model as $val) {
 			$result[] = [
 				'id' => $val->id, 
 				'label' => $val->repository_name,

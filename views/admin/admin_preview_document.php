@@ -24,22 +24,22 @@ $imageFileType = $model->formatFileType($setting->image_type);
 $documentFileType = $model->formatFileType($setting->document_type);
 $isDocument = in_array($extension, $documentFileType) ? true : false;
 
-if($model->isNewFile) {
+if ($model->isNewFile) {
     $uploadPath = join('/', [$model::getUploadPath(), $model->id]);
 } else {
     $uploadPath = join('/', [$model::getUploadPath(), ($isDocument == true ? $setting->maintenance_document_path : $setting->maintenance_image_path)]);
 }
 $fileExists = $model->archive_file != '' && file_exists(join('/', [$uploadPath, $model->archive_file])) ? true : false;
 
-if($model->archive_file && $fileExists) {
-    if($model->isNewFile) {
+if ($model->archive_file && $fileExists) {
+    if ($model->isNewFile) {
         $uploadPath = join('/', [$model::getUploadPath(false), $model->id]);
     } else {
         $uploadPath = join('/', [$model::getUploadPath(false), ($isDocument == true ? $setting->maintenance_document_path : $setting->maintenance_image_path)]);
     }
     $filePath = Url::to(join('/', ['@webpublic', $uploadPath, $model->archive_file]));
 
-    if($isDocument == true) {
+    if ($isDocument == true) {
         echo \app\components\widgets\PreviewPDF::widget([
             'url' => $filePath,
             'navigationOptions' => ['class'=>'summary mb-4'],
@@ -50,7 +50,7 @@ if($model->archive_file && $fileExists) {
         echo Html::img($filePath, ['alt'=>$model->archive_file, 'class'=>'mb-3']).'<br/>'.$model->archive_file;
     }
 
-} else {?>
+} else { ?>
 	<div class="bs-example" data-example-id="simple-jumbotron">
 		<div class="jumbotron">
 			<h1><?php echo $model->archive_file ? Yii::t('app', 'Archive document not found') : Yii::t('app', 'Archive document not available');?></h1>

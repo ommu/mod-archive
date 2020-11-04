@@ -28,9 +28,9 @@ $redactorOptions = [
 	'plugins' => ['fontcolor', 'imagemanager']
 ];
 
-if(!$isFond)
+if (!$isFond)
 	$level = $model->isNewRecord ? $parent->getChildLevels(true) : $model->getChildLevels();
-// if($setting->maintenance_mode) {
+// if ($setting->maintenance_mode) {
 	echo '<div id="reference-code-box" class="hide"><pre>';
 	print_r($referenceCode);
 	echo '</pre></div>';
@@ -39,7 +39,7 @@ if(!$isFond)
 
 <div class="archives-form">
 
-<?php if($isFond || !empty($level)) {
+<?php if ($isFond || !empty($level)) {
     $creatorField = (!$isFond && (!isset($model->level) || !empty($model->level->child))) ? "
     creator.disable();
     $('input#archive_date').attr('disabled', true);
@@ -52,7 +52,7 @@ if(!$isFond)
     $levelChangeField = (!$isFond) ? "
     $('#level_id').on('change', function (e) {
         var levelId = $(this).val();
-        if(levelId == 8) {
+        if (levelId == 8) {
             creator.enable();
             $('.field-item').removeClass('hide');
             $('input#archive_date').attr('disabled', false);
@@ -79,8 +79,9 @@ $js = <<<JS
     $('#shortcode').on('keyup', function (e) {
         var shortCode = $(this).val();
         var parentCode = $(this).parent().find('.item').text();
-        if(shortCode == '')
+        if (shortCode == '') {
             var shortCode = 'XXX';
+        }
         $('.reference-code').html(parentCode+shortCode);
     });
     $('#reference-code').on('click', function (e) {
@@ -106,7 +107,7 @@ $form = ActiveForm::begin([
 
 <?php //echo $form->errorSummary($model);?>
 
-<?php if(!$isFond) {
+<?php if (!$isFond) {
 	echo $form->field($model, 'level_id')
 		->dropDownList($level, ['prompt'=>''])
 		->label($model->getAttributeLabel('level_id'))
@@ -114,7 +115,7 @@ $form = ActiveForm::begin([
 }
 
 $shortCode = $model->shortCode ? $model->shortCode : 'XXX';
-if($isFond) {
+if ($isFond) {
 	echo $form->field($model, 'level_id', ['template' => '{label}{beginWrapper}{input}<h5 class="text-muted">'.$setting->reference_code_sikn.' <span class="text-primary reference-code">'.$shortCode.'</span></h5>{endWrapper}'])
 		->hiddenInput()
 		->label($model->getAttributeLabel('code'));
@@ -122,29 +123,32 @@ if($isFond) {
 	$shortCodeFieldTemplate = [];
 	$shortCodeInputOptions = ['maxlength'=>true, 'placeholder'=>'XXX'];
 } else {
-	if(!$model->getErrors() && $parent)
-		$model->parent_id = $parent->id;
+    if (!$model->getErrors() && $parent) {
+        $model->parent_id = $parent->id;
+    }
 	$parentCode = $model->parent->code;
-	if($setting->maintenance_mode)
-		$parentCode = $model->parent->confirmCode;
-	if(!$setting->maintenance_mode) {
-		if(!$model->isNewRecord) {
+    if ($setting->maintenance_mode) {
+        $parentCode = $model->parent->confirmCode;
+    }
+    if (!$setting->maintenance_mode) {
+        if (!$model->isNewRecord) {
 			$template = '<h5 class="text-muted">'.$setting->reference_code_sikn.' '.preg_replace("/($model->code)$/", '<span class="text-primary reference-code">'.$model->code.'</span>', join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'code'))).'</h5>';
 		} else {
 			$template = '<h5 class="text-muted">'.$setting->reference_code_sikn.' '.join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'code')).$setting->reference_code_separator.'<span class="text-primary reference-code">'.$model->parent->code.'.'.$shortCode.'</span></h5>';
 		}
 	} else {
-		if(!$model->isNewRecord) {
+        if (!$model->isNewRecord) {
 			$oldReferenceCodeTemplate = preg_replace("/($shortCode)$/", '<span class="text-danger">'.$shortCode.'</span>', $model->code);
 			$newReferenceCodeTemplate = preg_replace("/($model->confirmCode)$/", '<span class="text-primary reference-code">'.$model->confirmCode.'</span>', join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'confirmCode')));
-			if($model->code == $model->confirmCode)
-				$template = '<h5 class="text-muted">//OLD//NEW// '.$setting->reference_code_sikn.' '.$newReferenceCodeTemplate.'</h5>';
-			else {
+            if ($model->code == $model->confirmCode) {
+                $template = '<h5 class="text-muted">//OLD//NEW// '.$setting->reference_code_sikn.' '.$newReferenceCodeTemplate.'</h5>';
+            } else {
 				$template = '<h5 class="text-muted">//OLD// '.$setting->reference_code_sikn.' '.$oldReferenceCodeTemplate.'</h5>';
 				$template .= '<h5 class="text-muted">//NEW// '.$setting->reference_code_sikn.' '.$newReferenceCodeTemplate.'</h5>';
 			}
-		} else
+		} else {
 			$template = '<h5 class="text-muted">'.$setting->reference_code_sikn.' '.join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'confirmCode')).$setting->reference_code_separator.'<span class="text-primary reference-code">'.$model->parent->confirmCode.'.'.$shortCode.'</span></h5>';
+        }
 	}
 	echo $form->field($model, 'parent_id', ['template' => '{label}{beginWrapper}{input}'.$template.'{endWrapper}'])
 		->hiddenInput()
@@ -293,15 +297,15 @@ $imageFileType = $model->formatFileType($setting->image_type);
 $documentFileType = $model->formatFileType($setting->document_type);
 $isDocument = in_array($extension, $documentFileType) ? true : false;
 
-if($model->isNewFile)
-	$uploadPath = join('/', [$model::getUploadPath(false), $model->id]);
-else {
+if ($model->isNewFile) {
+    $uploadPath = join('/', [$model::getUploadPath(false), $model->id]);
+} else {
     $uploadPath = join('/', [$model::getUploadPath(false), ($isDocument == true ? $setting->maintenance_document_path : $setting->maintenance_image_path)]);
 }
 
 $archiveFile = '';
-if(!$model->isNewRecord && $model->old_archive_file != '') {
-	if($isDocument == true) {
+if (!$model->isNewRecord && $model->old_archive_file != '') {
+    if ($isDocument == true) {
         $archiveFile = Html::a($model->old_archive_file, Url::to(['preview', 'id'=>$model->id]), ['title'=>$model->old_archive_file, 'class'=>'d-block mb-3 modal-btn']);
     } else {
 		$archiveFile = Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->old_archive_file])), ['alt'=>$model->old_archive_file, 'class'=>'d-block border border-width-3 mb-3']).$model->old_archive_file.'<hr/>';
@@ -340,7 +344,7 @@ echo $form->field($model, 'backToManage')
 
 <?php ActiveForm::end();
 
-} else {?>
+} else { ?>
 	<div class="bs-example" data-example-id="simple-jumbotron">
 		<div class="jumbotron">
 			<h1><?php echo $model->getAttributeLabel('level_id').': '.$parent->level->level_name_i;?></h1>

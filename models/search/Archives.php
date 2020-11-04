@@ -60,35 +60,47 @@ class Archives extends ArchivesModel
 	 */
 	public function search($params, $column=null)
 	{
-		if(!($column && is_array($column)))
-			$query = ArchivesModel::find()->alias('t');
-		else
-			$query = ArchivesModel::find()->alias('t')->select($column);
+        if (!($column && is_array($column))) {
+            $query = ArchivesModel::find()->alias('t');
+        } else {
+            $query = ArchivesModel::find()->alias('t')->select($column);
+        }
 		$query->joinWith([
 			'parent parent'
 		]);
-		if((isset($params['sort']) && in_array($params['sort'], ['level_id', '-level_id'])) || (isset($params['levelName']) && $params['levelName'] != ''))
-			$query = $query->joinWith(['level.title level']);
-		if((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || (isset($params['creationDisplayname']) && $params['creationDisplayname'] != ''))
-			$query = $query->joinWith(['creation creation']);
-		if((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != ''))
-			$query = $query->joinWith(['modified modified']);
-		if(isset($params['media']) && $params['media'] != '')
-			$query = $query->joinWith(['relatedMedia relatedMedia']);
-		if((isset($params['creatorId']) && $params['creatorId'] != '') || (isset($params['creator']) && $params['creator'] != ''))
-			$query = $query->joinWith(['relatedCreator relatedCreator', 'relatedCreator.creator relatedCreatorRltn']);
-		if((isset($params['repositoryId']) && $params['repositoryId'] != '') || (isset($params['repository']) && $params['repository'] != ''))
-			$query = $query->joinWith(['relatedRepository relatedRepository', 'relatedRepository.repository relatedRepositoryRltn']);
-		if((isset($params['subjectId']) && $params['subjectId'] != '') || (isset($params['subject']) && $params['subject'] != ''))
-			$query = $query->joinWith(['relatedSubject relatedSubject', 'relatedSubject.tag relatedSubjectRltn']);
-		if((isset($params['functionId']) && $params['functionId'] != '') || (isset($params['function']) && $params['function'] != ''))
-			$query = $query->joinWith(['relatedFunction relatedFunction', 'relatedFunction.tag relatedFunctionRltn']);
-		if((isset($params['location']) && $params['location'] != '') || (isset($params['rackId']) && $params['rackId'] != '') || (isset($params['roomId']) && $params['roomId'] != '') || (isset($params['depoId']) && $params['depoId'] != '') || (isset($params['buildingId']) && $params['buildingId'] != ''))
-			$query = $query->joinWith(['relatedLocation relatedLocation']);
-		if(isset($params['depoId']) && $params['depoId'] != '')
-			$query = $query->joinWith(['relatedLocation.room relatedLocationRoom']);
-		if(isset($params['buildingId']) && $params['buildingId'] != '')
-			$query = $query->joinWith(['relatedLocation.room.parent relatedLocationDepo']);
+        if ((isset($params['sort']) && in_array($params['sort'], ['level_id', '-level_id'])) || (isset($params['levelName']) && $params['levelName'] != '')) {
+            $query = $query->joinWith(['level.title level']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')) {
+            $query = $query->joinWith(['creation creation']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != '')) {
+            $query = $query->joinWith(['modified modified']);
+        }
+        if (isset($params['media']) && $params['media'] != '') {
+            $query = $query->joinWith(['relatedMedia relatedMedia']);
+        }
+        if ((isset($params['creatorId']) && $params['creatorId'] != '') || (isset($params['creator']) && $params['creator'] != '')) {
+            $query = $query->joinWith(['relatedCreator relatedCreator', 'relatedCreator.creator relatedCreatorRltn']);
+        }
+        if ((isset($params['repositoryId']) && $params['repositoryId'] != '') || (isset($params['repository']) && $params['repository'] != '')) {
+            $query = $query->joinWith(['relatedRepository relatedRepository', 'relatedRepository.repository relatedRepositoryRltn']);
+        }
+        if ((isset($params['subjectId']) && $params['subjectId'] != '') || (isset($params['subject']) && $params['subject'] != '')) {
+            $query = $query->joinWith(['relatedSubject relatedSubject', 'relatedSubject.tag relatedSubjectRltn']);
+        }
+        if ((isset($params['functionId']) && $params['functionId'] != '') || (isset($params['function']) && $params['function'] != '')) {
+            $query = $query->joinWith(['relatedFunction relatedFunction', 'relatedFunction.tag relatedFunctionRltn']);
+        }
+        if ((isset($params['location']) && $params['location'] != '') || (isset($params['rackId']) && $params['rackId'] != '') || (isset($params['roomId']) && $params['roomId'] != '') || (isset($params['depoId']) && $params['depoId'] != '') || (isset($params['buildingId']) && $params['buildingId'] != '')) {
+            $query = $query->joinWith(['relatedLocation relatedLocation']);
+        }
+        if (isset($params['depoId']) && $params['depoId'] != '') {
+            $query = $query->joinWith(['relatedLocation.room relatedLocationRoom']);
+        }
+        if (isset($params['buildingId']) && $params['buildingId'] != '') {
+            $query = $query->joinWith(['relatedLocation.room.parent relatedLocationDepo']);
+        }
 
 		$query = $query->groupBy(['id']);
 
@@ -97,8 +109,9 @@ class Archives extends ArchivesModel
 			'query' => $query,
 		];
 		// disable pagination agar data pada api tampil semua
-		if(isset($params['pagination']) && $params['pagination'] == 0)
-			$dataParams['pagination'] = false;
+        if (isset($params['pagination']) && $params['pagination'] == 0) {
+            $dataParams['pagination'] = false;
+        }
 		$dataProvider = new ActiveDataProvider($dataParams);
 
 		$attributes = array_keys($this->getTableSchema()->columns);
@@ -127,11 +140,12 @@ class Archives extends ArchivesModel
 			'defaultOrder' => isset($params['id']) ? ['code' => SORT_ASC] : ['id' => SORT_DESC],
 		]);
 
-		if(Yii::$app->request->get('id'))
-			unset($params['id']);
+        if (Yii::$app->request->get('id')) {
+            unset($params['id']);
+        }
 		$this->load($params);
 
-		if(!$this->validate()) {
+        if (!$this->validate()) {
 			// uncomment the following line if you do not want to return any records when validation fails
 			// $query->where('0=1');
 			return $dataProvider;
@@ -152,13 +166,14 @@ class Archives extends ArchivesModel
 			'relatedMedia.media_id' => $this->media,
 		]);
 
-		if(isset($params['trash']))
-			$query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
-		else {
-			if(!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == ''))
-				$query->andFilterWhere(['IN', 't.publish', [0,1]]);
-			else
-				$query->andFilterWhere(['t.publish' => $this->publish]);
+        if (isset($params['trash'])) {
+            $query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
+        } else {
+            if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
+                $query->andFilterWhere(['IN', 't.publish', [0,1]]);
+            } else {
+                $query->andFilterWhere(['t.publish' => $this->publish]);
+            }
 		}
 
 		$query->andFilterWhere(['relatedCreator.creator_id' => $params['creatorId']]);
@@ -170,22 +185,25 @@ class Archives extends ArchivesModel
 		$query->andFilterWhere(['relatedLocationRoom.parent_id' => $params['depoId']]);
 		$query->andFilterWhere(['relatedLocationDepo.parent_id' => $params['buildingId']]);
 
-		if(isset($params['preview']) && $params['preview'] != '') {
-			if($this->preview == 1)
-				$query->andWhere(['<>', 't.archive_file', '']);
-			else if($this->preview == 0)
-				$query->andWhere(['=', 't.archive_file', '']);
+        if (isset($params['preview']) && $params['preview'] != '') {
+            if ($this->preview == 1) {
+                $query->andWhere(['<>', 't.archive_file', '']);
+            } else if ($this->preview == 0) {
+                $query->andWhere(['=', 't.archive_file', '']);
+            }
 		}
 
-		if(isset($params['location']) && $params['location'] != '') {
-			if($this->location == 1)
-				$query->andWhere(['is not', 'relatedLocation.id', null]);
-			else if($this->location == 0)
-				$query->andWhere(['is', 'relatedLocation.id', null]);
+        if (isset($params['location']) && $params['location'] != '') {
+            if ($this->location == 1) {
+                $query->andWhere(['is not', 'relatedLocation.id', null]);
+            } else if ($this->location == 0) {
+                $query->andWhere(['is', 'relatedLocation.id', null]);
+            }
 		}
 
-		if($this->isFond)
-			$query->andWhere(['t.level_id' => 1]);
+        if ($this->isFond) {
+            $query->andWhere(['t.level_id' => 1]);
+        }
 
 		$query->andFilterWhere(['like', 't.title', $this->title])
 			->andFilterWhere(['like', 't.code', $this->code])

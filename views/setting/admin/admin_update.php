@@ -16,9 +16,9 @@
 
 use yii\helpers\Url;
 
-if($breadcrumb) {
+if ($breadcrumb) {
     $context = $this->context;
-    if($context->breadcrumbApp) {
+    if ($context->breadcrumbApp) {
         $this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
     }
     $this->params['breadcrumbs'][] = Yii::t('app', 'Settings');

@@ -20,10 +20,10 @@ use app\components\grid\GridView;
 use yii\widgets\Pjax;
 
 $context = $this->context;
-if($context->breadcrumbApp) {
+if ($context->breadcrumbApp) {
     $this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
-if($archive != null) {
+if ($archive != null) {
     $this->params['breadcrumbs'][] = ['label' => $archive->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => $archive->isFond ? ['fond/index'] : ['admin/index']];
     $this->params['breadcrumbs'][] = ['label' => $archive->isFond ? $archive->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$archive->level->level_name_i, 'code'=>$archive->code]), 'url' => [($archive->isFond ? 'fond' : 'admin').'/view', 'id'=>$archive->id]];
 } else {
@@ -40,11 +40,13 @@ $this->params['menu']['option'] = [
 <div class="archive-views-manage">
 <?php Pjax::begin(); ?>
 
-<?php if($archive != null)
-	echo $this->render('/admin/admin_view', ['model'=>$archive, 'small'=>true]); ?>
+<?php if ($archive != null) {
+    echo $this->render('/admin/admin_view', ['model'=>$archive, 'small'=>true]);
+} ?>
 
-<?php if($user != null)
-	echo $this->render('@users/views/member/admin_view', ['model'=>$user, 'small'=>true]); ?>
+<?php if ($user != null) {
+	echo $this->render('@users/views/member/admin_view', ['model'=>$user, 'small'=>true]);
+} ?>
 
 <?php //echo $this->render('_search', ['model'=>$searchModel]); ?>
 
@@ -56,12 +58,15 @@ array_push($columnData, [
 	'class' => 'app\components\grid\ActionColumn',
 	'header' => Yii::t('app', 'Option'),
 	'urlCreator' => function($action, $model, $key, $index) {
-		if($action == 'view')
-			return Url::to(['view', 'id'=>$key]);
-		if($action == 'update')
-			return Url::to(['update', 'id'=>$key]);
-		if($action == 'delete')
-			return Url::to(['delete', 'id'=>$key]);
+        if ($action == 'view') {
+            return Url::to(['view', 'id'=>$key]);
+        }
+        if ($action == 'update') {
+            return Url::to(['update', 'id'=>$key]);
+        }
+        if ($action == 'delete') {
+            return Url::to(['delete', 'id'=>$key]);
+        }
 	},
 	'buttons' => [
 		'view' => function ($url, $model, $key) {

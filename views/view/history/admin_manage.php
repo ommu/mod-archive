@@ -20,10 +20,10 @@ use app\components\grid\GridView;
 use yii\widgets\Pjax;
 
 $context = $this->context;
-if($context->breadcrumbApp) {
+if ($context->breadcrumbApp) {
     $this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
-if($view != null) {
+if ($view != null) {
     $this->params['breadcrumbs'][] = ['label' => $view->archive->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => $view->archive->isFond ? ['fond/index'] : ['admin/index']];
     $this->params['breadcrumbs'][] = ['label' => $view->archive->isFond ? $view->archive->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$view->archive->level->level_name_i, 'code'=>$view->archive->code]), 'url' => [($view->archive->isFond ? 'fond' : 'admin').'/view', 'id'=>$view->archive_id]];
     $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'View'), 'url' => ['view/admin/manage', 'archive'=>$view->archive_id]];
@@ -41,11 +41,13 @@ $this->params['menu']['option'] = [
 <div class="archive-view-history-manage">
 <?php Pjax::begin(); ?>
 
-<?php if($view != null)
-	echo $this->render('/view/admin/admin_view', ['model'=>$view, 'small'=>true]); ?>
+<?php if ($view != null) {
+    echo $this->render('/view/admin/admin_view', ['model'=>$view, 'small'=>true]);
+} ?>
 
-<?php if($archive != null)
-	echo $this->render('/admin/admin_view', ['model'=>$archive, 'small'=>true]); ?>
+<?php if ($archive != null) {
+    echo $this->render('/admin/admin_view', ['model'=>$archive, 'small'=>true]);
+} ?>
 
 <?php //echo $this->render('_search', ['model'=>$searchModel]); ?>
 
@@ -57,12 +59,15 @@ array_push($columnData, [
 	'class' => 'app\components\grid\ActionColumn',
 	'header' => Yii::t('app', 'Option'),
 	'urlCreator' => function($action, $model, $key, $index) {
-		if($action == 'view')
-			return Url::to(['view', 'id'=>$key]);
-		if($action == 'update')
-			return Url::to(['update', 'id'=>$key]);
-		if($action == 'delete')
-			return Url::to(['delete', 'id'=>$key]);
+        if ($action == 'view') {
+            return Url::to(['view', 'id'=>$key]);
+        }
+        if ($action == 'update') {
+            return Url::to(['update', 'id'=>$key]);
+        }
+        if ($action == 'delete') {
+            return Url::to(['delete', 'id'=>$key]);
+        }
 	},
 	'buttons' => [
 		'view' => function ($url, $model, $key) {

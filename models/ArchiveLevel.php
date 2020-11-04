@@ -106,27 +106,30 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	 */
 	public function getArchives($count=false, $publish=null)
 	{
-		if($count == false) {
-			$model = $this->hasMany(Archives::className(), ['level_id' => 'id'])
-				->alias('archives');
-			if($publish != null)
-				return $model->andOnCondition([sprintf('%s.publish', 'archives') => $publish]);
-			else
-				return $model->andOnCondition(['IN', sprintf('%s.publish', 'archives'), [0,1]]);
+        if ($count == false) {
+            $model = $this->hasMany(Archives::className(), ['level_id' => 'id'])
+                ->alias('archives');
+            if ($publish != null) {
+                return $model->andOnCondition([sprintf('%s.publish', 'archives') => $publish]);
+            } else {
+                return $model->andOnCondition(['IN', sprintf('%s.publish', 'archives'), [0,1]]);
+            }
 		}
 
 		$model = Archives::find()
-			->alias('t')
-			->where(['t.level_id' => $this->id]);
-		if($publish != null) {
-			if($publish == 0)
-				$model->unpublish();
-			elseif($publish == 1)
-				$model->published();
-			elseif($publish == 2)
-				$model->deleted();
-		} else
-			$model->andWhere(['IN', 'publish', [0,1]]);
+            ->alias('t')
+            ->where(['t.level_id' => $this->id]);
+        if ($publish != null) {
+            if ($publish == 0) {
+                $model->unpublish();
+            } else if ($publish == 1) {
+                $model->published();
+            } else if ($publish == 2) {
+                $model->deleted();
+            }
+		} else {
+            $model->andWhere(['IN', 'publish', [0,1]]);
+        }
 		$archives = $model->count();
 
 		return $archives ? $archives : 0;
@@ -180,11 +183,13 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	{
 		parent::init();
 
-		if(!(Yii::$app instanceof \app\components\Application))
-			return;
+        if (!(Yii::$app instanceof \app\components\Application)) {
+            return;
+        }
 
-		if(!$this->hasMethod('search'))
-			return;
+        if (!$this->hasMethod('search')) {
+            return;
+        }
 
 		$this->templateColumns['_no'] = [
 			'header' => '#',
@@ -284,19 +289,20 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	 */
 	public static function getInfo($id, $column=null)
 	{
-		if($column != null) {
-			$model = self::find();
-			if(is_array($column))
-				$model->select($column);
-			else
-				$model->select([$column]);
-			$model = $model->where(['id' => $id])->one();
-			return is_array($column) ? $model : $model->$column;
-			
-		} else {
-			$model = self::findOne($id);
-			return $model;
-		}
+        if ($column != null) {
+            $model = self::find();
+            if (is_array($column)) {
+                $model->select($column);
+            } else {
+                $model->select([$column]);
+            }
+            $model = $model->where(['id' => $id])->one();
+            return is_array($column) ? $model : $model->$column;
+
+        } else {
+            $model = self::findOne($id);
+            return $model;
+        }
 	}
 
 	/**
@@ -307,13 +313,15 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		$model = self::find()->alias('t')
 			->select(['t.id', 't.level_name']);
 		$model->leftJoin(sprintf('%s title', SourceMessage::tableName()), 't.level_name=title.id');
-		if($publish != null)
-			$model->andWhere(['t.publish' => $publish]);
+        if ($publish != null) {
+            $model->andWhere(['t.publish' => $publish]);
+        }
 
 		$model = $model->orderBy('t.orders ASC')->all();
 
-		if($array == true)
-			return \yii\helpers\ArrayHelper::map($model, 'id', 'level_name_i');
+        if ($array == true) {
+            return \yii\helpers\ArrayHelper::map($model, 'id', 'level_name_i');
+        }
 
 		return $model;
 	}
@@ -323,16 +331,18 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	 */
 	public static function getChild($child, $sep='li')
 	{
-		if(!is_array($child) || (is_array($child) && empty($child)))
-			return '-';
+        if (!is_array($child) || (is_array($child) && empty($child))) {
+            return '-';
+        }
 
 		$levels = self::getLevel();
 		foreach ($levels as $key => $val) {
-			if(in_array($key, $child))
-				$level[$key] = $val;
+            if (in_array($key, $child)) {
+                $level[$key] = $val;
+            }
 		}
 
-		if($sep == 'li') {
+        if ($sep == 'li') {
 			return Html::ul($level, ['item' => function($item, $index) {
 				return Html::tag('li', Html::a($item, ['setting/level/view', 'id'=>$index], ['title'=>$item, 'class'=>'modal-btn']));
 			}, 'class'=>'list-boxed']);
@@ -360,17 +370,19 @@ class ArchiveLevel extends \app\components\ActiveRecord
             'sidkkas' => Yii::t('app', 'SiDKKAS'),
 		);
 
-		if($field !== null) {
-			if(!is_array($field) || (is_array($field) && empty($field)))
-				return '-';
+        if ($field !== null) {
+            if (!is_array($field) || (is_array($field) && empty($field))) {
+                return '-';
+            }
 
 			$item = [];
 			foreach ($items as $key => $val) {
-				if(in_array($key, $field))
-					$item[$key] = $val;
+                if (in_array($key, $field)) {
+                    $item[$key] = $val;
+                }
 			}
 
-			if($sep == 'li') {
+            if ($sep == 'li') {
 				return Html::ul($item, ['item' => function($item, $index) {
 					return Html::tag('li', "($index) $item");
 				}, 'class'=>'list-boxed']);
@@ -392,8 +404,9 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		$this->level_desc_i = isset($this->description) ? $this->description->message : '';
 		$this->child = unserialize($this->child);
 		$this->field = unserialize($this->field);
-		if(!is_array($this->field))
-			$this->field = [];
+        if (!is_array($this->field)) {
+            $this->field = [];
+        }
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
 	}
@@ -403,16 +416,18 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	 */
 	public function beforeValidate()
 	{
-		if(parent::beforeValidate()) {
-			if($this->isNewRecord) {
-				if($this->creation_id == null)
-					$this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			} else {
-				if($this->modified_id == null)
-					$this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			}
-		}
-		return true;
+        if (parent::beforeValidate()) {
+            if ($this->isNewRecord) {
+                if ($this->creation_id == null) {
+                    $this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+                }
+            } else {
+                if ($this->modified_id == null) {
+                    $this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+                }
+            }
+        }
+        return true;
 	}
 
 	/**
@@ -420,42 +435,44 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	 */
 	public function beforeSave($insert)
 	{
-		$module = strtolower(Yii::$app->controller->module->id);
-		$controller = strtolower(Yii::$app->controller->id);
-		$action = strtolower(Yii::$app->controller->action->id);
+        $module = strtolower(Yii::$app->controller->module->id);
+        $controller = strtolower(Yii::$app->controller->id);
+        $action = strtolower(Yii::$app->controller->action->id);
 
-		$location = Inflector::slug($module.' '.$controller);
+        $location = Inflector::slug($module.' '.$controller);
 
-		if(parent::beforeSave($insert)) {
-			if($insert || (!$insert && !$this->level_name)) {
-				$level_name = new SourceMessage();
-				$level_name->location = $location.'_title';
-				$level_name->message = $this->level_name_i;
-				if($level_name->save())
-					$this->level_name = $level_name->id;
+        if (parent::beforeSave($insert)) {
+            if ($insert || (!$insert && !$this->level_name)) {
+                $level_name = new SourceMessage();
+                $level_name->location = $location.'_title';
+                $level_name->message = $this->level_name_i;
+                if ($level_name->save()) {
+                    $this->level_name = $level_name->id;
+                }
 
-			} else {
-				$level_name = SourceMessage::findOne($this->level_name);
-				$level_name->message = $this->level_name_i;
-				$level_name->save();
-			}
+            } else {
+                $level_name = SourceMessage::findOne($this->level_name);
+                $level_name->message = $this->level_name_i;
+                $level_name->save();
+            }
 
-			if($insert || (!$insert && !$this->level_desc)) {
-				$level_desc = new SourceMessage();
-				$level_desc->location = $location.'_description';
-				$level_desc->message = $this->level_desc_i;
-				if($level_desc->save())
-					$this->level_desc = $level_desc->id;
+            if ($insert || (!$insert && !$this->level_desc)) {
+                $level_desc = new SourceMessage();
+                $level_desc->location = $location.'_description';
+                $level_desc->message = $this->level_desc_i;
+                if ($level_desc->save()) {
+                    $this->level_desc = $level_desc->id;
+                }
 
-			} else {
-				$level_desc = SourceMessage::findOne($this->level_desc);
-				$level_desc->message = $this->level_desc_i;
-				$level_desc->save();
-			}
+            } else {
+                $level_desc = SourceMessage::findOne($this->level_desc);
+                $level_desc->message = $this->level_desc_i;
+                $level_desc->save();
+            }
 
-			$this->child = serialize($this->child);
-			$this->field = serialize($this->field);
-		}
-		return true;
+            $this->child = serialize($this->child);
+            $this->field = serialize($this->field);
+        }
+        return true;
 	}
 }

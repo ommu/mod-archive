@@ -54,8 +54,10 @@ echo $form->field($model, 'field')
 	->checkboxList($field)
 	->label($model->getAttributeLabel('field')); ?>
 
-<?php if($model->isNewRecord && !$model->getErrors())
-	$model->publish = 1;
+<?php 
+if ($model->isNewRecord && !$model->getErrors()) {
+    $model->publish = 1;
+}
 echo $form->field($model, 'publish')
 	->checkbox()
 	->label($model->getAttributeLabel('publish')); ?>

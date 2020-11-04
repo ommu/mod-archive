@@ -17,9 +17,9 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
 
-if(!$small) {
+if (!$small) {
     $context = $this->context;
-    if($context->breadcrumbApp) {
+    if ($context->breadcrumbApp) {
         $this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
     }
     $this->params['breadcrumbs'][] = ['label' => $model->archive->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => $model->archive->isFond ? ['fond/index'] : ['admin/index']];
@@ -51,8 +51,9 @@ $attributes = [
 		'attribute' => 'archiveTitle',
 		'value' => function ($model) {
 			$archiveTitle = isset($model->archive) ? $model->archive->title : '-';
-			if($archiveTitle != '-')
-				return Html::a($archiveTitle, ['admin/view', 'id'=>$model->archive_id], ['title'=>$model::htmlHardDecode($archiveTitle), 'class'=>'modal-btn']);
+            if ($archiveTitle != '-') {
+                return Html::a($archiveTitle, ['admin/view', 'id'=>$model->archive_id], ['title'=>$model::htmlHardDecode($archiveTitle), 'class'=>'modal-btn']);
+            }
 			return $archiveTitle;
 		},
 		'format' => 'html',

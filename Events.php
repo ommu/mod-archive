@@ -49,9 +49,9 @@ class Events extends \yii\base\BaseObject
 		$media = $archive->media;
 
 		// insert difference media
-		if(is_array($media)) {
+        if (is_array($media)) {
 			foreach ($media as $val) {
-				if(in_array($val, $oldMedia)) {
+                if (in_array($val, $oldMedia)) {
 					unset($oldMedia[array_keys($oldMedia, $val)[0]]);
 					continue;
 				}
@@ -64,7 +64,7 @@ class Events extends \yii\base\BaseObject
 		}
 
 		// drop difference media
-		if(!empty($oldMedia)) {
+        if (!empty($oldMedia)) {
 			foreach ($oldMedia as $key => $val) {
 				ArchiveRelatedMedia::find()
 					->select(['id'])
@@ -81,13 +81,14 @@ class Events extends \yii\base\BaseObject
 	public static function setArchiveCreator($archive)
 	{
 		$oldCreator = $archive->getRelatedCreator(true, 'title');
-		if($archive->creator)
-			$creator = explode(',', $archive->creator);
+        if ($archive->creator) {
+            $creator = explode(',', $archive->creator);
+        }
 
 		// insert difference creator
-		if(is_array($creator)) {
+        if (is_array($creator)) {
 			foreach ($creator as $val) {
-				if(in_array($val, $oldCreator)) {
+                if (in_array($val, $oldCreator)) {
 					unset($oldCreator[array_keys($oldCreator, $val)[0]]);
 					continue;
 				}
@@ -97,13 +98,14 @@ class Events extends \yii\base\BaseObject
 					->andWhere(['creator_name' => $val])
 					->one();
 
-				if($creatorFind != null)
-					$creator_id = $creatorFind->id;
-				else {
+                if ($creatorFind != null) {
+                    $creator_id = $creatorFind->id;
+                } else {
 					$model = new ArchiveCreator();
 					$model->creator_name = $val;
-					if($model->save())
-						$creator_id = $model->id;
+                    if ($model->save()) {
+                        $creator_id = $model->id;
+                    }
 				}
 
 				$model = new ArchiveRelatedCreator();
@@ -114,7 +116,7 @@ class Events extends \yii\base\BaseObject
 		}
 
 		// drop difference creator
-		if(!empty($oldCreator)) {
+        if (!empty($oldCreator)) {
 			foreach ($oldCreator as $key => $val) {
 				ArchiveRelatedCreator::find()
 					->select(['id'])
@@ -132,11 +134,12 @@ class Events extends \yii\base\BaseObject
 	{
 		$oldRepository = array_flip($archive->getRelatedRepository(true));
 
-		if((empty($oldRepository) && !$archive->repository) || in_array($archive->repository, $oldRepository))
-			return;
+        if ((empty($oldRepository) && !$archive->repository) || in_array($archive->repository, $oldRepository)) {
+            return;
+        }
 		
-		if(is_numeric($archive->repository)) {
-			if(empty($oldRepository)) {
+        if (is_numeric($archive->repository)) {
+            if (empty($oldRepository)) {
 				$model = new ArchiveRelatedRepository();
 				$model->archive_id = $archive->id;
 				$model->repository_id = $archive->repository;
@@ -148,19 +151,20 @@ class Events extends \yii\base\BaseObject
 			}
 
 		} else {
-			if($archive->repository) {
+            if ($archive->repository) {
 				$repositoryFind = ArchiveRepository::find()
 					->select(['id'])
 					->andWhere(['repository_name' => $archive->repository])
 					->one();
 
-				if($repositoryFind != null)
-					$repository_id = $repositoryFind->id;
-				else {
+                if ($repositoryFind != null) {
+                    $repository_id = $repositoryFind->id;
+                } else {
 					$model = new ArchiveRepository();
 					$model->repository_name = $archive->repository;
-					if($model->save())
-						$repository_id = $model->id;
+                    if ($model->save()) {
+                        $repository_id = $model->id;
+                    }
 				}
 
 				$model = new ArchiveRelatedRepository();
@@ -183,20 +187,22 @@ class Events extends \yii\base\BaseObject
 	 */
 	public static function setArchiveSubject($archive, $type='subject')
 	{
-		if($type == 'subject') {
+        if ($type == 'subject') {
 			$oldSubject = $archive->getRelatedSubject(true, 'title');
-			if($archive->subject)
-				$subject = explode(',', $archive->subject);
+            if ($archive->subject) {
+                $subject = explode(',', $archive->subject);
+            }
 		} else {
 			$oldSubject = $archive->getRelatedFunction(true, 'title');
-			if($archive->function)
-				$subject = explode(',', $archive->function);
+            if ($archive->function) {
+                $subject = explode(',', $archive->function);
+            }
 		}
 
 		// insert difference subject
-		if(is_array($subject)) {
+        if (is_array($subject)) {
 			foreach ($subject as $val) {
-				if(in_array($val, $oldSubject)) {
+                if (in_array($val, $oldSubject)) {
 					unset($oldSubject[array_keys($oldSubject, $val)[0]]);
 					continue;
 				}
@@ -206,13 +212,14 @@ class Events extends \yii\base\BaseObject
 					->andWhere(['body' => Inflector::slug($val)])
 					->one();
 
-				if($subjectFind != null)
+                if ($subjectFind != null) {
 					$tag_id = $subjectFind->tag_id;
-				else {
+                } else {
 					$model = new CoreTags();
 					$model->body = $val;
-					if($model->save())
-						$tag_id = $model->tag_id;
+                    if ($model->save()) {
+                        $tag_id = $model->tag_id;
+                    }
 				}
 
 				$model = new ArchiveRelatedSubject();
@@ -224,7 +231,7 @@ class Events extends \yii\base\BaseObject
 		}
 
 		// drop difference subject
-		if(!empty($oldSubject)) {
+        if (!empty($oldSubject)) {
 			foreach ($oldSubject as $key => $val) {
 				ArchiveRelatedSubject::find()
 					->select(['id'])

@@ -20,23 +20,23 @@ use app\components\grid\GridView;
 use yii\widgets\Pjax;
 
 $context = $this->context;
-if($context->breadcrumbApp) {
+if ($context->breadcrumbApp) {
 	$this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
-if(!$parent)
-	$this->params['breadcrumbs'][] = $this->title;
-else {
+if (!$parent) {
+    $this->params['breadcrumbs'][] = $this->title;
+} else {
 	$this->params['breadcrumbs'][] = ['label' => $parent->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => $parent->isFond ? ['fond/index'] : ['admin/index']];
 	$this->params['breadcrumbs'][] = ['label' => $parent->isFond ? $parent->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$parent->level->level_name_i, 'code'=>$parent->code]), 'url' => [($parent->isFond ? 'fond' : 'admin').'/view', 'id'=>$parent->id]];
 	$this->params['breadcrumbs'][] = Yii::t('app', 'Childs');
 }
 
-if($parent) {
+if ($parent) {
 	$this->params['menu']['content'] = [
 		['label' => Yii::t('app', 'Add New Child Levels'), 'url' => Url::to(['admin/create', 'id'=>$parent->id]), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
 	];
 } else {
-	if($isFond == true) {
+    if ($isFond == true) {
 		$this->params['menu']['content'] = [
 			['label' => Yii::t('app', 'Add Fond'), 'url' => Url::to(['create']), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
 		];
@@ -51,17 +51,21 @@ $this->params['menu']['option'] = [
 <div class="archives-manage">
 <?php Pjax::begin(); ?>
 
-<?php if($level != null)
-	echo $this->render('/setting/level/admin_view', ['model'=>$level, 'small'=>true]); ?>
+<?php if ($level != null) {
+    echo $this->render('/setting/level/admin_view', ['model'=>$level, 'small'=>true]);
+} ?>
 
-<?php if($media != null)
-	echo $this->render('/setting/media/admin_view', ['model'=>$media, 'small'=>true]); ?>
+<?php if ($media != null) {
+    echo $this->render('/setting/media/admin_view', ['model'=>$media, 'small'=>true]);
+} ?>
 
-<?php if($creator != null)
-	echo $this->render('/setting/creator/admin_view', ['model'=>$creator, 'small'=>true]); ?>
+<?php if ($creator != null) {
+    echo $this->render('/setting/creator/admin_view', ['model'=>$creator, 'small'=>true]);
+} ?>
 
-<?php if($repository != null)
-	echo $this->render('/setting/repository/admin_view', ['model'=>$repository, 'small'=>true]); ?>
+<?php if ($repository != null) {
+    echo $this->render('/setting/repository/admin_view', ['model'=>$repository, 'small'=>true]);
+} ?>
 
 <?php //echo $this->render('_search', ['model'=>$searchModel]); ?>
 
@@ -73,12 +77,15 @@ array_push($columnData, [
 	'class' => 'app\components\grid\ActionColumn',
 	'header' => Yii::t('app', 'Option'),
 	'urlCreator' => function($action, $model, $key, $index) {
-		if($action == 'view')
-			return Url::to(['view', 'id'=>$key]);
-		if($action == 'update')
-			return Url::to(['update', 'id'=>$key]);
-		if($action == 'delete')
-			return Url::to(['delete', 'id'=>$key]);
+        if ($action == 'view') {
+            return Url::to(['view', 'id'=>$key]);
+        }
+        if ($action == 'update') {
+            return Url::to(['update', 'id'=>$key]);
+        }
+        if ($action == 'delete') {
+            return Url::to(['delete', 'id'=>$key]);
+        }
 	},
 	'buttons' => [
 		'view' => function ($url, $model, $key) {

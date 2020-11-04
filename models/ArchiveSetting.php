@@ -125,11 +125,13 @@ class ArchiveSetting extends \app\components\ActiveRecord
 	{
 		parent::init();
 
-		if(!(Yii::$app instanceof \app\components\Application))
-			return;
+        if (!(Yii::$app instanceof \app\components\Application)) {
+            return;
+        }
 
-		if(!$this->hasMethod('search'))
-			return;
+        if (!$this->hasMethod('search')) {
+            return;
+        }
 
 		$this->templateColumns['_no'] = [
 			'header' => '#',
@@ -263,14 +265,15 @@ class ArchiveSetting extends \app\components\ActiveRecord
 	 */
 	public static function getInfo($column=null)
 	{
-		if($column != null) {
-			$model = self::find();
-			if(is_array($column))
-				$model->select($column);
-			else
-				$model->select([$column]);
-			$model = $model->where(['id' => 1])->one();
-			return is_array($column) ? $model : $model->$column;
+        if ($column != null) {
+            $model = self::find();
+            if (is_array($column)) {
+                $model->select($column);
+            } else {
+                $model->select([$column]);
+            }
+            $model = $model->where(['id' => 1])->one();
+            return is_array($column) ? $model : $model->$column;
 			
 		} else {
 			$model = self::findOne(1);
@@ -285,18 +288,20 @@ class ArchiveSetting extends \app\components\ActiveRecord
 	{
 		$moduleName = "module name";
 		$module = strtolower(Yii::$app->controller->module->id);
-		if(($module = Yii::$app->moduleManager->getModule($module)) != null);
-			$moduleName = strtolower($module->getName());
+        if (($module = Yii::$app->moduleManager->getModule($module)) != null) {
+            $moduleName = strtolower($module->getName());
+        }
 
 		$items = array(
 			1 => Yii::t('app', 'Yes, the public can view {module} unless they are made private.', ['module'=>$moduleName]),
 			0 => Yii::t('app', 'No, the public cannot view {module}.', ['module'=>$moduleName]),
 		);
 
-		if($value !== null)
-			return $items[$value];
-		else
-			return $items;
+        if ($value !== null) {
+            return $items[$value];
+        } else {
+            return $items;
+        }
 	}
 
 	/**
@@ -309,10 +314,11 @@ class ArchiveSetting extends \app\components\ActiveRecord
 			'1' => Yii::t('app', 'Enable'),
 		);
 
-		if($value !== null)
-			return $items[$value];
-		else
-			return $items;
+        if ($value !== null) {
+            return $items[$value];
+        } else {
+            return $items;
+        }
 	}
 
 	/**
@@ -325,10 +331,11 @@ class ArchiveSetting extends \app\components\ActiveRecord
 			'0' => Yii::t('app', 'Disable'),
 		);
 
-		if($value !== null)
-			return $items[$value];
-		else
-			return $items;
+        if ($value !== null) {
+            return $items[$value];
+        } else {
+            return $items;
+        }
 	}
 
 	/**
@@ -336,15 +343,18 @@ class ArchiveSetting extends \app\components\ActiveRecord
 	 */
 	public function getBreadcrumbApps(): bool
 	{
-		if(!is_array($this->breadcrumb_param))
-			return false;
+        if (!is_array($this->breadcrumb_param)) {
+            return false;
+        }
 
-		if($this->breadcrumb_param['status'] != 1)
-			return false;
+        if ($this->breadcrumb_param['status'] != 1) {
+            return false;
+        }
 
 		unset($this->breadcrumb_param['status']);
-		if(!($this->breadcrumb_param['name'] != '' && $this->breadcrumb_param['url'] != ''))
-			return false;
+        if (!($this->breadcrumb_param['name'] != '' && $this->breadcrumb_param['url'] != '')) {
+            return false;
+        }
 
 		return true;
 	}
@@ -354,8 +364,9 @@ class ArchiveSetting extends \app\components\ActiveRecord
 	 */
 	public function getBreadcrumbAppParam()
 	{
-		if(!$this->getBreadcrumbApps())
-			return [];
+        if (!$this->getBreadcrumbApps()) {
+            return [];
+        }
 
 		$params = $this->breadcrumb_param;
 		unset($params['status']);
@@ -367,12 +378,13 @@ class ArchiveSetting extends \app\components\ActiveRecord
 	 */
 	public static function parseBreadcrumbApps($params)
 	{
-        if(!empty($params)) {
+        if (!empty($params)) {
             unset($params['status']);
         }
 
-		if($params == null)
-			return '-';
+        if ($params == null) {
+            return '-';
+        }
 
 		return Html::ul($params, ['encode'=>false, 'class'=>'list-boxed']);
 	}
@@ -385,20 +397,23 @@ class ArchiveSetting extends \app\components\ActiveRecord
 		parent::afterFind();
 
 		$image_type = Json::decode($this->image_type);
-		if(!empty($image_type))
-			$this->image_type = $this->formatFileType($image_type, false);
+        if (!empty($image_type)) {
+            $this->image_type = $this->formatFileType($image_type, false);
+        }
 		$document_type = Json::decode($this->document_type);
-		if(!empty($document_type))
-			$this->document_type = $this->formatFileType($document_type, false);
+        if (!empty($document_type)) {
+            $this->document_type = $this->formatFileType($document_type, false);
+        }
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
 
-        if($this->breadcrumb_param == '') {
+        if ($this->breadcrumb_param == '') {
             $breadcrumb_param = [];
         } else {
             $breadcrumb_param = Json::decode($this->breadcrumb_param);
         }
-		if(!empty($breadcrumb_param))
-			$this->breadcrumb_param = $breadcrumb_param;
+        if (!empty($breadcrumb_param)) {
+            $this->breadcrumb_param = $breadcrumb_param;
+        }
 
 		$this->breadcrumb = $this->getBreadcrumbApps() ? 1 : 0;
 	}
@@ -408,19 +423,22 @@ class ArchiveSetting extends \app\components\ActiveRecord
 	 */
 	public function beforeValidate()
 	{
-		if(parent::beforeValidate()) {
-			if(!$this->isNewRecord) {
-				if($this->modified_id == null)
-					$this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			}
-			if($this->breadcrumb_param['status'] == '')
-				$this->addError('breadcrumb_param', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('breadcrumb_status')]));
+        if (parent::beforeValidate()) {
+            if (!$this->isNewRecord) {
+                if ($this->modified_id == null) {
+                    $this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+                }
+            }
+            if ($this->breadcrumb_param['status'] == '') {
+                $this->addError('breadcrumb_param', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('breadcrumb_status')]));
+            }
 			else {
-				if($this->breadcrumb_param['status'] == 1 && !$this->getBreadcrumbApps())
-					$this->addError('breadcrumb_param', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('breadcrumb_app')]));
-			}
-		}
-		return true;
+                if ($this->breadcrumb_param['status'] == 1 && !$this->getBreadcrumbApps()) {
+                    $this->addError('breadcrumb_param', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('breadcrumb_app')]));
+                }
+            }
+        }
+        return true;
 	}
 
 	/**
@@ -428,12 +446,12 @@ class ArchiveSetting extends \app\components\ActiveRecord
 	 */
 	public function beforeSave($insert)
 	{
-		if(parent::beforeSave($insert)) {
+        if (parent::beforeSave($insert)) {
 			$this->production_date = Yii::$app->formatter->asDate($this->production_date, 'php:Y-m-d');
 			$this->image_type = Json::encode($this->formatFileType($this->image_type));
 			$this->document_type = Json::encode($this->formatFileType($this->document_type));
 			$this->breadcrumb_param = Json::encode($this->breadcrumb_param);
-		}
-		return true;
+        }
+        return true;
 	}
 }

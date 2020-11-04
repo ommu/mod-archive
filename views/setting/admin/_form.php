@@ -34,8 +34,10 @@ use app\components\widgets\ActiveForm;
 
 <?php //echo $form->errorSummary($model);?>
 
-<?php if($model->isNewRecord && !$model->getErrors())
+<?php
+if ($model->isNewRecord && !$model->getErrors()) {
 	$model->license = $model->licenseCode();
+}
 echo $form->field($model, 'license')
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('license'))
@@ -93,8 +95,10 @@ echo $form->field($model, 'medium_sublevel')
 	->dropDownList($fondSidkkas, ['prompt'=>''])
 	->label($model->getAttributeLabel('fond_sidkkas')); ?>
 
-<?php if($model->isNewRecord && !$model->getErrors())
+<?php 
+if ($model->isNewRecord && !$model->getErrors()) {
 	$model->production_date = Yii::$app->formatter->asDate('now', 'php:Y-m-d');
+}
 echo $form->field($model, 'production_date')
 	->textInput(['type'=>'date'])
 	->label($model->getAttributeLabel('production_date')); ?>

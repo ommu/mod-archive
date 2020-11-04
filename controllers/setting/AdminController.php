@@ -71,21 +71,23 @@ class AdminController extends Controller
 	public function actionIndex()
 	{
 		$model = ArchiveSetting::findOne(1);
-		if($model === null) 
-			$model = new ArchiveSetting(['id'=>1]);
+        if ($model === null) {
+            $model = new ArchiveSetting(['id'=>1]);
+        }
 
-		if(Yii::$app->request->isPost) {
+        if (Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
 			// $model->order = $postData['order'] ? $postData['order'] : 0;
 
-			if($model->save()) {
+            if ($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Archive setting success updated.'));
 				return $this->redirect(['index']);
-			} else {
-				if(Yii::$app->request->isAjax)
-					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+            } else {
+                if (Yii::$app->request->isAjax) {
+                    return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+                }
 			}
 		}
 
@@ -106,24 +108,27 @@ class AdminController extends Controller
 	public function actionUpdate()
 	{
 		$model = ArchiveSetting::findOne(1);
-		if($model === null) 
-			$model = new ArchiveSetting(['id'=>1]);
+        if ($model === null) {
+            $model = new ArchiveSetting(['id'=>1]);
+        }
 
-		if(Yii::$app->request->isPost) {
+        if (Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
 			// $model->order = $postData['order'] ? $postData['order'] : 0;
 
-			if($model->save()) {
+            if ($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Archive setting success updated.'));
-				if(!Yii::$app->request->isAjax)
-					return $this->redirect(['update']);
+                if (!Yii::$app->request->isAjax) {
+                    return $this->redirect(['update']);
+                }
 				return $this->redirect(Yii::$app->request->referrer ?: ['index']);
 
-			} else {
-				if(Yii::$app->request->isAjax)
-					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+            } else {
+                if (Yii::$app->request->isAjax) {
+                    return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+                }
 			}
 		}
 
@@ -159,8 +164,9 @@ class AdminController extends Controller
 	 */
 	protected function findModel($id)
 	{
-		if(($model = ArchiveSetting::findOne($id)) !== null)
-			return $model;
+        if (($model = ArchiveSetting::findOne($id)) !== null) {
+            return $model;
+        }
 
 		throw new \yii\web\NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
 	}

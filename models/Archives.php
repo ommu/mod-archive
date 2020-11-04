@@ -161,8 +161,9 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function getRelatedMedia($result=false, $val='id')
 	{
-		if($result == true)
-			return \yii\helpers\ArrayHelper::map($this->relatedMedia, 'media_id', $val=='id' ? 'id' : 'media.media_name_i');
+        if ($result == true) {
+            return \yii\helpers\ArrayHelper::map($this->relatedMedia, 'media_id', $val=='id' ? 'id' : 'media.media_name_i');
+        }
 
 		return $this->hasMany(ArchiveRelatedMedia::className(), ['archive_id' => 'id']);
 	}
@@ -172,8 +173,9 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function getRelatedCreator($result=false, $val='id')
 	{
-		if($result == true)
-			return \yii\helpers\ArrayHelper::map($this->relatedCreator, 'creator_id', $val=='id' ? 'id' : 'creator.creator_name');
+        if ($result == true) {
+            return \yii\helpers\ArrayHelper::map($this->relatedCreator, 'creator_id', $val=='id' ? 'id' : 'creator.creator_name');
+        }
 
 		return $this->hasMany(ArchiveRelatedCreator::className(), ['archive_id' => 'id']);
 	}
@@ -183,8 +185,9 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function getRelatedRepository($result=false, $val='id')
 	{
-		if($result == true)
-			return \yii\helpers\ArrayHelper::map($this->relatedRepository, 'repository_id', $val=='id' ? 'id' : 'repository.repository_name');
+        if ($result == true) {
+            return \yii\helpers\ArrayHelper::map($this->relatedRepository, 'repository_id', $val=='id' ? 'id' : 'repository.repository_name');
+        }
 
 		return $this->hasMany(ArchiveRelatedRepository::className(), ['archive_id' => 'id']);
 	}
@@ -194,8 +197,9 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function getRelatedSubject($result=false, $val='id')
 	{
-		if($result == true)
-			return \yii\helpers\ArrayHelper::map($this->relatedSubject, 'tag_id', $val=='id' ? 'id' : 'tag.body');
+        if ($result == true) {
+            return \yii\helpers\ArrayHelper::map($this->relatedSubject, 'tag_id', $val=='id' ? 'id' : 'tag.body');
+        }
 
 		return $this->hasMany(ArchiveRelatedSubject::className(), ['archive_id' => 'id'])
 			->alias('relatedSubject')
@@ -207,8 +211,9 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function getRelatedFunction($result=false, $val='id')
 	{
-		if($result == true)
-			return \yii\helpers\ArrayHelper::map($this->relatedFunction, 'tag_id', $val=='id' ? 'id' : 'tag.body');
+        if ($result == true) {
+            return \yii\helpers\ArrayHelper::map($this->relatedFunction, 'tag_id', $val=='id' ? 'id' : 'tag.body');
+        }
 
 		return $this->hasMany(ArchiveRelatedSubject::className(), ['archive_id' => 'id'])
 			->alias('relatedFunction')
@@ -220,8 +225,9 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function getRelatedLocation($relation=true)
 	{
-		if($relation == false)
-			return !empty($this->relatedLocation) ? $this->relatedLocation[0] : null;
+        if ($relation == false) {
+            return !empty($this->relatedLocation) ? $this->relatedLocation[0] : null;
+        }
 
 		return $this->hasMany(ArchiveLocations::className(), ['archive_id' => 'id'])
 			->alias('relatedLocation');
@@ -233,30 +239,33 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function getArchives($type='relation', $publish=null)
 	{
-		if($type == 'relation') {
+        if ($type == 'relation') {
 			$model = $this->hasMany(Archives::className(), ['parent_id' => 'id'])
-				->alias('archives');
-			if($publish != null)
-				return $model->andOnCondition([sprintf('%s.publish', 'archives') => $publish]);
-			else
-				return $model->andOnCondition(['IN', sprintf('%s.publish', 'archives'), [0,1]]);
+                ->alias('archives');
+	        if ($publish != null) {
+                return $model->andOnCondition([sprintf('%s.publish', 'archives') => $publish]);
+            } else {
+                return $model->andOnCondition(['IN', sprintf('%s.publish', 'archives'), [0,1]]);
+            }
 		}
 
 		$model = Archives::find()
-			->alias('t')
+            ->alias('t')
 			->select(['t.id'])
 			->where(['t.parent_id' => $this->id]);
-		if($publish != null) {
-			if($publish == 0)
-				$model->unpublish();
-			elseif($publish == 1)
-				$model->published();
-			elseif($publish == 2)
+        if ($publish != null) {
+            if ($publish == 0) {
+                $model->unpublish();
+            } else if ($publish == 1) {
+                $model->published();
+            } else if ($publish == 2) {
 				$model->deleted();
-		} else
-			$model->andWhere(['IN', 't.publish', [0,1]]);
+            }
+		} else {
+            $model->andWhere(['IN', 't.publish', [0,1]]);
+        }
 
-		if($type == 'array') {
+        if ($type == 'array') {
 			$model->select(['t.level_id', 'count(id) as group_childs'])
 				->groupBy(['t.level_id']);
 			$archives = $model->all();
@@ -264,7 +273,7 @@ class Archives extends \app\components\ActiveRecord
 			return ArrayHelper::map($archives, 'level_id', 'group_childs');
 		}
 
-		if($type == 'count') {
+        if ($type == 'count') {
 			$archives = $model->count();
 	
 			return $archives ? $archives : 0;
@@ -308,20 +317,22 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function getViews($count=false, $publish=1)
 	{
-		if($count == false)
-			return $this->hasMany(ArchiveViews::className(), ['archive_id' => 'id'])
-				->alias('views')
-				->andOnCondition([sprintf('%s.publish', 'views') => $publish]);
+        if ($count == false) {
+            return $this->hasMany(ArchiveViews::className(), ['archive_id' => 'id'])
+                ->alias('views')
+                ->andOnCondition([sprintf('%s.publish', 'views') => $publish]);
+        }
 
 		$model = ArchiveViews::find()
-			->alias('t')
-			->where(['t.archive_id' => $this->id]);
-		if($publish == 0)
-			$model->unpublish();
-		elseif($publish == 1)
-			$model->published();
-		elseif($publish == 2)
-			$model->deleted();
+            ->alias('t')
+            ->where(['t.archive_id' => $this->id]);
+        if ($publish == 0) {
+            $model->unpublish();
+        } else if ($publish == 1) {
+            $model->published();
+        } else if ($publish == 2) {
+            $model->deleted();
+        }
 		$views = $model->sum('views');
 
 		return $views ? $views : 0;
@@ -343,11 +354,13 @@ class Archives extends \app\components\ActiveRecord
 	{
 		parent::init();
 
-		if(!(Yii::$app instanceof \app\components\Application))
-			return;
+        if (!(Yii::$app instanceof \app\components\Application)) {
+            return;
+        }
 
-		if(!$this->hasMethod('search'))
-			return;
+        if (!$this->hasMethod('search')) {
+            return;
+        }
 
 		$this->templateColumns['_no'] = [
 			'header' => '#',
@@ -425,8 +438,9 @@ class Archives extends \app\components\ActiveRecord
 			'attribute' => 'medium',
 			'label' => Yii::t('app', 'Medium'),
 			'value' => function($model, $key, $index, $column) {
-				if(strtolower($model->level->level_name_i) == 'item')
-					return $model->medium ? $model->medium : '-';
+                if (strtolower($model->level->level_name_i) == 'item') {
+                    return $model->medium ? $model->medium : '-';
+                }
 				return self::parseChilds($model->getChilds(['sublevel'=>false, 'back3nd'=>true]), $model->id);
 			},
 			'filter' => false,
@@ -453,21 +467,24 @@ class Archives extends \app\components\ActiveRecord
 		$this->templateColumns['archive_file'] = [
 			'attribute' => 'archive_file',
 			'value' => function($model, $key, $index, $column) {
-				if(!$model->archive_file)
-					return '-';
+                if (!$model->archive_file) {
+                    return '-';
+                }
 
 				$extension = pathinfo($model->old_archive_file, PATHINFO_EXTENSION);
 				$setting = $model->getSetting(['image_type', 'document_type', 'maintenance_mode', 'maintenance_image_path', 'maintenance_document_path']);
 				$imageFileType = $model->formatFileType($setting->image_type);
 				$documentFileType = $model->formatFileType($setting->document_type);
 
-				if($model->isNewFile)
-					$uploadPath = join('/', [$model::getUploadPath(false), $model->id]);
-				else {
-					if(in_array($extension, $imageFileType))
-						$uploadPath = join('/', [$model::getUploadPath(false), $setting->maintenance_image_path]);
-					if(in_array($extension, $documentFileType))
-						$uploadPath = join('/', [$model::getUploadPath(false), $setting->maintenance_document_path]);
+                if ($model->isNewFile) {
+                    $uploadPath = join('/', [$model::getUploadPath(false), $model->id]);
+                } else {
+                    if (in_array($extension, $imageFileType)) {
+                        $uploadPath = join('/', [$model::getUploadPath(false), $setting->maintenance_image_path]);
+                    }
+                    if (in_array($extension, $documentFileType)) {
+                        $uploadPath = join('/', [$model::getUploadPath(false), $setting->maintenance_document_path]);
+                    }
 				}
 
 				return Html::a($model->archive_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->archive_file])), ['title'=>$model->archive_file, 'data-pjax'=>0, 'target'=>'_blank']);
@@ -484,7 +501,7 @@ class Archives extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'text-center'],
 			'format' => 'raw',
 		];
-		if(ArchiveSetting::getInfo('fond_sidkkas')) {
+        if (ArchiveSetting::getInfo('fond_sidkkas')) {
 			$this->templateColumns['sidkkas'] = [
 				'attribute' => 'sidkkas',
 				'value' => function($model, $key, $index, $column) {
@@ -566,19 +583,20 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public static function getInfo($id, $column=null)
 	{
-		if($column != null) {
-			$model = self::find();
-			if(is_array($column))
-				$model->select($column);
-			else
-				$model->select([$column]);
-			$model = $model->where(['id' => $id])->one();
-			return is_array($column) ? $model : $model->$column;
-			
-		} else {
-			$model = self::findOne($id);
-			return $model;
-		}
+        if ($column != null) {
+            $model = self::find();
+            if (is_array($column)) {
+                $model->select($column);
+            } else {
+                $model->select([$column]);
+            }
+            $model = $model->where(['id' => $id])->one();
+            return is_array($column) ? $model : $model->$column;
+
+        } else {
+            $model = self::findOne($id);
+            return $model;
+        }
 	}
 
 	/**
@@ -586,8 +604,9 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function getSetting($field=[])
 	{
-		if(empty($field))
-			$field = ['fond_sidkkas', 'maintenance_mode', 'reference_code_sikn', 'reference_code_separator', 'image_type', 'document_type'];
+        if (empty($field)) {
+            $field = ['fond_sidkkas', 'maintenance_mode', 'reference_code_sikn', 'reference_code_separator', 'image_type', 'document_type'];
+        }
 
 		$setting = ArchiveSetting::find()
 			->select($field)
@@ -601,7 +620,7 @@ class Archives extends \app\components\ActiveRecord
 	 * @param returnAlias set true jika ingin kembaliannya path alias atau false jika ingin string
 	 * relative path. default true.
 	 */
-	public static function getUploadPath($returnAlias=true) 
+	public static function getUploadPath($returnAlias=true)
 	{
 		return ($returnAlias ? Yii::getAlias('@public/archive') : 'archive');
 	}
@@ -613,16 +632,19 @@ class Archives extends \app\components\ActiveRecord
 	{
 		$levels = ArchiveLevel::getLevel(1);
 		$child = $this->level->child;
-		if(!is_array($child))
-			$child = [];
+        if (!is_array($child)) {
+            $child = [];
+        }
 
 		$items = $child;
-		if(!$isNewRecord)
-			$items = ArrayHelper::merge(explode(',', $this->level_id), $items);
+        if (!$isNewRecord) {
+            $items = ArrayHelper::merge(explode(',', $this->level_id), $items);
+        }
 
 		foreach ($levels as $key => $val) {
-			if(!ArrayHelper::isIn($key, $items))
-				ArrayHelper::remove($levels, $key);
+            if (!ArrayHelper::isIn($key, $items)) {
+                ArrayHelper::remove($levels, $key);
+            }
 		}
 
 		return $levels;
@@ -635,8 +657,9 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function getChilds($param=[])
 	{
-		if(empty($this->level->child))
-			return [];
+        if (empty($this->level->child)) {
+            return [];
+        }
 
 		$setting = ArchiveSetting::find()
 			->select(['medium_sublevel'])
@@ -645,35 +668,40 @@ class Archives extends \app\components\ActiveRecord
 
 		$sublevel = $setting->medium_sublevel;
 		$back3nd = 1;
-		if(isset($param['sublevel']))
-			$sublevel = $param['sublevel'] ? 1 : 0;
-		if(isset($param['back3nd']))
-			$back3nd = $param['back3nd'] ? 1 : 0;
+        if (isset($param['sublevel'])) {
+            $sublevel = $param['sublevel'] ? 1 : 0;
+        }
+        if (isset($param['back3nd'])) {
+            $back3nd = $param['back3nd'] ? 1 : 0;
+        }
 
 		$childs = $this->getArchives('array', $back3nd ? null : 1);
-		if(empty($childs))
-			return [];
+        if (empty($childs)) {
+            return [];
+        }
 
-		if($sublevel) {
+        if ($sublevel) {
 			$archives = self::find()
 				->select(['id', 'level_id']);
-			if($back3nd)
-				$archives->andWhere(['IN', 'publish', [0,1]]);
-			else
-				$archives->andWhere(['publish' => 1]);
+            if ($back3nd) {
+                $archives->andWhere(['IN', 'publish', [0,1]]);
+            } else {
+                $archives->andWhere(['publish' => 1]);
+            }
 			$archives = $archives->andWhere(['parent_id' => $this->id])
 				->all();
 	
-			if(!empty($archives)) {
+            if (!empty($archives)) {
 				foreach ($archives as $archive) {
-					if(!empty($archive->level->child)) {
+                    if (!empty($archive->level->child)) {
 						$childArchives = $archive->getChilds(['sublevel'=>$sublevel, 'back3nd'=>$back3nd]);
-						if(!empty($childArchives)) {
+                        if (!empty($childArchives)) {
 							foreach ($childArchives as $key => $val) {
-								if(array_key_exists($key, $childs))
-									$childs[$key] = $childs[$key] + $val;
-								else
-									$childs[$key] = $val;
+                                if (array_key_exists($key, $childs)) {
+                                    $childs[$key] = $childs[$key] + $val;
+                                } else {
+                                    $childs[$key] = $val;
+                                }
 							}
 						}
 					}
@@ -681,8 +709,9 @@ class Archives extends \app\components\ActiveRecord
 			}
 		}
 
-		if($this->medium && empty($this->level->child))
-			return ArrayHelper::merge($childs, [0=>$this->medium]);
+        if ($this->medium && empty($this->level->child)) {
+            return ArrayHelper::merge($childs, [0=>$this->medium]);
+        }
 
 		return $childs;
 	}
@@ -692,8 +721,9 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function getReferenceCode($result=false)
 	{
-		if($result == true)
-			return ArrayHelper::map($this->referenceCode, 'level', 'confirmCode');
+        if ($result == true) {
+            return ArrayHelper::map($this->referenceCode, 'level', 'confirmCode');
+        }
 
 		$codes = [];
 		$levelAsKey = $this->level->level_name_i;
@@ -702,8 +732,9 @@ class Archives extends \app\components\ActiveRecord
 		$codes[$levelAsKey]['code'] = $this->code;
 		$codes[$levelAsKey]['confirmCode'] = $this->confirmCode;
 		$codes[$levelAsKey]['shortCode'] = $this->shortCode;
-		if(isset($this->parent))
-			$codes = ArrayHelper::merge($this->parent->getReferenceCode(), $codes);
+        if (isset($this->parent)) {
+            $codes = ArrayHelper::merge($this->parent->getReferenceCode(), $codes);
+        }
 
 		return $codes;
 	}
@@ -713,10 +744,12 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function getIsNewFile(): bool
 	{
-		if($this->archive_file != '' && $this->archive_file == $this->_file_preview_path)
-			return false;
-		if($this->archive_file != '' && $this->_file_preview_path == null && preg_match("/^(archive)/", $this->archive_file))
-			return false;
+        if ($this->archive_file != '' && $this->archive_file == $this->_file_preview_path) {
+            return false;
+        }
+        if ($this->archive_file != '' && $this->_file_preview_path == null && preg_match("/^(archive)/", $this->archive_file)) {
+            return false;
+        }
 		
 		return true;
 	}
@@ -731,10 +764,11 @@ class Archives extends \app\components\ActiveRecord
 			'0' => Yii::t('app', 'Draft'),
 		);
 
-		if($value !== null)
-			return $items[$value];
-		else
-			return $items;
+        if ($value !== null) {
+            return $items[$value];
+        } else {
+            return $items;
+        }
 	}
 
 	/**
@@ -747,12 +781,14 @@ class Archives extends \app\components\ActiveRecord
 			'text' => Yii::t('app', 'Document'),
 		);
 
-		if($value !== null) {
-			if($value == '-')
-				return $value;
+        if ($value !== null) {
+            if ($value == '-') {
+                return $value;
+            }
 			return $items[$value];
-		} else
-			return $items;
+		} else {
+            return $items;
+        }
 	}
 
 	/**
@@ -760,8 +796,9 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public static function parseParent($model, $aciTree=true)
 	{
-		if(!isset($model->parent))
-			return Yii::$app->request->isAjax ? '-' : '<div id="tree" class="aciTree"></div>';
+        if (!isset($model->parent)) {
+            return Yii::$app->request->isAjax ? '-' : '<div id="tree" class="aciTree"></div>';
+        }
 
 		$title = self::htmlHardDecode($model->parent->title);
 		$levelName = $model->parent->level->title->message;
@@ -770,12 +807,14 @@ class Archives extends \app\components\ActiveRecord
 		$items[] = Yii::t('app', '{level} Code: {code}', ['level'=>$levelName, 'code'=>$model->parent->code]);
 		$items[] = $model->getAttributeLabel('title').': '.Html::a($title, ['view', 'id'=>$model->parent_id], ['title'=>$title, 'class'=>'modal-btn']);
 
-		if(Yii::$app->request->isAjax)
-			return Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']);
+        if (Yii::$app->request->isAjax) {
+            return Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']);
+        }
 		
 		$return = Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']);
-		if($aciTree)
-			$return .= '<hr/><div id="tree" class="aciTree"></div>';
+        if ($aciTree) {
+            $return .= '<hr/><div id="tree" class="aciTree"></div>';
+        }
 		return $return;
 	}
 
@@ -784,12 +823,13 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public static function parseRelated($relatedMedia, $controller='media', $sep='li')
 	{
-		if(!is_array($relatedMedia) || (is_array($relatedMedia) && empty($relatedMedia)))
-			return '-';
+        if (!is_array($relatedMedia) || (is_array($relatedMedia) && empty($relatedMedia))) {
+            return '-';
+        }
 
 		$items = self::getRelatedUrl($relatedMedia, $controller, true);
 
-		if($sep == 'li') {
+        if ($sep == 'li') {
 			return Html::ul($items, ['item' => function($item, $index) {
 				return Html::tag('li', $item);
 			}, 'class'=>'list-boxed']);
@@ -805,10 +845,11 @@ class Archives extends \app\components\ActiveRecord
 	{
 		$items = [];
 		foreach ($relates as $key => $val) {
-			if($hyperlink)
-				$items[$val] = Html::a($val, ['setting/'.$controller.'/view', 'id'=>$key], ['title'=>$val, 'class'=>'modal-btn']);
-			else
-				$items[$val] = Url::to(['setting/'.$controller.'/view', 'id'=>$key]);
+            if ($hyperlink) {
+                $items[$val] = Html::a($val, ['setting/'.$controller.'/view', 'id'=>$key], ['title'=>$val, 'class'=>'modal-btn']);
+            } else {
+                $items[$val] = Url::to(['setting/'.$controller.'/view', 'id'=>$key]);
+            }
 		}
 
 		return $items;
@@ -819,15 +860,16 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public static function parseSubject($relatedSubject, $attr='subjectId', $sep='li')
 	{
-		if(!is_array($relatedSubject) || (is_array($relatedSubject) && empty($relatedSubject)))
-			return '-';
+        if (!is_array($relatedSubject) || (is_array($relatedSubject) && empty($relatedSubject))) {
+            return '-';
+        }
 
 		$items = [];
 		foreach ($relatedSubject as $key => $val) {
 			$items[$val] = Html::a($val, ['admin/manage', $attr=>$key], ['title'=>$val]);
 		}
 
-		if($sep == 'li') {
+        if ($sep == 'li') {
 			return Html::ul($items, ['item' => function($item, $index) {
 				return Html::tag('li', $item);
 			}, 'class'=>'list-boxed']);
@@ -841,20 +883,22 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public static function parseChilds($childs, $id=null, $sep='li')
 	{
-		if(empty($childs))
-			return '-';
+        if (empty($childs)) {
+            return '-';
+        }
 
 		$levels = ArchiveLevel::getLevel();
 		$return = [];
-		$i=0;
+		$i = 0;
 		foreach ($childs as $key => $val) {
 			$i++;
 			$title = $val." ".$levels[$key];
 			$return[] = $i == 1 ? ($id != null ? Html::a($title, ['admin/manage', 'parent'=>$id], ['title'=>$title, 'data-pjax'=>0]) : $title) : $title;
 		}
 
-		if($sep == 'li')
-			return Html::ul($return, ['encode'=>false, 'class'=>'list-boxed']);
+        if ($sep == 'li') {
+            return Html::ul($return, ['encode'=>false, 'class'=>'list-boxed']);
+        }
 
 		return implode(', ', $return);
 	}
@@ -864,19 +908,25 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public static function parseLocation($model)
 	{
-		if($model == null)
-			return '-';
+        if ($model == null) {
+            return '-';
+        }
 
-		if(isset($model->rack))
-			$items[] = Yii::t('app', 'Rack: {rack}', ['rack'=>$model->rack->location_name]);
-		if(isset($model->room))
-			$items[] = Yii::t('app', 'Location: {room}, {depo}, {building}', ['room'=>$model->room->location_name, 'depo'=>$model->depo->location_name, 'building'=>$model->building->location_name]);
-		if(isset($model->storage))
-			$items[] = Yii::t('app', 'Storage: {storage-name}', ['storage-name'=>$model->storage->storage_name_i]);
-		if($model->weight != '')
-			$items[] = Yii::t('app', 'Weight: {weight}', ['weight'=>$model->weight]);
-		if($model->location_desc != '')
-			$items[] = Yii::t('app', 'Noted: {location-desc}', ['location-desc'=>$model->location_desc]);
+        if (isset($model->rack)) {
+            $items[] = Yii::t('app', 'Rack: {rack}', ['rack'=>$model->rack->location_name]);
+        }
+        if (isset($model->room)) {
+            $items[] = Yii::t('app', 'Location: {room}, {depo}, {building}', ['room'=>$model->room->location_name, 'depo'=>$model->depo->location_name, 'building'=>$model->building->location_name]);
+        }
+        if (isset($model->storage)) {
+            $items[] = Yii::t('app', 'Storage: {storage-name}', ['storage-name'=>$model->storage->storage_name_i]);
+        }
+        if ($model->weight != '') {
+            $items[] = Yii::t('app', 'Weight: {weight}', ['weight'=>$model->weight]);
+        }
+        if ($model->location_desc != '') {
+            $items[] = Yii::t('app', 'Noted: {location-desc}', ['location-desc'=>$model->location_desc]);
+        }
 
 		return Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']);
 	}
@@ -894,32 +944,36 @@ class Archives extends \app\components\ActiveRecord
 			->one();
 
 		$short_code = $setting->short_code;
-		if(isset($param['short']))
-			$short_code = $param['short'] ? 1 : 0;
+        if (isset($param['short'])) {
+            $short_code = $param['short'] ? 1 : 0;
+        }
 
 		$reference_code_separator = ' '.$setting->reference_code_separator.' ';
 		$title = $model::htmlHardDecode($model->title);
 
-		if($short_code)
-			return join(' ', [$setting->reference_code_sikn, !$setting->maintenance_mode ? $model->code : $model->confirmCode]);
+        if ($short_code) {
+            return join(' ', [$setting->reference_code_sikn, !$setting->maintenance_mode ? $model->code : $model->confirmCode]);
+        }
 
-		if(isset($param['link']) && $param['link']) {
+        if (isset($param['link']) && $param['link']) {
 			$count = count($model->referenceCode);
 			$i = 0;
 			$coder = [];
 			foreach ($model->referenceCode as $key => $val) {
 				$i++;
 				$code = $setting->maintenance_mode ? $val['confirmCode'] : $val['code'];
-				if($i == $count)
-					$coder[] = '<span class="badge badge-success">'.$code.'</span>';
-				else
-					$coder[] = Html::a($code, ['/archive/site/view', 'id'=>$val['id'], 't'=>Inflector::slug($title)], ['title'=>$title, 'class'=>'text-dark-gray']);
+                if ($i == $count) {
+                    $coder[] = '<span class="badge badge-success">'.$code.'</span>';
+                } else {
+                    $coder[] = Html::a($code, ['/archive/site/view', 'id'=>$val['id'], 't'=>Inflector::slug($title)], ['title'=>$title, 'class'=>'text-dark-gray']);
+                }
 			}
 			return join(' ', [$setting->reference_code_sikn, join($reference_code_separator, $coder)]);
 		}
 
-		if($setting->maintenance_mode)
-			return join(' ', [$setting->reference_code_sikn, join($reference_code_separator, ArrayHelper::map($model->referenceCode, 'level', 'confirmCode'))]);
+        if ($setting->maintenance_mode) {
+            return join(' ', [$setting->reference_code_sikn, join($reference_code_separator, ArrayHelper::map($model->referenceCode, 'level', 'confirmCode'))]);
+        }
 
 		return join(' ', [$setting->reference_code_sikn, join($reference_code_separator, ArrayHelper::map($model->referenceCode, 'level', 'code'))]);
 	}
@@ -942,24 +996,27 @@ class Archives extends \app\components\ActiveRecord
 		$this->code = preg_replace("/^[.-]/", '', preg_replace("/^(3400|23400-24)/", '', $this->code));
 		$this->oldCode = $this->code;
 		$parentCode = $this->parent->code;
-		if($setting->maintenance_mode) {
-			if($this->parent->code == $this->parent->confirmCode)
-				$parentCode = preg_replace("/[.-]$/", '', join('.', $this->getReferenceCode(true)));
+        if ($setting->maintenance_mode) {
+            if ($this->parent->code == $this->parent->confirmCode) {
+                $parentCode = preg_replace("/[.-]$/", '', join('.', $this->getReferenceCode(true)));
+            }
 			$confirmCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
 			$parentConfirmCode = $this->parent->confirmCode;
-			if(preg_match("/^($parentConfirmCode)/", $confirmCode)) {
+            if (preg_match("/^($parentConfirmCode)/", $confirmCode)) {
 				$shortCodeStatus = false;
 				$this->confirmCode = $confirmCode;
 			} else {
 				$shortCodeStatus = true;
-				if(count(explode('.', $confirmCode)) == 1)
-					$this->confirmCode = join('.', [$parentConfirmCode, $confirmCode]);
-				else
-					$this->confirmCode = $confirmCode;
+                if (count(explode('.', $confirmCode)) == 1) {
+                    $this->confirmCode = join('.', [$parentConfirmCode, $confirmCode]);
+                } else {
+                    $this->confirmCode = $confirmCode;
+                }
 			}
 			$this->shortCode = $shortCodeStatus ? $confirmCode : preg_replace("/^[.-]/", '', preg_replace("/^($parentConfirmCode)/", '', $this->confirmCode));
-		} else
-			$this->shortCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
+		} else {
+            $this->shortCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
+        }
 
 		$this->oldConfirmCode = $this->confirmCode;
 		$this->oldShortCode = $this->shortCode;
@@ -980,14 +1037,14 @@ class Archives extends \app\components\ActiveRecord
 	{
 		$setting = $this->getSetting(['image_type', 'document_type']);
 
-		if(parent::beforeValidate()) {
+        if (parent::beforeValidate()) {
 			// $this->archive_file = UploadedFile::getInstance($this, 'archive_file');
-			if($this->archive_file instanceof UploadedFile && !$this->archive_file->getHasError()) {
+            if ($this->archive_file instanceof UploadedFile && !$this->archive_file->getHasError()) {
 				$imageFileType = $this->formatFileType($setting->image_type);
 				$documentFileType = $this->formatFileType($setting->document_type);
 				$fileType = ArrayHelper::merge($imageFileType, $documentFileType);
 
-				if(!in_array(strtolower($this->archive_file->getExtension()), $fileType)) {
+                if (!in_array(strtolower($this->archive_file->getExtension()), $fileType)) {
 					$this->addError('archive_file', Yii::t('app', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {image-extensions} for photo and {document-extensions} for document', [
 						'name'=>$this->archive_file->name,
 						'image-extensions'=>$setting->image_type,
@@ -996,15 +1053,17 @@ class Archives extends \app\components\ActiveRecord
 				}
 			}
 
-			if($this->isNewRecord) {
-				if($this->creation_id == null)
-					$this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			} else {
-				if($this->modified_id == null)
-					$this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			}
-		}
-		return true;
+            if ($this->isNewRecord) {
+                if ($this->creation_id == null) {
+                    $this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+                }
+            } else {
+                if ($this->modified_id == null) {
+                    $this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+                }
+            }
+        }
+        return true;
 	}
 
 	/**
@@ -1017,17 +1076,19 @@ class Archives extends \app\components\ActiveRecord
 		parent::beforeSave($insert);
 
 		// set code
-		if($this->updateCode == true) {
-			if(strtolower($this->level->level_name_i) == 'fond')
-				$this->code = $this->shortCode;
-			else {
-				if($setting->maintenance_mode) {
-					if(count(explode('.', $this->shortCode)) == 1)
-						$this->code = join('.', [$this->parent->confirmCode, $this->shortCode]);
-					else
-						$this->code = $this->shortCode;
-				} else
-					$this->code = join('.', [$this->parent->code, $this->shortCode]);
+        if ($this->updateCode == true) {
+            if (strtolower($this->level->level_name_i) == 'fond') {
+                $this->code = $this->shortCode;
+            } else {
+                if ($setting->maintenance_mode) {
+                    if (count(explode('.', $this->shortCode)) == 1) {
+                        $this->code = join('.', [$this->parent->confirmCode, $this->shortCode]);
+                    } else {
+                        $this->code = $this->shortCode;
+                    }
+				} else {
+                    $this->code = join('.', [$this->parent->code, $this->shortCode]);
+                }
 			}
 			// $this->code = strtolower($this->level->level_name_i) == 'fond' ? 
 			// 	$this->shortCode : 
@@ -1037,43 +1098,46 @@ class Archives extends \app\components\ActiveRecord
 		}
 	
 		// replace code
-		if(!$insert && (array_key_exists('code', $this->dirtyAttributes) && $this->dirtyAttributes['code'] != $this->oldCode) && $this->getArchives('count') != 0) {
+        if (!$insert && (array_key_exists('code', $this->dirtyAttributes) && $this->dirtyAttributes['code'] != $this->oldCode) && $this->getArchives('count') != 0) {
 			$models = self::find()
 				->select(['id', 'parent_id', 'level_id', 'code'])
 				->where(['parent_id'=>$this->id])
 				->all();
-			if(!empty($models)) {
+            if (!empty($models)) {
 				foreach ($models as $model) {
-					if($setting->maintenance_mode)
-						$model->parent->confirmCode = $this->dirtyAttributes['code'];
-					else
-						$model->parent->code = $this->dirtyAttributes['code'];
+                    if ($setting->maintenance_mode) {
+                        $model->parent->confirmCode = $this->dirtyAttributes['code'];
+                    } else {
+                        $model->parent->code = $this->dirtyAttributes['code'];
+                    }
 					$model->updateCode = true;
 					$model->update(false);
 				}
 			}
 		}
 		
-		if(!$insert) {
+        if (!$insert) {
 			// set archive media, creator repository, subject and function
 			$event = new Event(['sender' => $this]);
 			Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARCHIVES, $event);
 
-			$uploadPath = join('/', [self::getUploadPath(), $this->id]);
-			$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
-			$this->createUploadDirectory(self::getUploadPath(), $this->id);
+            $uploadPath = join('/', [self::getUploadPath(), $this->id]);
+            $verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+            $this->createUploadDirectory(self::getUploadPath(), $this->id);
 
 			// $this->archive_file = UploadedFile::getInstance($this, 'archive_file');
-			if($this->archive_file instanceof UploadedFile && !$this->archive_file->getHasError()) {
-				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->archive_file->getExtension()); 
-				if($this->archive_file->saveAs(join('/', [$uploadPath, $fileName]))) {
-					if($this->old_archive_file != '' && file_exists(join('/', [$uploadPath, $this->old_archive_file])))
-						rename(join('/', [$uploadPath, $this->old_archive_file]), join('/', [$verwijderenPath.'-'.time().'_change_'.$this->old_archive_file]));
+            if ($this->archive_file instanceof UploadedFile && !$this->archive_file->getHasError()) {
+				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->archive_file->getExtension());
+                if ($this->archive_file->saveAs(join('/', [$uploadPath, $fileName]))) {
+                    if ($this->old_archive_file != '' && file_exists(join('/', [$uploadPath, $this->old_archive_file]))) {
+                        rename(join('/', [$uploadPath, $this->old_archive_file]), join('/', [$verwijderenPath.'-'.time().'_change_'.$this->old_archive_file]));
+                    }
 					$this->archive_file = $fileName;
-				}
-			} else {
-				if($this->archive_file == '')
-					$this->archive_file = $this->old_archive_file;
+                }
+            } else {
+                if ($this->archive_file == '') {
+                    $this->archive_file = $this->old_archive_file;
+                }
 			}
 		}
 
@@ -1085,33 +1149,33 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function afterSave($insert, $changedAttributes)
 	{
-		parent::afterSave($insert, $changedAttributes);
-		
-		if($insert) {
+        parent::afterSave($insert, $changedAttributes);
+
+        if ($insert) {
 			// set archive media, creator repository, subject and function
 			$event = new Event(['sender' => $this]);
 			Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARCHIVES, $event);
 
-			$uploadPath = join('/', [self::getUploadPath(), $this->id]);
-			$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
-			$this->createUploadDirectory(self::getUploadPath(), $this->id);
+            $uploadPath = join('/', [self::getUploadPath(), $this->id]);
+            $verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+            $this->createUploadDirectory(self::getUploadPath(), $this->id);
 
 			// $this->archive_file = UploadedFile::getInstance($this, 'archive_file');
-			if($this->archive_file instanceof UploadedFile && !$this->archive_file->getHasError()) {
-				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->archive_file->getExtension()); 
-				if($this->archive_file->saveAs(join('/', [$uploadPath, $fileName]))) {
+            if ($this->archive_file instanceof UploadedFile && !$this->archive_file->getHasError()) {
+				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->archive_file->getExtension());
+                if ($this->archive_file->saveAs(join('/', [$uploadPath, $fileName]))) {
 					self::updateAll(['archive_file' => $fileName], ['id' => $this->id]);
 				}
 			}
 
 		} else {
 			// update sidkkas status
-			if(array_key_exists('sidkkas', $changedAttributes) && $changedAttributes['sidkkas'] != $this->sidkkas) {
+            if (array_key_exists('sidkkas', $changedAttributes) && $changedAttributes['sidkkas'] != $this->sidkkas) {
 				$models = self::find()
 					->select(['id', 'sidkkas', 'parent_id', 'level_id', 'code'])
 					->where(['parent_id'=>$this->id])
 					->all();
-				if(!empty($models)) {
+                if (!empty($models)) {
 					foreach ($models as $model) {
 						$model->updateCode = false;
 						$model->sidkkas = $this->sidkkas;
@@ -1121,12 +1185,12 @@ class Archives extends \app\components\ActiveRecord
 			}
 
 			// delete and update archive childs publish condition
-			if(array_key_exists('publish', $changedAttributes) && $changedAttributes['publish'] != $this->publish) {
+            if (array_key_exists('publish', $changedAttributes) && $changedAttributes['publish'] != $this->publish) {
 				$models = self::find()
 					->select(['id', 'publish'])
 					->where(['parent_id'=>$this->id])
 					->all();
-				if(!empty($models)) {
+                if (!empty($models)) {
 					foreach ($models as $model) {
 						$model->updateCode = false;
 						$model->publish = $this->publish;
@@ -1142,12 +1206,13 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function afterDelete()
 	{
-		parent::afterDelete();
+        parent::afterDelete();
 
-		$uploadPath = join('/', [self::getUploadPath(), $this->id]);
-		$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+        $uploadPath = join('/', [self::getUploadPath(), $this->id]);
+        $verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
 
-		if($this->archive_file != '' && file_exists(join('/', [$uploadPath, $this->archive_file])))
-			rename(join('/', [$uploadPath, $this->archive_file]), join('/', [$verwijderenPath, $this->id.'-'.time().'_deleted_'.$this->archive_file]));
+        if ($this->archive_file != '' && file_exists(join('/', [$uploadPath, $this->archive_file]))) {
+            rename(join('/', [$uploadPath, $this->archive_file]), join('/', [$verwijderenPath, $this->id.'-'.time().'_deleted_'.$this->archive_file]));
+        }
 	}
 }

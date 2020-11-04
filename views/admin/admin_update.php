@@ -20,14 +20,14 @@ use yii\helpers\ArrayHelper;
 \ommu\archive\assets\AciTreeAsset::register($this);
 
 $context = $this->context;
-if($context->breadcrumbApp) {
+if ($context->breadcrumbApp) {
 	$this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
 $this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]), 'url' => ['view', 'id'=>$model->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 
-if(!$isFond) {
+if (!$isFond) {
 	$this->params['menu']['content'] = [
         ['label' => Yii::t('app', 'Show Reference Code'), 'url' => 'javascript:void(0);', 'icon' => 'code', 'htmlOptions' => ['class'=>'btn btn-warning', 'id'=>'reference-code']],
     ];
@@ -39,7 +39,7 @@ $js = <<<JS
 JS;
 	$this->registerJs($js, \yii\web\View::POS_HEAD);
 }
-if(!in_array('location', $model->level->field))
+if (!in_array('location', $model->level->field))
 	unset($this->params['menu']['content']['location']);
 ?>
 
