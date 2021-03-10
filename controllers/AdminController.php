@@ -110,9 +110,9 @@ class AdminController extends Controller
         // print_r(Yii::$app->request->get());
         // echo '</pre>';
 
-		$searchModel = new ArchivesSearch(['isFond'=>$this->isFond()]);
+		$searchModel = new ArchivesSearch(['isFond' => $this->isFond()]);
         if (($parent = Yii::$app->request->get('parent')) != null) {
-            $searchModel = new ArchivesSearch(['isFond'=>$this->isFond(), 'parent_id'=>$parent]);
+            $searchModel = new ArchivesSearch(['isFond' => $this->isFond(), 'parent_id' => $parent]);
         }
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -159,9 +159,9 @@ class AdminController extends Controller
         $title = $this->isFond() ? Yii::t('app', 'Fonds') : Yii::t('app', 'Inventories');
         if ($parent) {
             if ($parent->isFond == true) {
-                $title = Yii::t('app', 'Fond Childs: {code}', ['code'=>$parent->code]);
+                $title = Yii::t('app', 'Fond Childs: {code}', ['code' => $parent->code]);
             } else {
-                $title = Yii::t('app', 'Inventory Childs: {level-name} {code}', ['level-name'=>$parent->level->level_name_i, 'code'=>$parent->code]);
+                $title = Yii::t('app', 'Inventory Childs: {level-name} {code}', ['level-name' => $parent->level->level_name_i, 'code' => $parent->code]);
             }
         }
 
@@ -200,7 +200,7 @@ class AdminController extends Controller
 
 		$model = new Archives();
         if (!$id) {
-			$model = new Archives(['level_id'=>1]);
+			$model = new Archives(['level_id' => 1]);
         }
 
         if (Yii::$app->request->isPost) {
@@ -212,17 +212,17 @@ class AdminController extends Controller
             }
 
             if ($model->save()) {
-                Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success created.', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]));
+                Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success created.', ['level-name' => $model->level->level_name_i, 'code' => $model->code]));
                 if ($id && empty($model->level->child)) {
                     if ($model->backToManage) {
-						return $this->redirect(['manage', 'parent'=>$model->parent_id]);
+						return $this->redirect(['manage', 'parent' => $model->parent_id]);
                     }
-					return $this->redirect(['create', 'id'=>$model->parent_id]);
+					return $this->redirect(['create', 'id' => $model->parent_id]);
 				}
                 if ($model->backToManage) {
-					return $this->redirect(['manage', 'parent'=>$model->parent_id]);
+					return $this->redirect(['manage', 'parent' => $model->parent_id]);
                 }
-                return $this->redirect(['view', 'id'=>$model->id]);
+                return $this->redirect(['view', 'id' => $model->id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {
@@ -241,9 +241,9 @@ class AdminController extends Controller
             if (!in_array('location', $parent->level->field)) {
 				unset($this->subMenu['location']);
             }
-		}
+        }
 
-		$this->view->title = $parent ? Yii::t('app', 'Add New Child: {level-name} {code}', ['level-name'=>$parent->level->level_name_i, 'code'=>$parent->code]) : Yii::t('app', 'Create Fond');
+		$this->view->title = $parent ? Yii::t('app', 'Add New Child: {level-name} {code}', ['level-name' => $parent->level->level_name_i, 'code' => $parent->code]) : Yii::t('app', 'Create Fond');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
@@ -277,14 +277,14 @@ class AdminController extends Controller
             // $model->order = $postData['order'] ? $postData['order'] : 0;
 
             if ($model->save()) {
-                Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success updated.', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]));
+                Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success updated.', ['level-name' => $model->level->level_name_i, 'code' => $model->code]));
                 if ($model->backToManage) {
                     if (strtolower($model->level->level_name_i) == 'fond') {
-						return $this->redirect(['manage', 'level'=>$model->level_id]);
+						return $this->redirect(['manage', 'level' => $model->level_id]);
                     }
-					return $this->redirect(['manage', 'parent'=>$model->parent_id]);
+					return $this->redirect(['manage', 'parent' => $model->parent_id]);
 				}
-				return $this->redirect(['update', 'id'=>$model->id]);
+				return $this->redirect(['update', 'id' => $model->id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {
@@ -301,7 +301,7 @@ class AdminController extends Controller
         }
 
         $this->subMenuParam = $model->id;
-		$this->view->title = Yii::t('app', 'Update {level-name}: {code}', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]);
+		$this->view->title = Yii::t('app', 'Update {level-name}: {code}', ['level-name' => $model->level->level_name_i, 'code' => $model->code]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
@@ -329,7 +329,7 @@ class AdminController extends Controller
 
         $this->subMenuParam = $model->id;
 		$this->view->cards = false;
-		$this->view->title = Yii::t('app', 'Detail {level-name}: {code}', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]);
+		$this->view->title = Yii::t('app', 'Detail {level-name}: {code}', ['level-name' => $model->level->level_name_i, 'code' => $model->code]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
@@ -350,7 +350,7 @@ class AdminController extends Controller
 		$model->publish = 2;
 
         if ($model->save(false, ['publish', 'modified_id'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success deleted.', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]));
+			Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success deleted.', ['level-name' => $model->level->level_name_i, 'code' => $model->code]));
 			return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
 		}
 	}
@@ -409,16 +409,16 @@ class AdminController extends Controller
 	{
 		$data = [
 			'id' => $model->id,
-			'code'=>$model->code,
+			'code' => $model->code,
 			'level' => $model->level->level_name_i,
 			'label' => $model::htmlHardDecode($model->title),
 			'inode' => $model->getArchives('count') ? true : false,
-			'view-url' => Url::to(['view', 'id'=>$model->id]),
-			'update-url' => Url::to(['update', 'id'=>$model->id]),
-			'child-url' => Url::to(['manage', 'parent'=>$model->id]),
+			'view-url' => Url::to(['view', 'id' => $model->id]),
+			'update-url' => Url::to(['update', 'id' => $model->id]),
+			'child-url' => Url::to(['manage', 'parent' => $model->id]),
 		];
         if (!empty($codes)) {
-			$data = ArrayHelper::merge($data, ['open'=>true, 'branch'=>[$codes]]);
+			$data = ArrayHelper::merge($data, ['open' => true, 'branch' => [$codes]]);
         }
 		
         if (isset($model->parent)) {
@@ -434,12 +434,12 @@ class AdminController extends Controller
 	public function actionLocation($id)
 	{
 		$model = ArchiveLocations::find()
-			->where(['archive_id'=>$id])
+			->where(['archive_id' => $id])
 			->one();
 		$newRecord = false;
         if ($model == null) {
 			$newRecord = true;
-			$model = new ArchiveLocations(['archive_id'=>$id]);
+			$model = new ArchiveLocations(['archive_id' => $id]);
         }
 		$model->archive->isFond = $this->isFond();
 
@@ -450,11 +450,11 @@ class AdminController extends Controller
             // $model->order = $postData['order'] ? $postData['order'] : 0;
 
             if ($model->save()) {
-                Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success updated location.', ['level-name'=>$model->archive->level->level_name_i, 'code'=>$model->archive->code]));
+                Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success updated location.', ['level-name' => $model->archive->level->level_name_i, 'code' => $model->archive->code]));
                 if (!Yii::$app->request->isAjax) {
-					return $this->redirect(['location', 'id'=>$model->archive_id]);
+					return $this->redirect(['location', 'id' => $model->archive_id]);
                 }
-                return $this->redirect(Yii::$app->request->referrer ?: ['location', 'id'=>$model->archive_id]);
+                return $this->redirect(Yii::$app->request->referrer ?: ['location', 'id' => $model->archive_id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {
@@ -471,7 +471,7 @@ class AdminController extends Controller
         }
 
         $this->subMenuParam = $model->archive_id;
-		$this->view->title = Yii::t('app', 'Storage Location {level-name}: {code}', ['level-name'=>$model->archive->level->level_name_i, 'code'=>$model->archive->code]);
+		$this->view->title = Yii::t('app', 'Storage Location {level-name}: {code}', ['level-name' => $model->archive->level->level_name_i, 'code' => $model->archive->code]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_location', [
@@ -488,14 +488,14 @@ class AdminController extends Controller
 	 */
 	public function actionResetLocation($id)
 	{
-        if (($model = ArchiveLocations::find()->where(['id'=>$id])->one()) === null) {
+        if (($model = ArchiveLocations::find()->where(['id' => $id])->one()) === null) {
 			throw new \yii\web\NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
 
         $model->archive->isFond = $this->isFond();
 		$model->delete();
 
-		Yii::$app->session->setFlash('success', Yii::t('app', '{label} success reset location.', ['label'=>!$model->archive->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory')]));
+		Yii::$app->session->setFlash('success', Yii::t('app', '{label} success reset location.', ['label' => !$model->archive->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory')]));
 		return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
 	}
 
@@ -508,7 +508,7 @@ class AdminController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'Preview {level-name}: {code}', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]);
+		$this->view->title = Yii::t('app', 'Preview {level-name}: {code}', ['level-name' => $model->level->level_name_i, 'code' => $model->code]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_preview_document', [

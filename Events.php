@@ -120,7 +120,7 @@ class Events extends \yii\base\BaseObject
 			foreach ($oldCreator as $key => $val) {
 				ArchiveRelatedCreator::find()
 					->select(['id'])
-					->andWhere(['archive_id'=>$archive->id, 'creator_id'=>$key])
+					->andWhere(['archive_id' => $archive->id, 'creator_id' => $key])
 					->one()
 					->delete();
 			}
@@ -175,7 +175,7 @@ class Events extends \yii\base\BaseObject
 				// drop old repository
 				ArchiveRelatedRepository::find()
 					->select(['id'])
-					->andWhere(['id'=>key($oldRepository)])
+					->andWhere(['id' => key($oldRepository)])
 					->one()
 					->delete();
 			}
@@ -235,7 +235,7 @@ class Events extends \yii\base\BaseObject
 			foreach ($oldSubject as $key => $val) {
 				ArchiveRelatedSubject::find()
 					->select(['id'])
-					->where(['type'=>$type, 'archive_id'=>$archive->id, 'tag_id'=>$key])
+					->where(['type' => $type, 'archive_id' => $archive->id, 'tag_id' => $key])
 					->one()
 					->delete();
 			}

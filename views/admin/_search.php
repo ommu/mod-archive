@@ -35,7 +35,7 @@ use ommu\archive\models\ArchiveSetting;
 
 		<?php $level = ArchiveLevel::getLevel();
 		echo $form->field($model, 'level_id')
-			->dropDownList($level, ['prompt'=>'']);?>
+			->dropDownList($level, ['prompt' => '']);?>
 
 		<?php echo $form->field($model, 'title');?>
 
@@ -43,7 +43,7 @@ use ommu\archive\models\ArchiveSetting;
 
 		<?php $imageType = Archives::getArchiveType();
 			echo $form->field($model, 'archive_type')
-			->dropDownList($imageType, ['prompt'=>'']);?>
+			->dropDownList($imageType, ['prompt' => '']);?>
 
 		<?php echo $form->field($model, 'archive_date');?>
 
@@ -64,11 +64,11 @@ use ommu\archive\models\ArchiveSetting;
 
 		<?php if (ArchiveSetting::getInfo('fond_sidkkas')) {
 			echo $form->field($model, 'sidkkas')
-				->dropDownList($model->filterYesNo(), ['prompt'=>'']);
+				->dropDownList($model->filterYesNo(), ['prompt' => '']);
 		} ?>
 
 		<?php echo $form->field($model, 'publish')
-			->dropDownList($model->filterYesNo(), ['prompt'=>'']);?>
+			->dropDownList($model->filterYesNo(), ['prompt' => '']);?>
 
 		<div class="form-group">
 			<?php echo Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']); ?>

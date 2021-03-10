@@ -89,7 +89,7 @@ class HistoryController extends Controller
         $searchModel = new ArchiveViewHistorySearch();
         $queryParams = Yii::$app->request->queryParams;
         if (($archive = Yii::$app->request->get('archiveId')) != null) {
-            $queryParams = ArrayHelper::merge(Yii::$app->request->queryParams, ['archiveId'=>$archive]);
+            $queryParams = ArrayHelper::merge(Yii::$app->request->queryParams, ['archiveId' => $archive]);
         }
 		$dataProvider = $searchModel->search($queryParams);
 
@@ -162,7 +162,7 @@ class HistoryController extends Controller
 		$model->delete();
 
 		Yii::$app->session->setFlash('success', Yii::t('app', 'Archive view history success deleted.'));
-		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'view'=>$model->view_id]);
+		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'view' => $model->view_id]);
 	}
 
 	/**

@@ -114,7 +114,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
             } else {
                 return $model->andOnCondition(['IN', sprintf('%s.publish', 'archives'), [0,1]]);
             }
-		}
+        }
 
 		$model = Archives::find()
             ->alias('t')
@@ -194,7 +194,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		$this->templateColumns['_no'] = [
 			'header' => '#',
 			'class' => 'app\components\grid\SerialColumn',
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 		];
 		$this->templateColumns['level_name_i'] = [
 			'attribute' => 'level_name_i',
@@ -228,10 +228,10 @@ class ArchiveLevel extends \app\components\ActiveRecord
 			'attribute' => 'archives',
 			'value' => function($model, $key, $index, $column) {
 				$archives = $model->getArchives(true);
-				return Html::a($archives, ['admin/manage', 'level'=>$model->primaryKey, 'data'=>'yes'], ['title'=>Yii::t('app', '{count} archives', ['count'=>$archives]), 'data-pjax'=>0]);
+				return Html::a($archives, ['admin/manage', 'level' => $model->primaryKey, 'data' => 'yes'], ['title' => Yii::t('app', '{count} archives', ['count' => $archives]), 'data-pjax' => 0]);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
 		];
 		$this->templateColumns['creation_date'] = [
@@ -274,11 +274,11 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		$this->templateColumns['publish'] = [
 			'attribute' => 'publish',
 			'value' => function($model, $key, $index, $column) {
-				$url = Url::to(['publish', 'id'=>$model->primaryKey]);
+				$url = Url::to(['publish', 'id' => $model->primaryKey]);
 				return $this->quickAction($url, $model->publish);
 			},
 			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
 			'visible' => !Yii::$app->request->get('trash') ? true : false,
 		];
@@ -344,8 +344,8 @@ class ArchiveLevel extends \app\components\ActiveRecord
 
         if ($sep == 'li') {
 			return Html::ul($level, ['item' => function($item, $index) {
-				return Html::tag('li', Html::a($item, ['setting/level/view', 'id'=>$index], ['title'=>$item, 'class'=>'modal-btn']));
-			}, 'class'=>'list-boxed']);
+				return Html::tag('li', Html::a($item, ['setting/level/view', 'id' => $index], ['title' => $item, 'class' => 'modal-btn']));
+			}, 'class' => 'list-boxed']);
 		}
 
 		return implode(', ', $level);
@@ -385,7 +385,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
             if ($sep == 'li') {
 				return Html::ul($item, ['item' => function($item, $index) {
 					return Html::tag('li', "($index) $item");
-				}, 'class'=>'list-boxed']);
+				}, 'class' => 'list-boxed']);
 			}
 
 			return implode(', ', $item);

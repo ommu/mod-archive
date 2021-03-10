@@ -247,7 +247,7 @@ class Archives extends \app\components\ActiveRecord
             } else {
                 return $model->andOnCondition(['IN', sprintf('%s.publish', 'archives'), [0,1]]);
             }
-		}
+        }
 
 		$model = Archives::find()
             ->alias('t')
@@ -365,7 +365,7 @@ class Archives extends \app\components\ActiveRecord
 		$this->templateColumns['_no'] = [
 			'header' => '#',
 			'class' => 'app\components\grid\SerialColumn',
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 		];
 		$this->templateColumns['parentTitle'] = [
 			'attribute' => 'parentTitle',
@@ -441,11 +441,11 @@ class Archives extends \app\components\ActiveRecord
                 if (strtolower($model->level->level_name_i) == 'item') {
                     return $model->medium ? $model->medium : '-';
                 }
-				return self::parseChilds($model->getChilds(['sublevel'=>false, 'back3nd'=>true]), $model->id);
+				return self::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id);
 			},
 			'filter' => false,
 			'enableSorting' => false,
-			'contentOptions' => ['class'=>'text-nowrap'],
+			'contentOptions' => ['class' => 'text-nowrap'],
 			'format' => 'raw',
 		];
 		$this->templateColumns['media'] = [
@@ -487,7 +487,7 @@ class Archives extends \app\components\ActiveRecord
                     }
 				}
 
-				return Html::a($model->archive_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->archive_file])), ['title'=>$model->archive_file, 'data-pjax'=>0, 'target'=>'_blank']);
+				return Html::a($model->archive_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->archive_file])), ['title' => $model->archive_file, 'data-pjax' => 0, 'target' => '_blank']);
 			},
 			'format' => 'raw',
 		];
@@ -495,10 +495,10 @@ class Archives extends \app\components\ActiveRecord
 			'attribute' => 'views',
 			'value' => function($model, $key, $index, $column) {
 				$views = $model->getViews(true);
-				return Html::a($views, ['view/admin/manage', 'archive'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} views', ['count'=>$views]), 'data-pjax'=>0]);
+				return Html::a($views, ['view/admin/manage', 'archive' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} views', ['count' => $views]), 'data-pjax' => 0]);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
 		];
         if (ArchiveSetting::getInfo('fond_sidkkas')) {
@@ -508,7 +508,7 @@ class Archives extends \app\components\ActiveRecord
 					return $this->filterYesNo($model->sidkkas);
 				},
 				'filter' => $this->filterYesNo(),
-				'contentOptions' => ['class'=>'text-center'],
+				'contentOptions' => ['class' => 'text-center'],
 				'visible' => !Yii::$app->request->get('id') ? true : false,
 			];
 		}
@@ -518,7 +518,7 @@ class Archives extends \app\components\ActiveRecord
 				return $this->filterYesNo($model->preview);
 			},
 			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 		];
 		$this->templateColumns['location'] = [
 			'attribute' => 'location',
@@ -526,7 +526,7 @@ class Archives extends \app\components\ActiveRecord
 				return $this->filterYesNo($model->location);
 			},
 			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 			'visible' => !$this->isFond ? true : false,
 		];
 		$this->templateColumns['creation_date'] = [
@@ -573,7 +573,7 @@ class Archives extends \app\components\ActiveRecord
 				return self::getPublish($model->publish);
 			},
 			'filter' => self::getPublish(),
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 			'visible' => !Yii::$app->request->get('trash') ? true : false,
 		];
 	}
@@ -694,7 +694,7 @@ class Archives extends \app\components\ActiveRecord
             if (!empty($archives)) {
 				foreach ($archives as $archive) {
                     if (!empty($archive->level->child)) {
-						$childArchives = $archive->getChilds(['sublevel'=>$sublevel, 'back3nd'=>$back3nd]);
+						$childArchives = $archive->getChilds(['sublevel' => $sublevel, 'back3nd' => $back3nd]);
                         if (!empty($childArchives)) {
 							foreach ($childArchives as $key => $val) {
                                 if (array_key_exists($key, $childs)) {
@@ -710,7 +710,7 @@ class Archives extends \app\components\ActiveRecord
 		}
 
         if ($this->medium && empty($this->level->child)) {
-            return ArrayHelper::merge($childs, [0=>$this->medium]);
+            return ArrayHelper::merge($childs, [0 => $this->medium]);
         }
 
 		return $childs;
@@ -803,15 +803,15 @@ class Archives extends \app\components\ActiveRecord
 		$title = self::htmlHardDecode($model->parent->title);
 		$levelName = $model->parent->level->title->message;
 
-		$items[] = $model->getAttributeLabel('level_id').': '.Html::a($levelName, ['setting/level/view', 'id'=>$model->parent->level_id], ['title'=>$levelName, 'class'=>'modal-btn']);
-		$items[] = Yii::t('app', '{level} Code: {code}', ['level'=>$levelName, 'code'=>$model->parent->code]);
-		$items[] = $model->getAttributeLabel('title').': '.Html::a($title, ['view', 'id'=>$model->parent_id], ['title'=>$title, 'class'=>'modal-btn']);
+		$items[] = $model->getAttributeLabel('level_id').': '.Html::a($levelName, ['setting/level/view', 'id' => $model->parent->level_id], ['title' => $levelName, 'class' => 'modal-btn']);
+		$items[] = Yii::t('app', '{level} Code: {code}', ['level' => $levelName, 'code' => $model->parent->code]);
+		$items[] = $model->getAttributeLabel('title').': '.Html::a($title, ['view', 'id' => $model->parent_id], ['title' => $title, 'class' => 'modal-btn']);
 
         if (Yii::$app->request->isAjax) {
-            return Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']);
+            return Html::ul($items, ['encode' => false, 'class' => 'list-boxed']);
         }
 		
-		$return = Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']);
+		$return = Html::ul($items, ['encode' => false, 'class' => 'list-boxed']);
         if ($aciTree) {
             $return .= '<hr/><div id="tree" class="aciTree"></div>';
         }
@@ -832,7 +832,7 @@ class Archives extends \app\components\ActiveRecord
         if ($sep == 'li') {
 			return Html::ul($items, ['item' => function($item, $index) {
 				return Html::tag('li', $item);
-			}, 'class'=>'list-boxed']);
+			}, 'class' => 'list-boxed']);
 		}
 
 		return implode($sep, $items);
@@ -846,11 +846,11 @@ class Archives extends \app\components\ActiveRecord
 		$items = [];
 		foreach ($relates as $key => $val) {
             if ($hyperlink) {
-                $items[$val] = Html::a($val, ['setting/'.$controller.'/view', 'id'=>$key], ['title'=>$val, 'class'=>'modal-btn']);
+                $items[$val] = Html::a($val, ['setting/'.$controller.'/view', 'id' => $key], ['title' => $val, 'class' => 'modal-btn']);
             } else {
-                $items[$val] = Url::to(['setting/'.$controller.'/view', 'id'=>$key]);
+                $items[$val] = Url::to(['setting/'.$controller.'/view', 'id' => $key]);
             }
-		}
+        }
 
 		return $items;
 	}
@@ -866,13 +866,13 @@ class Archives extends \app\components\ActiveRecord
 
 		$items = [];
 		foreach ($relatedSubject as $key => $val) {
-			$items[$val] = Html::a($val, ['admin/manage', $attr=>$key], ['title'=>$val]);
+			$items[$val] = Html::a($val, ['admin/manage', $attr => $key], ['title' => $val]);
 		}
 
         if ($sep == 'li') {
 			return Html::ul($items, ['item' => function($item, $index) {
 				return Html::tag('li', $item);
-			}, 'class'=>'list-boxed']);
+			}, 'class' => 'list-boxed']);
 		}
 
 		return implode($sep, $items);
@@ -893,11 +893,11 @@ class Archives extends \app\components\ActiveRecord
 		foreach ($childs as $key => $val) {
 			$i++;
 			$title = $val." ".$levels[$key];
-			$return[] = $i == 1 ? ($id != null ? Html::a($title, ['admin/manage', 'parent'=>$id], ['title'=>$title, 'data-pjax'=>0]) : $title) : $title;
+			$return[] = $i == 1 ? ($id != null ? Html::a($title, ['admin/manage', 'parent' => $id], ['title' => $title, 'data-pjax' => 0]) : $title) : $title;
 		}
 
         if ($sep == 'li') {
-            return Html::ul($return, ['encode'=>false, 'class'=>'list-boxed']);
+            return Html::ul($return, ['encode' => false, 'class' => 'list-boxed']);
         }
 
 		return implode(', ', $return);
@@ -913,22 +913,22 @@ class Archives extends \app\components\ActiveRecord
         }
 
         if (isset($model->rack)) {
-            $items[] = Yii::t('app', 'Rack: {rack}', ['rack'=>$model->rack->location_name]);
+            $items[] = Yii::t('app', 'Rack: {rack}', ['rack' => $model->rack->location_name]);
         }
         if (isset($model->room)) {
-            $items[] = Yii::t('app', 'Location: {room}, {depo}, {building}', ['room'=>$model->room->location_name, 'depo'=>$model->depo->location_name, 'building'=>$model->building->location_name]);
+            $items[] = Yii::t('app', 'Location: {room}, {depo}, {building}', ['room' => $model->room->location_name, 'depo' => $model->depo->location_name, 'building' => $model->building->location_name]);
         }
         if (isset($model->storage)) {
-            $items[] = Yii::t('app', 'Storage: {storage-name}', ['storage-name'=>$model->storage->storage_name_i]);
+            $items[] = Yii::t('app', 'Storage: {storage-name}', ['storage-name' => $model->storage->storage_name_i]);
         }
         if ($model->weight != '') {
-            $items[] = Yii::t('app', 'Weight: {weight}', ['weight'=>$model->weight]);
+            $items[] = Yii::t('app', 'Weight: {weight}', ['weight' => $model->weight]);
         }
         if ($model->location_desc != '') {
-            $items[] = Yii::t('app', 'Noted: {location-desc}', ['location-desc'=>$model->location_desc]);
+            $items[] = Yii::t('app', 'Noted: {location-desc}', ['location-desc' => $model->location_desc]);
         }
 
-		return Html::ul($items, ['encode'=>false, 'class'=>'list-boxed']);
+		return Html::ul($items, ['encode' => false, 'class' => 'list-boxed']);
 	}
 
 	/**
@@ -965,7 +965,7 @@ class Archives extends \app\components\ActiveRecord
                 if ($i == $count) {
                     $coder[] = '<span class="badge badge-success">'.$code.'</span>';
                 } else {
-                    $coder[] = Html::a($code, ['/archive/site/view', 'id'=>$val['id'], 't'=>Inflector::slug($title)], ['title'=>$title, 'class'=>'text-dark-gray']);
+                    $coder[] = Html::a($code, ['/archive/site/view', 'id' => $val['id'], 't' => Inflector::slug($title)], ['title' => $title, 'class' => 'text-dark-gray']);
                 }
 			}
 			return join(' ', [$setting->reference_code_sikn, join($reference_code_separator, $coder)]);
@@ -1046,9 +1046,9 @@ class Archives extends \app\components\ActiveRecord
 
                 if (!in_array(strtolower($this->archive_file->getExtension()), $fileType)) {
 					$this->addError('archive_file', Yii::t('app', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {image-extensions} for photo and {document-extensions} for document', [
-						'name'=>$this->archive_file->name,
-						'image-extensions'=>$setting->image_type,
-						'document-extensions'=>$setting->document_type,
+						'name' => $this->archive_file->name,
+						'image-extensions' => $setting->image_type,
+						'document-extensions' => $setting->document_type,
 					]));
 				}
 			}
@@ -1101,7 +1101,7 @@ class Archives extends \app\components\ActiveRecord
         if (!$insert && (array_key_exists('code', $this->dirtyAttributes) && $this->dirtyAttributes['code'] != $this->oldCode) && $this->getArchives('count') != 0) {
 			$models = self::find()
 				->select(['id', 'parent_id', 'level_id', 'code'])
-				->where(['parent_id'=>$this->id])
+				->where(['parent_id' => $this->id])
 				->all();
             if (!empty($models)) {
 				foreach ($models as $model) {
@@ -1173,7 +1173,7 @@ class Archives extends \app\components\ActiveRecord
             if (array_key_exists('sidkkas', $changedAttributes) && $changedAttributes['sidkkas'] != $this->sidkkas) {
 				$models = self::find()
 					->select(['id', 'sidkkas', 'parent_id', 'level_id', 'code'])
-					->where(['parent_id'=>$this->id])
+					->where(['parent_id' => $this->id])
 					->all();
                 if (!empty($models)) {
 					foreach ($models as $model) {
@@ -1188,7 +1188,7 @@ class Archives extends \app\components\ActiveRecord
             if (array_key_exists('publish', $changedAttributes) && $changedAttributes['publish'] != $this->publish) {
 				$models = self::find()
 					->select(['id', 'publish'])
-					->where(['parent_id'=>$this->id])
+					->where(['parent_id' => $this->id])
 					->all();
                 if (!empty($models)) {
 					foreach ($models as $model) {

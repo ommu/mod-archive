@@ -16,12 +16,13 @@
 
 use yii\helpers\Html;
 use app\components\widgets\ActiveForm;
+use ommu\flatpickr\Flatpickr;
 ?>
 
 <div class="archive-setting-form">
 
 <?php $form = ActiveForm::begin([
-	'options' => ['class'=>'form-horizontal form-label-left'],
+	'options' => ['class' => 'form-horizontal form-label-left'],
 	'enableClientValidation' => true,
 	'enableAjaxValidation' => false,
 	//'enableClientScript' => true,
@@ -39,7 +40,7 @@ if ($model->isNewRecord && !$model->getErrors()) {
 	$model->license = $model->licenseCode();
 }
 echo $form->field($model, 'license')
-	->textInput(['maxlength'=>true])
+	->textInput(['maxlength' => true])
 	->label($model->getAttributeLabel('license'))
 	->hint(Yii::t('app', 'Enter the your license key that is provided to you when you purchased this plugin. If you do not know your license key, please contact support team.').'<br/>'.Yii::t('app', 'Format: XXXX-XXXX-XXXX-XXXX')); ?>
 
@@ -50,31 +51,31 @@ echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hi
 	->hint(Yii::t('app', 'Select whether or not you want to let the public (visitors that are not logged-in) to view the following sections of your social network. In some cases (such as Profiles, Blogs, and Albums), if you have given them the option, your users will be able to make their pages private even though you have made them publically viewable here. For more permissions settings, please visit the General Settings page.')); ?>
 
 <?php echo $form->field($model, 'meta_description')
-	->textarea(['rows'=>6, 'cols'=>50])
+	->textarea(['rows' => 6, 'cols' => 50])
 	->label($model->getAttributeLabel('meta_description')); ?>
 
 <?php echo $form->field($model, 'meta_keyword')
-	->textarea(['rows'=>6, 'cols'=>50])
+	->textarea(['rows' => 6, 'cols' => 50])
 	->label($model->getAttributeLabel('meta_keyword')); ?>
 
 <hr/>
 
 <?php echo $form->field($model, 'reference_code_sikn')
-	->textInput(['maxlength'=>true])
+	->textInput(['maxlength' => true])
 	->label($model->getAttributeLabel('reference_code_sikn')); ?>
 
 <?php echo $form->field($model, 'reference_code_separator')
-	->textInput(['maxlength'=>true])
+	->textInput(['maxlength' => true])
 	->label($model->getAttributeLabel('reference_code_separator')); ?>
 
 <?php $fondSidkkas = $model::getFondSidkkas();
 echo $form->field($model, 'short_code')
-	->dropDownList($fondSidkkas, ['prompt'=>''])
+	->dropDownList($fondSidkkas, ['prompt' => ''])
 	->label($model->getAttributeLabel('short_code')); ?>
 
 <?php $fondSidkkas = $model::getFondSidkkas();
 echo $form->field($model, 'medium_sublevel')
-	->dropDownList($fondSidkkas, ['prompt'=>''])
+	->dropDownList($fondSidkkas, ['prompt' => ''])
 	->label($model->getAttributeLabel('medium_sublevel')); ?>
 
 <hr/>
@@ -92,7 +93,7 @@ echo $form->field($model, 'medium_sublevel')
 <hr/>
 
 <?php echo $form->field($model, 'fond_sidkkas')
-	->dropDownList($fondSidkkas, ['prompt'=>''])
+	->dropDownList($fondSidkkas, ['prompt' => ''])
 	->label($model->getAttributeLabel('fond_sidkkas')); ?>
 
 <?php 
@@ -100,34 +101,34 @@ if ($model->isNewRecord && !$model->getErrors()) {
 	$model->production_date = Yii::$app->formatter->asDate('now', 'php:Y-m-d');
 }
 echo $form->field($model, 'production_date')
-	->textInput(['type'=>'date'])
+    ->widget(Flatpickr::className(), ['model' => $model, 'attribute' => 'production_date'])
 	->label($model->getAttributeLabel('production_date')); ?>
 
 <hr/>
 
 <?php echo $form->field($model, 'maintenance_mode')
-	->dropDownList($fondSidkkas, ['prompt'=>''])
+	->dropDownList($fondSidkkas, ['prompt' => ''])
 	->label($model->getAttributeLabel('maintenance_mode')); ?>
 
 <?php echo $form->field($model, 'maintenance_image_path')
-	->textInput(['maxlength'=>true])
+	->textInput(['maxlength' => true])
 	->label($model->getAttributeLabel('maintenance_image_path')); ?>
 
 <?php echo $form->field($model, 'maintenance_document_path')
-	->textInput(['maxlength'=>true])
+	->textInput(['maxlength' => true])
 	->label($model->getAttributeLabel('maintenance_document_path')); ?>
 
 <hr/>
 
-<?php $breadcrumbAppsName = $form->field($model, 'breadcrumb_param[name]', ['template' => '{beginWrapper}<div class="h6 mt-0 mb-3">App Name</div>{input}{endWrapper}', 'horizontalCssClasses' => ['wrapper'=>'col-sm-4 col-xs-6 col-sm-offset-3 mt-4'], 'options' => ['tag' => null]])
+<?php $breadcrumbAppsName = $form->field($model, 'breadcrumb_param[name]', ['template' => '{beginWrapper}<div class="h6 mt-0 mb-4">App Name</div>{input}{endWrapper}', 'horizontalCssClasses' => ['wrapper' => 'col-sm-4 col-xs-6 col-sm-offset-3 mt-4'], 'options' => ['tag' => null]])
 	->label($model->getAttributeLabel('breadcrumb_param[name]')); ?>
 
-<?php $breadcrumbAppsUrl = $form->field($model, 'breadcrumb_param[url]', ['template' => '{beginWrapper}<div class="h6 mt-0 mb-3">App URL</div>{input}{endWrapper}', 'horizontalCssClasses' => ['wrapper'=>'col-sm-5 col-xs-6 mt-4'], 'options' => ['tag' => null]])
+<?php $breadcrumbAppsUrl = $form->field($model, 'breadcrumb_param[url]', ['template' => '{beginWrapper}<div class="h6 mt-0 mb-4">App URL</div>{input}{endWrapper}', 'horizontalCssClasses' => ['wrapper' => 'col-sm-5 col-xs-6 mt-4'], 'options' => ['tag' => null]])
 	->label($model->getAttributeLabel('breadcrumb_param[url]')); ?>
 
 <?php $status = $model::getBreadcrumbStatus();
-echo $form->field($model, 'breadcrumb_param[status]', ['template' => '{label}{beginWrapper}<div class="h6 mt-3 mb-3">Status</div>{input}{endWrapper}'.$breadcrumbAppsName.$breadcrumbAppsUrl.'{error}{hint}', 'horizontalCssClasses' => ['error'=>'col-sm-6 col-xs-12 col-sm-offset-3', 'hint'=>'col-sm-6 col-xs-12 col-sm-offset-3']])
-	->dropDownList($status, ['prompt'=>''])
+echo $form->field($model, 'breadcrumb_param[status]', ['template' => '{label}{beginWrapper}<div class="h6 mt-4 mb-4">Status</div>{input}{endWrapper}'.$breadcrumbAppsName.$breadcrumbAppsUrl.'{error}{hint}', 'horizontalCssClasses' => ['error' => 'col-sm-6 col-xs-12 col-sm-offset-3', 'hint' => 'col-sm-6 col-xs-12 col-sm-offset-3']])
+	->dropDownList($status, ['prompt' => ''])
 	->label($model->getAttributeLabel('breadcrumb')); ?>
 
 <hr/>

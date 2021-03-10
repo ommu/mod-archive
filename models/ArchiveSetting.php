@@ -136,7 +136,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
 		$this->templateColumns['_no'] = [
 			'header' => '#',
 			'class' => 'app\components\grid\SerialColumn',
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 		];
 		$this->templateColumns['license'] = [
 			'attribute' => 'license',
@@ -226,7 +226,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
 				return self::getFondSidkkas($model->fond_sidkkas);
 			},
 			'filter' => self::getFondSidkkas(),
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 		];
 		$this->templateColumns['short_code'] = [
 			'attribute' => 'short_code',
@@ -234,7 +234,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
 				return self::getFondSidkkas($model->short_code);
 			},
 			'filter' => self::getFondSidkkas(),
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 		];
 		$this->templateColumns['medium_sublevel'] = [
 			'attribute' => 'medium_sublevel',
@@ -242,7 +242,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
 				return self::getFondSidkkas($model->medium_sublevel);
 			},
 			'filter' => self::getFondSidkkas(),
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 		];
 		$this->templateColumns['maintenance_mode'] = [
 			'attribute' => 'maintenance_mode',
@@ -250,7 +250,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
 				return self::getFondSidkkas($model->maintenance_mode);
 			},
 			'filter' => self::getFondSidkkas(),
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 		];
 		$this->templateColumns['breadcrumb_param'] = [
 			'attribute' => 'breadcrumb_param',
@@ -293,8 +293,8 @@ class ArchiveSetting extends \app\components\ActiveRecord
         }
 
 		$items = array(
-			1 => Yii::t('app', 'Yes, the public can view {module} unless they are made private.', ['module'=>$moduleName]),
-			0 => Yii::t('app', 'No, the public cannot view {module}.', ['module'=>$moduleName]),
+			1 => Yii::t('app', 'Yes, the public can view {module} unless they are made private.', ['module' => $moduleName]),
+			0 => Yii::t('app', 'No, the public cannot view {module}.', ['module' => $moduleName]),
 		);
 
         if ($value !== null) {
@@ -386,7 +386,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
             return '-';
         }
 
-		return Html::ul($params, ['encode'=>false, 'class'=>'list-boxed']);
+		return Html::ul($params, ['encode' => false, 'class' => 'list-boxed']);
 	}
 
 	/**
@@ -430,11 +430,11 @@ class ArchiveSetting extends \app\components\ActiveRecord
                 }
             }
             if ($this->breadcrumb_param['status'] == '') {
-                $this->addError('breadcrumb_param', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('breadcrumb_status')]));
+                $this->addError('breadcrumb_param', Yii::t('app', '{attribute} cannot be blank.', ['attribute' => $this->getAttributeLabel('breadcrumb_status')]));
             }
 			else {
                 if ($this->breadcrumb_param['status'] == 1 && !$this->getBreadcrumbApps()) {
-                    $this->addError('breadcrumb_param', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('breadcrumb_app')]));
+                    $this->addError('breadcrumb_param', Yii::t('app', '{attribute} cannot be blank.', ['attribute' => $this->getAttributeLabel('breadcrumb_app')]));
                 }
             }
         }

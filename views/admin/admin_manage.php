@@ -27,18 +27,18 @@ if (!$parent) {
     $this->params['breadcrumbs'][] = $this->title;
 } else {
 	$this->params['breadcrumbs'][] = ['label' => $parent->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => $parent->isFond ? ['fond/index'] : ['admin/index']];
-	$this->params['breadcrumbs'][] = ['label' => $parent->isFond ? $parent->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$parent->level->level_name_i, 'code'=>$parent->code]), 'url' => [($parent->isFond ? 'fond' : 'admin').'/view', 'id'=>$parent->id]];
+	$this->params['breadcrumbs'][] = ['label' => $parent->isFond ? $parent->code : Yii::t('app', '{level-name} {code}', ['level-name' => $parent->level->level_name_i, 'code' => $parent->code]), 'url' => [($parent->isFond ? 'fond' : 'admin').'/view', 'id' => $parent->id]];
 	$this->params['breadcrumbs'][] = Yii::t('app', 'Childs');
 }
 
 if ($parent) {
 	$this->params['menu']['content'] = [
-		['label' => Yii::t('app', 'Add New Child Levels'), 'url' => Url::to(['admin/create', 'id'=>$parent->id]), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
+		['label' => Yii::t('app', 'Add New Child Levels'), 'url' => Url::to(['admin/create', 'id' => $parent->id]), 'icon' => 'plus-square', 'htmlOptions' => ['class' => 'btn btn-primary']],
 	];
 } else {
     if ($isFond == true) {
 		$this->params['menu']['content'] = [
-			['label' => Yii::t('app', 'Add Fond'), 'url' => Url::to(['create']), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
+			['label' => Yii::t('app', 'Add Fond'), 'url' => Url::to(['create']), 'icon' => 'plus-square', 'htmlOptions' => ['class' => 'btn btn-primary']],
 		];
 	}
 }
@@ -52,24 +52,24 @@ $this->params['menu']['option'] = [
 <?php Pjax::begin(); ?>
 
 <?php if ($level != null) {
-    echo $this->render('/setting/level/admin_view', ['model'=>$level, 'small'=>true]);
+    echo $this->render('/setting/level/admin_view', ['model' => $level, 'small' => true]);
 } ?>
 
 <?php if ($media != null) {
-    echo $this->render('/setting/media/admin_view', ['model'=>$media, 'small'=>true]);
+    echo $this->render('/setting/media/admin_view', ['model' => $media, 'small' => true]);
 } ?>
 
 <?php if ($creator != null) {
-    echo $this->render('/setting/creator/admin_view', ['model'=>$creator, 'small'=>true]);
+    echo $this->render('/setting/creator/admin_view', ['model' => $creator, 'small' => true]);
 } ?>
 
 <?php if ($repository != null) {
-    echo $this->render('/setting/repository/admin_view', ['model'=>$repository, 'small'=>true]);
+    echo $this->render('/setting/repository/admin_view', ['model' => $repository, 'small' => true]);
 } ?>
 
-<?php //echo $this->render('_search', ['model'=>$searchModel]); ?>
+<?php //echo $this->render('_search', ['model' => $searchModel]); ?>
 
-<?php echo $this->render('_option_form', ['model'=>$searchModel, 'gridColumns'=>$searchModel->activeDefaultColumns($columns), 'route'=>$this->context->route]); ?>
+<?php echo $this->render('_option_form', ['model' => $searchModel, 'gridColumns' => $searchModel->activeDefaultColumns($columns), 'route' => $this->context->route]); ?>
 
 <?php
 $columnData = $columns;
@@ -78,21 +78,21 @@ array_push($columnData, [
 	'header' => Yii::t('app', 'Option'),
 	'urlCreator' => function($action, $model, $key, $index) {
         if ($action == 'view') {
-            return Url::to(['view', 'id'=>$key]);
+            return Url::to(['view', 'id' => $key]);
         }
         if ($action == 'update') {
-            return Url::to(['update', 'id'=>$key]);
+            return Url::to(['update', 'id' => $key]);
         }
         if ($action == 'delete') {
-            return Url::to(['delete', 'id'=>$key]);
+            return Url::to(['delete', 'id' => $key]);
         }
 	},
 	'buttons' => [
 		'view' => function ($url, $model, $key) {
-			return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, ['title'=>Yii::t('app', 'Detail'), 'class'=>'modal-btn']);
+			return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, ['title' => Yii::t('app', 'Detail'), 'class' => 'modal-btn']);
 		},
 		'update' => function ($url, $model, $key) {
-			return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, ['title'=>Yii::t('app', 'Update'), 'data-pjax'=>0]);
+			return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, ['title' => Yii::t('app', 'Update'), 'data-pjax' => 0]);
 		},
 		'delete' => function ($url, $model, $key) {
 			return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [

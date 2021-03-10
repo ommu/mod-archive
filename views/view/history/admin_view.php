@@ -23,13 +23,13 @@ if (!$small) {
         $this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
     }
     $this->params['breadcrumbs'][] = ['label' => $model->view->archive->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => $model->view->archive->isFond ? ['fond/index'] : ['admin/index']];
-    $this->params['breadcrumbs'][] = ['label' => $model->view->archive->isFond ? $model->view->archive->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$model->view->archive->level->level_name_i, 'code'=>$model->view->archive->code]), 'url' => [($model->view->archive->isFond ? 'fond' : 'admin').'/view', 'id'=>$model->view->archive_id]];
-    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'View'), 'url' => ['view/admin/manage', 'archive'=>$model->view->archive_id]];
-    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'History'), 'url' => ['view/history/manage', 'view'=>$model->view_id]];
+    $this->params['breadcrumbs'][] = ['label' => $model->view->archive->isFond ? $model->view->archive->code : Yii::t('app', '{level-name} {code}', ['level-name' => $model->view->archive->level->level_name_i, 'code' => $model->view->archive->code]), 'url' => [($model->view->archive->isFond ? 'fond' : 'admin').'/view', 'id' => $model->view->archive_id]];
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'View'), 'url' => ['view/admin/manage', 'archive' => $model->view->archive_id]];
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'History'), 'url' => ['view/history/manage', 'view' => $model->view_id]];
     $this->params['breadcrumbs'][] = Yii::t('app', 'Detail');
 
     $this->params['menu']['content'] = [
-        ['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
+        ['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id' => $model->id]), 'htmlOptions' => ['data-confirm' => Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method' => 'post', 'class' => 'btn btn-danger'], 'icon' => 'trash'],
     ];
 } ?>
 
@@ -47,7 +47,7 @@ $attributes = [
 		'value' => function ($model) {
 			$archiveTitle = isset($model->view->archive) ? $model->view->archive->title : '-';
             if ($archiveTitle != '-') {
-                return Html::a($archiveTitle, ['admin/view', 'id'=>$model->view->archive_id], ['title'=>$model->view::htmlHardDecode($archiveTitle), 'class'=>'modal-btn']);
+                return Html::a($archiveTitle, ['admin/view', 'id' => $model->view->archive_id], ['title' => $model->view::htmlHardDecode($archiveTitle), 'class' => 'modal-btn']);
             }
 			return $archiveTitle;
 		},
@@ -72,7 +72,7 @@ $attributes = [
 echo DetailView::widget([
 	'model' => $model,
 	'options' => [
-		'class'=>'table table-striped detail-view',
+		'class' => 'table table-striped detail-view',
 	],
 	'attributes' => $attributes,
 ]); ?>

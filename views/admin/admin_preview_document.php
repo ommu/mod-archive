@@ -42,12 +42,12 @@ if ($model->archive_file && $fileExists) {
     if ($isDocument == true) {
         echo \app\components\widgets\PreviewPDF::widget([
             'url' => $filePath,
-            'navigationOptions' => ['class'=>'summary mb-4'],
-            'previewOptions' => ['class'=>'preview-pdf border border-width-3'],
+            'navigationOptions' => ['class' => 'summary mb-4'],
+            'previewOptions' => ['class' => 'preview-pdf border border-width-3'],
         ]);
 
     } else {
-        echo Html::img($filePath, ['alt'=>$model->archive_file, 'class'=>'mb-3']).'<br/>'.$model->archive_file;
+        echo Html::img($filePath, ['alt' => $model->archive_file, 'class' => 'mb-4']).'<br/>'.$model->archive_file;
     }
 
 } else { ?>

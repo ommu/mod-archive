@@ -26,7 +26,7 @@ if (!$small) {
         $this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
     }
     $this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => ['index']];
-    $this->params['breadcrumbs'][] = $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]);
+    $this->params['breadcrumbs'][] = $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name' => $model->level->level_name_i, 'code' => $model->code]);
 
     if (!in_array('location', $model->level->field)) {
         unset($this->params['menu']['content']['location']);
@@ -36,7 +36,7 @@ if (!$small) {
 <div class="archives-view">
 
 <?php 
-$treeDataUrl = Url::to(['data', 'id'=>$model->id]);
+$treeDataUrl = Url::to(['data', 'id' => $model->id]);
 $js = <<<JS
 	var treeDataUrl = '$treeDataUrl';
 	var selectedId = '$model->id';
@@ -70,7 +70,7 @@ $attributes = [
 		'value' => function ($model) {
 			$levelName = isset($model->level) ? $model->level->title->message : '-';
             if ($levelName != '-') {
-				return Html::a($levelName, ['setting/level/view', 'id'=>$model->level_id], ['title'=>$levelName, 'class'=>'modal-btn']);
+				return Html::a($levelName, ['setting/level/view', 'id' => $model->level_id], ['title' => $levelName, 'class' => 'modal-btn']);
             }
 			return $levelName;
 		},
@@ -151,7 +151,7 @@ $attributes = [
             if (($location = $model->getRelatedLocation(false)) != null) {
                 return $model::parseLocation($location);
             }
-			return Html::a(Yii::t('app', 'Add archive location'), ['location', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', 'Add archive location'), 'class'=>'modal-btn']);
+			return Html::a(Yii::t('app', 'Add archive location'), ['location', 'id' => $model->primaryKey], ['title' => Yii::t('app', 'Add archive location'), 'class' => 'modal-btn']);
 		},
 		'format' => 'html',
 		'visible' => !$small && in_array('location', $model->level->field) ? true : false,
@@ -162,7 +162,7 @@ $attributes = [
             if (strtolower($model->level->level_name_i) == 'item') {
                 return $model->medium ? $model->medium : '-';
             }
-			return $model::parseChilds($model->getChilds(['sublevel'=>false, 'back3nd'=>true]), $model->id);
+			return $model::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id);
 		},
 		'format' => 'html',
 	],
@@ -170,7 +170,7 @@ $attributes = [
         'attribute' => 'views',
         'value' => function ($model) {
             $views = $model->getViews(true);
-            return Html::a($views, ['view/admin/manage', 'archive'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} views', ['count'=>$views]), 'data-pjax'=>0]);
+            return Html::a($views, ['view/admin/manage', 'archive' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} views', ['count' => $views]), 'data-pjax' => 0]);
         },
         'format' => 'html',
 		'visible' => !$small,
@@ -202,7 +202,7 @@ $attributes = [
 	],
 	[
 		'attribute' => '',
-		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-success btn-sm']),
+		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->primaryKey], ['title' => Yii::t('app', 'Update'), 'class' => 'btn btn-primary btn-sm']),
 		'format' => 'html',
 		'visible' => !$small && Yii::$app->request->isAjax ? true : false,
 	],
@@ -211,7 +211,7 @@ $attributes = [
 $archiveInfo = DetailView::widget([
 	'model' => $model,
 	'options' => [
-		'class'=>'table table-striped detail-view',
+		'class' => 'table table-striped detail-view',
 	],
 	'attributes' => $attributes,
 ]);
@@ -223,7 +223,7 @@ echo $this->renderWidget($archiveInfo, [
 
 <?php echo !$small && !Yii::$app->request->isAjax && in_array('archive_file', $model->level->field) ? 
 	$this->renderWidget('admin_preview_document', [
-        'title' => Yii::t('app', 'Preview {level-name}: {code}', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]),
+        'title' => Yii::t('app', 'Preview {level-name}: {code}', ['level-name' => $model->level->level_name_i, 'code' => $model->code]),
 		'model' => $model,
 	]) : ''; ?>
 

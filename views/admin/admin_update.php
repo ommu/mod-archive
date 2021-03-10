@@ -24,15 +24,15 @@ if ($context->breadcrumbApp) {
 	$this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
 $this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$model->level->level_name_i, 'code'=>$model->code]), 'url' => ['view', 'id'=>$model->id]];
+$this->params['breadcrumbs'][] = ['label' => $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name' => $model->level->level_name_i, 'code' => $model->code]), 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 
 if (!$isFond) {
 	$this->params['menu']['content'] = [
-        ['label' => Yii::t('app', 'Show Reference Code'), 'url' => 'javascript:void(0);', 'icon' => 'code', 'htmlOptions' => ['class'=>'btn btn-warning', 'id'=>'reference-code']],
+        ['label' => Yii::t('app', 'Show Reference Code'), 'url' => 'javascript:void(0);', 'icon' => 'code', 'htmlOptions' => ['class' => 'btn btn-warning', 'id' => 'reference-code']],
     ];
 
-	$treeDataUrl = Url::to(['data', 'id'=>$model->parent_id]);
+	$treeDataUrl = Url::to(['data', 'id' => $model->parent_id]);
 $js = <<<JS
 	var treeDataUrl = '$treeDataUrl';
 	var selectedId = '$model->parent_id';

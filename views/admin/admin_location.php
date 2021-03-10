@@ -27,12 +27,12 @@ if ($context->breadcrumbApp) {
 	$this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
 $this->params['breadcrumbs'][] = ['label' => $model->archive->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => $model->archive->isFond ? ['fond/index'] : ['admin/index']];
-$this->params['breadcrumbs'][] = ['label' => $model->archive->isFond ? $model->archive->code : Yii::t('app', '{level-name} {code}', ['level-name'=>$model->archive->level->level_name_i, 'code'=>$model->archive->code]), 'url' => ['view', 'id'=>$model->archive->id]];
+$this->params['breadcrumbs'][] = ['label' => $model->archive->isFond ? $model->archive->code : Yii::t('app', '{level-name} {code}', ['level-name' => $model->archive->level->level_name_i, 'code' => $model->archive->code]), 'url' => ['view', 'id' => $model->archive->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Storage Location');
 
 if (!$newRecord) {
     $this->params['menu']['content'] = [
-        ['label' => Yii::t('app', 'Reset Location'), 'url' => Url::to(['reset-location', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to reset location this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
+        ['label' => Yii::t('app', 'Reset Location'), 'url' => Url::to(['reset-location', 'id' => $model->id]), 'htmlOptions' => ['data-confirm' => Yii::t('app', 'Are you sure you want to reset location this item?'), 'data-method' => 'post', 'class' => 'btn btn-danger'], 'icon' => 'trash'],
     ];
 }
 
@@ -54,7 +54,7 @@ JS;
 	<div class="archives-form">
 
 	<?php $form = ActiveForm::begin([
-		'options' => ['class'=>'form-horizontal form-label-left'],
+		'options' => ['class' => 'form-horizontal form-label-left'],
 		'enableClientValidation' => false,
 		'enableAjaxValidation' => false,
 		//'enableClientScript' => true,
@@ -67,7 +67,7 @@ JS;
 			'options' => [
 				'placeholder' => Yii::t('app', 'Select a building..'),
 			],
-			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a building..')], ArchiveLocationBuilding::getLocation(['publish'=>1, 'type'=>'building'])),
+			'items' => ArrayHelper::merge(['' => Yii::t('app', 'Select a building..')], ArchiveLocationBuilding::getLocation(['publish' => 1, 'type' => 'building'])),
 			'pluginOptions' => [
 				'onChange' => new JsExpression('function(value) {
                     if (!value.length) return;
@@ -95,14 +95,14 @@ JS;
 		->label($model->getAttributeLabel('building_id')); ?>
 		
 	<?php $getRoomUrl = Url::to(['/archive-location/room/suggest']);
-	$depo = $model->isNewRecord ? ArchiveLocationBuilding::getLocation(['publish'=>1, 'type'=>'depo']) : ArchiveLocationBuilding::getLocation(['publish'=>1, 'parent_id'=>$model->building_id, 'type'=>'depo']);
+	$depo = $model->isNewRecord ? ArchiveLocationBuilding::getLocation(['publish' => 1, 'type' => 'depo']) : ArchiveLocationBuilding::getLocation(['publish' => 1, 'parent_id' => $model->building_id, 'type' => 'depo']);
 	echo $form->field($model, 'depo_id')
 		->widget(Selectize::className(), [
 			'cascade' => true,
 			'options' => [
 				'placeholder' => Yii::t('app', 'Select a depo..'),
 			],
-			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a depo..')], $depo),
+			'items' => ArrayHelper::merge(['' => Yii::t('app', 'Select a depo..')], $depo),
 			'pluginOptions' => [
 				'valueField' => 'id',
 				'labelField' => 'label',
@@ -137,14 +137,14 @@ JS;
 	<?php 
 	$getRackUrl = Url::to(['/archive-location/rack/suggest']);
 	$getRoomStorageUrl = Url::to(['/archive-location/room/storage']);
-	$room = $model->isNewRecord ? ArchiveLocationBuilding::getLocation(['publish'=>1, 'type'=>'room']) : ArchiveLocationBuilding::getLocation(['publish'=>1, 'parent_id'=>$model->depo_id, 'type'=>'room']);
+	$room = $model->isNewRecord ? ArchiveLocationBuilding::getLocation(['publish' => 1, 'type' => 'room']) : ArchiveLocationBuilding::getLocation(['publish' => 1, 'parent_id' => $model->depo_id, 'type' => 'room']);
 	echo $form->field($model, 'room_id')
 		->widget(Selectize::className(), [
 			'cascade' => true,
 			'options' => [
 				'placeholder' => Yii::t('app', 'Select a room..'),
 			],
-			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a room..')], $room),
+			'items' => ArrayHelper::merge(['' => Yii::t('app', 'Select a room..')], $room),
 			'pluginOptions' => [
 				'valueField' => 'id',
 				'labelField' => 'label',
@@ -194,14 +194,14 @@ JS;
 		])
 		->label($model->getAttributeLabel('room_id')); ?>
 
-	<?php $rack = $model->isNewRecord ? ArchiveLocationBuilding::getLocation(['publish'=>1, 'type'=>'rack']) : ArchiveLocationBuilding::getLocation(['publish'=>1, 'parent_id'=>$model->room_id, 'type'=>'rack']);
+	<?php $rack = $model->isNewRecord ? ArchiveLocationBuilding::getLocation(['publish' => 1, 'type' => 'rack']) : ArchiveLocationBuilding::getLocation(['publish' => 1, 'parent_id' => $model->room_id, 'type' => 'rack']);
 	echo $form->field($model, 'rack_id')
 		->widget(Selectize::className(), [
 			'cascade' => true,
 			'options' => [
 				'placeholder' => Yii::t('app', 'Select a rack..'),
 			],
-			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a rack..')], $rack),
+			'items' => ArrayHelper::merge(['' => Yii::t('app', 'Select a rack..')], $rack),
 			'pluginOptions' => [
 				'valueField' => 'id',
 				'labelField' => 'label',
@@ -221,7 +221,7 @@ JS;
 			'options' => [
 				'placeholder' => Yii::t('app', 'Select a storage..'),
 			],
-			'items' => ArrayHelper::merge([''=>Yii::t('app', 'Select a storage..')], $storage),
+			'items' => ArrayHelper::merge(['' => Yii::t('app', 'Select a storage..')], $storage),
 			'pluginOptions' => [
 				'valueField' => 'id',
 				'labelField' => 'label',
@@ -235,12 +235,12 @@ JS;
 		->label($model->getAttributeLabel('storage_id'));?>
 
 	<?php echo $form->field($model, 'weight')
-		->textInput(['maxlength'=>true])
+		->textInput(['maxlength' => true])
 		->label($model->getAttributeLabel('weight'))
 		->hint(Yii::t('app', 'Weight in grams')); ?>
 
 	<?php echo $form->field($model, 'location_desc')
-		->textarea(['rows'=>4, 'cols'=>50])
+		->textarea(['rows' => 4, 'cols' => 50])
 		->label($model->getAttributeLabel('location_desc')); ?>
 
 	<hr/>

@@ -147,7 +147,7 @@ class CreatorController extends Controller
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'Authority record success created.'));
                 return $this->redirect(['manage']);
-                //return $this->redirect(['view', 'id'=>$model->id]);
+                //return $this->redirect(['view', 'id' => $model->id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {

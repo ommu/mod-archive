@@ -25,21 +25,21 @@ if ($context->breadcrumbApp) {
 }
 $this->params['breadcrumbs'][] = ['label' => !$parent || $parent->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => !$parent || $parent->isFond ? ['fond/index']: ['admin/index']];
 if ($parent) {
-    $parentTitle = Yii::t('app', '{level-name} {code}', ['level-name'=>$parent->level->level_name_i, 'code'=>$parent->code]);
+    $parentTitle = Yii::t('app', '{level-name} {code}', ['level-name' => $parent->level->level_name_i, 'code' => $parent->code]);
     if ($parent->isFond == true) {
         $parentTitle = $parent->code;
     }
-	$this->params['breadcrumbs'][] = ['label' => $parentTitle, 'url' => [($parent->isFond ? 'fond' : 'admin').'/view', 'id'=>$parent->id]];
-	$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Childs'), 'url' => [($parent->isFond ? 'fond' : 'admin').'/manage', 'parent'=>$parent->id]];
+	$this->params['breadcrumbs'][] = ['label' => $parentTitle, 'url' => [($parent->isFond ? 'fond' : 'admin').'/view', 'id' => $parent->id]];
+	$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Childs'), 'url' => [($parent->isFond ? 'fond' : 'admin').'/manage', 'parent' => $parent->id]];
 }
 $this->params['breadcrumbs'][] = Yii::t('app', 'Create');
 
 if ($parent) {
 	$this->params['menu']['content'] = [
-		['label' => Yii::t('app', 'Show Reference Code'), 'url' => 'javascript:void(0);', 'icon' => 'code', 'htmlOptions' => ['class'=>'btn btn-warning', 'id'=>'reference-code']],
+		['label' => Yii::t('app', 'Show Reference Code'), 'url' => 'javascript:void(0);', 'icon' => 'code', 'htmlOptions' => ['class' => 'btn btn-warning', 'id' => 'reference-code']],
 	];
 
-	$treeDataUrl = Url::to(['data', 'id'=>$parent->id]);
+	$treeDataUrl = Url::to(['data', 'id' => $parent->id]);
 $js = <<<JS
 	var treeDataUrl = '$treeDataUrl';
 	var selectedId = '$parent->id';

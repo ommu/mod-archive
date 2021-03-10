@@ -147,7 +147,7 @@ class RepositoryController extends Controller
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'Archival institution success created.'));
                 return $this->redirect(['manage']);
-                //return $this->redirect(['view', 'id'=>$model->id]);
+                //return $this->redirect(['view', 'id' => $model->id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {

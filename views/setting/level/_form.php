@@ -22,7 +22,7 @@ use ommu\archive\models\ArchiveLevel;
 <div class="archive-level-form">
 
 <?php $form = ActiveForm::begin([
-	'options' => ['class'=>'form-horizontal form-label-left'],
+	'options' => ['class' => 'form-horizontal form-label-left'],
 	'enableClientValidation' => true,
 	'enableAjaxValidation' => false,
 	//'enableClientScript' => true,
@@ -36,11 +36,11 @@ use ommu\archive\models\ArchiveLevel;
 <?php //echo $form->errorSummary($model);?>
 
 <?php echo $form->field($model, 'level_name_i')
-	->textInput(['maxlength'=>true])
+	->textInput(['maxlength' => true])
 	->label($model->getAttributeLabel('level_name_i')); ?>
 
 <?php echo $form->field($model, 'level_desc_i')
-	->textarea(['rows'=>4, 'cols'=>50])
+	->textarea(['rows' => 4, 'cols' => 50])
 	->label($model->getAttributeLabel('level_desc_i')); ?>
 
 <?php $child = ArchiveLevel::getLevel(1);

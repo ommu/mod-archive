@@ -160,7 +160,7 @@ class AdminController extends Controller
 
         if ($model->save(false, ['publish'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Archive view success deleted.'));
-			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'archive'=>$model->archive_id]);
+			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'archive' => $model->archive_id]);
 		}
 	}
 
@@ -178,7 +178,7 @@ class AdminController extends Controller
 
         if ($model->save(false, ['publish'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Archive view success updated.'));
-			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'archive'=>$model->archive_id]);
+			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'archive' => $model->archive_id]);
 		}
 	}
 
