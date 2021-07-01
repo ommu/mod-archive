@@ -22,7 +22,7 @@ use ommu\archive\models\ArchiveRelatedMedia;
 use ommu\archive\models\ArchiveRelatedCreator;
 use ommu\archive\models\ArchiveRelatedRepository;
 use ommu\archive\models\ArchiveRelatedSubject;
-use ommu\core\models\CoreTags;
+use app\models\CoreTags;
 
 class Events extends \yii\base\BaseObject
 {
@@ -209,7 +209,7 @@ class Events extends \yii\base\BaseObject
 
 				$subjectFind = CoreTags::find()
 					->select(['tag_id'])
-					->andWhere(['body' => Inflector::slug($val)])
+					->andWhere(['body' => Inflector::camelize($val)])
 					->one();
 
                 if ($subjectFind != null) {
