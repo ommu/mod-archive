@@ -110,10 +110,12 @@ class ArchiveLevel extends \app\components\ActiveRecord
             $model = $this->hasMany(Archives::className(), ['level_id' => 'id'])
                 ->alias('archives');
             if ($publish != null) {
-                return $model->andOnCondition([sprintf('%s.publish', 'archives') => $publish]);
+                $model->andOnCondition([sprintf('%s.publish', 'archives') => $publish]);
             } else {
-                return $model->andOnCondition(['IN', sprintf('%s.publish', 'archives'), [0,1]]);
+                $model->andOnCondition(['IN', sprintf('%s.publish', 'archives'), [0,1]]);
             }
+
+            return $model;
         }
 
 		$model = Archives::find()
