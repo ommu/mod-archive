@@ -25,9 +25,7 @@ class m210825_064935_archive_module_insert_menu extends \yii\db\Migration
 			$this->batchInsert($tableName, ['name', 'module', 'icon', 'parent', 'route', 'order', 'data'], [
 				['SIKS', 'archive', 'fa-archive', null, '/#', null, null],
 			]);
-		}
 
-        if (Yii::$app->db->getTableSchema($tableName, true)) {
 			$this->batchInsert($tableName, ['name', 'module', 'icon', 'parent', 'route', 'order', 'data'], [
 				['Inventory', 'archive', null, Menu::getParentId('SIKS#archive'), '/archive/admin/index', null, null],
 				['Settings', 'archive', null, Menu::getParentId('SIKS#archive'), '/archive/setting/admin/index', null, null],
