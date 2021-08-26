@@ -28,7 +28,8 @@ class Archives extends ArchivesModel
 	{
 		return [
 			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'media', 'preview', 'location'], 'integer'],
-			[['title', 'code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'creation_date', 'modified_date', 'updated_date', 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository', 'subject', 'function'], 'safe'],
+			[['title', 'code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'creation_date', 'modified_date', 'updated_date', 
+                'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository', 'subject', 'function'], 'safe'],
 		];
 	}
 
@@ -66,8 +67,14 @@ class Archives extends ArchivesModel
             $query = ArchivesModel::find()->alias('t')->select($column);
         }
 		$query->joinWith([
-			'parent parent'
+			// 'parent parent',
+			// 'level.title level',
+			// 'creation creation',
+			// 'modified modified'
 		]);
+        if ((isset($params['sort']) && in_array($params['sort'], ['parentTitle', '-parentTitle'])) || (isset($params['parentTitle']) && $params['parentTitle'] != '')) {
+            $query->joinWith(['parent parent']);
+        }
         if ((isset($params['sort']) && in_array($params['sort'], ['level_id', '-level_id'])) || (isset($params['levelName']) && $params['levelName'] != '')) {
             $query->joinWith(['level.title level']);
         }

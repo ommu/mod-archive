@@ -66,11 +66,23 @@ class ArchiveLevel extends ArchiveLevelModel
             $query = ArchiveLevelModel::find()->alias('t')->select($column);
         }
 		$query->joinWith([
-			'title title', 
-			'description description', 
-			'creation creation', 
-			'modified modified'
+			// 'title title', 
+			// 'description description', 
+			// 'creation creation', 
+			// 'modified modified'
 		]);
+        if ((isset($params['sort']) && in_array($params['sort'], ['level_name_i', '-level_name_i'])) || (isset($params['level_name_i']) && $params['level_name_i'] != '')) {
+            $query->joinWith(['title title']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['level_desc_i', '-level_desc_i'])) || (isset($params['level_desc_i']) && $params['level_desc_i'] != '')) {
+            $query->joinWith(['description description']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')) {
+            $query->joinWith(['creation creation']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != '')) {
+            $query->joinWith(['modified modified']);
+        }
 
 		$query->groupBy(['id']);
 

@@ -66,11 +66,23 @@ class ArchiveMedia extends ArchiveMediaModel
             $query = ArchiveMediaModel::find()->alias('t')->select($column);
         }
 		$query->joinWith([
-			'title title', 
-			'description description', 
-			'creation creation', 
-			'modified modified'
+			// 'title title', 
+			// 'description description', 
+			// 'creation creation', 
+			// 'modified modified'
 		]);
+        if ((isset($params['sort']) && in_array($params['sort'], ['media_name_i', '-media_name_i'])) || (isset($params['media_name_i']) && $params['media_name_i'] != '')) {
+            $query->joinWith(['title title']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['media_desc_i', '-media_desc_i'])) || (isset($params['media_desc_i']) && $params['media_desc_i'] != '')) {
+            $query->joinWith(['description description']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')) {
+            $query->joinWith(['creation creation']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != '')) {
+            $query->joinWith(['modified modified']);
+        }
 
 		$query->groupBy(['id']);
 
