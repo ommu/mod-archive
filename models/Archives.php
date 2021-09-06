@@ -1189,11 +1189,14 @@ class Archives extends \app\components\ActiveRecord
 			// delete and update archive childs publish condition
             if (array_key_exists('publish', $changedAttributes) && $changedAttributes['publish'] != $this->publish) {
 				$models = self::find()
-					->select(['id', 'publish'])
+					->select(['id', 'publish', 'code'])
 					->where(['parent_id' => $this->id])
 					->all();
                 if (!empty($models)) {
 					foreach ($models as $model) {
+                        if ($model->publish == 2) {
+                            continue;
+                        }
 						$model->updateCode = false;
 						$model->publish = $this->publish;
 						$model->update(false);
