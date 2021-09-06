@@ -1102,7 +1102,7 @@ class Archives extends \app\components\ActiveRecord
 		// replace code
         if (!$insert && (array_key_exists('code', $this->dirtyAttributes) && $this->dirtyAttributes['code'] != $this->oldCode) && $this->getArchives('count') != 0) {
 			$models = self::find()
-				->select(['id', 'parent_id', 'level_id', 'code'])
+                ->select(['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'code', 'archive_file'])
 				->where(['parent_id' => $this->id])
 				->all();
             if (!empty($models)) {
@@ -1174,7 +1174,7 @@ class Archives extends \app\components\ActiveRecord
 			// update sidkkas status
             if (array_key_exists('sidkkas', $changedAttributes) && $changedAttributes['sidkkas'] != $this->sidkkas) {
 				$models = self::find()
-					->select(['id', 'sidkkas', 'parent_id', 'level_id', 'code'])
+					->select(['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'code', 'archive_file'])
 					->where(['parent_id' => $this->id])
 					->all();
                 if (!empty($models)) {
@@ -1189,7 +1189,7 @@ class Archives extends \app\components\ActiveRecord
 			// delete and update archive childs publish condition
             if (array_key_exists('publish', $changedAttributes) && $changedAttributes['publish'] != $this->publish) {
 				$models = self::find()
-					->select(['id', 'publish', 'code'])
+					->select(['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'code', 'archive_file'])
 					->where(['parent_id' => $this->id])
 					->all();
                 if (!empty($models)) {
