@@ -47,6 +47,18 @@ class m210824_140923_archive_module_create_table_views extends \yii\db\Migration
 				$tableName,
 				['user_id']
 			);
+
+			$this->createIndex(
+				'publishWithArchiveUser',
+				$tableName,
+				['publish', 'archive_id', 'user_id']
+			);
+
+			$this->createIndex(
+				'publishWithUser',
+				$tableName,
+				['publish', 'user_id']
+			);
 		}
 	}
 
