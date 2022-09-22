@@ -87,23 +87,25 @@ archive_submenu:
         data-method: post
       select: action
 setting_submenu:
-  update:
-    label: Settings
-    url: ['setting/admin']
-    select: controller
-  level:
-    label: Levels of Description
-    url: ['setting/level']
-    select: controller
-  media:
-    label: Media Type
-    url: ['setting/media']
-    select: controller
-  creator:
-    label: Creator(s)
-    url: ['setting/creator']
-    select: controller
-  repository:
-    label: Repositories
-    url: ['setting/repository']
-    select: controller
+  0:
+    level:
+      label: Levels of Description
+      url: ['setting/level']
+      select: controller
+    media:
+      label: Media Type
+      url: ['setting/media']
+      select: controller
+    creator:
+      label: Creator(s)
+      url: ['setting/creator']
+      select: controller
+    repository:
+      label: Repositories
+      url: ['setting/repository']
+      select: controller
+  1:
+    setting:
+      label: Settings
+      url: ['setting/admin']
+      select: controller

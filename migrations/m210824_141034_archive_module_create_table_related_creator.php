@@ -1,6 +1,6 @@
 <?php
 /**
- * m210824_141034_banner_module_create_table_related_creator
+ * m210824_141034_archive_module_create_table_related_creator
  * 
  * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
@@ -13,7 +13,7 @@
 use Yii;
 use yii\db\Schema;
 
-class m210824_141034_banner_module_create_table_related_creator extends \yii\db\Migration
+class m210824_141034_archive_module_create_table_related_creator extends \yii\db\Migration
 {
 	public function up()
 	{
