@@ -57,9 +57,15 @@ class m210824_140626_archive_module_create_table_archives extends \yii\db\Migrat
 			);
 
 			$this->createIndex(
-				'parent_id',
+				'level_id',
 				$tableName,
-				['parent_id']
+				['level_id']
+			);
+
+			$this->createIndex(
+				'parentWithLevel',
+				$tableName,
+				['parent_id', 'level_id']
 			);
 
 			$this->createIndex(

@@ -35,9 +35,15 @@ class m210824_141152_archive_module_create_table_related_subject extends \yii\db
 			], $tableOptions);
 
 			$this->createIndex(
-				'typeWithArchiveAndTag',
+				'typeWithArchiveTag',
 				$tableName,
 				['type', 'archive_id', 'tag_id']
+			);
+
+			$this->createIndex(
+				'typeWithTag',
+				$tableName,
+				['type', 'tag_id']
 			);
 
 			$this->createIndex(

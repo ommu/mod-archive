@@ -108,6 +108,13 @@ class AdminController extends Controller
             $archive->isFond = $archive->level_id == 1 ? true : false;
             if ($archive->isFond == true) {
                 $this->subMenu = $this->module->params['fond_submenu'];
+            } else {
+                if (empty($archive->level->child)) {
+                    unset($this->subMenu[1]['childs']);
+                }
+                if (!in_array('location', $archive->level->field)) {
+                    unset($this->subMenu[2]['location']);
+                }
             }
 		}
         if (($user = Yii::$app->request->get('user')) != null) {
@@ -134,6 +141,18 @@ class AdminController extends Controller
 	public function actionView($id)
 	{
         $model = $this->findModel($id);
+
+        $archive = $model->archive;
+        if ($archive->isFond == true) {
+            $this->subMenu = $this->module->params['fond_submenu'];
+        } else {
+            if (empty($archive->level->child)) {
+                unset($this->subMenu[1]['childs']);
+            }
+            if (!in_array('location', $archive->level->field)) {
+                unset($this->subMenu[2]['location']);
+            }
+        }
 
         if (!Yii::$app->request->isAjax) {
 			$this->subMenuParam = $model->archive_id;

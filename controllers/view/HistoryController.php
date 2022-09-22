@@ -110,11 +110,29 @@ class HistoryController extends Controller
             $view->archive->isFond = $view->archive->level_id == 1 ? true : false;
             if ($view->archive->isFond == true) {
                 $this->subMenu = $this->module->params['fond_submenu'];
+            } else {
+                if (empty($view->archive->level->child)) {
+                    unset($this->subMenu[1]['childs']);
+                }
+                if (!in_array('location', $view->archive->level->field)) {
+                    unset($this->subMenu[2]['location']);
+                }
             }
 		}
+
         if ($archive) {
 			$this->subMenuParam = $archive;
 			$archive = \ommu\archive\models\Archives::findOne($archive);
+            if ($archive->isFond == true) {
+                $this->subMenu = $this->module->params['fond_submenu'];
+            } else {
+                if (empty($archive->level->child)) {
+                    unset($this->subMenu[1]['childs']);
+                }
+                if (!in_array('location', $archive->level->field)) {
+                    unset($this->subMenu[2]['location']);
+                }
+            }
 		}
 
 		$this->view->title = $view ? Yii::t('app', 'Histories') : Yii::t('app', 'View Histories');
@@ -137,6 +155,18 @@ class HistoryController extends Controller
 	public function actionView($id)
 	{
         $model = $this->findModel($id);
+
+        $archive = $model->view->archive;
+        if ($archive->isFond == true) {
+            $this->subMenu = $this->module->params['fond_submenu'];
+        } else {
+            if (empty($archive->level->child)) {
+                unset($this->subMenu[1]['childs']);
+            }
+            if (!in_array('location', $archive->level->field)) {
+                unset($this->subMenu[2]['location']);
+            }
+        }
 
         if (!Yii::$app->request->isAjax) {
 			$this->subMenuParam = $model->view->archive_id;

@@ -149,10 +149,10 @@ class AdminController extends Controller
                 $this->subMenu = $this->module->params['fond_submenu'];
             }
             if (empty($parent->level->child)) {
-				unset($this->subMenu['childs']);
+				unset($this->subMenu[1]['childs']);
             }
             if (!in_array('location', $parent->level->field)) {
-				unset($this->subMenu['location']);
+				unset($this->subMenu[2]['location']);
             }
         }
 
@@ -239,7 +239,7 @@ class AdminController extends Controller
             }
             $this->subMenuParam = $parent->id;
             if (!in_array('location', $parent->level->field)) {
-				unset($this->subMenu['location']);
+				unset($this->subMenu[2]['location']);
             }
         }
 
@@ -294,10 +294,10 @@ class AdminController extends Controller
         }
 
         if (empty($model->level->child)) {
-            unset($this->subMenu['childs']);
+            unset($this->subMenu[1]['childs']);
         }
         if (!in_array('location', $model->level->field)) {
-            unset($this->subMenu['location']);
+            unset($this->subMenu[2]['location']);
         }
 
         $this->subMenuParam = $model->id;
@@ -321,10 +321,10 @@ class AdminController extends Controller
         $model = $this->findModel($id);
 
         if (empty($model->level->child)) {
-            unset($this->subMenu['childs']);
+            unset($this->subMenu[1]['childs']);
         }
         if (!in_array('location', $model->level->field)) {
-            unset($this->subMenu['location']);
+            unset($this->subMenu[2]['location']);
         }
 
         $this->subMenuParam = $model->id;
@@ -464,10 +464,10 @@ class AdminController extends Controller
         }
 
         if (empty($model->archive->level->child)) {
-			unset($this->subMenu['childs']);
+			unset($this->subMenu[1]['childs']);
         }
         if (!in_array('location', $model->archive->level->field)) {
-			unset($this->subMenu['location']);
+			unset($this->subMenu[2]['location']);
         }
 
         $this->subMenuParam = $model->archive_id;
