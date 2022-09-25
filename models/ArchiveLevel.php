@@ -17,6 +17,7 @@
  * @property integer $level_desc
  * @property string $child
  * @property string $field
+ * @property integer $orders
  * @property string $creation_date
  * @property integer $creation_id
  * @property string $modified_date
@@ -24,6 +25,7 @@
  * @property string $updated_date
  *
  * The followings are the available model relations:
+ * @property ArchiveLevelGrid $grid
  * @property Archives[] $archives
  * @property SourceMessage $title
  * @property SourceMessage $description
@@ -48,10 +50,10 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	public $gridForbiddenColumn = ['level_desc_i', 'child', 'field', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
 	public $level_name_i;
-    public $level_desc_i;
-
+	public $level_desc_i;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
+	public $oArchive;
 
 	/**
 	 * @return string the associated database table name
@@ -68,11 +70,12 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	{
 		return [
 			[['level_name_i', 'level_desc_i'], 'required'],
-			[['publish', 'level_name', 'level_desc', 'creation_id', 'modified_id'], 'integer'],
+			[['publish', 'level_name', 'level_desc', 'orders', 'creation_id', 'modified_id'], 'integer'],
 			[['level_name_i', 'level_desc_i'], 'string'],
-			[['child', 'field'], 'safe'],
+			[['child', 'field', 'orders'], 'safe'],
 			//[['child', 'field], 'serialize'],
 			[['level_name_i'], 'string', 'max' => 64],
+			[['level_desc_i'], 'string', 'max' => 128],
 		];
 	}
 
@@ -88,6 +91,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 			'level_desc' => Yii::t('app', 'Description'),
 			'child' => Yii::t('app', 'Child'),
 			'field' => Yii::t('app', 'Field'),
+			'orders' => Yii::t('app', 'Orders'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
@@ -98,7 +102,16 @@ class ArchiveLevel extends \app\components\ActiveRecord
 			'archives' => Yii::t('app', 'Archives'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
+			'oArchive' => Yii::t('app', 'Archives'),
 		];
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getGrid()
+	{
+		return $this->hasOne(ArchiveLevelGrid::className(), ['id' => 'id']);
 	}
 
 	/**
@@ -226,15 +239,11 @@ class ArchiveLevel extends \app\components\ActiveRecord
 			'filter' => false,
 			'format' => 'html',
 		];
-		$this->templateColumns['archives'] = [
-			'attribute' => 'archives',
+		$this->templateColumns['orders'] = [
+			'attribute' => 'orders',
 			'value' => function($model, $key, $index, $column) {
-				$archives = $model->getArchives(true);
-				return Html::a($archives, ['admin/manage', 'level' => $model->primaryKey, 'data' => 'yes'], ['title' => Yii::t('app', '{count} archives', ['count' => $archives]), 'data-pjax' => 0]);
+				return $model->orders;
 			},
-			'filter' => false,
-			'contentOptions' => ['class' => 'text-center'],
-			'format' => 'raw',
 		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
@@ -272,6 +281,17 @@ class ArchiveLevel extends \app\components\ActiveRecord
 				return Yii::$app->formatter->asDatetime($model->updated_date, 'medium');
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
+		];
+		$this->templateColumns['oArchive'] = [
+			'attribute' => 'oArchive',
+			'value' => function($model, $key, $index, $column) {
+				// $archives = $model->getArchives(true);
+                $archives = $model->oArchive;
+				return Html::a($archives, ['admin/manage', 'level' => $model->primaryKey, 'data' => 'yes'], ['title' => Yii::t('app', '{count} archives', ['count' => $archives]), 'data-pjax' => 0]);
+			},
+			'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class' => 'text-center'],
+			'format' => 'raw',
 		];
 		$this->templateColumns['publish'] = [
 			'attribute' => 'publish',
@@ -411,6 +431,8 @@ class ArchiveLevel extends \app\components\ActiveRecord
         }
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
+        // $this->archive = $this->getArchives(true) ? 1 : 0;
+        $this->oArchive = isset($this->grid) ? $this->grid->archive : 0;
 	}
 
 	/**
