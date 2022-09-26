@@ -17,11 +17,11 @@ class m220925_212703_archive_module_addView_level extends \yii\db\Migration
 {
 	public function up()
 	{
-		$this->execute('DROP VIEW IF EXISTS `_archive_level`');
+		$this->execute('DROP VIEW IF EXISTS `_archive_level_statistic_archive`');
 
-		// add view _archive_level
-		$addViewArchiveLevel = <<< SQL
-CREATE VIEW `_archive_level` AS
+		// add view _archive_level_statistic_archive
+		$addViewArchiveLevelStatisticArchive = <<< SQL
+CREATE VIEW `_archive_level_statistic_archive` AS
 select
   `a`.`level_id` AS `id`,
   count(`a`.`id`) AS `archives`
@@ -29,11 +29,11 @@ from `ommu_archives` `a`
 where `a`.`publish` <> 2
 group by `a`.`level_id`;
 SQL;
-		$this->execute($addViewArchiveLevel);
+		$this->execute($addViewArchiveLevelStatisticArchive);
 	}
 
 	public function down()
 	{
-		$this->execute('DROP VIEW IF EXISTS `_archive_level`');
+		$this->execute('DROP VIEW IF EXISTS `_archive_level_statistic_archive`');
     }
 }
