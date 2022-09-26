@@ -53,7 +53,7 @@ $attributes = [
 		'value' => $model->creator_desc ? $model->creator_desc : '-',
 	],
 	[
-		'attribute' => 'archives',
+		'attribute' => 'oArchive',
 		'value' => function ($model) {
 			$archives = $model->oArchive;
 			return Html::a($archives, ['admin/manage', 'creatorId' => $model->primaryKey], ['title' => Yii::t('app', '{count} archives', ['count' => $archives])]);

@@ -67,7 +67,7 @@ $attributes = [
 		'visible' => !$small,
 	],
 	[
-		'attribute' => 'archives',
+		'attribute' => 'oArchive',
 		'value' => function ($model) {
 			$archives = $model->oArchive;
 			return $archives ? Html::a($archives, ['admin/manage', 'level' => $model->primaryKey, 'data' => 'yes'], ['title' => Yii::t('app', '{count} archives', ['count' => $archives])]) : '-';

@@ -99,7 +99,6 @@ class ArchiveLevel extends \app\components\ActiveRecord
 			'updated_date' => Yii::t('app', 'Updated Date'),
 			'level_name_i' => Yii::t('app', 'Level'),
 			'level_desc_i' => Yii::t('app', 'Description'),
-			'archives' => Yii::t('app', 'Archives'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
 			'oArchive' => Yii::t('app', 'Archives'),

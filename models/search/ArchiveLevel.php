@@ -116,6 +116,10 @@ class ArchiveLevel extends ArchiveLevelModel
 			'asc' => ['modified.displayname' => SORT_ASC],
 			'desc' => ['modified.displayname' => SORT_DESC],
 		];
+		$attributes['oArchive'] = [
+			'asc' => ['grid.archive' => SORT_ASC],
+			'desc' => ['grid.archive' => SORT_DESC],
+		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
 			'defaultOrder' => ['id' => SORT_DESC],
