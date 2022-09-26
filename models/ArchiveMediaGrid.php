@@ -1,22 +1,22 @@
 <?php
 /**
- * ArchiveLevelGrid
+ * ArchiveMediaGrid
  * 
  * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2022 OMMU (www.ommu.id)
- * @created date 25 September 2022, 20:25 WIB
+ * @created date 26 September 2022, 07:58 WIB
  * @link https://bitbucket.org/ommu/archive
  *
- * This is the model class for table "ommu_archive_level_grid".
+ * This is the model class for table "ommu_archive_media_grid".
  *
- * The followings are the available columns in table "ommu_archive_level_grid":
+ * The followings are the available columns in table "ommu_archive_media_grid":
  * @property integer $id
  * @property integer $archive
  * @property string $modified_date
  *
  * The followings are the available model relations:
- * @property ArchiveLevel $0
+ * @property ArchiveMedia $0
  *
  */
 
@@ -24,7 +24,7 @@ namespace ommu\archive\models;
 
 use Yii;
 
-class ArchiveLevelGrid extends \app\components\ActiveRecord
+class ArchiveMediaGrid extends \app\components\ActiveRecord
 {
     public $gridForbiddenColumn = [];
 
@@ -33,7 +33,7 @@ class ArchiveLevelGrid extends \app\components\ActiveRecord
 	 */
 	public static function tableName()
 	{
-		return 'ommu_archive_level_grid';
+		return 'ommu_archive_media_grid';
 	}
 
 	/**
@@ -45,7 +45,7 @@ class ArchiveLevelGrid extends \app\components\ActiveRecord
 			[['id', 'archive'], 'required'],
 			[['id', 'archive'], 'integer'],
 			[['id'], 'unique'],
-			[['id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLevel::className(), 'targetAttribute' => ['id' => 'id']],
+			[['id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveMedia::className(), 'targetAttribute' => ['id' => 'id']],
 		];
 	}
 
