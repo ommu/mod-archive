@@ -22,7 +22,7 @@
  * @property string $updated_date
  *
  * The followings are the available model relations:
- * @property ArchiveLevelGrid $grid
+ * @property ArchiveMediaGrid $grid
  * @property ArchiveRelatedMedia[] $archives
  * @property SourceMessage $title
  * @property SourceMessage $description

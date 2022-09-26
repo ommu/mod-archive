@@ -53,10 +53,10 @@ $attributes = [
 		'value' => $model->repository_desc ? $model->repository_desc : '-',
 	],
 	[
-		'attribute' => 'archives',
+		'attribute' => 'oArchive',
 		'value' => function ($model) {
-			$archives = $model->getArchives(true);
-			return Html::a($archives, ['admin/manage', 'repositoryId' => $model->primaryKey], ['title' => Yii::t('app', '{count} archives', ['count' => $archives])]);
+			$archives = $model->oArchive;
+			return Html::a($archives, ['admin/manage', 'repositoryId' => $model->primaryKey], ['title' => Yii::t('app', '{count} senarai', ['count' => $archives])]);
 		},
 		'format' => 'html',
 		'visible' => !$small,

@@ -22,7 +22,7 @@
  * @property string $updated_date
  *
  * The followings are the available model relations:
- * @property ArchiveLevelGrid $grid
+ * @property ArchiveCreatorGrid $grid
  * @property ArchiveRelatedCreator[] $archives
  * @property Users $creation
  * @property Users $modified
@@ -213,7 +213,7 @@ class ArchiveCreator extends \app\components\ActiveRecord
 			'value' => function($model, $key, $index, $column) {
 				// $archives = $model->getArchives(true);
                 $archives = $model->oArchive;
-				return Html::a($archives, ['admin/manage', 'creatorId' => $model->primaryKey], ['title' => Yii::t('app', '{count} archives', ['count' => $archives]), 'data-pjax' => 0]);
+				return Html::a($archives, ['admin/manage', 'creatorId' => $model->primaryKey], ['title' => Yii::t('app', '{count} senarai', ['count' => $archives]), 'data-pjax' => 0]);
 			},
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
