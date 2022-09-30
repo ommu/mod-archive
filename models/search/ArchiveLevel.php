@@ -27,8 +27,8 @@ class ArchiveLevel extends ArchiveLevelModel
 	public function rules()
 	{
 		return [
-			[['id', 'publish', 'level_name', 'level_desc', 'creation_id', 'modified_id'], 'integer'],
-			[['child', 'field', 'creation_date', 'modified_date', 'updated_date', 'level_name_i', 'level_desc_i', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
+			[['id', 'publish', 'level_name', 'level_desc', 'orders', 'creation_id', 'modified_id'], 'integer'],
+			[['child', 'field', 'creation_date', 'modified_date', 'updated_date', 'level_name_i', 'level_desc_i', 'creationDisplayname', 'modifiedDisplayname', 'oArchive'], 'safe'],
 		];
 	}
 
@@ -71,6 +71,9 @@ class ArchiveLevel extends ArchiveLevelModel
 			// 'creation creation', 
 			// 'modified modified'
 		]);
+        if ((isset($params['sort']) && in_array($params['sort'], ['oArchive', '-oArchive'])) || (isset($params['oArchive']) && $params['oArchive'] != '')) {
+            $query->joinWith(['grid grid']);
+        }
         if ((isset($params['sort']) && in_array($params['sort'], ['level_name_i', '-level_name_i'])) || (isset($params['level_name_i']) && $params['level_name_i'] != '')) {
             $query->joinWith(['title title']);
         }
@@ -113,6 +116,10 @@ class ArchiveLevel extends ArchiveLevelModel
 			'asc' => ['modified.displayname' => SORT_ASC],
 			'desc' => ['modified.displayname' => SORT_DESC],
 		];
+		$attributes['oArchive'] = [
+			'asc' => ['grid.archive' => SORT_ASC],
+			'desc' => ['grid.archive' => SORT_DESC],
+		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
 			'defaultOrder' => ['id' => SORT_DESC],
@@ -134,6 +141,7 @@ class ArchiveLevel extends ArchiveLevelModel
 			't.id' => $this->id,
 			't.level_name' => $this->level_name,
 			't.level_desc' => $this->level_desc,
+			't.orders' => $this->orders,
 			'cast(t.creation_date as date)' => $this->creation_date,
 			't.creation_id' => isset($params['creation']) ? $params['creation'] : $this->creation_id,
 			'cast(t.modified_date as date)' => $this->modified_date,
@@ -141,14 +149,22 @@ class ArchiveLevel extends ArchiveLevelModel
 			'cast(t.updated_date as date)' => $this->updated_date,
 		]);
 
-        if (isset($params['trash'])) {
-            $query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
-        } else {
-            if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
-                $query->andFilterWhere(['IN', 't.publish', [0,1]]);
-            } else {
-                $query->andFilterWhere(['t.publish' => $this->publish]);
+        if (isset($params['oArchive']) && $params['oArchive'] != '') {
+            if ($this->oArchive == 1) {
+                $query->andWhere(['<>', 'grid.archive', 0]);
+            } else if ($this->oArchive == 0) {
+                $query->andWhere(['=', 'grid.archive', 0]);
             }
+        }
+
+        if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
+            $query->andFilterWhere(['IN', 't.publish', [0,1]]);
+        } else {
+            $query->andFilterWhere(['t.publish' => $this->publish]);
+        }
+
+        if (isset($params['trash']) && $params['trash'] == 1) {
+            $query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
         }
 
 		$query->andFilterWhere(['like', 't.child', $this->child])

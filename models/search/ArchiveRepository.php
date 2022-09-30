@@ -28,7 +28,7 @@ class ArchiveRepository extends ArchiveRepositoryModel
 	{
 		return [
 			[['id', 'publish', 'creation_id', 'modified_id'], 'integer'],
-			[['repository_name', 'repository_desc', 'creation_date', 'modified_date', 'updated_date', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
+			[['repository_name', 'repository_desc', 'creation_date', 'modified_date', 'updated_date', 'creationDisplayname', 'modifiedDisplayname', 'oArchive'], 'safe'],
 		];
 	}
 
@@ -69,6 +69,9 @@ class ArchiveRepository extends ArchiveRepositoryModel
 			// 'creation creation', 
 			// 'modified modified'
 		]);
+        if ((isset($params['sort']) && in_array($params['sort'], ['oArchive', '-oArchive'])) || (isset($params['oArchive']) && $params['oArchive'] != '')) {
+            $query->joinWith(['grid grid']);
+        }
         if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')) {
             $query->joinWith(['creation creation']);
         }
@@ -97,6 +100,10 @@ class ArchiveRepository extends ArchiveRepositoryModel
 			'asc' => ['modified.displayname' => SORT_ASC],
 			'desc' => ['modified.displayname' => SORT_DESC],
 		];
+		$attributes['oArchive'] = [
+			'asc' => ['grid.archive' => SORT_ASC],
+			'desc' => ['grid.archive' => SORT_DESC],
+		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
 			'defaultOrder' => ['id' => SORT_DESC],
@@ -123,14 +130,22 @@ class ArchiveRepository extends ArchiveRepositoryModel
 			'cast(t.updated_date as date)' => $this->updated_date,
 		]);
 
-        if (isset($params['trash'])) {
-            $query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
-        } else {
-            if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
-                $query->andFilterWhere(['IN', 't.publish', [0,1]]);
-            } else {
-                $query->andFilterWhere(['t.publish' => $this->publish]);
+        if (isset($params['oArchive']) && $params['oArchive'] != '') {
+            if ($this->oArchive == 1) {
+                $query->andWhere(['<>', 'grid.archive', 0]);
+            } else if ($this->oArchive == 0) {
+                $query->andWhere(['=', 'grid.archive', 0]);
             }
+        }
+
+        if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
+            $query->andFilterWhere(['IN', 't.publish', [0,1]]);
+        } else {
+            $query->andFilterWhere(['t.publish' => $this->publish]);
+        }
+
+        if (isset($params['trash']) && $params['trash'] == 1) {
+            $query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
         }
 
 		$query->andFilterWhere(['like', 't.repository_name', $this->repository_name])
