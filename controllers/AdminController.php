@@ -156,10 +156,10 @@ class AdminController extends Controller
             }
         }
 
-        $title = $this->isFond() ? Yii::t('app', 'Fonds') : Yii::t('app', 'Inventories');
+        $title = $this->isFond() ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventories');
         if ($parent) {
             if ($parent->isFond == true) {
-                $title = Yii::t('app', 'Fond Childs: {code}', ['code' => $parent->code]);
+                $title = Yii::t('app', 'Senarai Childs: {code}', ['code' => $parent->code]);
             } else {
                 $title = Yii::t('app', 'Inventory Childs: {level-name} {code}', ['level-name' => $parent->level->level_name_i, 'code' => $parent->code]);
             }
@@ -243,7 +243,7 @@ class AdminController extends Controller
             }
         }
 
-		$this->view->title = $parent ? Yii::t('app', 'Add New Child: {level-name} {code}', ['level-name' => $parent->level->level_name_i, 'code' => $parent->code]) : Yii::t('app', 'Create Fond');
+		$this->view->title = $parent ? Yii::t('app', 'Add New Child: {level-name} {code}', ['level-name' => $parent->level->level_name_i, 'code' => $parent->code]) : Yii::t('app', 'Create Senarai');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
@@ -495,7 +495,7 @@ class AdminController extends Controller
         $model->archive->isFond = $this->isFond();
 		$model->delete();
 
-		Yii::$app->session->setFlash('success', Yii::t('app', '{label} success reset location.', ['label' => !$model->archive->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory')]));
+		Yii::$app->session->setFlash('success', Yii::t('app', '{label} success reset location.', ['label' => !$model->archive->isFond ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventory')]));
 		return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
 	}
 

@@ -26,7 +26,7 @@ $context = $this->context;
 if ($context->breadcrumbApp) {
 	$this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
-$this->params['breadcrumbs'][] = ['label' => $model->archive->isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => $model->archive->isFond ? ['fond/index'] : ['admin/index']];
+$this->params['breadcrumbs'][] = ['label' => $model->archive->isFond ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventory'), 'url' => $model->archive->isFond ? ['fond/index'] : ['admin/index']];
 $this->params['breadcrumbs'][] = ['label' => $model->archive->isFond ? $model->archive->code : Yii::t('app', '{level-name} {code}', ['level-name' => $model->archive->level->level_name_i, 'code' => $model->archive->code]), 'url' => ['view', 'id' => $model->archive->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Storage Location');
 
