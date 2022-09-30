@@ -212,7 +212,7 @@ class ArchiveCreator extends \app\components\ActiveRecord
 			'attribute' => 'oArchive',
 			'value' => function($model, $key, $index, $column) {
 				// $archives = $model->getArchives(true);
-                $archives = $model->oArchive;
+                $archives = $model->grid->archive;
 				return Html::a($archives, ['admin/manage', 'creatorId' => $model->primaryKey], ['title' => Yii::t('app', '{count} senarai', ['count' => $archives]), 'data-pjax' => 0]);
 			},
 			'filter' => $this->filterYesNo(),
@@ -282,7 +282,6 @@ class ArchiveCreator extends \app\components\ActiveRecord
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
         // $this->archive = $this->getArchives(true) ? 1 : 0;
-        $this->oArchive = isset($this->grid) ? $this->grid->archive : 0;
 	}
 
 	/**

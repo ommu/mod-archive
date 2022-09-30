@@ -236,7 +236,7 @@ class ArchiveMedia extends \app\components\ActiveRecord
 			'attribute' => 'oArchive',
 			'value' => function($model, $key, $index, $column) {
 				// $archives = $model->getArchives(true);
-                $archives = $model->oArchive;
+                $archives = $model->grid->archive;
 				return Html::a($archives, ['admin/manage', 'mediaId' => $model->primaryKey], ['title' => Yii::t('app', '{count} archives', ['count' => $archives]), 'data-pjax' => 0]);
 			},
 			'filter' => $this->filterYesNo(),
@@ -310,7 +310,6 @@ class ArchiveMedia extends \app\components\ActiveRecord
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
         // $this->archive = $this->getArchives(true) ? 1 : 0;
-        $this->oArchive = isset($this->grid) ? $this->grid->archive : 0;
 	}
 
 	/**

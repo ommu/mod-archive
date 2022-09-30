@@ -573,7 +573,7 @@ class Archives extends \app\components\ActiveRecord
 			'attribute' => 'oView',
 			'value' => function($model, $key, $index, $column) {
 				// $views = $model->getViews(true);
-                $views = $model->oView;
+                $views = $model->grid->view;
 				return Html::a($views, ['view/admin/manage', 'archive' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} views', ['count' => $views]), 'data-pjax' => 0]);
 			},
 			'filter' => $this->filterYesNo(),
@@ -1006,7 +1006,6 @@ class Archives extends \app\components\ActiveRecord
 		// $this->levelName = isset($this->level) ? $this->level->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
-        $this->oView = isset($this->grid) ? $this->grid->view : 0;
 
 		$this->code = preg_replace("/^[.-]/", '', preg_replace("/^(3400|23400-24)/", '', $this->code));
 		$this->oldCode = $this->code;

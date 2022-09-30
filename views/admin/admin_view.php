@@ -169,7 +169,7 @@ $attributes = [
     [
         'attribute' => 'oView',
         'value' => function ($model) {
-            $views = $model->oView;
+            $views = $model->grid->view;
             return Html::a($views, ['view/admin/manage', 'archive' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} views', ['count' => $views]), 'data-pjax' => 0]);
         },
         'format' => 'html',

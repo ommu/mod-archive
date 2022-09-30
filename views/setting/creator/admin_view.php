@@ -55,7 +55,7 @@ $attributes = [
 	[
 		'attribute' => 'oArchive',
 		'value' => function ($model) {
-			$archives = $model->oArchive;
+			$archives = $model->grid->archive;
 			return Html::a($archives, ['admin/manage', 'creatorId' => $model->primaryKey], ['title' => Yii::t('app', '{count} senarai', ['count' => $archives])]);
 		},
 		'format' => 'html',
