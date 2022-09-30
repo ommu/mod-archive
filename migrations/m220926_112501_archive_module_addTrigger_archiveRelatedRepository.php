@@ -17,8 +17,8 @@ class m220926_112501_archive_module_addTrigger_archiveRelatedRepository extends 
 {
 	public function up()
 	{
-       $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertRelatedRepository`');
-       $this->execute('DROP TRIGGER IF EXISTS `archiveAfterDeleteRelatedRepository`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertRelatedRepository`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterDeleteRelatedRepository`');
 
         // create trigger archiveAfterInsertRelatedRepository
         $archiveAfterInsertRelatedRepository = <<< SQL
@@ -43,7 +43,7 @@ SQL;
 
 	public function down()
 	{
-       $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertRelatedRepository`');
-       $this->execute('DROP TRIGGER IF EXISTS `archiveAfterDeleteRelatedRepository`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertRelatedRepository`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterDeleteRelatedRepository`');
     }
 }

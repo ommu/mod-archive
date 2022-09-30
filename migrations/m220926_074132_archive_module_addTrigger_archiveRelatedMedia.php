@@ -17,8 +17,8 @@ class m220926_074132_archive_module_addTrigger_archiveRelatedMedia extends \yii\
 {
 	public function up()
 	{
-       $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertRelatedMedia`');
-       $this->execute('DROP TRIGGER IF EXISTS `archiveAfterDeleteRelatedMedia`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertRelatedMedia`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterDeleteRelatedMedia`');
 
         // create trigger archiveAfterInsertRelatedMedia
         $archiveAfterInsertRelatedMedia = <<< SQL
@@ -43,7 +43,7 @@ SQL;
 
 	public function down()
 	{
-       $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertRelatedMedia`');
-       $this->execute('DROP TRIGGER IF EXISTS `archiveAfterDeleteRelatedMedia`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertRelatedMedia`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterDeleteRelatedMedia`');
     }
 }

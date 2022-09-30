@@ -17,8 +17,8 @@ class m220926_104336_archive_module_addTrigger_archiveRelatedCreator extends \yi
 {
 	public function up()
 	{
-       $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertRelatedCreator`');
-       $this->execute('DROP TRIGGER IF EXISTS `archiveAfterDeleteRelatedCreator`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertRelatedCreator`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterDeleteRelatedCreator`');
 
         // create trigger archiveAfterInsertRelatedCreator
         $archiveAfterInsertRelatedCreator = <<< SQL
@@ -43,7 +43,7 @@ SQL;
 
 	public function down()
 	{
-       $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertRelatedCreator`');
-       $this->execute('DROP TRIGGER IF EXISTS `archiveAfterDeleteRelatedCreator`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertRelatedCreator`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterDeleteRelatedCreator`');
     }
 }

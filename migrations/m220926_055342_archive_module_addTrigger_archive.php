@@ -17,8 +17,8 @@ class m220926_055342_archive_module_addTrigger_level extends \yii\db\Migration
 {
 	public function up()
 	{
-       $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsert`');
-       $this->execute('DROP TRIGGER IF EXISTS `archiveAfterUpdate`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsert`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterUpdate`');
 
         // create trigger archiveAfterInsert
         $archiveAfterInsert = <<< SQL
@@ -49,7 +49,7 @@ SQL;
 
 	public function down()
 	{
-       $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsert`');
-       $this->execute('DROP TRIGGER IF EXISTS `archiveAfterUpdate`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsert`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterUpdate`');
     }
 }
