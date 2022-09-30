@@ -22,6 +22,7 @@
  * @property string $updated_date
  *
  * The followings are the available model relations:
+ * @property ArchiveCreatorGrid $grid
  * @property ArchiveRelatedCreator[] $archives
  * @property Users $creation
  * @property Users $modified
@@ -43,6 +44,7 @@ class ArchiveCreator extends \app\components\ActiveRecord
 
 	public $creationDisplayname;
 	public $modifiedDisplayname;
+	public $oArchive;
 
 	/**
 	 * @return string the associated database table name
@@ -81,10 +83,18 @@ class ArchiveCreator extends \app\components\ActiveRecord
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
-			'archives' => Yii::t('app', 'Archives'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
+			'oArchive' => Yii::t('app', 'Senarai'),
 		];
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getGrid()
+	{
+		return $this->hasOne(ArchiveCreatorGrid::className(), ['id' => 'id']);
 	}
 
 	/**
@@ -161,16 +171,6 @@ class ArchiveCreator extends \app\components\ActiveRecord
 				return $model->creator_desc;
 			},
 		];
-		$this->templateColumns['archives'] = [
-			'attribute' => 'archives',
-			'value' => function($model, $key, $index, $column) {
-				$archives = $model->getArchives(true);
-				return Html::a($archives, ['admin/manage', 'creatorId' => $model->primaryKey], ['title' => Yii::t('app', '{count} archives', ['count' => $archives]), 'data-pjax' => 0]);
-			},
-			'filter' => false,
-			'contentOptions' => ['class' => 'text-center'],
-			'format' => 'raw',
-		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
 			'value' => function($model, $key, $index, $column) {
@@ -207,6 +207,17 @@ class ArchiveCreator extends \app\components\ActiveRecord
 				return Yii::$app->formatter->asDatetime($model->updated_date, 'medium');
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
+		];
+		$this->templateColumns['oArchive'] = [
+			'attribute' => 'oArchive',
+			'value' => function($model, $key, $index, $column) {
+				// $archives = $model->getArchives(true);
+                $archives = $model->oArchive;
+				return Html::a($archives, ['admin/manage', 'creatorId' => $model->primaryKey], ['title' => Yii::t('app', '{count} senarai', ['count' => $archives]), 'data-pjax' => 0]);
+			},
+			'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class' => 'text-center'],
+			'format' => 'raw',
 		];
 		$this->templateColumns['publish'] = [
 			'attribute' => 'publish',
@@ -270,6 +281,8 @@ class ArchiveCreator extends \app\components\ActiveRecord
 
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
+        // $this->archive = $this->getArchives(true) ? 1 : 0;
+        $this->oArchive = isset($this->grid) ? $this->grid->archive : 0;
 	}
 
 	/**

@@ -17,14 +17,14 @@ class m220904_074223_archive_module_addTrigger_all extends \yii\db\Migration
 {
 	public function up()
 	{
-        $this->execute('DROP TRIGGER `archiveBeforeUpdateLevel`');
-        $this->execute('DROP TRIGGER `archiveBeforeUpdate`');
-        $this->execute('DROP TRIGGER `archiveBeforeUpdateRepository`');
-        $this->execute('DROP TRIGGER `archiveBeforeUpdateCreator`');
-        $this->execute('DROP TRIGGER `archiveBeforeUpdateMedia`');
-        $this->execute('DROP TRIGGER `archiveAfterInsertViews`');
-        $this->execute('DROP TRIGGER `archiveBeforeUpdateViews`');
-        $this->execute('DROP TRIGGER `archiveAfterUpdateViews`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveBeforeUpdateLevel`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveBeforeUpdate`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveBeforeUpdateRepository`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveBeforeUpdateCreator`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveBeforeUpdateMedia`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertViews`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveBeforeUpdateViews`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterUpdateViews`');
 
         // create trigger archiveBeforeUpdateLevel
         $archiveBeforeUpdateLevel = <<< SQL
@@ -131,13 +131,13 @@ SQL;
 
 	public function down()
 	{
-        $this->execute('DROP TRIGGER `archiveBeforeUpdateLevel`');
-        $this->execute('DROP TRIGGER `archiveBeforeUpdate`');
-        $this->execute('DROP TRIGGER `archiveBeforeUpdateRepository`');
-        $this->execute('DROP TRIGGER `archiveBeforeUpdateCreator`');
-        $this->execute('DROP TRIGGER `archiveBeforeUpdateMedia`');
-        $this->execute('DROP TRIGGER `archiveAfterInsertViews`');
-        $this->execute('DROP TRIGGER `archiveBeforeUpdateViews`');
-        $this->execute('DROP TRIGGER `archiveAfterUpdateViews`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveBeforeUpdateLevel`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveBeforeUpdate`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveBeforeUpdateRepository`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveBeforeUpdateCreator`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveBeforeUpdateMedia`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertViews`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveBeforeUpdateViews`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterUpdateViews`');
     }
 }

@@ -107,13 +107,13 @@ $attributes = [
 	],
 	[
 		'attribute' => 'creator',
-		'value' => $model::parseRelated($model->getRelatedCreator(true, 'title'), 'creator'),
+		'value' => $model::parseRelated($model->getCreators(true, 'title'), 'creator'),
 		'format' => 'html',
 		'visible' => !$small && in_array('creator', $model->level->field) ? true : false,
 	],
 	[
 		'attribute' => 'repository',
-		'value' => $model::parseRelated($model->getRelatedRepository(true, 'title'), 'repository', ', '),
+		'value' => $model::parseRelated($model->getRepositories(true, 'title'), 'repository', ', '),
 		'format' => 'html',
 		'visible' => !$small && in_array('repository', $model->level->field) ? true : false,
 	],
@@ -124,7 +124,7 @@ $attributes = [
 	],
 	[
 		'attribute' => 'media',
-		'value' => $model::parseRelated($model->getRelatedMedia(true, 'title')),
+		'value' => $model::parseRelated($model->getMedias(true, 'title')),
 		'format' => 'html',
 		'visible' => !$small && in_array('media', $model->level->field) ? true : false,
 	],
@@ -135,20 +135,20 @@ $attributes = [
 	],
 	[
 		'attribute' => 'subject',
-		'value' => $model::parseSubject($model->getRelatedSubject(true, 'title'), 'subjectId'),
+		'value' => $model::parseSubject($model->getSubjects(true, 'title'), 'subjectId'),
 		'format' => 'html',
 		'visible' => !$small && in_array('subject', $model->level->field),
 	],
 	[
 		'attribute' => 'function',
-		'value' => $model::parseSubject($model->getRelatedFunction(true, 'title'), 'functionId'),
+		'value' => $model::parseSubject($model->getFunctions(true, 'title'), 'functionId'),
 		'format' => 'html',
 		'visible' => !$small && in_array('function', $model->level->field),
 	],
 	[
 		'attribute' => 'location',
 		'value' => function ($model) {
-            if (($location = $model->getRelatedLocation(false)) != null) {
+            if (($location = $model->getLocations(false)) != null) {
                 return $model::parseLocation($location);
             }
 			return Html::a(Yii::t('app', 'Add archive location'), ['location', 'id' => $model->primaryKey], ['title' => Yii::t('app', 'Add archive location'), 'class' => 'modal-btn']);
@@ -167,9 +167,9 @@ $attributes = [
 		'format' => 'html',
 	],
     [
-        'attribute' => 'views',
+        'attribute' => 'oView',
         'value' => function ($model) {
-            $views = $model->getViews(true);
+            $views = $model->oView;
             return Html::a($views, ['view/admin/manage', 'archive' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} views', ['count' => $views]), 'data-pjax' => 0]);
         },
         'format' => 'html',
