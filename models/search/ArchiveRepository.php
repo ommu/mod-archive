@@ -63,7 +63,8 @@ class ArchiveRepository extends ArchiveRepositoryModel
         if (!($column && is_array($column))) {
             $query = ArchiveRepositoryModel::find()->alias('t');
         } else {
-            $query = ArchiveRepositoryModel::find()->alias('t')->select($column);
+            $query = ArchiveRepositoryModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			// 'creation creation', 

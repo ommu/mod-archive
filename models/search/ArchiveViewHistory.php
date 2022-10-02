@@ -63,7 +63,8 @@ class ArchiveViewHistory extends ArchiveViewHistoryModel
         if (!($column && is_array($column))) {
             $query = ArchiveViewHistoryModel::find()->alias('t');
         } else {
-            $query = ArchiveViewHistoryModel::find()->alias('t')->select($column);
+            $query = ArchiveViewHistoryModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			// 'view view',

@@ -63,7 +63,8 @@ class ArchiveLevel extends ArchiveLevelModel
         if (!($column && is_array($column))) {
             $query = ArchiveLevelModel::find()->alias('t');
         } else {
-            $query = ArchiveLevelModel::find()->alias('t')->select($column);
+            $query = ArchiveLevelModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			// 'title title', 

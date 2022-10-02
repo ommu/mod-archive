@@ -65,7 +65,8 @@ class Archives extends ArchivesModel
         if (!($column && is_array($column))) {
             $query = ArchivesModel::find()->alias('t');
         } else {
-            $query = ArchivesModel::find()->alias('t')->select($column);
+            $query = ArchivesModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			// 'parent parent',

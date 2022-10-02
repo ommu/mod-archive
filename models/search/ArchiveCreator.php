@@ -63,7 +63,8 @@ class ArchiveCreator extends ArchiveCreatorModel
         if (!($column && is_array($column))) {
             $query = ArchiveCreatorModel::find()->alias('t');
         } else {
-            $query = ArchiveCreatorModel::find()->alias('t')->select($column);
+            $query = ArchiveCreatorModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			// 'creation creation', 

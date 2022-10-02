@@ -63,7 +63,8 @@ class ArchiveMedia extends ArchiveMediaModel
         if (!($column && is_array($column))) {
             $query = ArchiveMediaModel::find()->alias('t');
         } else {
-            $query = ArchiveMediaModel::find()->alias('t')->select($column);
+            $query = ArchiveMediaModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			// 'title title', 

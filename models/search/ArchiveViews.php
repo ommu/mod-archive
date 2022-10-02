@@ -63,7 +63,8 @@ class ArchiveViews extends ArchiveViewsModel
         if (!($column && is_array($column))) {
             $query = ArchiveViewsModel::find()->alias('t');
         } else {
-            $query = ArchiveViewsModel::find()->alias('t')->select($column);
+            $query = ArchiveViewsModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			// 'archive archive', 
