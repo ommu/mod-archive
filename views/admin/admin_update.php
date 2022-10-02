@@ -24,7 +24,7 @@ if ($context->breadcrumbApp) {
 	$this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
 $this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventory'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name' => $model->level->level_name_i, 'code' => $model->code]), 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name' => $model->levelTitle->message, 'code' => $model->code]), 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 
 if (!$isFond) {

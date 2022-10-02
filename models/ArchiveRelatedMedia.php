@@ -28,6 +28,7 @@ namespace ommu\archive\models;
 
 use Yii;
 use app\models\Users;
+use app\models\SourceMessage;
 
 class ArchiveRelatedMedia extends \app\components\ActiveRecord
 {
@@ -88,7 +89,18 @@ class ArchiveRelatedMedia extends \app\components\ActiveRecord
 	 */
 	public function getMedia()
 	{
-		return $this->hasOne(ArchiveMedia::className(), ['id' => 'media_id']);
+		return $this->hasOne(ArchiveMedia::className(), ['id' => 'media_id'])
+            ->select(['id', 'media_name']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getMediaTitle()
+	{
+		return $this->hasOne(SourceMessage::className(), ['id' => 'media_name'])
+            ->select(['id', 'message'])
+            ->via('media');
 	}
 
 	/**
@@ -96,7 +108,8 @@ class ArchiveRelatedMedia extends \app\components\ActiveRecord
 	 */
 	public function getCreation()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'creation_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'creation_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -139,7 +152,7 @@ class ArchiveRelatedMedia extends \app\components\ActiveRecord
 		$this->templateColumns['media_id'] = [
 			'attribute' => 'media_id',
 			'value' => function($model, $key, $index, $column) {
-				return isset($model->media) ? $model->media->title->message : '-';
+				return isset($model->mediaTitle) ? $model->mediaTitle->message : '-';
 				// return $model->mediaName;
 			},
 			'filter' => ArchiveMedia::getMedia(),

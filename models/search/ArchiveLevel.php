@@ -71,19 +71,29 @@ class ArchiveLevel extends ArchiveLevelModel
 			// 'creation creation', 
 			// 'modified modified'
 		]);
-        if ((isset($params['sort']) && in_array($params['sort'], ['oArchive', '-oArchive'])) || (isset($params['oArchive']) && $params['oArchive'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['oArchive', '-oArchive'])) || 
+            (isset($params['oArchive']) && $params['oArchive'] != '')
+        ) {
             $query->joinWith(['grid grid']);
         }
-        if ((isset($params['sort']) && in_array($params['sort'], ['level_name_i', '-level_name_i'])) || (isset($params['level_name_i']) && $params['level_name_i'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['level_name_i', '-level_name_i'])) || 
+            (isset($params['level_name_i']) && $params['level_name_i'] != '')
+        ) {
             $query->joinWith(['title title']);
         }
-        if ((isset($params['sort']) && in_array($params['sort'], ['level_desc_i', '-level_desc_i'])) || (isset($params['level_desc_i']) && $params['level_desc_i'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['level_desc_i', '-level_desc_i'])) || 
+            (isset($params['level_desc_i']) && $params['level_desc_i'] != '')
+        ) {
             $query->joinWith(['description description']);
         }
-        if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || 
+            (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')
+        ) {
             $query->joinWith(['creation creation']);
         }
-        if ((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || 
+            (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != '')
+        ) {
             $query->joinWith(['modified modified']);
         }
 

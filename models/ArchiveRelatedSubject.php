@@ -91,7 +91,8 @@ class ArchiveRelatedSubject extends \app\components\ActiveRecord
 	 */
 	public function getTag()
 	{
-		return $this->hasOne(CoreTags::className(), ['tag_id' => 'tag_id']);
+		return $this->hasOne(CoreTags::className(), ['tag_id' => 'tag_id'])
+            ->select(['tag_id', 'body']);
 	}
 
 	/**
@@ -99,7 +100,8 @@ class ArchiveRelatedSubject extends \app\components\ActiveRecord
 	 */
 	public function getCreation()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'creation_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'creation_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -216,7 +218,7 @@ class ArchiveRelatedSubject extends \app\components\ActiveRecord
 	{
 		parent::afterFind();
 
-		$this->tagBody = isset($this->tag) ? $this->tag->body : '';
+		// $this->tagBody = isset($this->tag) ? $this->tag->body : '';
 		// $this->archiveTitle = isset($this->archive) ? $this->archive->title : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 	}

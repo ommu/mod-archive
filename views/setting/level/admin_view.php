@@ -49,11 +49,11 @@ $attributes = [
 	],
 	[
 		'attribute' => 'level_name_i',
-		'value' => $model->level_name_i,
+		'value' => $model->title->message,
 	],
 	[
 		'attribute' => 'level_desc_i',
-		'value' => $model->level_desc_i,
+		'value' => $model->description->message,
 	],
 	[
 		'attribute' => 'child',

@@ -49,11 +49,11 @@ $attributes = [
 	],
 	[
 		'attribute' => 'media_name_i',
-		'value' => $model->media_name_i,
+		'value' => $model->title->message,
 	],
 	[
 		'attribute' => 'media_desc_i',
-		'value' => $model->media_desc_i,
+		'value' => $model->description->message,
 	],
 	[
 		'attribute' => 'oArchive',

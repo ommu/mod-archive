@@ -144,7 +144,7 @@ class AdminController extends Controller
         if ($parent != null) {
             $this->subMenuParam = $parent;
 			$parent = Archives::findOne($parent);
-            $parent->isFond = $parent->level_id == 1 ? true : false;
+            // $parent->isFond = $parent->level_id == 1 ? true : false;
             if ($parent->isFond == true) {
                 $this->subMenu = $this->module->params['fond_submenu'];
             }
@@ -161,7 +161,7 @@ class AdminController extends Controller
             if ($parent->isFond == true) {
                 $title = Yii::t('app', 'Senarai Childs: {code}', ['code' => $parent->code]);
             } else {
-                $title = Yii::t('app', 'Inventory Childs: {level-name} {code}', ['level-name' => $parent->level->level_name_i, 'code' => $parent->code]);
+                $title = Yii::t('app', 'Inventory Childs: {level-name} {code}', ['level-name' => $parent->levelTitle->message, 'code' => $parent->code]);
             }
         }
 
@@ -212,7 +212,7 @@ class AdminController extends Controller
             }
 
             if ($model->save()) {
-                Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success created.', ['level-name' => $model->level->level_name_i, 'code' => $model->code]));
+                Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success created.', ['level-name' => $model->levelTitle->message, 'code' => $model->code]));
                 if ($id && empty($model->level->child)) {
                     if ($model->backToManage) {
 						return $this->redirect(['manage', 'parent' => $model->parent_id]);
@@ -233,7 +233,7 @@ class AdminController extends Controller
 
         if ($id != null) {
             $parent = Archives::findOne($id);
-            $parent->isFond = $parent->level_id == 1 ? true : false;
+            // $parent->isFond = $parent->level_id == 1 ? true : false;
             if ($parent->isFond == true) {
                 $this->subMenu = $this->module->params['fond_submenu'];
             }
@@ -243,7 +243,7 @@ class AdminController extends Controller
             }
         }
 
-		$this->view->title = $parent ? Yii::t('app', 'Add New Child: {level-name} {code}', ['level-name' => $parent->level->level_name_i, 'code' => $parent->code]) : Yii::t('app', 'Create Senarai');
+		$this->view->title = $parent ? Yii::t('app', 'Add New Child: {level-name} {code}', ['level-name' => $parent->levelTitle->message, 'code' => $parent->code]) : Yii::t('app', 'Create Senarai');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
@@ -277,9 +277,9 @@ class AdminController extends Controller
             // $model->order = $postData['order'] ? $postData['order'] : 0;
 
             if ($model->save()) {
-                Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success updated.', ['level-name' => $model->level->level_name_i, 'code' => $model->code]));
+                Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success updated.', ['level-name' => $model->levelTitle->message, 'code' => $model->code]));
                 if ($model->backToManage) {
-                    if (strtolower($model->level->level_name_i) == 'fond') {
+                    if (strtolower($model->levelTitle->message) == 'fond') {
 						return $this->redirect(['manage', 'level' => $model->level_id]);
                     }
 					return $this->redirect(['manage', 'parent' => $model->parent_id]);
@@ -301,7 +301,7 @@ class AdminController extends Controller
         }
 
         $this->subMenuParam = $model->id;
-		$this->view->title = Yii::t('app', 'Update {level-name}: {code}', ['level-name' => $model->level->level_name_i, 'code' => $model->code]);
+		$this->view->title = Yii::t('app', 'Update {level-name}: {code}', ['level-name' => $model->levelTitle->message, 'code' => $model->code]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
@@ -329,7 +329,7 @@ class AdminController extends Controller
 
         $this->subMenuParam = $model->id;
 		$this->view->cards = false;
-		$this->view->title = Yii::t('app', 'Detail {level-name}: {code}', ['level-name' => $model->level->level_name_i, 'code' => $model->code]);
+		$this->view->title = Yii::t('app', 'Detail {level-name}: {code}', ['level-name' => $model->levelTitle->message, 'code' => $model->code]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
@@ -350,7 +350,7 @@ class AdminController extends Controller
 		$model->publish = 2;
 
         if ($model->save(false, ['publish', 'modified_id'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success deleted.', ['level-name' => $model->level->level_name_i, 'code' => $model->code]));
+			Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success deleted.', ['level-name' => $model->levelTitle->message, 'code' => $model->code]));
 			return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
 		}
 	}
@@ -410,7 +410,7 @@ class AdminController extends Controller
 		$data = [
 			'id' => $model->id,
 			'code' => $model->code,
-			'level' => $model->level->level_name_i,
+			'level' => $model->levelTitle->message,
 			'label' => $model::htmlHardDecode($model->title),
 			'inode' => $model->getArchives('count') ? true : false,
 			'view-url' => Url::to(['view', 'id' => $model->id]),
@@ -450,7 +450,7 @@ class AdminController extends Controller
             // $model->order = $postData['order'] ? $postData['order'] : 0;
 
             if ($model->save()) {
-                Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success updated location.', ['level-name' => $model->archive->level->level_name_i, 'code' => $model->archive->code]));
+                Yii::$app->session->setFlash('success', Yii::t('app', '{level-name} {code} success updated location.', ['level-name' => $model->archive->levelTitle->message, 'code' => $model->archive->code]));
                 if (!Yii::$app->request->isAjax) {
 					return $this->redirect(['location', 'id' => $model->archive_id]);
                 }
@@ -471,7 +471,7 @@ class AdminController extends Controller
         }
 
         $this->subMenuParam = $model->archive_id;
-		$this->view->title = Yii::t('app', 'Storage Location {level-name}: {code}', ['level-name' => $model->archive->level->level_name_i, 'code' => $model->archive->code]);
+		$this->view->title = Yii::t('app', 'Storage Location {level-name}: {code}', ['level-name' => $model->archive->levelTitle->message, 'code' => $model->archive->code]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_location', [
@@ -508,7 +508,7 @@ class AdminController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'Preview {level-name}: {code}', ['level-name' => $model->level->level_name_i, 'code' => $model->code]);
+		$this->view->title = Yii::t('app', 'Preview {level-name}: {code}', ['level-name' => $model->levelTitle->message, 'code' => $model->code]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_preview_document', [

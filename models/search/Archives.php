@@ -78,7 +78,9 @@ class Archives extends ArchivesModel
         ) {
             $query->joinWith(['grid grid']);
         }
-        if ((isset($params['sort']) && in_array($params['sort'], ['parentTitle', '-parentTitle'])) || (isset($params['parentTitle']) && $params['parentTitle'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['parentTitle', '-parentTitle'])) || 
+            (isset($params['parentTitle']) && $params['parentTitle'] != '')
+        ) {
             $query->joinWith(['parent parent']);
         }
         if ((isset($params['sort']) && in_array($params['sort'], ['level_id', '-level_id'])) || 
@@ -86,10 +88,14 @@ class Archives extends ArchivesModel
         ) {
             $query->joinWith(['level.title level']);
         }
-        if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || 
+            (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')
+        ) {
             $query->joinWith(['creation creation']);
         }
-        if ((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || 
+            (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != '')
+        ) {
             $query->joinWith(['modified modified']);
         }
         if (isset($params['media']) && $params['media'] != '') {
@@ -257,7 +263,7 @@ class Archives extends ArchivesModel
 			->andFilterWhere(['like', 'level.message', $this->levelName])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
 			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname])
-			->andFilterWhere(['like', 'relatedCreatorRltn.creator_namea', $this->creator])
+			->andFilterWhere(['like', 'relatedCreatorRltn.creator_name', $this->creator])
 			->andFilterWhere(['like', 'relatedRepositoryRltn.repository_name', $this->repository])
 			->andFilterWhere(['like', 'relatedSubjectRltn.body', $this->subject])
 			->andFilterWhere(['like', 'relatedFunctionRltn.body', $this->function]);

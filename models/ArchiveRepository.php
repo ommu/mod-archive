@@ -119,7 +119,8 @@ class ArchiveRepository extends \app\components\ActiveRecord
 	 */
 	public function getCreation()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'creation_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'creation_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -127,7 +128,8 @@ class ArchiveRepository extends \app\components\ActiveRecord
 	 */
 	public function getModified()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'modified_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'modified_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**

@@ -347,7 +347,7 @@ echo $form->field($model, 'backToManage')
 } else { ?>
 	<div class="bs-example" data-example-id="simple-jumbotron">
 		<div class="jumbotron">
-			<h1><?php echo $model->getAttributeLabel('level_id').': '.$parent->level->level_name_i;?></h1>
+			<h1><?php echo $model->getAttributeLabel('level_id').': '.$parent->levelTitle->message;?></h1>
 			<p><?php echo Yii::t('app', 'This level cannot add more child levels');?></p>
 		</div>
 	</div>

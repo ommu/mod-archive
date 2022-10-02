@@ -88,7 +88,8 @@ class ArchiveRelatedRepository extends \app\components\ActiveRecord
 	 */
 	public function getRepository()
 	{
-		return $this->hasOne(ArchiveRepository::className(), ['id' => 'repository_id']);
+		return $this->hasOne(ArchiveRepository::className(), ['id' => 'repository_id'])
+            ->select(['id', 'repository_name']);
 	}
 
 	/**
@@ -96,7 +97,8 @@ class ArchiveRelatedRepository extends \app\components\ActiveRecord
 	 */
 	public function getCreation()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'creation_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'creation_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**

@@ -26,7 +26,7 @@ if (!$small) {
         $this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
     }
     $this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventory'), 'url' => ['index']];
-    $this->params['breadcrumbs'][] = $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name' => $model->level->level_name_i, 'code' => $model->code]);
+    $this->params['breadcrumbs'][] = $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name' => $model->levelTitle->message, 'code' => $model->code]);
 
     if (!in_array('location', $model->level->field)) {
         unset($this->params['menu']['content']['location']);
@@ -68,7 +68,7 @@ $attributes = [
 	[
 		'attribute' => 'levelName',
 		'value' => function ($model) {
-			$levelName = isset($model->level) ? $model->level->title->message : '-';
+			$levelName = isset($model->levelTitle) ? $model->levelTitle->message : '-';
             if ($levelName != '-') {
 				return Html::a($levelName, ['setting/level/view', 'id' => $model->level_id], ['title' => $levelName, 'class' => 'modal-btn']);
             }
@@ -159,7 +159,7 @@ $attributes = [
 	[
 		'attribute' => 'medium',
 		'value' => function ($model) {
-            if (strtolower($model->level->level_name_i) == 'item') {
+            if (strtolower($model->levelTitle->message) == 'item') {
                 return $model->medium ? $model->medium : '-';
             }
 			return $model::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id);
@@ -223,7 +223,7 @@ echo $this->renderWidget($archiveInfo, [
 
 <?php echo !$small && !Yii::$app->request->isAjax && in_array('archive_file', $model->level->field) ? 
 	$this->renderWidget('admin_preview_document', [
-        'title' => Yii::t('app', 'Preview {level-name}: {code}', ['level-name' => $model->level->level_name_i, 'code' => $model->code]),
+        'title' => Yii::t('app', 'Preview {level-name}: {code}', ['level-name' => $model->levelTitle->message, 'code' => $model->code]),
 		'model' => $model,
 	]) : ''; ?>
 

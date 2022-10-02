@@ -154,7 +154,8 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	 */
 	public function getTitle()
 	{
-		return $this->hasOne(SourceMessage::className(), ['id' => 'level_name']);
+		return $this->hasOne(SourceMessage::className(), ['id' => 'level_name'])
+            ->select(['id', 'message']);
 	}
 
 	/**
@@ -162,7 +163,8 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	 */
 	public function getDescription()
 	{
-		return $this->hasOne(SourceMessage::className(), ['id' => 'level_desc']);
+		return $this->hasOne(SourceMessage::className(), ['id' => 'level_desc'])
+            ->select(['id', 'message']);
 	}
 
 	/**
@@ -170,7 +172,8 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	 */
 	public function getCreation()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'creation_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'creation_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -178,7 +181,8 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	 */
 	public function getModified()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'modified_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'modified_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -213,13 +217,13 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		$this->templateColumns['level_name_i'] = [
 			'attribute' => 'level_name_i',
 			'value' => function($model, $key, $index, $column) {
-				return $model->level_name_i;
+				return $model->title->message;
 			},
 		];
 		$this->templateColumns['level_desc_i'] = [
 			'attribute' => 'level_desc_i',
 			'value' => function($model, $key, $index, $column) {
-				return $model->level_desc_i;
+				return $model->description->message;
 			},
 		];
 		$this->templateColumns['child'] = [
@@ -341,7 +345,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 		$model = $model->orderBy('t.orders ASC')->all();
 
         if ($array == true) {
-            return \yii\helpers\ArrayHelper::map($model, 'id', 'level_name_i');
+            return \yii\helpers\ArrayHelper::map($model, 'id', 'title.message');
         }
 
 		return $model;
@@ -421,8 +425,8 @@ class ArchiveLevel extends \app\components\ActiveRecord
 	{
 		parent::afterFind();
 
-		$this->level_name_i = isset($this->title) ? $this->title->message : '';
-		$this->level_desc_i = isset($this->description) ? $this->description->message : '';
+		// $this->level_name_i = isset($this->title) ? $this->title->message : '';
+		// $this->level_desc_i = isset($this->description) ? $this->description->message : '';
 		$this->child = unserialize($this->child);
 		$this->field = unserialize($this->field);
         if (!is_array($this->field)) {

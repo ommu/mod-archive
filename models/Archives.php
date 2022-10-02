@@ -57,6 +57,7 @@ use thamtech\uuid\helpers\UuidHelper;
 use yii\base\Event;
 use yii\helpers\Inflector;
 use ommu\archiveLocation\models\ArchiveLocations;
+use app\models\SourceMessage;
 
 class Archives extends \app\components\ActiveRecord
 {
@@ -173,10 +174,11 @@ class Archives extends \app\components\ActiveRecord
 	public function getMedias($result=false, $val='id')
 	{
         if ($result == true) {
-            return \yii\helpers\ArrayHelper::map($this->medias, 'media_id', $val=='id' ? 'id' : 'media.media_name_i');
+            return \yii\helpers\ArrayHelper::map($this->medias, 'media_id', $val=='id' ? 'id' : 'mediaTitle.message');
         }
 
-		return $this->hasMany(ArchiveRelatedMedia::className(), ['archive_id' => 'id']);
+		return $this->hasMany(ArchiveRelatedMedia::className(), ['archive_id' => 'id'])
+            ->select(['id', 'archive_id', 'media_id']);
 	}
 
 	/**
@@ -188,7 +190,8 @@ class Archives extends \app\components\ActiveRecord
             return \yii\helpers\ArrayHelper::map($this->creators, 'creator_id', $val=='id' ? 'id' : 'creator.creator_name');
         }
 
-		return $this->hasMany(ArchiveRelatedCreator::className(), ['archive_id' => 'id']);
+		return $this->hasMany(ArchiveRelatedCreator::className(), ['archive_id' => 'id'])
+            ->select(['id', 'archive_id', 'creator_id']);
 	}
 
 	/**
@@ -200,7 +203,8 @@ class Archives extends \app\components\ActiveRecord
             return \yii\helpers\ArrayHelper::map($this->repositories, 'repository_id', $val=='id' ? 'id' : 'repository.repository_name');
         }
 
-		return $this->hasMany(ArchiveRelatedRepository::className(), ['archive_id' => 'id']);
+		return $this->hasMany(ArchiveRelatedRepository::className(), ['archive_id' => 'id'])
+            ->select(['id', 'archive_id', 'repository_id']);
 	}
 
 	/**
@@ -214,6 +218,7 @@ class Archives extends \app\components\ActiveRecord
 
 		return $this->hasMany(ArchiveRelatedSubject::className(), ['archive_id' => 'id'])
 			->alias('subjects')
+            ->select(['id', 'archive_id', 'tag_id'])
 			->andOnCondition([sprintf('%s.type', 'subjects') => 'subject']);
 	}
 
@@ -228,6 +233,7 @@ class Archives extends \app\components\ActiveRecord
 
 		return $this->hasMany(ArchiveRelatedSubject::className(), ['archive_id' => 'id'])
 			->alias('functions')
+            ->select(['id', 'archive_id', 'tag_id'])
 			->andOnCondition([sprintf('%s.type', 'functions') => 'function']);
 	}
 
@@ -241,7 +247,8 @@ class Archives extends \app\components\ActiveRecord
         }
 
 		return $this->hasMany(ArchiveLocations::className(), ['archive_id' => 'id'])
-			->alias('locations');
+			->alias('locations')
+            ->select(['id', 'archive_id', 'room_id', 'rack_id', 'storage_id']);
 	}
 
 	/**
@@ -298,7 +305,8 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function getParent()
 	{
-		return $this->hasOne(Archives::className(), ['id' => 'parent_id']);
+		return $this->hasOne(Archives::className(), ['id' => 'parent_id'])
+            ->select(['id', 'parent_id', 'level_id', 'title', 'code']);
 	}
 
 	/**
@@ -306,7 +314,18 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function getLevel()
 	{
-		return $this->hasOne(ArchiveLevel::className(), ['id' => 'level_id']);
+		return $this->hasOne(ArchiveLevel::className(), ['id' => 'level_id'])
+            ->select(['id', 'level_name', 'child', 'field']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getLevelTitle()
+	{
+		return $this->hasOne(SourceMessage::className(), ['id' => 'level_name'])
+            ->select(['id', 'message'])
+            ->via('level');
 	}
 
 	/**
@@ -314,7 +333,8 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function getCreation()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'creation_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'creation_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -322,7 +342,8 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public function getModified()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'modified_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'modified_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -393,7 +414,7 @@ class Archives extends \app\components\ActiveRecord
 			'attribute' => 'level_id',
 			'label' => Yii::t('app', 'Level'),
 			'value' => function($model, $key, $index, $column) {
-				return isset($model->level) ? $model->level->title->message : '-';
+				return isset($model->levelTitle) ? $model->levelTitle->message : '-';
 				// return $model->levelName;
 			},
 			'filter' => ArchiveLevel::getLevel(),
@@ -420,27 +441,6 @@ class Archives extends \app\components\ActiveRecord
 			},
 			'format' => 'html',
 		];
-		$this->templateColumns['repository'] = [
-			'attribute' => 'repository',
-			'value' => function($model, $key, $index, $column) {
-				return self::parseRelated($model->getRepositories(true, 'title'), 'repository', ', ');
-			},
-			'format' => 'html',
-		];
-		$this->templateColumns['subject'] = [
-			'attribute' => 'subject',
-			'value' => function($model, $key, $index, $column) {
-				return self::parseSubject($model->getSubjects(true, 'title'), 'subjectId', ', ');
-			},
-			'format' => 'html',
-		];
-		$this->templateColumns['function'] = [
-			'attribute' => 'function',
-			'value' => function($model, $key, $index, $column) {
-				return self::parseSubject($model->getFunctions(true, 'title'), 'functionId', ', ');
-			},
-			'format' => 'html',
-		];
 		$this->templateColumns['archive_date'] = [
 			'attribute' => 'archive_date',
 			'value' => function($model, $key, $index, $column) {
@@ -451,7 +451,7 @@ class Archives extends \app\components\ActiveRecord
 			'attribute' => 'medium',
 			'label' => Yii::t('app', 'Medium'),
 			'value' => function($model, $key, $index, $column) {
-                if (strtolower($model->level->level_name_i) == 'item') {
+                if (strtolower($model->levelTitle->message) == 'item') {
                     return $model->medium ? $model->medium : '-';
                 }
 				return self::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id);
@@ -476,6 +476,27 @@ class Archives extends \app\components\ActiveRecord
 				return self::getArchiveType($model->archive_type ? $model->archive_type : '-');
 			},
 			'filter' => self::getArchiveType(),
+		];
+		$this->templateColumns['subject'] = [
+			'attribute' => 'subject',
+			'value' => function($model, $key, $index, $column) {
+				return self::parseSubject($model->getSubjects(true, 'title'), 'subjectId', ', ');
+			},
+			'format' => 'html',
+		];
+		$this->templateColumns['function'] = [
+			'attribute' => 'function',
+			'value' => function($model, $key, $index, $column) {
+				return self::parseSubject($model->getFunctions(true, 'title'), 'functionId', ', ');
+			},
+			'format' => 'html',
+		];
+		$this->templateColumns['repository'] = [
+			'attribute' => 'repository',
+			'value' => function($model, $key, $index, $column) {
+				return self::parseRelated($model->getRepositories(true, 'title'), 'repository', ', ');
+			},
+			'format' => 'html',
 		];
 		$this->templateColumns['archive_file'] = [
 			'attribute' => 'archive_file',
@@ -740,7 +761,7 @@ class Archives extends \app\components\ActiveRecord
         }
 
 		$codes = [];
-		$levelAsKey = $this->level->level_name_i;
+		$levelAsKey = $this->levelTitle->message;
 		$codes[$levelAsKey]['id'] = $this->id;
 		$codes[$levelAsKey]['level'] = $levelAsKey;
 		$codes[$levelAsKey]['code'] = $this->code;
@@ -815,7 +836,7 @@ class Archives extends \app\components\ActiveRecord
         }
 
 		$title = self::htmlHardDecode($model->parent->title);
-		$levelName = $model->parent->level->title->message;
+		$levelName = $model->parent->levelTitle->message;
 
 		$items[] = $model->getAttributeLabel('level_id').': '.Html::a($levelName, ['setting/level/view', 'id' => $model->parent->level_id], ['title' => $levelName, 'class' => 'modal-btn']);
 		$items[] = Yii::t('app', '{level} Code: {code}', ['level' => $levelName, 'code' => $model->parent->code]);
@@ -1002,6 +1023,7 @@ class Archives extends \app\components\ActiveRecord
 		parent::afterFind();
 
 		$this->old_archive_file = $this->archive_file;
+        $this->isFond = $this->level_id == 1 ? true : false;
 		// $this->parentTitle = isset($this->parent) ? $this->parent->title : '-';
 		// $this->levelName = isset($this->level) ? $this->level->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
@@ -1035,11 +1057,11 @@ class Archives extends \app\components\ActiveRecord
 		$this->oldConfirmCode = $this->confirmCode;
 		$this->oldShortCode = $this->shortCode;
 
-		$this->media = array_flip($this->getMedias(true));
-		$this->creator = implode(',', $this->getCreators(true, 'title'));
-		$this->repository =  array_flip($this->getRepositories(true));
-		$this->subject =  implode(',', $this->getSubjects(true, 'title'));
-		$this->function =  implode(',', $this->getFunctions(true, 'title'));
+		// $this->media = array_flip($this->getMedias(true));
+		// $this->creator = implode(',', $this->getCreators(true, 'title'));
+		// $this->repository =  array_flip($this->getRepositories(true));
+		// $this->subject =  implode(',', $this->getSubjects(true, 'title'));
+		// $this->function =  implode(',', $this->getFunctions(true, 'title'));
 		$this->preview = $this->archive_file != '' ? 1 : 0;
 		$this->location = $this->getLocations(false) != null ? 1 : 0;
 	}
@@ -1091,7 +1113,7 @@ class Archives extends \app\components\ActiveRecord
 
 		// set code
         if ($this->updateCode == true) {
-            if (strtolower($this->level->level_name_i) == 'fond') {
+            if (strtolower($this->levelTitle->message) == 'fond') {
                 $this->code = $this->shortCode;
             } else {
                 if ($setting->maintenance_mode) {
@@ -1104,7 +1126,7 @@ class Archives extends \app\components\ActiveRecord
                     $this->code = join('.', [$this->parent->code, $this->shortCode]);
                 }
 			}
-			// $this->code = strtolower($this->level->level_name_i) == 'fond' ? 
+			// $this->code = strtolower($this->levelTitle->message) == 'fond' ? 
 			// 	$this->shortCode : 
 			// 	($setting->maintenance_mode ? 
 			// 		join('.', [$this->parent->confirmCode, $this->shortCode]) :

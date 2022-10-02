@@ -127,7 +127,8 @@ class ArchiveMedia extends \app\components\ActiveRecord
 	 */
 	public function getTitle()
 	{
-		return $this->hasOne(SourceMessage::className(), ['id' => 'media_name']);
+		return $this->hasOne(SourceMessage::className(), ['id' => 'media_name'])
+            ->select(['id', 'message']);
 	}
 
 	/**
@@ -135,7 +136,8 @@ class ArchiveMedia extends \app\components\ActiveRecord
 	 */
 	public function getDescription()
 	{
-		return $this->hasOne(SourceMessage::className(), ['id' => 'media_desc']);
+		return $this->hasOne(SourceMessage::className(), ['id' => 'media_desc'])
+            ->select(['id', 'message']);
 	}
 
 	/**
@@ -143,7 +145,8 @@ class ArchiveMedia extends \app\components\ActiveRecord
 	 */
 	public function getCreation()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'creation_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'creation_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -151,7 +154,8 @@ class ArchiveMedia extends \app\components\ActiveRecord
 	 */
 	public function getModified()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'modified_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'modified_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -186,13 +190,13 @@ class ArchiveMedia extends \app\components\ActiveRecord
 		$this->templateColumns['media_name_i'] = [
 			'attribute' => 'media_name_i',
 			'value' => function($model, $key, $index, $column) {
-				return $model->media_name_i;
+				return $model->title->message;
 			},
 		];
 		$this->templateColumns['media_desc_i'] = [
 			'attribute' => 'media_desc_i',
 			'value' => function($model, $key, $index, $column) {
-				return $model->media_desc_i;
+				return $model->description->message;
 			},
 		];
 		$this->templateColumns['creation_date'] = [
@@ -292,7 +296,7 @@ class ArchiveMedia extends \app\components\ActiveRecord
 		$model = $model->orderBy('title.message ASC')->all();
 
         if ($array == true) {
-            return \yii\helpers\ArrayHelper::map($model, 'id', 'media_name_i');
+            return \yii\helpers\ArrayHelper::map($model, 'id', 'title.message');
         }
 
 		return $model;
@@ -305,8 +309,8 @@ class ArchiveMedia extends \app\components\ActiveRecord
 	{
 		parent::afterFind();
 
-		$this->media_name_i = isset($this->title) ? $this->title->message : '';
-		$this->media_desc_i = isset($this->description) ? $this->description->message : '';
+		// $this->media_name_i = isset($this->title) ? $this->title->message : '';
+		// $this->media_desc_i = isset($this->description) ? $this->description->message : '';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
         // $this->archive = $this->getArchives(true) ? 1 : 0;
