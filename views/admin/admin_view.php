@@ -26,7 +26,7 @@ if (!$small) {
         $this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
     }
     $this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventory'), 'url' => ['index']];
-    $this->params['breadcrumbs'][] = $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name' => $model->levelTitle->message, 'code' => $model->code]);
+    $this->params['breadcrumbs'][] = $isFond ? $model->code : Yii::t('app', '#{level-name} {code}', ['level-name' => uppercase($model->levelTitle->message), 'code' => $model->code]);
 
     if (!in_array('location', $model->level->field)) {
         unset($this->params['menu']['content']['location']);

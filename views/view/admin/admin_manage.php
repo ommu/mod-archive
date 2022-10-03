@@ -25,7 +25,7 @@ if ($context->breadcrumbApp) {
 }
 if ($archive != null) {
     $this->params['breadcrumbs'][] = ['label' => $archive->isFond ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventory'), 'url' => $archive->isFond ? ['fond/index'] : ['admin/index']];
-    $this->params['breadcrumbs'][] = ['label' => $archive->isFond ? $archive->code : Yii::t('app', '{level-name} {code}', ['level-name' => $archive->levelTitle->message, 'code' => $archive->code]), 'url' => [($archive->isFond ? 'fond' : 'admin').'/view', 'id' => $archive->id]];
+    $this->params['breadcrumbs'][] = ['label' => $archive->isFond ? $archive->code : Yii::t('app', '#{level-name} {code}', ['level-name' => strtoupper($archive->levelTitle->message), 'code' => $archive->code]), 'url' => [($archive->isFond ? 'fond' : 'admin').'/view', 'id' => $archive->id]];
 } else {
     $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Inventory'), 'url' => ['admin/index']];
 }
