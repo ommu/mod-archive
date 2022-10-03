@@ -24,10 +24,10 @@ class m220929_215306_archive_module_addView_archiveView extends \yii\db\Migratio
 		$addViewArchiveStatisticView = <<< SQL
 CREATE VIEW `_archive_statistic_view` AS
 select
-  `a`.`id` AS `id`,
+  `a`.`archive_id` AS `archive_id`,
   sum(`a`.`views`) AS `views`
 from `ommu_archive_views` `a`
-group by `a`.`id`;
+group by `a`.`archive_id`;
 SQL;
 		$this->execute($addViewArchiveStatisticView);
 
@@ -39,7 +39,7 @@ select
   `b`.`views` AS `views`
 from (`ommu_archives` `a`
    left join `_archive_statistic_view` `b`
-     on (`a`.`id` = `b`.`id`));
+     on (`a`.`id` = `b`.`archive_id`));
 SQL;
 		$this->execute($addViewArchives);
 	}
