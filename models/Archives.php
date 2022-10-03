@@ -547,7 +547,8 @@ class Archives extends \app\components\ActiveRecord
 		$this->templateColumns['location'] = [
 			'attribute' => 'location',
 			'value' => function($model, $key, $index, $column) {
-				return $this->filterYesNo($model->location);
+                $location = $this->getLocations(false) != null ? 1 : 0;
+				return $this->filterYesNo($location);
 			},
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
@@ -1024,10 +1025,18 @@ class Archives extends \app\components\ActiveRecord
 
 		$this->old_archive_file = $this->archive_file;
         $this->isFond = $this->level_id == 1 ? true : false;
+		$this->preview = $this->archive_file != '' ? 1 : 0;
 		// $this->parentTitle = isset($this->parent) ? $this->parent->title : '-';
 		// $this->levelName = isset($this->level) ? $this->level->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
+
+		// $this->media = array_flip($this->getMedias(true));
+		// $this->creator = implode(',', $this->getCreators(true, 'title'));
+		// $this->repository =  array_flip($this->getRepositories(true));
+		// $this->subject =  implode(',', $this->getSubjects(true, 'title'));
+		// $this->function =  implode(',', $this->getFunctions(true, 'title'));
+		// $this->location = $this->getLocations(false) != null ? 1 : 0;
 
 		$this->code = preg_replace("/^[.-]/", '', preg_replace("/^(3400|23400-24)/", '', $this->code));
 		$this->oldCode = $this->code;
@@ -1056,14 +1065,6 @@ class Archives extends \app\components\ActiveRecord
 
 		$this->oldConfirmCode = $this->confirmCode;
 		$this->oldShortCode = $this->shortCode;
-
-		// $this->media = array_flip($this->getMedias(true));
-		// $this->creator = implode(',', $this->getCreators(true, 'title'));
-		// $this->repository =  array_flip($this->getRepositories(true));
-		// $this->subject =  implode(',', $this->getSubjects(true, 'title'));
-		// $this->function =  implode(',', $this->getFunctions(true, 'title'));
-		$this->preview = $this->archive_file != '' ? 1 : 0;
-		$this->location = $this->getLocations(false) != null ? 1 : 0;
 	}
 
 	/**
