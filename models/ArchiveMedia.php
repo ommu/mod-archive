@@ -22,6 +22,7 @@
  * @property string $updated_date
  *
  * The followings are the available model relations:
+ * @property ArchiveMediaGrid $grid
  * @property ArchiveRelatedMedia[] $archives
  * @property SourceMessage $title
  * @property SourceMessage $description
@@ -47,9 +48,9 @@ class ArchiveMedia extends \app\components\ActiveRecord
 
 	public $media_name_i;
     public $media_desc_i;
-
 	public $creationDisplayname;
 	public $modifiedDisplayname;
+	public $oArchive;
 
 	/**
 	 * @return string the associated database table name
@@ -90,10 +91,18 @@ class ArchiveMedia extends \app\components\ActiveRecord
 			'updated_date' => Yii::t('app', 'Updated Date'),
 			'media_name_i' => Yii::t('app', 'Media'),
 			'media_desc_i' => Yii::t('app', 'Description'),
-			'archives' => Yii::t('app', 'Archives'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
+			'oArchive' => Yii::t('app', 'Archives'),
 		];
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getGrid()
+	{
+		return $this->hasOne(ArchiveMediaGrid::className(), ['id' => 'id']);
 	}
 
 	/**
@@ -118,7 +127,8 @@ class ArchiveMedia extends \app\components\ActiveRecord
 	 */
 	public function getTitle()
 	{
-		return $this->hasOne(SourceMessage::className(), ['id' => 'media_name']);
+		return $this->hasOne(SourceMessage::className(), ['id' => 'media_name'])
+            ->select(['id', 'message']);
 	}
 
 	/**
@@ -126,7 +136,8 @@ class ArchiveMedia extends \app\components\ActiveRecord
 	 */
 	public function getDescription()
 	{
-		return $this->hasOne(SourceMessage::className(), ['id' => 'media_desc']);
+		return $this->hasOne(SourceMessage::className(), ['id' => 'media_desc'])
+            ->select(['id', 'message']);
 	}
 
 	/**
@@ -134,7 +145,8 @@ class ArchiveMedia extends \app\components\ActiveRecord
 	 */
 	public function getCreation()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'creation_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'creation_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -142,7 +154,8 @@ class ArchiveMedia extends \app\components\ActiveRecord
 	 */
 	public function getModified()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'modified_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'modified_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -177,24 +190,14 @@ class ArchiveMedia extends \app\components\ActiveRecord
 		$this->templateColumns['media_name_i'] = [
 			'attribute' => 'media_name_i',
 			'value' => function($model, $key, $index, $column) {
-				return $model->media_name_i;
+				return $model->title->message;
 			},
 		];
 		$this->templateColumns['media_desc_i'] = [
 			'attribute' => 'media_desc_i',
 			'value' => function($model, $key, $index, $column) {
-				return $model->media_desc_i;
+				return $model->description->message;
 			},
-		];
-		$this->templateColumns['archives'] = [
-			'attribute' => 'archives',
-			'value' => function($model, $key, $index, $column) {
-				$archives = $model->getArchives(true);
-				return Html::a($archives, ['admin/manage', 'mediaId' => $model->primaryKey], ['title' => Yii::t('app', '{count} archives', ['count' => $archives]), 'data-pjax' => 0]);
-			},
-			'filter' => false,
-			'contentOptions' => ['class' => 'text-center'],
-			'format' => 'raw',
 		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
@@ -232,6 +235,17 @@ class ArchiveMedia extends \app\components\ActiveRecord
 				return Yii::$app->formatter->asDatetime($model->updated_date, 'medium');
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
+		];
+		$this->templateColumns['oArchive'] = [
+			'attribute' => 'oArchive',
+			'value' => function($model, $key, $index, $column) {
+				// $archives = $model->getArchives(true);
+                $archives = $model->grid->archive;
+				return Html::a($archives, ['admin/manage', 'mediaId' => $model->primaryKey], ['title' => Yii::t('app', '{count} archives', ['count' => $archives]), 'data-pjax' => 0]);
+			},
+			'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class' => 'text-center'],
+			'format' => 'raw',
 		];
 		$this->templateColumns['publish'] = [
 			'attribute' => 'publish',
@@ -282,7 +296,7 @@ class ArchiveMedia extends \app\components\ActiveRecord
 		$model = $model->orderBy('title.message ASC')->all();
 
         if ($array == true) {
-            return \yii\helpers\ArrayHelper::map($model, 'id', 'media_name_i');
+            return \yii\helpers\ArrayHelper::map($model, 'id', 'title.message');
         }
 
 		return $model;
@@ -295,10 +309,11 @@ class ArchiveMedia extends \app\components\ActiveRecord
 	{
 		parent::afterFind();
 
-		$this->media_name_i = isset($this->title) ? $this->title->message : '';
-		$this->media_desc_i = isset($this->description) ? $this->description->message : '';
+		// $this->media_name_i = isset($this->title) ? $this->title->message : '';
+		// $this->media_desc_i = isset($this->description) ? $this->description->message : '';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
+        // $this->archive = $this->getArchives(true) ? 1 : 0;
 	}
 
 	/**

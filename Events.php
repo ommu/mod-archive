@@ -45,7 +45,7 @@ class Events extends \yii\base\BaseObject
 	 */
 	public static function setArchiveMedia($archive)
 	{
-		$oldMedia = array_flip($archive->getRelatedMedia(true));
+		$oldMedia = array_flip($archive->getMedias(true));
 		$media = $archive->media;
 
 		// insert difference media
@@ -80,7 +80,7 @@ class Events extends \yii\base\BaseObject
 	 */
 	public static function setArchiveCreator($archive)
 	{
-		$oldCreator = $archive->getRelatedCreator(true, 'title');
+		$oldCreator = $archive->getCreators(true, 'title');
         if ($archive->creator) {
             $creator = explode(',', $archive->creator);
         }
@@ -132,7 +132,7 @@ class Events extends \yii\base\BaseObject
 	 */
 	public static function setArchiveRepository($archive)
 	{
-		$oldRepository = array_flip($archive->getRelatedRepository(true));
+		$oldRepository = array_flip($archive->getRepositories(true));
 
         if ((empty($oldRepository) && !$archive->repository) || in_array($archive->repository, $oldRepository)) {
             return;
@@ -188,12 +188,12 @@ class Events extends \yii\base\BaseObject
 	public static function setArchiveSubject($archive, $type='subject')
 	{
         if ($type == 'subject') {
-			$oldSubject = $archive->getRelatedSubject(true, 'title');
+			$oldSubject = $archive->getSubjects(true, 'title');
             if ($archive->subject) {
                 $subject = explode(',', $archive->subject);
             }
 		} else {
-			$oldSubject = $archive->getRelatedFunction(true, 'title');
+			$oldSubject = $archive->getFunctions(true, 'title');
             if ($archive->function) {
                 $subject = explode(',', $archive->function);
             }

@@ -149,8 +149,10 @@ if ($isFond) {
 		} else {
 			$template = '<h5 class="text-muted">'.$setting->reference_code_sikn.' '.join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'confirmCode')).$setting->reference_code_separator.'<span class="text-primary reference-code">'.$model->parent->confirmCode.'.'.$shortCode.'</span></h5>';
         }
+        $template .= '<hr/>';
+        $template .= $aciTree;
 	}
-	echo $form->field($model, 'parent_id', ['template' => '{label}{beginWrapper}{input}'.$template.'{endWrapper}'])
+	echo $form->field($model, 'code', ['template' => '{label}{beginWrapper}{input}'.$template.'{endWrapper}'])
 		->hiddenInput()
 		->label($model->getAttributeLabel('code'));
 
@@ -347,7 +349,7 @@ echo $form->field($model, 'backToManage')
 } else { ?>
 	<div class="bs-example" data-example-id="simple-jumbotron">
 		<div class="jumbotron">
-			<h1><?php echo $model->getAttributeLabel('level_id').': '.$parent->level->level_name_i;?></h1>
+			<h1><?php echo $model->getAttributeLabel('level_id').': '.$parent->levelTitle->message;?></h1>
 			<p><?php echo Yii::t('app', 'This level cannot add more child levels');?></p>
 		</div>
 	</div>

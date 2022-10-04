@@ -23,15 +23,11 @@ $context = $this->context;
 if ($context->breadcrumbApp) {
 	$this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
-$this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name' => $model->level->level_name_i, 'code' => $model->code]), 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventory'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $isFond ? $model->code : Yii::t('app', '#{level-name} {code}', ['level-name' => strtoupper($model->levelTitle->message), 'code' => $model->code]), 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 
 if (!$isFond) {
-	$this->params['menu']['content'] = [
-        ['label' => Yii::t('app', 'Show Reference Code'), 'url' => 'javascript:void(0);', 'icon' => 'code', 'htmlOptions' => ['class' => 'btn btn-warning', 'id' => 'reference-code']],
-    ];
-
 	$treeDataUrl = Url::to(['data', 'id' => $model->parent_id]);
 $js = <<<JS
 	var treeDataUrl = '$treeDataUrl';
@@ -46,13 +42,14 @@ if (!in_array('location', $model->level->field))
 <div class="archives-update">
 
 <?php
-echo !Yii::$app->request->isAjax && !$isFond ? '<div id="tree" class="aciTree hide mb-4"></div>' : '';
+$aciTree = !Yii::$app->request->isAjax && !$isFond ? '<div id="tree" class="aciTree mb-4"></div>' : '';
 
 echo $this->render('_form', [
 	'model' => $model,
 	'setting' => $setting,
 	'referenceCode' => $model->referenceCode,
 	'isFond' => $isFond,
+    'aciTree' => $aciTree,
 ]); ?>
 
 </div>

@@ -49,11 +49,11 @@ $attributes = [
 	],
 	[
 		'attribute' => 'level_name_i',
-		'value' => $model->level_name_i,
+		'value' => $model->title->message,
 	],
 	[
 		'attribute' => 'level_desc_i',
-		'value' => $model->level_desc_i,
+		'value' => $model->description->message,
 	],
 	[
 		'attribute' => 'child',
@@ -67,9 +67,9 @@ $attributes = [
 		'visible' => !$small,
 	],
 	[
-		'attribute' => 'archives',
+		'attribute' => 'oArchive',
 		'value' => function ($model) {
-			$archives = $model->getArchives(true);
+			$archives = $model->grid->archive;
 			return $archives ? Html::a($archives, ['admin/manage', 'level' => $model->primaryKey, 'data' => 'yes'], ['title' => Yii::t('app', '{count} archives', ['count' => $archives])]) : '-';
 		},
 		'format' => 'html',

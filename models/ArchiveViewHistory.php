@@ -24,6 +24,7 @@
 namespace ommu\archive\models;
 
 use Yii;
+use app\models\Users;
 
 class ArchiveViewHistory extends \app\components\ActiveRecord
 {
@@ -32,6 +33,9 @@ class ArchiveViewHistory extends \app\components\ActiveRecord
 	public $counts;
 
 	public $archiveTitle;
+	public $userDisplayname;
+	public $levelId;
+	public $archiveCode;
 
 	/**
 	 * @return string the associated database table name
@@ -66,6 +70,9 @@ class ArchiveViewHistory extends \app\components\ActiveRecord
 			'view_date' => Yii::t('app', 'View Date'),
 			'view_ip' => Yii::t('app', 'View IP'),
 			'archiveTitle' => Yii::t('app', 'Archive'),
+			'userDisplayname' => Yii::t('app', 'User'),
+			'levelId' => Yii::t('app', 'Level of Description'),
+			'archiveCode' => Yii::t('app', 'Reference code'),
 		];
 	}
 
@@ -74,7 +81,28 @@ class ArchiveViewHistory extends \app\components\ActiveRecord
 	 */
 	public function getView()
 	{
-		return $this->hasOne(ArchiveViews::className(), ['id' => 'view_id']);
+		return $this->hasOne(ArchiveViews::className(), ['id' => 'view_id'])
+            ->select(['id', 'archive_id', 'user_id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getArchive()
+	{
+		return $this->hasOne(Archives::className(), ['id' => 'archive_id'])
+            ->select(['id', 'parent_id', 'level_id', 'title', 'code', 'archive_date', 'archive_file', 'creation_date'])
+            ->via('view');
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getUser()
+	{
+		return $this->hasOne(Users::className(), ['user_id' => 'user_id'])
+            ->select(['user_id', 'displayname'])
+            ->via('view');
 	}
 
 	/**
@@ -106,14 +134,38 @@ class ArchiveViewHistory extends \app\components\ActiveRecord
 			'class' => 'app\components\grid\SerialColumn',
 			'contentOptions' => ['class' => 'text-center'],
 		];
+		$this->templateColumns['levelId'] = [
+			'attribute' => 'levelId',
+			'label' => Yii::t('app', 'Level'),
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->archive->levelTitle) ? $model->archive->levelTitle->message : '-';
+			},
+			'filter' => ArchiveLevel::getLevel(),
+			'visible' => !Yii::$app->request->get('view') && !Yii::$app->request->get('archiveId') && !Yii::$app->request->get('levelId') ? true : false,
+		];
+		$this->templateColumns['archiveCode'] = [
+			'attribute' => 'archiveCode',
+			'value' => function($model, $key, $index, $column) {
+				return $model->archive->code;
+			},
+			'visible' => !Yii::$app->request->get('view') && !Yii::$app->request->get('archiveId') ? true : false,
+		];
 		$this->templateColumns['archiveTitle'] = [
 			'attribute' => 'archiveTitle',
 			'value' => function($model, $key, $index, $column) {
-				return isset($model->view) ? $model->view->archive->title : '-';
+				return isset($model->archive) ? $model->archive->title : '-';
 				// return $model->archiveTitle;
 			},
             'format' => 'html',
-			'visible' => !Yii::$app->request->get('view') ? true : false,
+			'visible' => !Yii::$app->request->get('view') && !Yii::$app->request->get('archiveId') ? true : false,
+		];
+		$this->templateColumns['userDisplayname'] = [
+			'attribute' => 'userDisplayname',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->user) ? $model->user->displayname : '-';
+				// return $model->userDisplayname;
+			},
+			'visible' => !Yii::$app->request->get('user') ? true : false,
 		];
 		$this->templateColumns['view_date'] = [
 			'attribute' => 'view_date',
@@ -159,5 +211,6 @@ class ArchiveViewHistory extends \app\components\ActiveRecord
 		parent::afterFind();
 
 		// $this->archiveTitle = isset($this->view) ? $this->view->archive->title : '-';
+		// $this->userDisplayname = isset($this->view->user) ? $this->view->user->displayname : '-';
 	}
 }

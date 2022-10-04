@@ -80,7 +80,8 @@ class ArchiveRelatedCreator extends \app\components\ActiveRecord
 	 */
 	public function getCreator()
 	{
-		return $this->hasOne(ArchiveCreator::className(), ['id' => 'creator_id']);
+		return $this->hasOne(ArchiveCreator::className(), ['id' => 'creator_id'])
+            ->select(['id', 'creator_name']);
 	}
 
 	/**
@@ -96,7 +97,8 @@ class ArchiveRelatedCreator extends \app\components\ActiveRecord
 	 */
 	public function getCreation()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'creation_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'creation_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**

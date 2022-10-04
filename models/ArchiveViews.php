@@ -42,6 +42,8 @@ class ArchiveViews extends \app\components\ActiveRecord
 
 	public $archiveTitle;
 	public $userDisplayname;
+	public $levelId;
+	public $archiveCode;
 
 	/**
 	 * @return string the associated database table name
@@ -83,6 +85,8 @@ class ArchiveViews extends \app\components\ActiveRecord
 			'histories' => Yii::t('app', 'Histories'),
 			'archiveTitle' => Yii::t('app', 'Archive'),
 			'userDisplayname' => Yii::t('app', 'User'),
+			'levelId' => Yii::t('app', 'Level of Description'),
+			'archiveCode' => Yii::t('app', 'Reference code'),
 		];
 	}
 
@@ -108,7 +112,8 @@ class ArchiveViews extends \app\components\ActiveRecord
 	 */
 	public function getArchive()
 	{
-		return $this->hasOne(Archives::className(), ['id' => 'archive_id']);
+		return $this->hasOne(Archives::className(), ['id' => 'archive_id'])
+            ->select(['id', 'level_id', 'title', 'code']);
 	}
 
 	/**
@@ -116,7 +121,8 @@ class ArchiveViews extends \app\components\ActiveRecord
 	 */
 	public function getUser()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'user_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'user_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -147,6 +153,22 @@ class ArchiveViews extends \app\components\ActiveRecord
 			'header' => '#',
 			'class' => 'app\components\grid\SerialColumn',
 			'contentOptions' => ['class' => 'text-center'],
+		];
+		$this->templateColumns['levelId'] = [
+			'attribute' => 'levelId',
+			'label' => Yii::t('app', 'Level'),
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->archive->levelTitle) ? $model->archive->levelTitle->message : '-';
+			},
+			'filter' => ArchiveLevel::getLevel(),
+			'visible' => !Yii::$app->request->get('archive') && !Yii::$app->request->get('levelId') ? true : false,
+		];
+		$this->templateColumns['archiveCode'] = [
+			'attribute' => 'archiveCode',
+			'value' => function($model, $key, $index, $column) {
+				return $model->archive->code;
+			},
+			'visible' => !Yii::$app->request->get('archive') ? true : false,
 		];
 		$this->templateColumns['archiveTitle'] = [
 			'attribute' => 'archiveTitle',

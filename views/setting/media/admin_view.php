@@ -49,16 +49,16 @@ $attributes = [
 	],
 	[
 		'attribute' => 'media_name_i',
-		'value' => $model->media_name_i,
+		'value' => $model->title->message,
 	],
 	[
 		'attribute' => 'media_desc_i',
-		'value' => $model->media_desc_i,
+		'value' => $model->description->message,
 	],
 	[
-		'attribute' => 'archives',
+		'attribute' => 'oArchive',
 		'value' => function ($model) {
-			$archives = $model->getArchives(true);
+			$archives = $model->grid->archive;
 			return Html::a($archives, ['admin/manage', 'mediaId' => $model->primaryKey], ['title' => Yii::t('app', '{count} archives', ['count' => $archives])]);
 		},
 		'format' => 'html',

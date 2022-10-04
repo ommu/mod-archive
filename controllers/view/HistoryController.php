@@ -9,7 +9,6 @@
  * TOC :
  *	Index
  *	Manage
- *	View
  *	Delete
  *
  *	findModel
@@ -148,39 +147,6 @@ class HistoryController extends Controller
 	}
 
 	/**
-	 * Displays a single ArchiveViewHistory model.
-	 * @param integer $id
-	 * @return mixed
-	 */
-	public function actionView($id)
-	{
-        $model = $this->findModel($id);
-
-        $archive = $model->view->archive;
-        if ($archive->isFond == true) {
-            $this->subMenu = $this->module->params['fond_submenu'];
-        } else {
-            if (empty($archive->level->child)) {
-                unset($this->subMenu[1]['childs']);
-            }
-            if (!in_array('location', $archive->level->field)) {
-                unset($this->subMenu[2]['location']);
-            }
-        }
-
-        if (!Yii::$app->request->isAjax) {
-			$this->subMenuParam = $model->view->archive_id;
-		}
-
-		$this->view->title = Yii::t('app', 'Detail View History: {view-id}', ['view-id' => $model->view::htmlHardDecode($model->view->archive->title)]);
-		$this->view->description = '';
-		$this->view->keywords = '';
-		return $this->oRender('admin_view', [
-			'model' => $model,
-		]);
-	}
-
-	/**
 	 * Deletes an existing ArchiveViewHistory model.
 	 * If deletion is successful, the browser will be redirected to the 'index' page.
 	 * @param integer $id
@@ -205,7 +171,7 @@ class HistoryController extends Controller
 	protected function findModel($id)
 	{
         if (($model = ArchiveViewHistory::findOne($id)) !== null) {
-			$model->view->archive->isFond = $model->view->archive->level_id == 1 ? true : false;
+			// $model->view->archive->isFond = $model->view->archive->level_id == 1 ? true : false;
 
 			return $model;
         }

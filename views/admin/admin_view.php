@@ -25,8 +25,8 @@ if (!$small) {
     if ($context->breadcrumbApp) {
         $this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
     }
-    $this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Fond') : Yii::t('app', 'Inventory'), 'url' => ['index']];
-    $this->params['breadcrumbs'][] = $isFond ? $model->code : Yii::t('app', '{level-name} {code}', ['level-name' => $model->level->level_name_i, 'code' => $model->code]);
+    $this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventory'), 'url' => ['index']];
+    $this->params['breadcrumbs'][] = $isFond ? $model->code : Yii::t('app', '#{level-name} {code}', ['level-name' => strtoupper($model->levelTitle->message), 'code' => $model->code]);
 
     if (!in_array('location', $model->level->field)) {
         unset($this->params['menu']['content']['location']);
@@ -68,7 +68,7 @@ $attributes = [
 	[
 		'attribute' => 'levelName',
 		'value' => function ($model) {
-			$levelName = isset($model->level) ? $model->level->title->message : '-';
+			$levelName = isset($model->levelTitle) ? $model->levelTitle->message : '-';
             if ($levelName != '-') {
 				return Html::a($levelName, ['setting/level/view', 'id' => $model->level_id], ['title' => $levelName, 'class' => 'modal-btn']);
             }
@@ -107,13 +107,13 @@ $attributes = [
 	],
 	[
 		'attribute' => 'creator',
-		'value' => $model::parseRelated($model->getRelatedCreator(true, 'title'), 'creator'),
+		'value' => $model::parseRelated($model->getCreators(true, 'title'), 'creator'),
 		'format' => 'html',
 		'visible' => !$small && in_array('creator', $model->level->field) ? true : false,
 	],
 	[
 		'attribute' => 'repository',
-		'value' => $model::parseRelated($model->getRelatedRepository(true, 'title'), 'repository', ', '),
+		'value' => $model::parseRelated($model->getRepositories(true, 'title'), 'repository', ', '),
 		'format' => 'html',
 		'visible' => !$small && in_array('repository', $model->level->field) ? true : false,
 	],
@@ -124,7 +124,7 @@ $attributes = [
 	],
 	[
 		'attribute' => 'media',
-		'value' => $model::parseRelated($model->getRelatedMedia(true, 'title')),
+		'value' => $model::parseRelated($model->getMedias(true, 'title')),
 		'format' => 'html',
 		'visible' => !$small && in_array('media', $model->level->field) ? true : false,
 	],
@@ -135,20 +135,20 @@ $attributes = [
 	],
 	[
 		'attribute' => 'subject',
-		'value' => $model::parseSubject($model->getRelatedSubject(true, 'title'), 'subjectId'),
+		'value' => $model::parseSubject($model->getSubjects(true, 'title'), 'subjectId'),
 		'format' => 'html',
 		'visible' => !$small && in_array('subject', $model->level->field),
 	],
 	[
 		'attribute' => 'function',
-		'value' => $model::parseSubject($model->getRelatedFunction(true, 'title'), 'functionId'),
+		'value' => $model::parseSubject($model->getFunctions(true, 'title'), 'functionId'),
 		'format' => 'html',
 		'visible' => !$small && in_array('function', $model->level->field),
 	],
 	[
 		'attribute' => 'location',
 		'value' => function ($model) {
-            if (($location = $model->getRelatedLocation(false)) != null) {
+            if (($location = $model->getLocations(false)) != null) {
                 return $model::parseLocation($location);
             }
 			return Html::a(Yii::t('app', 'Add archive location'), ['location', 'id' => $model->primaryKey], ['title' => Yii::t('app', 'Add archive location'), 'class' => 'modal-btn']);
@@ -159,7 +159,7 @@ $attributes = [
 	[
 		'attribute' => 'medium',
 		'value' => function ($model) {
-            if (strtolower($model->level->level_name_i) == 'item') {
+            if (strtolower($model->levelTitle->message) == 'item') {
                 return $model->medium ? $model->medium : '-';
             }
 			return $model::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id);
@@ -167,9 +167,9 @@ $attributes = [
 		'format' => 'html',
 	],
     [
-        'attribute' => 'views',
+        'attribute' => 'oView',
         'value' => function ($model) {
-            $views = $model->getViews(true);
+            $views = $model->grid->view;
             return Html::a($views, ['view/admin/manage', 'archive' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} views', ['count' => $views]), 'data-pjax' => 0]);
         },
         'format' => 'html',
@@ -218,12 +218,13 @@ $archiveInfo = DetailView::widget([
 
 echo $this->renderWidget($archiveInfo, [
 	'overwrite' => true,
+    'title' => Yii::t('app', 'Detail: {code}', ['level-name' => $model->levelTitle->message, 'code' => $model->code]),
 	'cards' => Yii::$app->request->isAjax || $small ? false : true,
 ]); ?>
 
 <?php echo !$small && !Yii::$app->request->isAjax && in_array('archive_file', $model->level->field) ? 
 	$this->renderWidget('admin_preview_document', [
-        'title' => Yii::t('app', 'Preview {level-name}: {code}', ['level-name' => $model->level->level_name_i, 'code' => $model->code]),
+        'title' => Yii::t('app', 'Preview: {code}', ['level-name' => $model->levelTitle->message, 'code' => $model->code]),
 		'model' => $model,
 	]) : ''; ?>
 
