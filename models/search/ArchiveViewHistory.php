@@ -28,7 +28,7 @@ class ArchiveViewHistory extends ArchiveViewHistoryModel
 	{
 		return [
 			[['id', 'view_id'], 'integer'],
-			[['view_date', 'view_ip', 'archiveTitle'], 'safe'],
+			[['view_date', 'view_ip', 'archiveTitle', 'userDisplayname', 'levelId', 'archiveCode'], 'safe'],
 		];
 	}
 
@@ -63,14 +63,30 @@ class ArchiveViewHistory extends ArchiveViewHistoryModel
         if (!($column && is_array($column))) {
             $query = ArchiveViewHistoryModel::find()->alias('t');
         } else {
-            $query = ArchiveViewHistoryModel::find()->alias('t')->select($column);
+            $query = ArchiveViewHistoryModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			// 'view view',
 			// 'view.archive archive'
 		]);
-        if ((isset($params['sort']) && in_array($params['sort'], ['archiveTitle', '-archiveTitle'])) || (isset($params['archiveTitle']) && $params['archiveTitle'] != '') || (isset($params['archiveId']) && $params['archiveId'] != '')) {
-            $query->joinWith(['view view', 'view.archive archive']);
+        if ((isset($params['sort']) && in_array($params['sort'], ['archiveTitle', '-archiveTitle'])) || (
+            (isset($params['archiveTitle']) && $params['archiveTitle'] != '') ||
+            (isset($params['levelId']) && $params['levelId'] != '') ||
+            (isset($params['archiveCode']) && $params['archiveCode'] != '')
+        )) {
+            $query->joinWith(['archive archive']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['userDisplayname', '-userDisplayname'])) || 
+            (isset($params['userDisplayname']) && $params['userDisplayname'] != '')
+        ) {
+            $query->joinWith(['user user']);
+        }
+        if (isset($params['archiveId']) && $params['archiveId'] != '') {
+            $query->joinWith(['view view']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['levelId', '-levelId']))) {
+            $query->joinWith(['archive.levelTitle levelTitle']);
         }
 
 		$query->groupBy(['id']);
@@ -87,8 +103,20 @@ class ArchiveViewHistory extends ArchiveViewHistoryModel
 
 		$attributes = array_keys($this->getTableSchema()->columns);
 		$attributes['archiveTitle'] = [
-			'asc' => ['archive.archive_name' => SORT_ASC],
-			'desc' => ['archive.archive_name' => SORT_DESC],
+			'asc' => ['archive.title' => SORT_ASC],
+			'desc' => ['archive.title' => SORT_DESC],
+		];
+		$attributes['userDisplayname'] = [
+			'asc' => ['user.displayname' => SORT_ASC],
+			'desc' => ['user.displayname' => SORT_DESC],
+		];
+		$attributes['levelId'] = [
+			'asc' => ['levelTitle.title' => SORT_ASC],
+			'desc' => ['levelTitle.title' => SORT_DESC],
+		];
+		$attributes['archiveCode'] = [
+			'asc' => ['archive.code' => SORT_ASC],
+			'desc' => ['archive.code' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
@@ -111,12 +139,15 @@ class ArchiveViewHistory extends ArchiveViewHistoryModel
 			't.id' => $this->id,
 			't.view_id' => isset($params['view']) ? $params['view'] : $this->view_id,
 			'cast(t.view_date as date)' => $this->view_date,
+			'archive.level_id' => isset($params['levelId']) ? $params['levelId'] : $this->levelId,
         ]);
 
         $query->andFilterWhere(['view.archive_id' => $params['archiveId']]);
 
 		$query->andFilterWhere(['like', 't.view_ip', $this->view_ip])
-			->andFilterWhere(['like', 'archive.archive_name', $this->archiveTitle]);
+			->andFilterWhere(['like', 'archive.title', $this->archiveTitle])
+			->andFilterWhere(['like', 'user.displayname', $this->userDisplayname])
+			->andFilterWhere(['like', 'archive.code', $this->archiveCode]);
 
 		return $dataProvider;
 	}

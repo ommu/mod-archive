@@ -28,7 +28,7 @@ class ArchiveMedia extends ArchiveMediaModel
 	{
 		return [
 			[['id', 'publish', 'media_name', 'media_desc', 'creation_id', 'modified_id'], 'integer'],
-			[['creation_date', 'modified_date', 'updated_date', 'media_name_i', 'media_desc_i', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
+			[['creation_date', 'modified_date', 'updated_date', 'media_name_i', 'media_desc_i', 'creationDisplayname', 'modifiedDisplayname', 'oArchive'], 'safe'],
 		];
 	}
 
@@ -63,7 +63,8 @@ class ArchiveMedia extends ArchiveMediaModel
         if (!($column && is_array($column))) {
             $query = ArchiveMediaModel::find()->alias('t');
         } else {
-            $query = ArchiveMediaModel::find()->alias('t')->select($column);
+            $query = ArchiveMediaModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			// 'title title', 
@@ -71,6 +72,9 @@ class ArchiveMedia extends ArchiveMediaModel
 			// 'creation creation', 
 			// 'modified modified'
 		]);
+        if ((isset($params['sort']) && in_array($params['sort'], ['oArchive', '-oArchive'])) || (isset($params['oArchive']) && $params['oArchive'] != '')) {
+            $query->joinWith(['grid grid']);
+        }
         if ((isset($params['sort']) && in_array($params['sort'], ['media_name_i', '-media_name_i'])) || (isset($params['media_name_i']) && $params['media_name_i'] != '')) {
             $query->joinWith(['title title']);
         }
@@ -113,6 +117,10 @@ class ArchiveMedia extends ArchiveMediaModel
 			'asc' => ['modified.displayname' => SORT_ASC],
 			'desc' => ['modified.displayname' => SORT_DESC],
 		];
+		$attributes['oArchive'] = [
+			'asc' => ['grid.archive' => SORT_ASC],
+			'desc' => ['grid.archive' => SORT_DESC],
+		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
 			'defaultOrder' => ['id' => SORT_DESC],
@@ -141,14 +149,22 @@ class ArchiveMedia extends ArchiveMediaModel
 			'cast(t.updated_date as date)' => $this->updated_date,
 		]);
 
-        if (isset($params['trash'])) {
-            $query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
-        } else {
-            if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
-                $query->andFilterWhere(['IN', 't.publish', [0,1]]);
-            } else {
-                $query->andFilterWhere(['t.publish' => $this->publish]);
+        if (isset($params['oArchive']) && $params['oArchive'] != '') {
+            if ($this->oArchive == 1) {
+                $query->andWhere(['<>', 'grid.archive', 0]);
+            } else if ($this->oArchive == 0) {
+                $query->andWhere(['=', 'grid.archive', 0]);
             }
+        }
+
+        if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
+            $query->andFilterWhere(['IN', 't.publish', [0,1]]);
+        } else {
+            $query->andFilterWhere(['t.publish' => $this->publish]);
+        }
+
+        if (isset($params['trash']) && $params['trash'] == 1) {
+            $query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
         }
 
 		$query->andFilterWhere(['like', 'title.message', $this->media_name_i])
