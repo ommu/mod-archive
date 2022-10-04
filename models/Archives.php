@@ -832,16 +832,16 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public static function parseParent($model, $aciTree=true)
 	{
-        if (!isset($model->parent)) {
+        if (!isset($model)) {
             return Yii::$app->request->isAjax ? '-' : '<div id="tree" class="aciTree"></div>';
         }
 
-		$title = self::htmlHardDecode($model->parent->title);
-		$levelName = $model->parent->levelTitle->message;
+		$title = self::htmlHardDecode($model->title);
+		$levelName = $model->levelTitle->message;
 
-		$items[] = $model->getAttributeLabel('level_id').': '.Html::a($levelName, ['setting/level/view', 'id' => $model->parent->level_id], ['title' => $levelName, 'class' => 'modal-btn']);
-		$items[] = Yii::t('app', '{level} Code: {code}', ['level' => $levelName, 'code' => $model->parent->code]);
-		$items[] = $model->getAttributeLabel('title').': '.Html::a($title, ['view', 'id' => $model->parent_id], ['title' => $title, 'class' => 'modal-btn']);
+		$items[] = $model->getAttributeLabel('level_id').': '.Html::a($levelName, ['setting/level/view', 'id' => $model->level_id], ['title' => $levelName, 'class' => 'modal-btn']);
+		$items[] = Yii::t('app', '{level} Code: {code}', ['level' => $levelName, 'code' => $model->code]);
+		$items[] = $model->getAttributeLabel('title').': '.Html::a($title, ['view', 'id' => $model->id], ['title' => $title, 'class' => 'modal-btn']);
 
         if (Yii::$app->request->isAjax) {
             return Html::ul($items, ['encode' => false, 'class' => 'list-boxed']);

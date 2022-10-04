@@ -17,6 +17,8 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
 
+\ommu\archive\assets\AciTreeAsset::register($this);
+
 if (!$small) {
     $context = $this->context;
     if ($context->breadcrumbApp) {
@@ -30,7 +32,14 @@ if (!$small) {
     $this->params['menu']['content'] = [
         ['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id' => $model->id]), 'htmlOptions' => ['data-confirm' => Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method' => 'post', 'class' => 'btn btn-danger'], 'icon' => 'trash'],
     ];
-} ?>
+}
+
+$treeDataUrl = Url::to(['admin/data', 'id' => $model->archive_id]);
+$js = <<<JS
+	var treeDataUrl = '$treeDataUrl';
+	var selectedId = '$model->id';
+JS;
+$this->registerJs($js, \yii\web\View::POS_HEAD); ?>
 
 <div class="archive-views-view">
 
@@ -50,13 +59,10 @@ $attributes = [
 	[
 		'attribute' => 'archiveTitle',
 		'value' => function ($model) {
-			$archiveTitle = isset($model->archive) ? $model->archive->title : '-';
-            if ($archiveTitle != '-') {
-                return Html::a($archiveTitle, ['admin/view', 'id' => $model->archive_id], ['title' => $model::htmlHardDecode($archiveTitle), 'class' => 'modal-btn']);
-            }
-			return $archiveTitle;
+            $archive = $model->archive;
+            return $archive::parseParent($archive);
 		},
-		'format' => 'html',
+		'format' => 'raw',
 	],
 	[
 		'attribute' => 'userDisplayname',
