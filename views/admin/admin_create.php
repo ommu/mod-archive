@@ -35,10 +35,6 @@ if ($parent) {
 $this->params['breadcrumbs'][] = Yii::t('app', 'Create');
 
 if ($parent) {
-	$this->params['menu']['content'] = [
-		['label' => Yii::t('app', 'Show Reference Code'), 'url' => 'javascript:void(0);', 'icon' => 'code', 'htmlOptions' => ['class' => 'btn btn-warning', 'id' => 'reference-code']],
-	];
-
 	$treeDataUrl = Url::to(['data', 'id' => $parent->id]);
 $js = <<<JS
 	var treeDataUrl = '$treeDataUrl';
@@ -50,7 +46,7 @@ JS;
 <div class="archives-create">
 
 <?php
-echo !Yii::$app->request->isAjax && $parent ? '<div id="tree" class="aciTree hide mb-4"></div>' : '';
+$aciTree = !Yii::$app->request->isAjax && $parent ? '<div id="tree" class="aciTree mb-4"></div>' : '';
 
 echo $this->render('_form', [
 	'model' => $model,
@@ -58,6 +54,7 @@ echo $this->render('_form', [
 	'parent' => $parent,
 	'referenceCode' => $parent->referenceCode,
 	'isFond' => $isFond,
+    'aciTree' => $aciTree,
 ]); ?>
 
 </div>

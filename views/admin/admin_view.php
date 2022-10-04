@@ -26,7 +26,7 @@ if (!$small) {
         $this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
     }
     $this->params['breadcrumbs'][] = ['label' => $isFond ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventory'), 'url' => ['index']];
-    $this->params['breadcrumbs'][] = $isFond ? $model->code : Yii::t('app', '#{level-name} {code}', ['level-name' => uppercase($model->levelTitle->message), 'code' => $model->code]);
+    $this->params['breadcrumbs'][] = $isFond ? $model->code : Yii::t('app', '#{level-name} {code}', ['level-name' => strtoupper($model->levelTitle->message), 'code' => $model->code]);
 
     if (!in_array('location', $model->level->field)) {
         unset($this->params['menu']['content']['location']);
@@ -218,12 +218,13 @@ $archiveInfo = DetailView::widget([
 
 echo $this->renderWidget($archiveInfo, [
 	'overwrite' => true,
+    'title' => Yii::t('app', 'Detail: {code}', ['level-name' => $model->levelTitle->message, 'code' => $model->code]),
 	'cards' => Yii::$app->request->isAjax || $small ? false : true,
 ]); ?>
 
 <?php echo !$small && !Yii::$app->request->isAjax && in_array('archive_file', $model->level->field) ? 
 	$this->renderWidget('admin_preview_document', [
-        'title' => Yii::t('app', 'Preview {level-name}: {code}', ['level-name' => $model->levelTitle->message, 'code' => $model->code]),
+        'title' => Yii::t('app', 'Preview: {code}', ['level-name' => $model->levelTitle->message, 'code' => $model->code]),
 		'model' => $model,
 	]) : ''; ?>
 

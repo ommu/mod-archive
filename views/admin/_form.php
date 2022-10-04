@@ -149,8 +149,10 @@ if ($isFond) {
 		} else {
 			$template = '<h5 class="text-muted">'.$setting->reference_code_sikn.' '.join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'confirmCode')).$setting->reference_code_separator.'<span class="text-primary reference-code">'.$model->parent->confirmCode.'.'.$shortCode.'</span></h5>';
         }
+        $template .= '<hr/>';
+        $template .= $aciTree;
 	}
-	echo $form->field($model, 'parent_id', ['template' => '{label}{beginWrapper}{input}'.$template.'{endWrapper}'])
+	echo $form->field($model, 'code', ['template' => '{label}{beginWrapper}{input}'.$template.'{endWrapper}'])
 		->hiddenInput()
 		->label($model->getAttributeLabel('code'));
 
