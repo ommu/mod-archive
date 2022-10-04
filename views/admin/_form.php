@@ -307,15 +307,16 @@ if ($model->isNewFile) {
 
 $archiveFile = '';
 if (!$model->isNewRecord && $model->old_archive_file != '') {
+    $archiveFile = '<hr/>';
     if ($isDocument == true) {
-        $archiveFile = Html::a($model->old_archive_file, Url::to(['preview', 'id' => $model->id]), ['title' => $model->old_archive_file, 'class' => 'd-block mb-4 modal-btn']);
+        $archiveFile .= Yii::t('app', 'Download: {old_archive_file}', ['old_archive_file' => Html::a($model->old_archive_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->old_archive_file])), ['title' => $model->old_archive_file, 'target' => '_blank'])]);
     } else {
-		$archiveFile = Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->old_archive_file])), ['alt' => $model->old_archive_file, 'class' => 'd-block border border-width-3 mb-4']).$model->old_archive_file.'<hr/>';
+		$archiveFile .= Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->old_archive_file])), ['alt' => $model->old_archive_file, 'class' => 'd-block border border-width-3']).$model->old_archive_file;
     }
 }
 
 $fondArchiveFile = $isFond && in_array('archive_file', $model->level->field) ? true : false;
-echo ($fondArchiveFile || !$isFond) ? $form->field($model, 'archive_file', ['template' => '{label}{beginWrapper}<div>'.$archiveFile.'</div>{input}{error}{hint}{endWrapper}', 'options' => ['class' => 'form-group row field-item'.(!$isFond && (!isset($model->level) || !empty($model->level->child) || !in_array('archive_file', $model->level->field)) ? ' hide' : '')]])
+echo ($fondArchiveFile || !$isFond) ? $form->field($model, 'archive_file', ['template' => '{label}{beginWrapper}{input}{error}{hint}<div>'.$archiveFile.'</div>{endWrapper}', 'options' => ['class' => 'form-group row field-item'.(!$isFond && (!isset($model->level) || !empty($model->level->child) || !in_array('archive_file', $model->level->field)) ? ' hide' : '')]])
 	->fileInput()
 	->label($model->getAttributeLabel('archive_file')) : ''; ?>
 
