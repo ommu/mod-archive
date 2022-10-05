@@ -28,8 +28,8 @@ class Archives extends ArchivesModel
 	{
 		return [
 			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'media', 
-                'preview', 'location', 'oView'], 'integer'],
-			[['title', 'code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'creation_date', 'modified_date', 'updated_date', 
+                'preview', 'location', 'oView', 'oFile'], 'integer'],
+			[['title', 'code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'senarai_file', 'creation_date', 'modified_date', 'updated_date', 
                 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository', 'subject', 'function'], 'safe'],
 		];
 	}
@@ -74,9 +74,10 @@ class Archives extends ArchivesModel
 			// 'creation creation',
 			// 'modified modified'
 		]);
-        if ((isset($params['sort']) && in_array($params['sort'], ['oView', '-oView'])) || 
-            (isset($params['oView']) && $params['oView'] != '')
-        ) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['oView', '-oView', 'oFile', '-oFile'])) || (
+            (isset($params['oView']) && $params['oView'] != '') || 
+            (isset($params['oFile']) && $params['oFile'] != '')
+        )) {
             $query->joinWith(['grid grid']);
         }
         if ((isset($params['sort']) && in_array($params['sort'], ['parentTitle', '-parentTitle'])) || 
@@ -198,6 +199,10 @@ class Archives extends ArchivesModel
 			'asc' => ['grid.view' => SORT_ASC],
 			'desc' => ['grid.view' => SORT_DESC],
 		];
+		$attributes['oFile'] = [
+			'asc' => ['grid.luring' => SORT_ASC],
+			'desc' => ['grid.luring' => SORT_DESC],
+		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
 			'defaultOrder' => isset($params['id']) ? ['code' => SORT_ASC] : ['id' => SORT_DESC],
@@ -268,6 +273,13 @@ class Archives extends ArchivesModel
                 $query->andWhere(['=', 'grid.view', 0]);
             }
         }
+        if (isset($params['oFile']) && $params['oFile'] != '') {
+            if ($this->oFile == 1) {
+                $query->andWhere(['<>', 't.senarai_file', '']);
+            } else if ($this->oFile == 0) {
+                $query->andWhere(['=', 't.senarai_file', '']);
+            }
+        }
 
         if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
             $query->andFilterWhere(['IN', 't.publish', [0,1]]);
@@ -283,6 +295,7 @@ class Archives extends ArchivesModel
 			->andFilterWhere(['like', 't.code', $this->code])
 			->andFilterWhere(['like', 't.archive_date', $this->archive_date])
 			->andFilterWhere(['like', 't.archive_file', $this->archive_file])
+			->andFilterWhere(['like', 't.senarai_file', $this->senarai_file])
 			->andFilterWhere(['like', 'parent.title', $this->parentTitle])
 			->andFilterWhere(['like', 'levelTitle.message', $this->levelName])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
