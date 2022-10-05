@@ -26,6 +26,7 @@
 namespace ommu\archive\models;
 
 use Yii;
+use thamtech\uuid\helpers\UuidHelper;
 use app\models\Users;
 
 class ArchiveLuringDownload extends \app\components\ActiveRecord
@@ -134,15 +135,9 @@ class ArchiveLuringDownload extends \app\components\ActiveRecord
 		$this->templateColumns['archiveTitle'] = [
 			'attribute' => 'archiveTitle',
 			'value' => function($model, $key, $index, $column) {
-                $archiveTitle = isset($model->archive) ? $model->archive->title : '-';
-                if ($archiveTitle != '-') {
-                    $archiveTitle .= '<br/>';
-                    $archiveTitle .= 'Code: '.$model->archive->code;
-                }
-
-				return $archiveTitle;
+				return $model->luring::parseArchive($model->luring, false);
 			},
-			'format' => 'html',
+			'format' => 'raw',
 			'visible' => !Yii::$app->request->get('luring') ? true : false,
 		];
 		$this->templateColumns['userDisplayname'] = [
@@ -207,6 +202,8 @@ class ArchiveLuringDownload extends \app\components\ActiveRecord
 	{
         if (parent::beforeValidate()) {
             if ($this->isNewRecord) {
+                $this->id = UuidHelper::uuid();
+
                 if ($this->user_id == null) {
                     $this->user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
                 }

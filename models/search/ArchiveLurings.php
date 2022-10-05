@@ -29,7 +29,7 @@ class ArchiveLurings extends ArchiveLuringsModel
 		return [
 			[['id', 'publish', 'archive_id', 'creation_id', 'modified_id', 'oDownload'], 'integer'],
 			[['introduction', 'senarai_file', 'creation_date', 'modified_date', 'updated_date', 
-                'archiveTitle', 'creationDisplayname', 'modifiedDisplayname', 'oDownload', 'oIntro'], 'safe'],
+                'archiveTitle', 'creationDisplayname', 'modifiedDisplayname', 'oDownload', 'oIntro', 'oFile'], 'safe'],
 		];
 	}
 
@@ -172,6 +172,13 @@ class ArchiveLurings extends ArchiveLuringsModel
                 $query->andWhere(['<>', 't.introduction', '']);
             } else if ($this->oIntro == 0) {
                 $query->andWhere(['=', 't.introduction', '']);
+            }
+        }
+		if (isset($params['oFile']) && $params['oFile'] != '') {
+            if ($this->oFile == 1) {
+                $query->andWhere(['<>', 't.senarai_file', '']);
+            } else if ($this->oFile == 0) {
+                $query->andWhere(['=', 't.senarai_file', '']);
             }
         }
 

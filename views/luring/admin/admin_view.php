@@ -44,23 +44,14 @@ $attributes = [
 	[
 		'attribute' => 'archiveTitle',
 		'value' => function ($model) {
-            return $model::parseArchive($model->archive);
+            return $model::parseArchive($model);
 		},
-		'format' => 'html',
+		'format' => 'raw',
 	],
 	[
 		'attribute' => 'introduction',
 		'value' => $model->introduction ? $model->introduction : '-',
 		'format' => 'html',
-		'visible' => !$small,
-	],
-	[
-		'attribute' => 'senarai_file',
-		'value' => function ($model) {
-			$uploadPath = $model::getUploadPath(false);
-			return $model->senarai_file ? Html::a($model->senarai_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->senarai_file])), ['title' => $model->senarai_file, 'target' => '_blank']) : '-';
-		},
-		'format' => 'raw',
 		'visible' => !$small,
 	],
 	[
@@ -99,7 +90,7 @@ $attributes = [
 	],
 	[
 		'attribute' => '',
-		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->primaryKey], ['title' => Yii::t('app', 'Update'), 'class' => 'btn btn-primary btn-sm modal-btn']),
+		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->primaryKey], ['title' => Yii::t('app', 'Update'), 'class' => 'btn btn-primary btn-sm']),
 		'format' => 'html',
 		'visible' => !$small && Yii::$app->request->isAjax ? true : false,
 	],

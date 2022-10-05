@@ -53,6 +53,7 @@ class ArchiveLurings extends \app\components\ActiveRecord
 	public $modifiedDisplayname;
 	public $oDownload;
 	public $oIntro;
+	public $oFile;
 
 	/**
 	 * @return string the associated database table name
@@ -98,6 +99,7 @@ class ArchiveLurings extends \app\components\ActiveRecord
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
 			'oDownload' => Yii::t('app', 'Downloads'),
 			'oIntro' => Yii::t('app', 'Introduction'),
+			'oFile' => Yii::t('app', 'Senarai File'),
 		];
 	}
 
@@ -185,29 +187,15 @@ class ArchiveLurings extends \app\components\ActiveRecord
 		$this->templateColumns['archiveTitle'] = [
 			'attribute' => 'archiveTitle',
 			'value' => function($model, $key, $index, $column) {
-                $archiveTitle = isset($model->archive) ? $model->archive->title : '-';
-                if ($archiveTitle != '-') {
-                    $archiveTitle .= '<br/>';
-                    $archiveTitle .= 'Code: '.$model->archive->code;
-                }
-
-				return $archiveTitle;
+				return $model::parseArchive($model, false);
 			},
-			'format' => 'html',
+			'format' => 'raw',
 			'visible' => !Yii::$app->request->get('archive') ? true : false,
 		];
 		$this->templateColumns['introduction'] = [
 			'attribute' => 'introduction',
 			'value' => function($model, $key, $index, $column) {
 				return $model->introduction;
-			},
-			'format' => 'html',
-		];
-		$this->templateColumns['senarai_file'] = [
-			'attribute' => 'senarai_file',
-			'value' => function($model, $key, $index, $column) {
-				$uploadPath = self::getUploadPath(false);
-				return $model->senarai_file ? Html::a($model->senarai_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->senarai_file])), ['title' => $model->senarai_file, 'data-pjax' => 0, 'target' => '_blank']) : '-';
 			},
 			'format' => 'raw',
 		];
@@ -267,6 +255,14 @@ class ArchiveLurings extends \app\components\ActiveRecord
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
 		];
+		$this->templateColumns['oFile'] = [
+			'attribute' => 'oFile',
+			'value' => function($model, $key, $index, $column) {
+				return $this->filterYesNo($model->oFile);
+			},
+			'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class' => 'text-center'],
+		];
 		$this->templateColumns['publish'] = [
 			'attribute' => 'publish',
 			'value' => function($model, $key, $index, $column) {
@@ -307,22 +303,31 @@ class ArchiveLurings extends \app\components\ActiveRecord
 	 */
 	public static function getUploadPath($returnAlias=true) 
 	{
-		return ($returnAlias ? Yii::getAlias('@public/senarai_luring') : 'senarai_luring');
+		return ($returnAlias ? Yii::getAlias('@public/archive/senarai_luring') : 'archive/senarai_luring');
 	}
 
 	/**
 	 * function parseArchive
 	 */
-	public static function parseArchive($model)
+	public static function parseArchive($model, $urlTitle=true)
 	{
-		$title = self::htmlHardDecode($model->title);
+		$title = self::htmlHardDecode($model->archive->title);
+        $archiveTitle = $urlTitle == true ? Html::a($title, ['admin/view', 'id' => $model->archive_id], ['title' => $title, 'class' => 'modal-btn']) : $title ;
 
-		$items[] = Yii::t('app', 'Code: {code}', ['code' => $model->code]);
-		$items[] = $model->getAttributeLabel('title').': '.Html::a($title, ['admin/view', 'id' => $model->id], ['title' => $title, 'class' => 'modal-btn']);
+        $html = $archiveTitle;
+        if ($urlTitle == true) {
+            $html .= '<hr class="mt-5 mb-5"/>';
+        }
+
+		$items[] = Html::tag('span', Yii::t('app', 'Code'), ['class' => 'btn btn-primary btn-xs']).$model->archive->code;
+        if ($model->senarai_file != '') {
+            $uploadPath = $model::getUploadPath(false);
+            $items[] = Html::tag('span', Yii::t('app', 'Senarai File'), ['class' => 'btn btn-success btn-xs']).Html::a($model->senarai_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->senarai_file])), ['title' => $model->senarai_file, 'data-pjax' => 0, 'target' => '_blank']);
+        }
 		
-		$return = Html::ul($items, ['encode' => false, 'class' => 'list-boxed']);
+		$html .= Html::ul($items, ['encode' => false, 'class' => 'list-boxed mt-5']);
 
-		return $return;
+		return $html;
 	}
 
 	/**
@@ -339,6 +344,7 @@ class ArchiveLurings extends \app\components\ActiveRecord
 		// $this->download = $this->getDownloads(true) ? 1 : 0;
 		// $this->oDownload = isset($this->grid) ? $this->grid->download : 0;
 		$this->oIntro = $this->introduction != '' ? true : false;
+		$this->oFile = $this->senarai_file != '' ? true : false;
 	}
 
 	/**
