@@ -525,35 +525,6 @@ class Archives extends \app\components\ActiveRecord
 			},
 			'format' => 'raw',
 		];
-        if (ArchiveSetting::getInfo('fond_sidkkas')) {
-			$this->templateColumns['sidkkas'] = [
-				'attribute' => 'sidkkas',
-				'value' => function($model, $key, $index, $column) {
-					return $this->filterYesNo($model->sidkkas);
-				},
-				'filter' => $this->filterYesNo(),
-				'contentOptions' => ['class' => 'text-center'],
-				'visible' => !Yii::$app->request->get('id') ? true : false,
-			];
-		}
-		$this->templateColumns['preview'] = [
-			'attribute' => 'preview',
-			'value' => function($model, $key, $index, $column) {
-				return $this->filterYesNo($model->preview);
-			},
-			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class' => 'text-center'],
-		];
-		$this->templateColumns['location'] = [
-			'attribute' => 'location',
-			'value' => function($model, $key, $index, $column) {
-                $location = $this->getLocations(false) != null ? 1 : 0;
-				return $this->filterYesNo($location);
-			},
-			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class' => 'text-center'],
-			'visible' => !$this->isFond ? true : false,
-		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
 			'value' => function($model, $key, $index, $column) {
@@ -601,6 +572,36 @@ class Archives extends \app\components\ActiveRecord
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
+		];
+        if (ArchiveSetting::getInfo('fond_sidkkas')) {
+			$this->templateColumns['sidkkas'] = [
+				'attribute' => 'sidkkas',
+				'value' => function($model, $key, $index, $column) {
+					return $this->filterYesNo($model->sidkkas);
+				},
+				'filter' => $this->filterYesNo(),
+				'contentOptions' => ['class' => 'text-center'],
+				'visible' => !Yii::$app->request->get('id') ? true : false,
+			];
+		}
+		$this->templateColumns['location'] = [
+			'attribute' => 'location',
+			'value' => function($model, $key, $index, $column) {
+                $location = $this->getLocations(false) != null ? 1 : 0;
+				return $this->filterYesNo($location);
+			},
+			'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class' => 'text-center'],
+			'visible' => !$this->isFond ? true : false,
+		];
+		$this->templateColumns['preview'] = [
+			'attribute' => 'preview',
+			'value' => function($model, $key, $index, $column) {
+				return $this->filterYesNo($model->preview);
+			},
+			'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class' => 'text-center'],
+			'visible' => !$this->isFond ? true : false,
 		];
 		$this->templateColumns['publish'] = [
 			'attribute' => 'publish',

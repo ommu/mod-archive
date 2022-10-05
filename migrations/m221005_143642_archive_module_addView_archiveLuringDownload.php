@@ -1,6 +1,6 @@
 <?php
 /**
- * m221005_143642_archive_module_addView_archiveLuring
+ * m221005_143642_archive_module_addView_archiveLuringDownload
  * 
  * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
@@ -13,7 +13,7 @@
 use Yii;
 use yii\db\Schema;
 
-class m221005_143642_archive_module_addView_archiveLuring extends \yii\db\Migration
+class m221005_143642_archive_module_addView_archiveLuringDownload extends \yii\db\Migration
 {
 	public function up()
 	{
