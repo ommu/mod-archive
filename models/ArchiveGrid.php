@@ -13,6 +13,7 @@
  * The followings are the available columns in table "ommu_archive_grid":
  * @property integer $id
  * @property integer $view
+ * @property integer $luring
  * @property string $modified_date
  *
  * The followings are the available model relations:
@@ -42,8 +43,8 @@ class ArchiveGrid extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['id', 'view'], 'required'],
-			[['id', 'view'], 'integer'],
+			[['id', 'view', 'luring'], 'required'],
+			[['id', 'view', 'luring'], 'integer'],
 			[['id'], 'unique'],
 			[['id'], 'exist', 'skipOnError' => true, 'targetClass' => Archives::className(), 'targetAttribute' => ['id' => 'id']],
 		];
@@ -57,6 +58,7 @@ class ArchiveGrid extends \app\components\ActiveRecord
 		return [
 			'id' => Yii::t('app', 'ID'),
 			'view' => Yii::t('app', 'View'),
+			'luring' => Yii::t('app', 'Luring'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
 		];
 	}
