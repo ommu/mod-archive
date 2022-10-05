@@ -42,6 +42,7 @@ fond_submenu:
         data-confirm: Are you sure you want to delete this item?
         data-method: post
       select: action
+
 archive_submenu:
   0:
     view:
@@ -86,6 +87,7 @@ archive_submenu:
         data-confirm: Are you sure you want to delete this item?
         data-method: post
       select: action
+
 setting_submenu:
   0:
     level:
@@ -109,3 +111,35 @@ setting_submenu:
       label: Settings
       url: ['setting/admin']
       select: controller
+
+luring_submenu:
+  0:
+    view:
+      label: Detail
+      url:
+        0: 'luring/admin/view'
+        id: $_GET*id
+      select: action
+    update:
+      label: Update
+      url:
+        0: 'luring/admin/update'
+        id: $_GET*id
+      select: action
+  1:
+    download:
+      label: Download(s)
+      url:
+        0: 'luring/download/manage'
+        luring: $_GET*id
+      select: controller
+  2:
+    delete:
+      label: Delete
+      url:
+        0: 'luring/admin/delete'
+        id: $_GET*id
+      htmlOptions:
+        data-confirm: Are you sure you want to delete this item?
+        data-method: post
+      select: action

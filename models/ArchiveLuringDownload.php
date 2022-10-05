@@ -30,9 +30,9 @@ use app\models\Users;
 
 class ArchiveLuringDownload extends \app\components\ActiveRecord
 {
-    public $gridForbiddenColumn = ['luringArchiveId', 'userDisplayname'];
+    public $gridForbiddenColumn = [];
 
-	public $luringArchiveId;
+	public $archiveTitle;
 	public $userDisplayname;
 
 	/**
@@ -69,7 +69,7 @@ class ArchiveLuringDownload extends \app\components\ActiveRecord
 			'user_id' => Yii::t('app', 'User'),
 			'download_ip' => Yii::t('app', 'Download Ip'),
 			'download_date' => Yii::t('app', 'Download Date'),
-			'luringArchiveId' => Yii::t('app', 'Luring'),
+			'archiveTitle' => Yii::t('app', 'Senarai'),
 			'userDisplayname' => Yii::t('app', 'User'),
 		];
 	}
@@ -79,7 +79,18 @@ class ArchiveLuringDownload extends \app\components\ActiveRecord
 	 */
 	public function getLuring()
 	{
-		return $this->hasOne(ArchiveLurings::className(), ['id' => 'luring_id']);
+		return $this->hasOne(ArchiveLurings::className(), ['id' => 'luring_id'])
+            ->select(['id', 'archive_id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getArchive()
+	{
+		return $this->hasOne(Archives::className(), ['id' => 'archive_id'])
+            ->select(['id', 'level_id', 'title', 'code'])
+            ->via('luring');
 	}
 
 	/**
@@ -87,7 +98,8 @@ class ArchiveLuringDownload extends \app\components\ActiveRecord
 	 */
 	public function getUser()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'user_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'user_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -119,12 +131,18 @@ class ArchiveLuringDownload extends \app\components\ActiveRecord
 			'class' => 'app\components\grid\SerialColumn',
 			'contentOptions' => ['class' => 'text-center'],
 		];
-		$this->templateColumns['luringArchiveId'] = [
-			'attribute' => 'luringArchiveId',
+		$this->templateColumns['archiveTitle'] = [
+			'attribute' => 'archiveTitle',
 			'value' => function($model, $key, $index, $column) {
-				return isset($model->luring) ? $model->luring->archive->title : '-';
-				// return $model->luringArchiveId;
+                $archiveTitle = isset($model->archive) ? $model->archive->title : '-';
+                if ($archiveTitle != '-') {
+                    $archiveTitle .= '<br/>';
+                    $archiveTitle .= 'Code: '.$model->archive->code;
+                }
+
+				return $archiveTitle;
 			},
+			'format' => 'html',
 			'visible' => !Yii::$app->request->get('luring') ? true : false,
 		];
 		$this->templateColumns['userDisplayname'] = [
@@ -178,7 +196,7 @@ class ArchiveLuringDownload extends \app\components\ActiveRecord
 	{
 		parent::afterFind();
 
-		// $this->luringArchiveId = isset($this->luring) ? $this->luring->archive->title : '-';
+		// $this->archiveTitle = isset($this->luring) ? $this->luring->archive->title : '-';
 		// $this->userDisplayname = isset($this->user) ? $this->user->displayname : '-';
 	}
 
