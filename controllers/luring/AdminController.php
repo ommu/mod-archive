@@ -36,19 +36,19 @@ use ommu\archive\models\ArchiveLurings;
 use ommu\archive\models\search\ArchiveLurings as ArchiveLuringsSearch;
 use ommu\archive\models\ArchiveSetting;
 use yii\web\UploadedFile;
+use thamtech\uuid\helpers\UuidHelper;
 
 class AdminController extends Controller
 {
+	use \ommu\traits\FileTrait;
+	use \ommu\traits\DocumentTrait;
+
 	/**
 	 * {@inheritdoc}
 	 */
 	public function init()
 	{
         parent::init();
-
-        if (Yii::$app->request->get('archive') || Yii::$app->request->get('id')) {
-			$this->subMenu = $this->module->params['luring_submenu'];
-        }
 
 		$setting = ArchiveSetting::find()
 			->select(['breadcrumb_param'])
@@ -106,6 +106,7 @@ class AdminController extends Controller
         $columns = $searchModel->getGridColumn($cols);
 
         if (($archive = Yii::$app->request->get('archive')) != null) {
+            $this->subMenu = $this->module->params['luring_submenu'];
             $archive = \ommu\archive\models\Archives::findOne($archive);
         }
 
@@ -127,7 +128,14 @@ class AdminController extends Controller
 	 */
 	public function actionCreate()
 	{
-        $model = new ArchiveLurings();
+        if (!($id = Yii::$app->request->get('id'))) {
+			throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+
+        $model = new ArchiveLurings(['publish' => 1, 'archive_id' => $id]);
+
+        $archive = $model->archive;
+        $childs = $archive->getArchives('relation', 1)->all();
 
         if (Yii::$app->request->isPost) {
             $model->load(Yii::$app->request->post());
@@ -136,9 +144,48 @@ class AdminController extends Controller
             // $model->order = $postData['order'] ? $postData['order'] : 0;
 
             if ($model->save()) {
+				ini_set('max_execution_time', 0);
+				ob_start();
+
+                $documents = [];
+
+                $documentPath = $model::getUploadPath();
+                $verwijderenPath = join('/', [$model::getUploadPath(), 'verwijderen']);
+                $this->createUploadDirectory($model::getUploadPath());
+
+                $templatePath = Yii::getAlias('@app/runtime/archive/templates');
+                // cover
+                $coverTemplate = join('/', [$templatePath, 'luring_cover.php']);
+                $coverName =join('_', [$model->archive->code, time(), UuidHelper::uuid(), 'cover']);
+                $fileName = $this->getPdf([
+                    'model' => $model,
+                    'archive' => $archive,
+                ], $coverTemplate, $documentPath, $coverName, false, false, 'P', 'Legal');
+                array_push($documents, $fileName);
+
+                // intro
+                $introTemplate = join('/', [$templatePath, 'luring_intro.php']);
+                $introName =join('_', [$model->archive->code, time(), UuidHelper::uuid(), 'intro']);
+                $fileName = $this->getPdf([
+                    'model' => $model,
+                    'archive' => $archive,
+                ], $introTemplate, $documentPath, $introName, false, false, 'P', 'Legal');
+                array_push($documents, $fileName);
+
+                // senarai
+                $senaraiTemplate = join('/', [$templatePath, 'luring_senarai.php']);
+                $senaraiName =join('_', [$model->archive->code, time(), UuidHelper::uuid(), 'senarai']);
+                $fileName = $this->getPdf([
+                    'archive' => $archive,
+                    'childs' => $childs,
+                ], $senaraiTemplate, $documentPath, $senaraiName, false, false, 'P', 'Legal');
+                array_push($documents, $fileName);
+
                 Yii::$app->session->setFlash('success', Yii::t('app', 'Senarai luring success created.'));
-                return $this->redirect(['manage']);
+                return $this->redirect(['fond/manage']);
                 //return $this->redirect(['view', 'id' => $model->id]);
+	
+				ob_end_flush();
 
             } else {
                 if (Yii::$app->request->isAjax) {
@@ -150,7 +197,7 @@ class AdminController extends Controller
 		$this->view->title = Yii::t('app', 'Create Luring');
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_create', [
+		return $this->oRender('admin_create', [
 			'model' => $model,
 		]);
 	}
@@ -183,6 +230,7 @@ class AdminController extends Controller
             }
         }
 
+        $this->subMenu = $this->module->params['luring_submenu'];
 		$this->view->title = Yii::t('app', 'Update Luring: {archive-id}', ['archive-id' => $model->archive->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
@@ -200,6 +248,8 @@ class AdminController extends Controller
 	{
         $model = $this->findModel($id);
 
+
+        $this->subMenu = $this->module->params['luring_submenu'];
 		$this->view->title = Yii::t('app', 'Detail Luring: {archive-id}', ['archive-id' => $model->archive->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';

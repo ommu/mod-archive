@@ -70,13 +70,19 @@ class ArchiveCreator extends ArchiveCreatorModel
 			// 'creation creation', 
 			// 'modified modified'
 		]);
-        if ((isset($params['sort']) && in_array($params['sort'], ['oArchive', '-oArchive'])) || (isset($params['oArchive']) && $params['oArchive'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['oArchive', '-oArchive'])) || 
+            (isset($params['oArchive']) && $params['oArchive'] != '')
+        ) {
             $query->joinWith(['grid grid']);
         }
-        if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || 
+            (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')
+        ) {
             $query->joinWith(['creation creation']);
         }
-        if ((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || 
+            (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != '')
+        ) {
             $query->joinWith(['modified modified']);
         }
 
