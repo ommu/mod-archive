@@ -22,8 +22,12 @@ if (!$small) {
     if ($context->breadcrumbApp) {
         $this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
     }
-    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Luring'), 'url' => ['index']];
-    $this->params['breadcrumbs'][] = $model->archive->code;
+    $archive = $model->archive;
+    $this->params['breadcrumbs'][] = ['label' => $archive->isFond ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventory'), 'url' => $archive->isFond ? ['fond/index'] : ['admin/index']];
+    $archiveDetailUrl = $archive->isFond ? ['fond/view', 'id' => $archive->id] : ['admin/view', 'id' => $archive->id];
+    $this->params['breadcrumbs'][] = ['label' => $archive->isFond ? $archive->code : Yii::t('app', '#{level-name} {code}', ['level-name' => strtoupper($archive->levelTitle->message), 'code' => $archive->code]), 'url' => $archiveDetailUrl];
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Luring'), 'url' => ['manage', 'archive' => $archive->id]];
+    $this->params['breadcrumbs'][] = Yii::t('app', 'Detail');
 } ?>
 
 <div class="archive-lurings-view">
@@ -53,6 +57,23 @@ $attributes = [
 		'value' => $model->introduction ? $model->introduction : '-',
 		'format' => 'html',
 		'visible' => !$small,
+	],
+	[
+		'attribute' => 'senarai_file_draft',
+		'value' => function ($model) {
+            $uploadPath = join('/', [$model->archive::getUploadPath(false), 'document_draft']);
+            return $model::parseSenaraiFileDraft($model->senarai_file_draft, $uploadPath);
+		},
+		'format' => 'raw',
+	],
+	[
+		'attribute' => 'senarai_file',
+		'value' => function ($model) {
+            $uploadPath = $model::getUploadPath(false);
+            $senarai_file = $model->senarai_file ? Yii::t('app', 'Download: {senarai_file}', ['senarai_file' => Html::a($model->senarai_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->senarai_file])), ['title' => $model->senarai_file, 'data-pjax' => 0, 'target' => '_blank'])]) : '-';
+            return $senarai_file;
+		},
+		'format' => 'raw',
 	],
 	[
 		'attribute' => 'oDownload',

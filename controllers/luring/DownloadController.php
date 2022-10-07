@@ -101,6 +101,7 @@ class DownloadController extends Controller
         if (($luring = Yii::$app->request->get('luring')) != null) {
             $this->subMenuParam = $luring;
             $luring = \ommu\archive\models\ArchiveLurings::findOne($luring);
+            $this->subMenuBackTo = $luring->archive_id;
         }
 
 		$this->view->title = Yii::t('app', 'Luring Downloads');

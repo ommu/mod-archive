@@ -581,11 +581,16 @@ class Archives extends \app\components\ActiveRecord
 			'attribute' => 'oFile',
 			'label' => Yii::t('app', 'Luring'),
 			'value' => function($model, $key, $index, $column) {
-				return Html::a($model->oFile ? '<span class="glyphicon glyphicon-ok"></span>' : Yii::t('app', 'Document'), ['luring/admin/create', 'id' => $model->primaryKey], ['title' => $model->oFile ? Yii::t('app', 'Regenerate Senarai') : Yii::t('app', 'Generate Senarai'), 'class' => 'modal-btn']);
+                $senaraiFile = Html::a(Yii::t('app', 'Document'), ['luring/admin/create', 'id' => $model->primaryKey], ['title' => Yii::t('app', 'Generate Senarai Luring'), 'class' => 'modal-btn']);
+                $oFile = $model->grid->luring;
+                if ($oFile) {
+                    $senaraiFile = Html::a('<span class="glyphicon glyphicon-ok"></span>', ['luring/admin/manage', 'archive' => $model->primaryKey], ['title' => Yii::t('app', 'View Senarai Luring'), 'data-pjax' => 0]);
+                }
+				return $senaraiFile;
 			},
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
-			'format' => 'html',
+			'format' => 'raw',
 			'visible' => $this->isFond ? true : false,
 		];
 		$this->templateColumns['location'] = [

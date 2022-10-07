@@ -23,7 +23,19 @@ $context = $this->context;
 if ($context->breadcrumbApp) {
 	$this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
+
+if ($archive) {
+    $this->params['breadcrumbs'][] = ['label' => $archive->isFond ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventory'), 'url' => $archive->isFond ? ['fond/index'] : ['admin/index']];
+    $archiveDetailUrl = $archive->isFond ? ['fond/view', 'id' => $archive->id] : ['admin/view', 'id' => $archive->id];
+    $this->params['breadcrumbs'][] = ['label' => $archive->isFond ? $archive->code : Yii::t('app', '#{level-name} {code}', ['level-name' => strtoupper($archive->levelTitle->message), 'code' => $archive->code]), 'url' => $archiveDetailUrl];
+}
 $this->params['breadcrumbs'][] = Yii::t('app', 'Lurings');
+
+if ($archive) {
+    $this->params['menu']['content'] = [
+        ['label' => Yii::t('app', 'Generate Senarai Luring'), 'url' => Url::to(['luring/admin/create', 'id' => $archive->id]), 'icon' => 'plus-square', 'htmlOptions' => ['class' => 'btn btn-success']],
+    ];
+}
 
 $this->params['menu']['option'] = [
 	//['label' => Yii::t('app', 'Search'), 'url' => 'javascript:void(0);'],
@@ -35,7 +47,7 @@ $this->params['menu']['option'] = [
 <?php Pjax::begin(); ?>
 
 <?php if ($archive != null) {
-	echo $this->render('/archive/admin_view', ['model' => $archive, 'small' => true]);
+	echo $this->render('/admin/admin_view', ['model' => $archive, 'small' => true]);
 } ?>
 
 <?php //echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -73,7 +85,7 @@ array_push($columnData, [
 			]);
 		},
 	],
-	'template' => '{view} {update} {delete}',
+	'template' => '{view} {delete}',
 ]);
 
 echo GridView::widget([

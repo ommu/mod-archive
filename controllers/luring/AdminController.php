@@ -14,7 +14,6 @@
  *  View
  *  Delete
  *  RunAction
- *  Publish
  *
  *  findModel
  *
@@ -106,7 +105,8 @@ class AdminController extends Controller
         $columns = $searchModel->getGridColumn($cols);
 
         if (($archive = Yii::$app->request->get('archive')) != null) {
-            $this->subMenu = $this->module->params['luring_submenu'];
+            $this->subMenuParam = $archive;
+            $this->subMenu = $this->module->params['fond_submenu'];
             $archive = \ommu\archive\models\Archives::findOne($archive);
         }
 
@@ -149,9 +149,10 @@ class AdminController extends Controller
 
                 $documents = [];
 
-                $documentPath = $model::getUploadPath();
-                $verwijderenPath = join('/', [$model::getUploadPath(), 'verwijderen']);
-                $this->createUploadDirectory($model::getUploadPath());
+                $uploadPath = $archive::getUploadPath();
+                $documentPath = join('/', [$uploadPath, 'document_draft']);
+                $verwijderenPath = join('/', [$documentPath, 'verwijderen']);
+                $this->createUploadDirectory($documentPath);
 
                 $templatePath = Yii::getAlias('@app/runtime/archive/templates');
                 // cover
@@ -181,6 +182,14 @@ class AdminController extends Controller
                 ], $senaraiTemplate, $documentPath, $senaraiName, false, false, 'P', 'Legal');
                 array_push($documents, $fileName);
 
+                $model->senarai_file_draft = $documents;
+
+                if ($model->save(false, ['senarai_file_draft'])) {
+                    $archive = $model->archive;
+                    $archive->senarai_file = $model->senarai_file_draft;
+                    $archive->save(false, ['senarai_file']);
+                }
+
                 Yii::$app->session->setFlash('success', Yii::t('app', 'Senarai luring success created.'));
                 return $this->redirect(['fond/manage']);
                 //return $this->redirect(['view', 'id' => $model->id]);
@@ -194,11 +203,13 @@ class AdminController extends Controller
             }
         }
 
-		$this->view->title = Yii::t('app', 'Create Luring');
+        $this->subMenu = $this->module->params['fond_submenu'];
+		$this->view->title = Yii::t('app', 'Generate Senarai Luring');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_create', [
 			'model' => $model,
+			'archive' => $archive,
 		]);
 	}
 
@@ -221,7 +232,7 @@ class AdminController extends Controller
 
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'Senarai luring success updated.'));
-                return $this->redirect(['manage']);
+                return $this->redirect(['manage', 'archive' => $model->archive_id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {
@@ -231,7 +242,8 @@ class AdminController extends Controller
         }
 
         $this->subMenu = $this->module->params['luring_submenu'];
-		$this->view->title = Yii::t('app', 'Update Luring: {archive-id}', ['archive-id' => $model->archive->title]);
+        $this->subMenuBackTo = $model->archive_id;
+		$this->view->title = Yii::t('app', 'Publish Luring: {archive-id}', ['archive-id' => $model->archive->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
@@ -248,8 +260,8 @@ class AdminController extends Controller
 	{
         $model = $this->findModel($id);
 
-
         $this->subMenu = $this->module->params['luring_submenu'];
+        $this->subMenuBackTo = $model->archive_id;
 		$this->view->title = Yii::t('app', 'Detail Luring: {archive-id}', ['archive-id' => $model->archive->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
@@ -271,24 +283,6 @@ class AdminController extends Controller
 
         if ($model->save(false, ['publish','modified_id'])) {
             Yii::$app->session->setFlash('success', Yii::t('app', 'Senarai luring success deleted.'));
-            return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
-        }
-	}
-
-	/**
-	 * actionPublish an existing ArchiveLurings model.
-	 * If publish is successful, the browser will be redirected to the 'index' page.
-	 * @param integer $id
-	 * @return mixed
-	 */
-	public function actionPublish($id)
-	{
-		$model = $this->findModel($id);
-		$replace = $model->publish == 1 ? 0 : 1;
-		$model->publish = $replace;
-
-        if ($model->save(false, ['publish','modified_id'])) {
-            Yii::$app->session->setFlash('success', Yii::t('app', 'Senarai luring success updated.'));
             return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
         }
 	}
