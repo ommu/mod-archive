@@ -23,7 +23,7 @@ class m220926_112501_archive_module_addTrigger_archiveRelatedRepository extends 
         // create trigger archiveAfterInsertRelatedRepository
         $archiveAfterInsertRelatedRepository = <<< SQL
 CREATE
-    TRIGGER `archiveAfterInsertRelatedRepository`AFTER INSERT ON `ommu_archive_related_repository` 
+    TRIGGER `archiveAfterInsertRelatedRepository` AFTER INSERT ON `ommu_archive_related_repository` 
     FOR EACH ROW BEGIN
 	UPDATE `ommu_archive_repository_grid` SET `archive` = `archive` + 1 WHERE `id` = NEW.repository_id;
     END;

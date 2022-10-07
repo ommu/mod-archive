@@ -25,7 +25,7 @@ class m221005_165555_archive_module_addTrigger_archiveLurings extends \yii\db\Mi
         // create trigger archiveAfterInsertLurings
         $archiveAfterInsertLurings = <<< SQL
 CREATE
-    TRIGGER `archiveAfterInsertLurings`AFTER INSERT ON `ommu_archive_lurings` 
+    TRIGGER `archiveAfterInsertLurings` AFTER INSERT ON `ommu_archive_lurings` 
     FOR EACH ROW BEGIN
 	INSERT `ommu_archive_luring_grid` (`id`, `download`) 
 	VALUE (NEW.id, 0);
@@ -48,7 +48,7 @@ SQL;
         // create trigger archiveAfterInsertLuringDownload
         $archiveAfterInsertLuringDownload = <<< SQL
 CREATE
-    TRIGGER `archiveAfterInsertLuringDownload`AFTER INSERT ON `ommu_archive_luring_download` 
+    TRIGGER `archiveAfterInsertLuringDownload` AFTER INSERT ON `ommu_archive_luring_download` 
     FOR EACH ROW BEGIN
 	UPDATE `ommu_archive_luring_grid` SET `download` = `download` + 1 WHERE `id` = NEW.luring_id;
     END;

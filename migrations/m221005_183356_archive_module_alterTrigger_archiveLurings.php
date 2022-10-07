@@ -23,7 +23,7 @@ class m221005_183356_archive_module_alterTrigger_archiveLurings extends \yii\db\
         // create trigger archiveAfterInsertLurings
         $archiveAfterInsertLurings = <<< SQL
 CREATE
-    TRIGGER `archiveAfterInsertLurings`AFTER INSERT ON `ommu_archive_lurings` 
+    TRIGGER `archiveAfterInsertLurings` AFTER INSERT ON `ommu_archive_lurings` 
     FOR EACH ROW BEGIN
 	INSERT `ommu_archive_luring_grid` (`id`, `download`) 
 	VALUE (NEW.id, 0);
@@ -36,7 +36,7 @@ SQL;
         // create trigger archiveAfterUpdateLurings
         $archiveAfterUpdateLurings = <<< SQL
 CREATE
-    TRIGGER `archiveAfterUpdateLurings`AFTER UPDATE ON `ommu_archive_lurings` 
+    TRIGGER `archiveAfterUpdateLurings` AFTER UPDATE ON `ommu_archive_lurings` 
     FOR EACH ROW BEGIN
 	IF (NEW.publish <> OLD.publish AND NEW.publish = 2) THEN
 		UPDATE `ommu_archive_grid` SET `luring` = `luring` - 1 WHERE `id` = NEW.archive_id;
@@ -54,7 +54,7 @@ SQL;
         // create trigger archiveAfterInsertLurings
         $archiveAfterInsertLurings = <<< SQL
 CREATE
-    TRIGGER `archiveAfterInsertLurings`AFTER INSERT ON `ommu_archive_lurings` 
+    TRIGGER `archiveAfterInsertLurings` AFTER INSERT ON `ommu_archive_lurings` 
     FOR EACH ROW BEGIN
 	INSERT `ommu_archive_luring_grid` (`id`, `download`) 
 	VALUE (NEW.id, 0);
