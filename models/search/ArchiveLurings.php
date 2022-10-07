@@ -28,8 +28,8 @@ class ArchiveLurings extends ArchiveLuringsModel
 	{
 		return [
 			[['id', 'publish', 'archive_id', 'creation_id', 'modified_id', 'oDownload'], 'integer'],
-			[['introduction', 'senarai_file', 'creation_date', 'modified_date', 'updated_date', 
-                'archiveTitle', 'creationDisplayname', 'modifiedDisplayname', 'oDownload', 'oIntro', 'oFile'], 'safe'],
+			[['introduction', 'senarai_file', 'senarai_file_draft', 'creation_date', 'modified_date', 'updated_date', 
+                'archiveTitle', 'creationDisplayname', 'modifiedDisplayname', 'oDownload', 'oIntro', 'oFile', 'oDraft'], 'safe'],
 		];
 	}
 
@@ -181,9 +181,17 @@ class ArchiveLurings extends ArchiveLuringsModel
                 $query->andWhere(['=', 't.senarai_file', '']);
             }
         }
+		if (isset($params['oDraft']) && $params['oDraft'] != '') {
+            if ($this->oDraft == 1) {
+                $query->andWhere(['<>', 't.senarai_file_draft', '']);
+            } else if ($this->oDraft == 0) {
+                $query->andWhere(['=', 't.senarai_file_draft', '']);
+            }
+        }
 
 		$query->andFilterWhere(['like', 't.introduction', $this->introduction])
 			->andFilterWhere(['like', 't.senarai_file', $this->senarai_file])
+			->andFilterWhere(['like', 't.senarai_file_draft', $this->senarai_file_draft])
 			->andFilterWhere(['or', 
                 ['like', 'archive.title', $this->archiveTitle],
                 ['like', 'archive.code', $this->archiveTitle]
