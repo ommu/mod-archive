@@ -244,6 +244,9 @@ class LevelController extends Controller
 	protected function findModel($id)
 	{
         if (($model = ArchiveLevel::findOne($id)) !== null) {
+            $model->level_name_i = $model->title->message;
+            $model->level_desc_i = $model->description->message;
+
             return $model;
         }
 

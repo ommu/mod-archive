@@ -1,13 +1,13 @@
 <?php
 /**
- * ArchiveCreator
+ * ArchiveLurings
  *
- * ArchiveCreator represents the model behind the search form about `ommu\archive\models\ArchiveCreator`.
+ * ArchiveLurings represents the model behind the search form about `ommu\archive\models\ArchiveLurings`.
  *
  * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2019 OMMU (www.ommu.id)
- * @created date 4 April 2019, 15:05 WIB
+ * @copyright Copyright (c) 2022 OMMU (www.ommu.id)
+ * @created date 4 October 2022, 23:20 WIB
  * @link https://bitbucket.org/ommu/archive
  *
  */
@@ -17,9 +17,9 @@ namespace ommu\archive\models\search;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use ommu\archive\models\ArchiveCreator as ArchiveCreatorModel;
+use ommu\archive\models\ArchiveLurings as ArchiveLuringsModel;
 
-class ArchiveCreator extends ArchiveCreatorModel
+class ArchiveLurings extends ArchiveLuringsModel
 {
 	/**
 	 * {@inheritdoc}
@@ -27,8 +27,9 @@ class ArchiveCreator extends ArchiveCreatorModel
 	public function rules()
 	{
 		return [
-			[['id', 'publish', 'creation_id', 'modified_id'], 'integer'],
-			[['creator_name', 'creator_desc', 'creation_date', 'modified_date', 'updated_date', 'creationDisplayname', 'modifiedDisplayname', 'oArchive'], 'safe'],
+			[['id', 'publish', 'archive_id', 'creation_id', 'modified_id', 'oDownload'], 'integer'],
+			[['introduction', 'senarai_file', 'senarai_file_draft', 'creation_date', 'modified_date', 'updated_date', 
+                'archiveTitle', 'creationDisplayname', 'modifiedDisplayname', 'oDownload', 'oIntro', 'oFile', 'oDraft'], 'safe'],
 		];
 	}
 
@@ -61,19 +62,26 @@ class ArchiveCreator extends ArchiveCreatorModel
 	public function search($params, $column=null)
 	{
         if (!($column && is_array($column))) {
-            $query = ArchiveCreatorModel::find()->alias('t');
+            $query = ArchiveLuringsModel::find()->alias('t');
         } else {
-            $query = ArchiveCreatorModel::find()->alias('t')
+            $query = ArchiveLuringsModel::find()->alias('t')
                 ->select($column);
         }
 		$query->joinWith([
+			// 'grid grid', 
+			// 'archive archive', 
 			// 'creation creation', 
 			// 'modified modified'
 		]);
-        if ((isset($params['sort']) && in_array($params['sort'], ['oArchive', '-oArchive'])) || 
-            (isset($params['oArchive']) && $params['oArchive'] != '')
+        if ((isset($params['sort']) && in_array($params['sort'], ['oDownload', '-oDownload'])) || 
+            (isset($params['oDownload']) && $params['oDownload'] != '')
         ) {
             $query->joinWith(['grid grid']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['archiveTitle', '-archiveTitle'])) || 
+            (isset($params['archiveTitle']) && $params['archiveTitle'] != '')
+        ) {
+            $query->joinWith(['archive archive']);
         }
         if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || 
             (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')
@@ -99,6 +107,10 @@ class ArchiveCreator extends ArchiveCreatorModel
 		$dataProvider = new ActiveDataProvider($dataParams);
 
 		$attributes = array_keys($this->getTableSchema()->columns);
+		$attributes['archiveTitle'] = [
+			'asc' => ['archive.title' => SORT_ASC],
+			'desc' => ['archive.title' => SORT_DESC],
+		];
 		$attributes['creationDisplayname'] = [
 			'asc' => ['creation.displayname' => SORT_ASC],
 			'desc' => ['creation.displayname' => SORT_DESC],
@@ -107,10 +119,10 @@ class ArchiveCreator extends ArchiveCreatorModel
 			'asc' => ['modified.displayname' => SORT_ASC],
 			'desc' => ['modified.displayname' => SORT_DESC],
 		];
-		$attributes['oArchive'] = [
-			'asc' => ['grid.archive' => SORT_ASC],
-			'desc' => ['grid.archive' => SORT_DESC],
-		];
+        $attributes['oDownload'] = [
+            'asc' => ['grid.download' => SORT_ASC],
+            'desc' => ['grid.download' => SORT_DESC],
+        ];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
 			'defaultOrder' => ['id' => SORT_DESC],
@@ -128,8 +140,9 @@ class ArchiveCreator extends ArchiveCreatorModel
         }
 
 		// grid filtering conditions
-		$query->andFilterWhere([
+        $query->andFilterWhere([
 			't.id' => $this->id,
+			't.archive_id' => isset($params['archive']) ? $params['archive'] : $this->archive_id,
 			'cast(t.creation_date as date)' => $this->creation_date,
 			't.creation_id' => isset($params['creation']) ? $params['creation'] : $this->creation_id,
 			'cast(t.modified_date as date)' => $this->modified_date,
@@ -137,15 +150,7 @@ class ArchiveCreator extends ArchiveCreatorModel
 			'cast(t.updated_date as date)' => $this->updated_date,
 		]);
 
-        if (isset($params['oArchive']) && $params['oArchive'] != '') {
-            if ($this->oArchive == 1) {
-                $query->andWhere(['<>', 'grid.archive', 0]);
-            } else if ($this->oArchive == 0) {
-                $query->andWhere(['=', 'grid.archive', 0]);
-            }
-        }
-
-        if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
+		if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
             $query->andFilterWhere(['IN', 't.publish', [0,1]]);
         } else {
             $query->andFilterWhere(['t.publish' => $this->publish]);
@@ -155,8 +160,42 @@ class ArchiveCreator extends ArchiveCreatorModel
             $query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
         }
 
-		$query->andFilterWhere(['like', 't.creator_name', $this->creator_name])
-			->andFilterWhere(['like', 't.creator_desc', $this->creator_desc])
+		if (isset($params['oDownload']) && $params['oDownload'] != '') {
+            if ($this->oDownload == 1) {
+                $query->andWhere(['<>', 'grid.download', 0]);
+            } else if ($this->oDownload == 0) {
+                $query->andWhere(['=', 'grid.download', 0]);
+            }
+        }
+		if (isset($params['oIntro']) && $params['oIntro'] != '') {
+            if ($this->oIntro == 1) {
+                $query->andWhere(['<>', 't.introduction', '']);
+            } else if ($this->oIntro == 0) {
+                $query->andWhere(['=', 't.introduction', '']);
+            }
+        }
+		if (isset($params['oFile']) && $params['oFile'] != '') {
+            if ($this->oFile == 1) {
+                $query->andWhere(['<>', 't.senarai_file', '']);
+            } else if ($this->oFile == 0) {
+                $query->andWhere(['=', 't.senarai_file', '']);
+            }
+        }
+		if (isset($params['oDraft']) && $params['oDraft'] != '') {
+            if ($this->oDraft == 1) {
+                $query->andWhere(['<>', 't.senarai_file_draft', '']);
+            } else if ($this->oDraft == 0) {
+                $query->andWhere(['=', 't.senarai_file_draft', '']);
+            }
+        }
+
+		$query->andFilterWhere(['like', 't.introduction', $this->introduction])
+			->andFilterWhere(['like', 't.senarai_file', $this->senarai_file])
+			->andFilterWhere(['like', 't.senarai_file_draft', $this->senarai_file_draft])
+			->andFilterWhere(['or', 
+                ['like', 'archive.title', $this->archiveTitle],
+                ['like', 'archive.code', $this->archiveTitle]
+            ])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
 			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname]);
 

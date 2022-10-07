@@ -244,6 +244,9 @@ class MediaController extends Controller
 	protected function findModel($id)
 	{
         if (($model = ArchiveMedia::findOne($id)) !== null) {
+            $model->media_name_i = $model->title->message;
+            $model->media_desc_i = $model->description->message;
+
             return $model;
         }
 

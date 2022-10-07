@@ -28,8 +28,8 @@ class Archives extends ArchivesModel
 	{
 		return [
 			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'media', 
-                'preview', 'location', 'oView'], 'integer'],
-			[['title', 'code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'creation_date', 'modified_date', 'updated_date', 
+                'preview', 'location', 'oView', 'oFile'], 'integer'],
+			[['title', 'code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'senarai_file', 'creation_date', 'modified_date', 'updated_date', 
                 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository', 'subject', 'function'], 'safe'],
 		];
 	}
@@ -74,9 +74,10 @@ class Archives extends ArchivesModel
 			// 'creation creation',
 			// 'modified modified'
 		]);
-        if ((isset($params['sort']) && in_array($params['sort'], ['oView', '-oView'])) || 
-            (isset($params['oView']) && $params['oView'] != '')
-        ) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['oView', '-oView', 'oFile', '-oFile'])) || (
+            (isset($params['oView']) && $params['oView'] != '') || 
+            (isset($params['oFile']) && $params['oFile'] != '')
+        )) {
             $query->joinWith(['grid grid']);
         }
         if ((isset($params['sort']) && in_array($params['sort'], ['parentTitle', '-parentTitle'])) || 
@@ -84,10 +85,10 @@ class Archives extends ArchivesModel
         ) {
             $query->joinWith(['parent parent']);
         }
-        if ((isset($params['sort']) && in_array($params['sort'], ['level_id', '-level_id'])) || 
+        if ((isset($params['sort']) && in_array($params['sort'], ['level_id', '-level_id', 'levelName', '-levelName'])) || 
             (isset($params['levelName']) && $params['levelName'] != '')
         ) {
-            $query->joinWith(['level.title level']);
+            $query->joinWith(['levelTitle levelTitle']);
         }
         if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || 
             (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')
@@ -99,30 +100,45 @@ class Archives extends ArchivesModel
         ) {
             $query->joinWith(['modified modified']);
         }
+
+        // related
         if (isset($params['media']) && $params['media'] != '') {
             $query->joinWith(['medias medias']);
         }
-        if ((isset($params['creatorId']) && $params['creatorId'] != '') || 
+        if (isset($params['creatorId']) && $params['creatorId'] != '') {
+            $query->joinWith(['creators creators']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['creator', '-creator'])) || 
             (isset($params['creator']) && $params['creator'] != '')
         ) {
-            $query->joinWith(['creators creators', 'creators.creator relatedCreatorRltn']);
+            $query->joinWith(['creators.creator creator']);
         }
-        if ((isset($params['repositoryId']) && $params['repositoryId'] != '') || 
+        if (isset($params['repositoryId']) && $params['repositoryId'] != '') {
+            $query->joinWith(['repositories repositories']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['repository', '-repository'])) || 
             (isset($params['repository']) && $params['repository'] != '')
         ) {
-            $query->joinWith(['repositories repositories', 'repositories.repository relatedRepositoryRltn']);
+            $query->joinWith(['repositories.repository repository']);
         }
-        if ((isset($params['subjectId']) && $params['subjectId'] != '') || 
+        if (isset($params['subjectId']) && $params['subjectId'] != '') {
+            $query->joinWith(['subjects subjects']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['subject', '-subject'])) || 
             (isset($params['subject']) && $params['subject'] != '')
         ) {
-            $query->joinWith(['subjects subjects', 'subjects.tag relatedSubjectRltn']);
+            $query->joinWith(['subjects.tag subject']);
         }
-        if ((isset($params['functionId']) && $params['functionId'] != '') || 
+        if (isset($params['functionId']) && $params['functionId'] != '') {
+            $query->joinWith(['functions functions']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['function', '-function'])) || 
             (isset($params['function']) && $params['function'] != '')
         ) {
-            $query->joinWith(['functions functions', 'functions.tag relatedFunctionRltn']);
+            $query->joinWith(['functions.tag function']);
         }
 
+        // location
         if ((isset($params['location']) && $params['location'] != '') || 
             (isset($params['rackId']) && $params['rackId'] != '') || 
             (isset($params['roomId']) && $params['roomId'] != '') || 
@@ -156,12 +172,12 @@ class Archives extends ArchivesModel
 			'desc' => ['parent.title' => SORT_DESC],
 		];
 		$attributes['level_id'] = [
-			'asc' => ['level.message' => SORT_ASC],
-			'desc' => ['level.message' => SORT_DESC],
+			'asc' => ['levelTitle.message' => SORT_ASC],
+			'desc' => ['levelTitle.message' => SORT_DESC],
 		];
 		$attributes['levelName'] = [
-			'asc' => ['level.message' => SORT_ASC],
-			'desc' => ['level.message' => SORT_DESC],
+			'asc' => ['levelTitle.message' => SORT_ASC],
+			'desc' => ['levelTitle.message' => SORT_DESC],
 		];
 		$attributes['creationDisplayname'] = [
 			'asc' => ['creation.displayname' => SORT_ASC],
@@ -171,9 +187,21 @@ class Archives extends ArchivesModel
 			'asc' => ['modified.displayname' => SORT_ASC],
 			'desc' => ['modified.displayname' => SORT_DESC],
 		];
+		$attributes['creator'] = [
+			'asc' => ['creator.creator_name' => SORT_ASC],
+			'desc' => ['creator.creator_name' => SORT_DESC],
+		];
+		$attributes['repository'] = [
+			'asc' => ['repository.repository_name' => SORT_ASC],
+			'desc' => ['repository.repository_name' => SORT_DESC],
+		];
 		$attributes['oView'] = [
 			'asc' => ['grid.view' => SORT_ASC],
 			'desc' => ['grid.view' => SORT_DESC],
+		];
+		$attributes['oFile'] = [
+			'asc' => ['grid.luring' => SORT_ASC],
+			'desc' => ['grid.luring' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
@@ -245,6 +273,13 @@ class Archives extends ArchivesModel
                 $query->andWhere(['=', 'grid.view', 0]);
             }
         }
+        if (isset($params['oFile']) && $params['oFile'] != '') {
+            if ($this->oFile == 1) {
+                $query->andWhere(['<>', 't.senarai_file', '']);
+            } else if ($this->oFile == 0) {
+                $query->andWhere(['=', 't.senarai_file', '']);
+            }
+        }
 
         if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
             $query->andFilterWhere(['IN', 't.publish', [0,1]]);
@@ -260,14 +295,15 @@ class Archives extends ArchivesModel
 			->andFilterWhere(['like', 't.code', $this->code])
 			->andFilterWhere(['like', 't.archive_date', $this->archive_date])
 			->andFilterWhere(['like', 't.archive_file', $this->archive_file])
+			->andFilterWhere(['like', 't.senarai_file', $this->senarai_file])
 			->andFilterWhere(['like', 'parent.title', $this->parentTitle])
-			->andFilterWhere(['like', 'level.message', $this->levelName])
+			->andFilterWhere(['like', 'levelTitle.message', $this->levelName])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
 			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname])
-			->andFilterWhere(['like', 'relatedCreatorRltn.creator_name', $this->creator])
-			->andFilterWhere(['like', 'relatedRepositoryRltn.repository_name', $this->repository])
-			->andFilterWhere(['like', 'relatedSubjectRltn.body', $this->subject])
-			->andFilterWhere(['like', 'relatedFunctionRltn.body', $this->function]);
+			->andFilterWhere(['like', 'creator.creator_name', $this->creator])
+			->andFilterWhere(['like', 'repository.repository_name', $this->repository])
+			->andFilterWhere(['like', 'subject.body', $this->subject])
+			->andFilterWhere(['like', 'function.body', $this->function]);
 
 		return $dataProvider;
 	}
