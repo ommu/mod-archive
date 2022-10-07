@@ -16,6 +16,7 @@
  * @property integer $archive_id
  * @property string $introduction
  * @property string $senarai_file
+ * @property string $senarai_file_draft
  * @property string $creation_date
  * @property integer $creation_id
  * @property string $modified_date
@@ -39,6 +40,7 @@ use yii\helpers\Url;
 use yii\web\UploadedFile;
 use thamtech\uuid\helpers\UuidHelper;
 use app\models\Users;
+use yii\helpers\Json;
 
 class ArchiveLurings extends \app\components\ActiveRecord
 {
@@ -54,6 +56,7 @@ class ArchiveLurings extends \app\components\ActiveRecord
 	public $oDownload;
 	public $oIntro;
 	public $oFile;
+	public $oDraft;
 
 	/**
 	 * @return string the associated database table name
@@ -72,7 +75,7 @@ class ArchiveLurings extends \app\components\ActiveRecord
 			[['archive_id', 'introduction'], 'required'],
 			[['publish', 'archive_id', 'creation_id', 'modified_id'], 'integer'],
 			[['introduction'], 'string'],
-			[['senarai_file'], 'safe'],
+			[['senarai_file', 'senarai_file_draft'], 'safe'],
 			[['archive_id'], 'exist', 'skipOnError' => true, 'targetClass' => Archives::className(), 'targetAttribute' => ['archive_id' => 'id']],
 		];
 	}
@@ -88,6 +91,7 @@ class ArchiveLurings extends \app\components\ActiveRecord
 			'archive_id' => Yii::t('app', 'Senarai'),
 			'introduction' => Yii::t('app', 'Introduction'),
 			'senarai_file' => Yii::t('app', 'Senarai File'),
+			'senarai_file_draft' => Yii::t('app', 'Senarai File (Draft)'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
@@ -100,6 +104,7 @@ class ArchiveLurings extends \app\components\ActiveRecord
 			'oDownload' => Yii::t('app', 'Downloads'),
 			'oIntro' => Yii::t('app', 'Introduction'),
 			'oFile' => Yii::t('app', 'Senarai File'),
+			'oDraft' => Yii::t('app', 'Draft'),
 		];
 	}
 
@@ -263,11 +268,22 @@ class ArchiveLurings extends \app\components\ActiveRecord
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
 		];
+		$this->templateColumns['oDraft'] = [
+			'attribute' => 'oDraft',
+			'value' => function($model, $key, $index, $column) {
+				return $this->filterYesNo($model->oDraft);
+			},
+			'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class' => 'text-center'],
+		];
 		$this->templateColumns['publish'] = [
 			'attribute' => 'publish',
 			'value' => function($model, $key, $index, $column) {
-				$url = Url::to(['publish', 'id' => $model->primaryKey]);
-				return $this->quickAction($url, $model->publish);
+                $publishContent = Yii::t('app', 'Unpublish');
+                if ($model->publish) {
+                    $publishContent = '<span class="glyphicon glyphicon-ok"></span>';
+                }
+				return Html::a($publishContent, ['luring/admin/update', 'id' => $model->primaryKey], ['title' => Yii::t('app', 'Publish Senarai Luring'), 'data-pjax' => 0]);
 			},
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
@@ -320,14 +336,47 @@ class ArchiveLurings extends \app\components\ActiveRecord
         }
 
 		$items[] = Html::tag('span', Yii::t('app', 'Code'), ['class' => 'btn btn-primary btn-xs']).$model->archive->code;
-        if ($model->senarai_file != '') {
-            $uploadPath = $model::getUploadPath(false);
-            $items[] = Html::tag('span', Yii::t('app', 'Senarai File'), ['class' => 'btn btn-success btn-xs']).Html::a($model->senarai_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->senarai_file])), ['title' => $model->senarai_file, 'data-pjax' => 0, 'target' => '_blank']);
-        }
 		
 		$html .= Html::ul($items, ['encode' => false, 'class' => 'list-boxed mt-5']);
 
 		return $html;
+	}
+
+	/**
+	 * function parseDocument
+	 */
+	public static function parseSenaraiFileDraft($documents, $uploadPath, $sep='li')
+	{
+        if (!is_array($documents) || (is_array($documents) && empty($documents))) {
+            return '-';
+        }
+
+		$items = self::getDocumentUrl($documents, $uploadPath, true);
+
+        if ($sep == 'li') {
+			return Html::ul($items, ['item' => function($item, $index) {
+				return Html::tag('li', $item);
+			}, 'class' => 'list-boxed']);
+		}
+
+		return implode($sep, $items);
+	}
+
+	/**
+	 * function getDocumentUrl
+	 */
+	public static function getDocumentUrl($documents, $uploadPath, $hyperlink=false)
+	{
+		$items = [];
+		foreach ($documents as $val) {
+            if ($hyperlink) {
+                $items[$val] = Html::a($val, join('/', ['@webpublic', $uploadPath, $val]), ['title' => $val, 'target' => '_blank']);
+            } else {
+                $items[$val] = Url::to(join('/', ['@webpublic', $uploadPath, $val]));
+            }
+		}
+
+		return $items;
 	}
 
 	/**
@@ -338,6 +387,7 @@ class ArchiveLurings extends \app\components\ActiveRecord
 		parent::afterFind();
 
 		$this->old_senarai_file = $this->senarai_file;
+        $this->senarai_file_draft = Json::decode($this->senarai_file_draft);
 		// $this->archiveTitle = isset($this->archive) ? $this->archive->title : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
@@ -345,6 +395,7 @@ class ArchiveLurings extends \app\components\ActiveRecord
 		// $this->oDownload = isset($this->grid) ? $this->grid->download : 0;
 		$this->oIntro = $this->introduction != '' ? true : false;
 		$this->oFile = $this->senarai_file != '' ? true : false;
+		$this->oDraft = $this->senarai_file_draft != '' ? true : false;
 	}
 
 	/**
@@ -362,11 +413,11 @@ class ArchiveLurings extends \app\components\ActiveRecord
                         'extensions' => $this->formatFileType($senaraiFileFileType, false),
                     ]));
                 }
-            } /* else {
-                if ($this->isNewRecord || (!$this->isNewRecord && $this->old_senarai_file == '')) {
+            } else {
+                if (!$this->isNewRecord && $this->old_senarai_file == '') {
                     $this->addError('senarai_file', Yii::t('app', '{attribute} cannot be blank.', ['attribute' => $this->getAttributeLabel('senarai_file')]));
                 }
-            } */
+            }
 
             if ($this->isNewRecord) {
                 if ($this->creation_id == null) {
@@ -406,8 +457,9 @@ class ArchiveLurings extends \app\components\ActiveRecord
                         $this->senarai_file = $this->old_senarai_file;
                     }
                 }
-
             }
+
+            $this->senarai_file_draft = Json::encode($this->senarai_file_draft);
         }
         return true;
 	}
@@ -431,7 +483,12 @@ class ArchiveLurings extends \app\components\ActiveRecord
                     self::updateAll(['senarai_file' => $fileName], ['id' => $this->id]);
                 }
             }
+        }
 
+        if (array_key_exists('publish', $changedAttributes) && ($changedAttributes['publish'] != $this->publish) && $this->publish == 1) {
+			self::updateAll(['publish' => 0], 
+				'archive_id = :archive AND publish <> :publish AND id <> :id', 
+                [':archive' => $this->archive_id, ':publish' => 2, ':id' => $this->id]);
         }
 	}
 

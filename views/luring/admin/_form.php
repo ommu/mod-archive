@@ -21,10 +21,8 @@ use yii\redactor\widgets\Redactor;
 use yii\helpers\ArrayHelper;
 
 $redactorOptions = [
-	'imageManagerJson' => ['/redactor/upload/image-json'],
-	'imageUpload' => ['/redactor/upload/image'],
-	'fileUpload' => ['/redactor/upload/file'],
-	'plugins' => ['clips', 'fontcolor', 'imagemanager']
+	'buttons' => ['html', 'format', 'bold', 'italic', 'underline', 'deleted', 'indent', 'outdent', 'alignment'],
+	'plugins' => ['fontcolor']
 ];
 ?>
 
@@ -47,6 +45,16 @@ $redactorOptions = [
 
 <?php //echo $form->errorSummary($model);?>
 
+<?php if ($model->isNewRecord) {
+$parseArchive = $model::parseArchive($model, true);
+echo $form->field($model, 'archive_id', ['template' => '{label}{beginWrapper}{input}{error}{hint}'.$parseArchive.'{endWrapper}'])
+	->hiddenInput()
+	->label($model->getAttributeLabel('archive_id')) ?>
+
+<hr />
+
+<?php }?>
+
 <?php echo $form->field($model, 'introduction')
 	->textarea(['rows' => 6, 'cols' => 50])
 	->widget(Redactor::className(), ['clientOptions' => $redactorOptions])
@@ -54,7 +62,9 @@ $redactorOptions = [
 
 <hr />
 
-<?php $uploadPath = $model::getUploadPath(false);
+<?php if (!$model->isNewRecord) {
+
+$uploadPath = $model::getUploadPath(false);
 $senaraiFile = !$model->isNewRecord && $model->old_senarai_file != '' ? '<hr/>'.Yii::t('app', 'Download: {old_senarai_file}', ['old_senarai_file' => Html::a($model->old_senarai_file, Url::to(join('/', ['@webpublic', $uploadPath, $model->old_senarai_file])), ['title'=>$model->old_senarai_file, 'target' => '_blank'])]) : '';
 echo $form->field($model, 'senarai_file', ['template' => '{label}{beginWrapper}{input}{error}{hint}<div>'.$senaraiFile.'</div>{endWrapper}'])
 	->fileInput()
@@ -72,7 +82,9 @@ echo $form->field($model, 'publish')
 
 <hr/>
 
-<?php $submitButtonOption = [];
+<?php }?>
+
+<?php $submitButtonOption = ['button' => Html::submitButton($model->isNewRecord ? Yii::t('app', 'Generate Senarai') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary'])];
 if (!$model->isNewRecord && Yii::$app->request->isAjax) {
     $submitButtonOption = ArrayHelper::merge($submitButtonOption, [
         'backTo' => Html::a(Html::tag('span', '&laquo;', ['class' => 'mr-1']).Yii::t('app', 'Back to detail'), ['view', 'id' => $model->primaryKey], ['title' => Yii::t('app', 'Detail Luring'), 'class' => 'ml-4 modal-btn']),

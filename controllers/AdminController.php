@@ -412,7 +412,7 @@ class AdminController extends Controller
 			'code' => $model->code,
 			'level' => $model->levelTitle->message,
 			'label' => $model::htmlHardDecode($model->title),
-			'inode' => $model->getArchives('count') ? true : false,
+			'inode' => $model->getArchives('count', 1) ? true : false,
 			'view-url' => Url::to(['view', 'id' => $model->id]),
 			'update-url' => Url::to(['update', 'id' => $model->id]),
 			'child-url' => Url::to(['manage', 'parent' => $model->id]),

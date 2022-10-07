@@ -18,6 +18,7 @@ class m221005_183356_archive_module_alterTrigger_archiveLurings extends \yii\db\
 	public function up()
 	{
         $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertLurings`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterUpdateLurings`');
 
         // create trigger archiveAfterInsertLurings
         $archiveAfterInsertLurings = <<< SQL
@@ -31,11 +32,24 @@ CREATE
     END;
 SQL;
         $this->execute($archiveAfterInsertLurings);
+
+        // create trigger archiveAfterUpdateLurings
+        $archiveAfterUpdateLurings = <<< SQL
+CREATE
+    TRIGGER `archiveAfterUpdateLurings`AFTER UPDATE ON `ommu_archive_lurings` 
+    FOR EACH ROW BEGIN
+	IF (NEW.publish <> OLD.publish AND NEW.publish = 2) THEN
+		UPDATE `ommu_archive_grid` SET `luring` = `luring` - 1 WHERE `id` = NEW.archive_id;
+	END IF;
+    END;
+SQL;
+        $this->execute($archiveAfterUpdateLurings);
 	}
 
 	public function down()
 	{
         $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertLurings`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterUpdateLurings`');
 
         // create trigger archiveAfterInsertLurings
         $archiveAfterInsertLurings = <<< SQL

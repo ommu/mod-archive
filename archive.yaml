@@ -19,19 +19,25 @@ fond_submenu:
         0: 'admin/manage'
         parent: $_GET*id
       select: action
-    views:
-      label: View(s)
-      url:
-        0: 'view/admin/manage'
-        archive: $_GET*archive
-      select: controller
-  2:
     location:
       label: Storage Location
       url:
         0: 'fond/location'
         id: $_GET*id
       select: action
+    luring:
+      label: Senarai Lurings
+      url:
+        0: 'luring/admin/manage'
+        archive: $_GET*id
+      select: controller
+  2:
+    views:
+      label: View(s)
+      url:
+        0: 'view/admin/manage'
+        archive: $_GET*archive
+      select: controller
   3:
     delete:
       label: Delete
@@ -114,26 +120,34 @@ setting_submenu:
 
 luring_submenu:
   0:
+    luring:
+      label: Back to Senarai Lurings
+      url:
+        0: 'luring/admin/manage'
+        archive: $_GET*id
+      select: url
+      backTo: true
+  1:
     view:
       label: Detail
       url:
         0: 'luring/admin/view'
         id: $_GET*id
       select: action
-    update:
-      label: Update
+    publish:
+      label: Publish
       url:
         0: 'luring/admin/update'
         id: $_GET*id
       select: action
-  1:
+  2:
     download:
       label: Download(s)
       url:
         0: 'luring/download/manage'
         luring: $_GET*id
       select: controller
-  2:
+  3:
     delete:
       label: Delete
       url:

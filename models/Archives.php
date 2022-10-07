@@ -263,11 +263,11 @@ class Archives extends \app\components\ActiveRecord
 	{
         if ($type == 'relation') {
 			$model = $this->hasMany(Archives::className(), ['parent_id' => 'id'])
-                ->alias('archives');
+                ->alias('t');
 	        if ($publish != null) {
-                $model->andOnCondition([sprintf('%s.publish', 'archives') => $publish]);
+                $model->andOnCondition([sprintf('%s.publish', 't') => $publish]);
             } else {
-                $model->andOnCondition(['IN', sprintf('%s.publish', 'archives'), [0,1]]);
+                $model->andOnCondition(['IN', sprintf('%s.publish', 't'), [0,1]]);
             }
 
             return $model;
@@ -581,11 +581,16 @@ class Archives extends \app\components\ActiveRecord
 			'attribute' => 'oFile',
 			'label' => Yii::t('app', 'Luring'),
 			'value' => function($model, $key, $index, $column) {
-				return Html::a($model->oFile ? '<span class="glyphicon glyphicon-ok"></span>' : Yii::t('app', 'Document'), ['print', 'id' => $model->primaryKey], ['title' => $model->oFile ? Yii::t('app', 'Regenerate Senarai') : Yii::t('app', 'Generate Senarai'), 'class' => 'modal-btn']);
+                $senaraiFile = Html::a(Yii::t('app', 'Document'), ['luring/admin/create', 'id' => $model->primaryKey], ['title' => Yii::t('app', 'Generate Senarai Luring'), 'class' => 'modal-btn']);
+                $oFile = $model->grid->luring;
+                if ($oFile) {
+                    $senaraiFile = Html::a('<span class="glyphicon glyphicon-ok"></span>', ['luring/admin/manage', 'archive' => $model->primaryKey], ['title' => Yii::t('app', 'View Senarai Luring'), 'data-pjax' => 0]);
+                }
+				return $senaraiFile;
 			},
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
-			'format' => 'html',
+			'format' => 'raw',
 			'visible' => $this->isFond ? true : false,
 		];
 		$this->templateColumns['location'] = [

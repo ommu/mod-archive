@@ -25,7 +25,7 @@ class m221004_200002_archive_module_createTable_lurings extends \yii\db\Migratio
 		if (!Yii::$app->db->getTableSchema($tableName, true)) {
 			$this->createTable($tableName, [
 				'id' => Schema::TYPE_INTEGER . '(11) UNSIGNED NOT NULL AUTO_INCREMENT',
-				'publish' => Schema::TYPE_TINYINT . '(1) NOT NULL DEFAULT \'1\'',
+				'publish' => Schema::TYPE_TINYINT . '(1) NOT NULL DEFAULT \'0\'',
 				'archive_id' => Schema::TYPE_INTEGER . '(11) UNSIGNED',
 				'introduction' => Schema::TYPE_TEXT . ' NOT NULL',
 				'senarai_file' => Schema::TYPE_TEXT . ' NOT NULL',

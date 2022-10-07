@@ -112,7 +112,7 @@ $attributes = [
 		'attribute' => 'creator',
 		'value' => $model::parseRelated($model->getCreators(true, 'title'), 'creator'),
 		'format' => 'html',
-		'visible' => !$small && in_array('creator', $model->level->field) ? true : false,
+		'visible' => (!$small && in_array('creator', $model->level->field)) || ($small && $model->isFond) ? true : false,
 	],
 	[
 		'attribute' => 'repository',
@@ -168,6 +168,7 @@ $attributes = [
 			return $model::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id);
 		},
 		'format' => 'html',
+        'visible' => !$small,
 	],
     [
         'attribute' => 'oView',

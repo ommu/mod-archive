@@ -25,7 +25,7 @@ use ommu\archive\models\ArchiveRepository;
 
 $redactorOptions = [
 	'buttons' => ['html', 'format', 'bold', 'italic', 'deleted'],
-	'plugins' => ['fontcolor', 'imagemanager']
+	'plugins' => ['fontcolor']
 ];
 
 if (!$isFond)
