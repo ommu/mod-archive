@@ -18,7 +18,7 @@ use yii\helpers\Url;
 use yii\widgets\DetailView;
 use yii\helpers\ArrayHelper;
 
-\ommu\archive\assets\AciTreeAsset::register($this);
+!$small ? \ommu\archive\assets\AciTreeAsset::register($this) : '';
 
 if (!$small) {
     $context = $this->context;
@@ -41,7 +41,7 @@ $js = <<<JS
 	var treeDataUrl = '$treeDataUrl';
 	var selectedId = '$model->id';
 JS;
-$this->registerJs($js, \yii\web\View::POS_HEAD);
+!$small ? $this->registerJs($js, \yii\web\View::POS_HEAD) : '';
 
 $attributes = [
 	[
@@ -61,7 +61,10 @@ $attributes = [
 	],
 	[
 		'attribute' => 'parent_id',
-		'value' => $model::parseParent($model),
+		'value' => function ($model) {
+            $parent = $model->parent;
+            return $model::parseParent($parent);
+		},
 		'format' => 'raw',
 		'visible' => !$small && !$isFond,
 	],
@@ -109,7 +112,7 @@ $attributes = [
 		'attribute' => 'creator',
 		'value' => $model::parseRelated($model->getCreators(true, 'title'), 'creator'),
 		'format' => 'html',
-		'visible' => !$small && in_array('creator', $model->level->field) ? true : false,
+		'visible' => (!$small && in_array('creator', $model->level->field)) || ($small && $model->isFond) ? true : false,
 	],
 	[
 		'attribute' => 'repository',
@@ -165,6 +168,7 @@ $attributes = [
 			return $model::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id);
 		},
 		'format' => 'html',
+        'visible' => !$small,
 	],
     [
         'attribute' => 'oView',

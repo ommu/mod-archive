@@ -1,23 +1,22 @@
 <?php
 /**
- * ArchiveGrid
+ * ArchiveLuringGrid
  * 
  * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2022 OMMU (www.ommu.id)
- * @created date 30 September 2022, 10:00 WIB
+ * @created date 4 October 2022, 20:26 WIB
  * @link https://bitbucket.org/ommu/archive
  *
- * This is the model class for table "ommu_archive_grid".
+ * This is the model class for table "ommu_archive_luring_grid".
  *
- * The followings are the available columns in table "ommu_archive_grid":
+ * The followings are the available columns in table "ommu_archive_luring_grid":
  * @property integer $id
- * @property integer $view
- * @property integer $luring
+ * @property integer $download
  * @property string $modified_date
  *
  * The followings are the available model relations:
- * @property Archives $0
+ * @property ArchiveLurings $0
  *
  */
 
@@ -25,7 +24,7 @@ namespace ommu\archive\models;
 
 use Yii;
 
-class ArchiveGrid extends \app\components\ActiveRecord
+class ArchiveLuringGrid extends \app\components\ActiveRecord
 {
     public $gridForbiddenColumn = [];
 
@@ -34,7 +33,7 @@ class ArchiveGrid extends \app\components\ActiveRecord
 	 */
 	public static function tableName()
 	{
-		return 'ommu_archive_grid';
+		return 'ommu_archive_luring_grid';
 	}
 
 	/**
@@ -43,10 +42,10 @@ class ArchiveGrid extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['id', 'view', 'luring'], 'required'],
-			[['id', 'view', 'luring'], 'integer'],
+			[['id', 'download'], 'required'],
+			[['id', 'download'], 'integer'],
 			[['id'], 'unique'],
-			[['id'], 'exist', 'skipOnError' => true, 'targetClass' => Archives::className(), 'targetAttribute' => ['id' => 'id']],
+			[['id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLurings::className(), 'targetAttribute' => ['id' => 'id']],
 		];
 	}
 
@@ -57,10 +56,17 @@ class ArchiveGrid extends \app\components\ActiveRecord
 	{
 		return [
 			'id' => Yii::t('app', 'ID'),
-			'view' => Yii::t('app', 'View'),
-			'luring' => Yii::t('app', 'Luring'),
+			'download' => Yii::t('app', 'Download'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
 		];
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function get0()
+	{
+		return $this->hasOne(ArchiveLurings::className(), ['id' => 'id']);
 	}
 
 	/**

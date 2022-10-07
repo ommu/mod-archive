@@ -22,6 +22,7 @@
  * @property string $archive_type
  * @property string $archive_date
  * @property string $archive_file
+ * @property string $senarai_file
  * @property string $creation_date
  * @property integer $creation_id
  * @property string $modified_date
@@ -91,6 +92,7 @@ class Archives extends \app\components\ActiveRecord
 	public $creationDisplayname;
 	public $modifiedDisplayname;
     public $oView;
+    public $oFile;
 
 	const EVENT_BEFORE_SAVE_ARCHIVES = 'BeforeSaveArchives';
 
@@ -111,7 +113,7 @@ class Archives extends \app\components\ActiveRecord
 			[['publish', 'level_id', 'title', 'shortCode'], 'required'],
 			[['publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'backToManage'], 'integer'],
 			[['title', 'archive_type', 'archive_date'], 'string'],
-			[['code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
+			[['code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'senarai_file', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
 			[['code'], 'string', 'max' => 255],
 			[['archive_date'], 'string', 'max' => 64],
 			[['shortCode'], 'string', 'max' => 32],
@@ -136,6 +138,7 @@ class Archives extends \app\components\ActiveRecord
 			'archive_type' => Yii::t('app', 'Archive Type'),
 			'archive_date' => Yii::t('app', 'Archive Date'),
 			'archive_file' => Yii::t('app', 'Archive File'),
+			'senarai_file' => Yii::t('app', 'Senarai File'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
@@ -157,6 +160,7 @@ class Archives extends \app\components\ActiveRecord
 			'published_date' => Yii::t('app', 'Published Date'),
 			'backToManage' => Yii::t('app', 'Back to Manage'),
             'oView' => Yii::t('app', 'Views'),
+			'oFile' => Yii::t('app', 'Luring File'),
 		];
 	}
 
@@ -259,11 +263,11 @@ class Archives extends \app\components\ActiveRecord
 	{
         if ($type == 'relation') {
 			$model = $this->hasMany(Archives::className(), ['parent_id' => 'id'])
-                ->alias('archives');
+                ->alias('t');
 	        if ($publish != null) {
-                $model->andOnCondition([sprintf('%s.publish', 'archives') => $publish]);
+                $model->andOnCondition([sprintf('%s.publish', 't') => $publish]);
             } else {
-                $model->andOnCondition(['IN', sprintf('%s.publish', 'archives'), [0,1]]);
+                $model->andOnCondition(['IN', sprintf('%s.publish', 't'), [0,1]]);
             }
 
             return $model;
@@ -525,35 +529,6 @@ class Archives extends \app\components\ActiveRecord
 			},
 			'format' => 'raw',
 		];
-        if (ArchiveSetting::getInfo('fond_sidkkas')) {
-			$this->templateColumns['sidkkas'] = [
-				'attribute' => 'sidkkas',
-				'value' => function($model, $key, $index, $column) {
-					return $this->filterYesNo($model->sidkkas);
-				},
-				'filter' => $this->filterYesNo(),
-				'contentOptions' => ['class' => 'text-center'],
-				'visible' => !Yii::$app->request->get('id') ? true : false,
-			];
-		}
-		$this->templateColumns['preview'] = [
-			'attribute' => 'preview',
-			'value' => function($model, $key, $index, $column) {
-				return $this->filterYesNo($model->preview);
-			},
-			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class' => 'text-center'],
-		];
-		$this->templateColumns['location'] = [
-			'attribute' => 'location',
-			'value' => function($model, $key, $index, $column) {
-                $location = $this->getLocations(false) != null ? 1 : 0;
-				return $this->filterYesNo($location);
-			},
-			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class' => 'text-center'],
-			'visible' => !$this->isFond ? true : false,
-		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
 			'value' => function($model, $key, $index, $column) {
@@ -602,6 +577,52 @@ class Archives extends \app\components\ActiveRecord
 			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
 		];
+		$this->templateColumns['oFile'] = [
+			'attribute' => 'oFile',
+			'label' => Yii::t('app', 'Luring'),
+			'value' => function($model, $key, $index, $column) {
+                $senaraiFile = Html::a(Yii::t('app', 'Document'), ['luring/admin/create', 'id' => $model->primaryKey], ['title' => Yii::t('app', 'Generate Senarai Luring'), 'class' => 'modal-btn']);
+                $oFile = $model->grid->luring;
+                if ($oFile) {
+                    $senaraiFile = Html::a('<span class="glyphicon glyphicon-ok"></span>', ['luring/admin/manage', 'archive' => $model->primaryKey], ['title' => Yii::t('app', 'View Senarai Luring'), 'data-pjax' => 0]);
+                }
+				return $senaraiFile;
+			},
+			'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class' => 'text-center'],
+			'format' => 'raw',
+			'visible' => $this->isFond ? true : false,
+		];
+		$this->templateColumns['location'] = [
+			'attribute' => 'location',
+			'value' => function($model, $key, $index, $column) {
+                $location = $this->getLocations(false) != null ? 1 : 0;
+				return $this->filterYesNo($location);
+			},
+			'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class' => 'text-center'],
+			'visible' => !$this->isFond ? true : false,
+		];
+		$this->templateColumns['preview'] = [
+			'attribute' => 'preview',
+			'value' => function($model, $key, $index, $column) {
+				return $this->filterYesNo($model->preview);
+			},
+			'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class' => 'text-center'],
+			'visible' => !$this->isFond ? true : false,
+		];
+        if (ArchiveSetting::getInfo('fond_sidkkas')) {
+			$this->templateColumns['sidkkas'] = [
+				'attribute' => 'sidkkas',
+				'value' => function($model, $key, $index, $column) {
+					return $this->filterYesNo($model->sidkkas);
+				},
+				'filter' => $this->filterYesNo(),
+				'contentOptions' => ['class' => 'text-center'],
+				'visible' => !Yii::$app->request->get('id') ? true : false,
+			];
+		}
 		$this->templateColumns['publish'] = [
 			'attribute' => 'publish',
 			'label' => Yii::t('app', 'Status'),
@@ -832,16 +853,16 @@ class Archives extends \app\components\ActiveRecord
 	 */
 	public static function parseParent($model, $aciTree=true)
 	{
-        if (!isset($model->parent)) {
+        if (!isset($model)) {
             return Yii::$app->request->isAjax ? '-' : '<div id="tree" class="aciTree"></div>';
         }
 
-		$title = self::htmlHardDecode($model->parent->title);
-		$levelName = $model->parent->levelTitle->message;
+		$title = self::htmlHardDecode($model->title);
+		$levelName = $model->levelTitle->message;
 
-		$items[] = $model->getAttributeLabel('level_id').': '.Html::a($levelName, ['setting/level/view', 'id' => $model->parent->level_id], ['title' => $levelName, 'class' => 'modal-btn']);
-		$items[] = Yii::t('app', '{level} Code: {code}', ['level' => $levelName, 'code' => $model->parent->code]);
-		$items[] = $model->getAttributeLabel('title').': '.Html::a($title, ['view', 'id' => $model->parent_id], ['title' => $title, 'class' => 'modal-btn']);
+		$items[] = $model->getAttributeLabel('level_id').': '.Html::a($levelName, ['setting/level/view', 'id' => $model->level_id], ['title' => $levelName, 'class' => 'modal-btn']);
+		$items[] = Yii::t('app', '{level} Code: {code}', ['level' => $levelName, 'code' => $model->code]);
+		$items[] = $model->getAttributeLabel('title').': '.Html::a($title, ['view', 'id' => $model->id], ['title' => $title, 'class' => 'modal-btn']);
 
         if (Yii::$app->request->isAjax) {
             return Html::ul($items, ['encode' => false, 'class' => 'list-boxed']);
@@ -1025,7 +1046,8 @@ class Archives extends \app\components\ActiveRecord
 
 		$this->old_archive_file = $this->archive_file;
         $this->isFond = $this->level_id == 1 ? true : false;
-		$this->preview = $this->archive_file != '' ? 1 : 0;
+		$this->preview = $this->archive_file != '' ? true : false;
+		$this->oFile = $this->senarai_file != '' ? true : false;
 		// $this->parentTitle = isset($this->parent) ? $this->parent->title : '-';
 		// $this->levelName = isset($this->level) ? $this->level->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
