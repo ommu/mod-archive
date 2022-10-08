@@ -90,7 +90,7 @@ class ArchiveLurings extends \app\components\ActiveRecord
 			'publish' => Yii::t('app', 'Publish'),
 			'archive_id' => Yii::t('app', 'Senarai'),
 			'introduction' => Yii::t('app', 'Introduction'),
-			'senarai_file' => Yii::t('app', 'Senarai File'),
+			'senarai_file' => Yii::t('app', 'Senarai File (Final)'),
 			'senarai_file_draft' => Yii::t('app', 'Senarai File (Draft)'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
@@ -103,8 +103,8 @@ class ArchiveLurings extends \app\components\ActiveRecord
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
 			'oDownload' => Yii::t('app', 'Downloads'),
 			'oIntro' => Yii::t('app', 'Introduction'),
-			'oFile' => Yii::t('app', 'Senarai File'),
-			'oDraft' => Yii::t('app', 'Draft'),
+			'oFile' => Yii::t('app', 'Senarai File (Final)'),
+			'oDraft' => Yii::t('app', 'Senarai File (Draft)'),
 		];
 	}
 
