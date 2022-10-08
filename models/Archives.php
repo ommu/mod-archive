@@ -377,6 +377,40 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getFavourites()
+	{
+        $user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+
+        return $this->hasMany(ArchiveFavourites::className(), ['archive_id' => 'id'])
+            ->alias('favourite')
+            ->select(['id', 'publish', 'archive_id', 'user_id'])
+            ->andOnCondition([sprintf('%s.user_id', 'favourite') => $user_id]);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getFavourite()
+	{
+        $favourite = $this->favourites[0];
+        if ($favourite == null) {
+            $return= [
+                'status' => false,
+                'id' => 0,
+            ];
+        } else {
+            $return= [
+                'status' => $favourite->publish == 1 ? true : false,
+                'id' => $favourite->id,
+            ];
+        }
+
+        return $return;
+	}
+
+	/**
 	 * {@inheritdoc}
 	 * @return \ommu\archive\models\query\Archives the active query used by this AR class.
 	 */
