@@ -23,7 +23,7 @@ class m220926_074132_archive_module_addTrigger_archiveRelatedMedia extends \yii\
         // create trigger archiveAfterInsertRelatedMedia
         $archiveAfterInsertRelatedMedia = <<< SQL
 CREATE
-    TRIGGER `archiveAfterInsertRelatedMedia`AFTER INSERT ON `ommu_archive_related_media` 
+    TRIGGER `archiveAfterInsertRelatedMedia` AFTER INSERT ON `ommu_archive_related_media` 
     FOR EACH ROW BEGIN
 	UPDATE `ommu_archive_media_grid` SET `archive` = `archive` + 1 WHERE `id` = NEW.media_id;
     END;

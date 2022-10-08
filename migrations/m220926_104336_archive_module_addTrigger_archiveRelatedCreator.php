@@ -23,7 +23,7 @@ class m220926_104336_archive_module_addTrigger_archiveRelatedCreator extends \yi
         // create trigger archiveAfterInsertRelatedCreator
         $archiveAfterInsertRelatedCreator = <<< SQL
 CREATE
-    TRIGGER `archiveAfterInsertRelatedCreator`AFTER INSERT ON `ommu_archive_related_creator` 
+    TRIGGER `archiveAfterInsertRelatedCreator` AFTER INSERT ON `ommu_archive_related_creator` 
     FOR EACH ROW BEGIN
 	UPDATE `ommu_archive_creator_grid` SET `archive` = `archive` + 1 WHERE `id` = NEW.creator_id;
     END;

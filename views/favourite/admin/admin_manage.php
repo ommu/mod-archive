@@ -1,15 +1,15 @@
 <?php
 /**
- * Archive Repositories (archive-repository)
+ * Archive Favourites (archive-favourites)
  * @var $this app\components\View
- * @var $this ommu\archive\controllers\setting\RepositoryController
- * @var $model ommu\archive\models\ArchiveRepository
- * @var $searchModel ommu\archive\models\search\ArchiveRepository
+ * @var $this ommu\archive\controllers\favourite\AdminController
+ * @var $model ommu\archive\models\ArchiveFavourites
+ * @var $searchModel ommu\archive\models\search\ArchiveFavourites
  *
  * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2019 OMMU (www.ommu.id)
- * @created date 4 April 2019, 15:06 WIB
+ * @copyright Copyright (c) 2022 OMMU (www.ommu.id)
+ * @created date 8 October 2022, 09:35 WIB
  * @link https://bitbucket.org/ommu/archive
  *
  */
@@ -23,20 +23,26 @@ $context = $this->context;
 if ($context->breadcrumbApp) {
 	$this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Setting'), 'url' => ['setting/admin/index']];
+
+if ($archive) {
+    $this->params['breadcrumbs'][] = ['label' => $archive->isFond ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventory'), 'url' => $archive->isFond ? ['fond/index'] : ['admin/index']];
+    $archiveDetailUrl = $archive->isFond ? ['fond/view', 'id' => $archive->id] : ['admin/view', 'id' => $archive->id];
+    $this->params['breadcrumbs'][] = ['label' => $archive->isFond ? $archive->code : Yii::t('app', '#{level-name} {code}', ['level-name' => strtoupper($archive->levelTitle->message), 'code' => $archive->code]), 'url' => $archiveDetailUrl];
+}
 $this->params['breadcrumbs'][] = $this->title;
 
-$this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Add Repository'), 'url' => Url::to(['create']), 'icon' => 'plus-square', 'htmlOptions' => ['class' => 'btn btn-success modal-btn']],
-];
 $this->params['menu']['option'] = [
 	//['label' => Yii::t('app', 'Search'), 'url' => 'javascript:void(0);'],
 	['label' => Yii::t('app', 'Grid Option'), 'url' => 'javascript:void(0);'],
 ];
 ?>
 
-<div class="archive-repository-manage">
+<div class="archive-favourites-manage">
 <?php Pjax::begin(); ?>
+
+<?php if ($archive != null) {
+	echo $this->render('/admin/admin_view', ['model' => $archive, 'small' => true]);
+} ?>
 
 <?php //echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -60,20 +66,20 @@ array_push($columnData, [
 	},
 	'buttons' => [
 		'view' => function ($url, $model, $key) {
-			return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, ['title' => Yii::t('app', 'Detail'), 'class' => 'modal-btn']);
+			return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, ['title' => Yii::t('app', 'Detail Favourite'), 'data-pjax' => 0, 'class' => 'modal-btn']);
 		},
 		'update' => function ($url, $model, $key) {
-			return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, ['title' => Yii::t('app', 'Update'), 'class' => 'modal-btn']);
+			return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, ['title' => Yii::t('app', 'Update Favourite')]);
 		},
 		'delete' => function ($url, $model, $key) {
 			return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
-				'title' => Yii::t('app', 'Delete'),
+				'title' => Yii::t('app', 'Delete Favourite'),
 				'data-confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
 				'data-method'  => 'post',
 			]);
 		},
 	],
-	'template' => '{view} {update} {delete}',
+	'template' => '{view} {delete}',
 ]);
 
 echo GridView::widget([

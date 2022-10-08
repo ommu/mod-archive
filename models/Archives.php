@@ -93,6 +93,7 @@ class Archives extends \app\components\ActiveRecord
 	public $modifiedDisplayname;
     public $oView;
     public $oFile;
+    public $oFavourite;
 
 	const EVENT_BEFORE_SAVE_ARCHIVES = 'BeforeSaveArchives';
 
@@ -161,6 +162,7 @@ class Archives extends \app\components\ActiveRecord
 			'backToManage' => Yii::t('app', 'Back to Manage'),
             'oView' => Yii::t('app', 'Views'),
 			'oFile' => Yii::t('app', 'Luring File'),
+			'oFavourite' => Yii::t('app', 'Favourite'),
 		];
 	}
 
@@ -377,6 +379,40 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getFavourites()
+	{
+        $user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+
+        return $this->hasMany(ArchiveFavourites::className(), ['archive_id' => 'id'])
+            ->alias('favourite')
+            ->select(['id', 'publish', 'archive_id', 'user_id'])
+            ->andOnCondition([sprintf('%s.user_id', 'favourite') => $user_id]);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getFavourite()
+	{
+        $favourite = $this->favourites[0];
+        if ($favourite == null) {
+            $return= [
+                'status' => false,
+                'id' => 0,
+            ];
+        } else {
+            $return= [
+                'status' => $favourite->publish == 1 ? true : false,
+                'id' => $favourite->id,
+            ];
+        }
+
+        return $return;
+	}
+
+	/**
 	 * {@inheritdoc}
 	 * @return \ommu\archive\models\query\Archives the active query used by this AR class.
 	 */
@@ -458,7 +494,7 @@ class Archives extends \app\components\ActiveRecord
                 if (strtolower($model->levelTitle->message) == 'item') {
                     return $model->medium ? $model->medium : '-';
                 }
-				return self::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id);
+				// return self::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id);
 			},
 			'filter' => false,
 			'enableSorting' => false,
@@ -576,6 +612,18 @@ class Archives extends \app\components\ActiveRecord
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
+		];
+		$this->templateColumns['oFavourite'] = [
+			'attribute' => 'oFavourite',
+			'value' => function($model, $key, $index, $column) {
+				// $views = $model->getViews(true);
+                $favourites = $model->grid->favourite;
+				return Html::a($favourites, ['favourite/admin/manage', 'archive' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} favourites', ['count' => $favourites]), 'data-pjax' => 0]);
+			},
+			'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class' => 'text-center'],
+			'format' => 'raw',
+			'visible' => !$this->isFond ? true : false,
 		];
 		$this->templateColumns['oFile'] = [
 			'attribute' => 'oFile',
