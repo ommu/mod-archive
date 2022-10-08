@@ -28,7 +28,7 @@ class Archives extends ArchivesModel
 	{
 		return [
 			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'media', 
-                'preview', 'location', 'oView', 'oFile'], 'integer'],
+                'preview', 'location', 'oView', 'oFile', 'oFavourite'], 'integer'],
 			[['title', 'code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'senarai_file', 'creation_date', 'modified_date', 'updated_date', 
                 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository', 'subject', 'function'], 'safe'],
 		];
@@ -74,9 +74,10 @@ class Archives extends ArchivesModel
 			// 'creation creation',
 			// 'modified modified'
 		]);
-        if ((isset($params['sort']) && in_array($params['sort'], ['oView', '-oView', 'oFile', '-oFile'])) || (
+        if ((isset($params['sort']) && in_array($params['sort'], ['oView', '-oView', 'oFile', '-oFile', 'oFavourite', '-oFavourite'])) || (
             (isset($params['oView']) && $params['oView'] != '') || 
-            (isset($params['oFile']) && $params['oFile'] != '')
+            (isset($params['oFile']) && $params['oFile'] != '') || 
+            (isset($params['oFavourite']) && $params['oFavourite'] != '')
         )) {
             $query->joinWith(['grid grid']);
         }
@@ -203,6 +204,10 @@ class Archives extends ArchivesModel
 			'asc' => ['grid.luring' => SORT_ASC],
 			'desc' => ['grid.luring' => SORT_DESC],
 		];
+		$attributes['oFavourite'] = [
+			'asc' => ['grid.favourite' => SORT_ASC],
+			'desc' => ['grid.favourite' => SORT_DESC],
+		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
 			'defaultOrder' => isset($params['id']) ? ['code' => SORT_ASC] : ['id' => SORT_DESC],
@@ -278,6 +283,13 @@ class Archives extends ArchivesModel
                 $query->andWhere(['<>', 't.senarai_file', '']);
             } else if ($this->oFile == 0) {
                 $query->andWhere(['=', 't.senarai_file', '']);
+            }
+        }
+        if (isset($params['oFavourite']) && $params['oFavourite'] != '') {
+            if ($this->oFavourite == 1) {
+                $query->andWhere(['<>', 'grid.favourite', 0]);
+            } else if ($this->oFavourite == 0) {
+                $query->andWhere(['=', 'grid.favourite', 0]);
             }
         }
 

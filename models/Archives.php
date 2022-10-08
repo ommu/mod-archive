@@ -93,6 +93,7 @@ class Archives extends \app\components\ActiveRecord
 	public $modifiedDisplayname;
     public $oView;
     public $oFile;
+    public $oFavourite;
 
 	const EVENT_BEFORE_SAVE_ARCHIVES = 'BeforeSaveArchives';
 
@@ -161,6 +162,7 @@ class Archives extends \app\components\ActiveRecord
 			'backToManage' => Yii::t('app', 'Back to Manage'),
             'oView' => Yii::t('app', 'Views'),
 			'oFile' => Yii::t('app', 'Luring File'),
+			'oFavourite' => Yii::t('app', 'Favourite'),
 		];
 	}
 
@@ -492,7 +494,7 @@ class Archives extends \app\components\ActiveRecord
                 if (strtolower($model->levelTitle->message) == 'item') {
                     return $model->medium ? $model->medium : '-';
                 }
-				return self::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id);
+				// return self::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id);
 			},
 			'filter' => false,
 			'enableSorting' => false,
@@ -610,6 +612,18 @@ class Archives extends \app\components\ActiveRecord
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
+		];
+		$this->templateColumns['oFavourite'] = [
+			'attribute' => 'oFavourite',
+			'value' => function($model, $key, $index, $column) {
+				// $views = $model->getViews(true);
+                $favourites = $model->grid->favourite;
+				return Html::a($favourites, ['favourite/admin/manage', 'archive' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} favourites', ['count' => $favourites]), 'data-pjax' => 0]);
+			},
+			'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class' => 'text-center'],
+			'format' => 'raw',
+			'visible' => !$this->isFond ? true : false,
 		];
 		$this->templateColumns['oFile'] = [
 			'attribute' => 'oFile',
