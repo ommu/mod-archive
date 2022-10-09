@@ -366,6 +366,12 @@ class AdminController extends Controller
 	{
         if (($model = Archives::findOne($id)) !== null) {
             $model->isFond = $this->isFond();
+            $model->media = array_flip($model->getMedias(true));
+            $model->creator = implode(',', $model->getCreators(true, 'title'));
+            $model->repository =  array_flip($model->getRepositories(true));
+            $model->subject =  implode(',', $model->getSubjects(true, 'title'));
+            $model->function =  implode(',', $model->getFunctions(true, 'title'));
+            $model->location = $model->getLocations(false) != null ? 1 : 0;
 
 			return $model;
         }
