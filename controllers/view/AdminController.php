@@ -89,7 +89,11 @@ class AdminController extends Controller
 	public function actionManage()
 	{
         $searchModel = new ArchiveViewsSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $queryParams = Yii::$app->request->queryParams;
+        if (($level = Yii::$app->request->get('level')) != null) {
+            $queryParams = ArrayHelper::merge(Yii::$app->request->queryParams, ['levelId' => $level]);
+        }
+		$dataProvider = $searchModel->search($queryParams);
 
         $gridColumn = Yii::$app->request->get('GridColumn', null);
         $cols = [];

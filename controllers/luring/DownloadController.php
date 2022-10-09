@@ -85,7 +85,11 @@ class DownloadController extends Controller
 	public function actionManage()
 	{
         $searchModel = new ArchiveLuringDownloadSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $queryParams = Yii::$app->request->queryParams;
+        if (($archive = Yii::$app->request->get('archive')) != null) {
+            $queryParams = ArrayHelper::merge(Yii::$app->request->queryParams, ['archiveId' => $archive]);
+        }
+		$dataProvider = $searchModel->search($queryParams);
 
         $gridColumn = Yii::$app->request->get('GridColumn', null);
         $cols = [];

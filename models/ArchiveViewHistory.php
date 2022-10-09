@@ -34,8 +34,9 @@ class ArchiveViewHistory extends \app\components\ActiveRecord
 
 	public $archiveTitle;
 	public $userDisplayname;
-	public $levelId;
 	public $archiveCode;
+	public $archiveId;
+	public $levelId;
 
 	/**
 	 * @return string the associated database table name
@@ -71,8 +72,9 @@ class ArchiveViewHistory extends \app\components\ActiveRecord
 			'view_ip' => Yii::t('app', 'View IP'),
 			'archiveTitle' => Yii::t('app', 'Archive'),
 			'userDisplayname' => Yii::t('app', 'User'),
-			'levelId' => Yii::t('app', 'Level of Description'),
 			'archiveCode' => Yii::t('app', 'Reference code'),
+			'archiveId' => Yii::t('app', 'Archive'),
+			'levelId' => Yii::t('app', 'Level of Description'),
 		];
 	}
 
@@ -141,14 +143,14 @@ class ArchiveViewHistory extends \app\components\ActiveRecord
 				return isset($model->archive->levelTitle) ? $model->archive->levelTitle->message : '-';
 			},
 			'filter' => ArchiveLevel::getLevel(),
-			'visible' => !Yii::$app->request->get('view') && !Yii::$app->request->get('archiveId') && !Yii::$app->request->get('levelId') ? true : false,
+			'visible' => !Yii::$app->request->get('view') && !Yii::$app->request->get('archive') && !Yii::$app->request->get('level') ? true : false,
 		];
 		$this->templateColumns['archiveCode'] = [
 			'attribute' => 'archiveCode',
 			'value' => function($model, $key, $index, $column) {
 				return $model->archive->code;
 			},
-			'visible' => !Yii::$app->request->get('view') && !Yii::$app->request->get('archiveId') ? true : false,
+			'visible' => !Yii::$app->request->get('view') && !Yii::$app->request->get('archive') ? true : false,
 		];
 		$this->templateColumns['archiveTitle'] = [
 			'attribute' => 'archiveTitle',
@@ -157,7 +159,7 @@ class ArchiveViewHistory extends \app\components\ActiveRecord
 				// return $model->archiveTitle;
 			},
             'format' => 'html',
-			'visible' => !Yii::$app->request->get('view') && !Yii::$app->request->get('archiveId') ? true : false,
+			'visible' => !Yii::$app->request->get('view') && !Yii::$app->request->get('archive') ? true : false,
 		];
 		$this->templateColumns['userDisplayname'] = [
 			'attribute' => 'userDisplayname',
