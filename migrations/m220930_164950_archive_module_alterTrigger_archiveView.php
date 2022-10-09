@@ -24,7 +24,7 @@ class m220930_164950_archive_module_alterTrigger_archiveView extends \yii\db\Mig
         // create trigger archiveAfterInsert
         $archiveAfterInsert = <<< SQL
 CREATE
-    TRIGGER `archiveAfterInsert`AFTER INSERT ON `ommu_archives` 
+    TRIGGER `archiveAfterInsert` AFTER INSERT ON `ommu_archives` 
     FOR EACH ROW BEGIN
 	UPDATE `ommu_archive_level_grid` SET `archive` = `archive` + 1 WHERE `id` = NEW.level_id;
 
@@ -74,7 +74,7 @@ SQL;
        // create trigger archiveAfterInsert
         $archiveAfterInsert = <<< SQL
 CREATE
-    TRIGGER `archiveAfterInsert`AFTER INSERT ON `ommu_archives` 
+    TRIGGER `archiveAfterInsert` AFTER INSERT ON `ommu_archives` 
     FOR EACH ROW BEGIN
 	UPDATE `ommu_archive_level_grid` SET `archive` = `archive` + 1 WHERE `id` = NEW.level_id;
     END;
