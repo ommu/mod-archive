@@ -111,10 +111,11 @@ class AdminController extends Controller
         // echo '</pre>';
 
 		$searchModel = new ArchivesSearch(['isFond' => $this->isFond()]);
+        $queryParams = Yii::$app->request->queryParams;
         if (($parent = Yii::$app->request->get('parent')) != null) {
-            $searchModel = new ArchivesSearch(['isFond' => $this->isFond(), 'parent_id' => $parent]);
+            $queryParams = ArrayHelper::merge($queryParams, ['parent_id' => $parent]);
         }
-		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+		$dataProvider = $searchModel->search($queryParams);
 
         $gridColumn = Yii::$app->request->get('GridColumn', null);
         $cols = [];
