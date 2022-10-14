@@ -87,8 +87,11 @@ class HistoryController extends Controller
 	{
         $searchModel = new ArchiveViewHistorySearch();
         $queryParams = Yii::$app->request->queryParams;
-        if (($archive = Yii::$app->request->get('archiveId')) != null) {
+        if (($archive = Yii::$app->request->get('archive')) != null) {
             $queryParams = ArrayHelper::merge(Yii::$app->request->queryParams, ['archiveId' => $archive]);
+        }
+        if (($level = Yii::$app->request->get('level')) != null) {
+            $queryParams = ArrayHelper::merge(Yii::$app->request->queryParams, ['levelId' => $level]);
         }
 		$dataProvider = $searchModel->search($queryParams);
 
@@ -114,7 +117,7 @@ class HistoryController extends Controller
                     unset($this->subMenu[1]['childs']);
                 }
                 if (!in_array('location', $view->archive->level->field)) {
-                    unset($this->subMenu[2]['location']);
+                    unset($this->subMenu[1]['location']);
                 }
             }
 		}
@@ -129,7 +132,7 @@ class HistoryController extends Controller
                     unset($this->subMenu[1]['childs']);
                 }
                 if (!in_array('location', $archive->level->field)) {
-                    unset($this->subMenu[2]['location']);
+                    unset($this->subMenu[1]['location']);
                 }
             }
 		}

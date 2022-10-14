@@ -111,10 +111,11 @@ class AdminController extends Controller
         // echo '</pre>';
 
 		$searchModel = new ArchivesSearch(['isFond' => $this->isFond()]);
+        $queryParams = Yii::$app->request->queryParams;
         if (($parent = Yii::$app->request->get('parent')) != null) {
-            $searchModel = new ArchivesSearch(['isFond' => $this->isFond(), 'parent_id' => $parent]);
+            $queryParams = ArrayHelper::merge($queryParams, ['parent_id' => $parent]);
         }
-		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+		$dataProvider = $searchModel->search($queryParams);
 
         $gridColumn = Yii::$app->request->get('GridColumn', null);
         $cols = [];
@@ -152,7 +153,7 @@ class AdminController extends Controller
 				unset($this->subMenu[1]['childs']);
             }
             if (!in_array('location', $parent->level->field)) {
-				unset($this->subMenu[2]['location']);
+				unset($this->subMenu[1]['location']);
             }
         }
 
@@ -239,7 +240,7 @@ class AdminController extends Controller
             }
             $this->subMenuParam = $parent->id;
             if (!in_array('location', $parent->level->field)) {
-				unset($this->subMenu[2]['location']);
+				unset($this->subMenu[1]['location']);
             }
         }
 
@@ -297,7 +298,7 @@ class AdminController extends Controller
             unset($this->subMenu[1]['childs']);
         }
         if (!in_array('location', $model->level->field)) {
-            unset($this->subMenu[2]['location']);
+            unset($this->subMenu[1]['location']);
         }
 
         $this->subMenuParam = $model->id;
@@ -324,7 +325,7 @@ class AdminController extends Controller
             unset($this->subMenu[1]['childs']);
         }
         if (!in_array('location', $model->level->field)) {
-            unset($this->subMenu[2]['location']);
+            unset($this->subMenu[1]['location']);
         }
 
         $this->subMenuParam = $model->id;
@@ -473,7 +474,7 @@ class AdminController extends Controller
 			unset($this->subMenu[1]['childs']);
         }
         if (!in_array('location', $model->archive->level->field)) {
-			unset($this->subMenu[2]['location']);
+			unset($this->subMenu[1]['location']);
         }
 
         $this->subMenuParam = $model->archive_id;

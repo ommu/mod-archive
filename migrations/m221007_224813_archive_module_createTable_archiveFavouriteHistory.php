@@ -25,6 +25,7 @@ class m221007_224813_archive_module_createTable_archiveFavouriteHistory extends 
 		if (!Yii::$app->db->getTableSchema($tableName, true)) {
 			$this->createTable($tableName, [
 				'id' => Schema::TYPE_STRING . '(32) NOT NULL OMMENT \'trigger,uuid\'',
+				'publish' => Schema::TYPE_TINYINT . '(1) NOT NULL DEFAULT \'1\'',
 				'favourite_id' => Schema::TYPE_INTEGER . '(11) UNSIGNED NOT NULL',
 				'creation_ip' => Schema::TYPE_STRING . '(20) NOT NULL',
 				'creation_date' => Schema::TYPE_DATETIME . ' NOT NULL DEFAULT \'0000-00-00 00:00:00\'',

@@ -27,8 +27,8 @@ class m221007_225405_archive_module_addTrigger_favourites extends \yii\db\Migrat
 CREATE
     TRIGGER `archiveAfterInsertFavourites` AFTER INSERT ON `ommu_archive_favourites` 
     FOR EACH ROW BEGIN
-	INSERT `ommu_archive_favourite_history` (`favourite_id`, `creation_ip`, `creation_date`)
-	VALUE (NEW.id, NEW.creation_ip, NEW.creation_date);
+	INSERT `ommu_archive_favourite_history` (`favourite_id`, `publish`, `creation_ip`, `creation_date`)
+	VALUE (NEW.id, NEW.publish, NEW.creation_ip, NEW.creation_date);
     END;
 SQL;
         $this->execute($archiveAfterInsertFavourites);
@@ -51,8 +51,8 @@ CREATE
     TRIGGER `archiveAfterUpdateFavourites` AFTER UPDATE ON `ommu_archive_favourites` 
     FOR EACH ROW BEGIN
 	IF (NEW.updated_date <> OLD.updated_date) THEN
-		INSERT `ommu_archive_favourite_history` (`favourite_id`, `creation_ip`, `creation_date`)
-		VALUE (NEW.id, NEW.creation_ip, NEW.creation_date);
+		INSERT `ommu_archive_favourite_history` (`favourite_id`, `publish`, `creation_ip`, `creation_date`)
+		VALUE (NEW.id, NEW.publish, NEW.creation_ip, NEW.creation_date);
 	END IF;
     END;
 SQL;

@@ -42,8 +42,8 @@ class ArchiveViews extends \app\components\ActiveRecord
 
 	public $archiveTitle;
 	public $userDisplayname;
-	public $levelId;
 	public $archiveCode;
+	public $levelId;
 
 	/**
 	 * @return string the associated database table name
@@ -85,8 +85,8 @@ class ArchiveViews extends \app\components\ActiveRecord
 			'histories' => Yii::t('app', 'Histories'),
 			'archiveTitle' => Yii::t('app', 'Archive'),
 			'userDisplayname' => Yii::t('app', 'User'),
-			'levelId' => Yii::t('app', 'Level of Description'),
 			'archiveCode' => Yii::t('app', 'Reference code'),
+			'levelId' => Yii::t('app', 'Level of Description'),
 		];
 	}
 
@@ -161,7 +161,7 @@ class ArchiveViews extends \app\components\ActiveRecord
 				return isset($model->archive->levelTitle) ? $model->archive->levelTitle->message : '-';
 			},
 			'filter' => ArchiveLevel::getLevel(),
-			'visible' => !Yii::$app->request->get('archive') && !Yii::$app->request->get('levelId') ? true : false,
+			'visible' => !Yii::$app->request->get('archive') && !Yii::$app->request->get('level') ? true : false,
 		];
 		$this->templateColumns['archiveCode'] = [
 			'attribute' => 'archiveCode',

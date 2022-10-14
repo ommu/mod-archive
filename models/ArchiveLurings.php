@@ -330,14 +330,8 @@ class ArchiveLurings extends \app\components\ActiveRecord
 		$title = self::htmlHardDecode($model->archive->title);
         $archiveTitle = $urlTitle == true ? Html::a($title, ['admin/view', 'id' => $model->archive_id], ['title' => $title, 'class' => 'modal-btn']) : $title ;
 
-        $html = $archiveTitle;
-        if ($urlTitle == true) {
-            $html .= '<hr class="mt-5 mb-5"/>';
-        }
-
-		$items[] = Html::tag('span', Yii::t('app', 'Code'), ['class' => 'btn btn-primary btn-xs']).$model->archive->code;
-		
-		$html .= Html::ul($items, ['encode' => false, 'class' => 'list-boxed mt-5']);
+        $html = Html::button($model->archive->code, ['class' => 'btn btn-info btn-xs']).'<br/>';
+        $html .= $archiveTitle;
 
 		return $html;
 	}

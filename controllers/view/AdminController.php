@@ -89,7 +89,11 @@ class AdminController extends Controller
 	public function actionManage()
 	{
         $searchModel = new ArchiveViewsSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $queryParams = Yii::$app->request->queryParams;
+        if (($level = Yii::$app->request->get('level')) != null) {
+            $queryParams = ArrayHelper::merge(Yii::$app->request->queryParams, ['levelId' => $level]);
+        }
+		$dataProvider = $searchModel->search($queryParams);
 
         $gridColumn = Yii::$app->request->get('GridColumn', null);
         $cols = [];
@@ -113,7 +117,7 @@ class AdminController extends Controller
                     unset($this->subMenu[1]['childs']);
                 }
                 if (!in_array('location', $archive->level->field)) {
-                    unset($this->subMenu[2]['location']);
+                    unset($this->subMenu[1]['location']);
                 }
             }
 		}
@@ -150,7 +154,7 @@ class AdminController extends Controller
                 unset($this->subMenu[1]['childs']);
             }
             if (!in_array('location', $archive->level->field)) {
-                unset($this->subMenu[2]['location']);
+                unset($this->subMenu[1]['location']);
             }
         }
 
