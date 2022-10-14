@@ -117,7 +117,7 @@ class HistoryController extends Controller
                     unset($this->subMenu[1]['childs']);
                 }
                 if (!in_array('location', $view->archive->level->field)) {
-                    unset($this->subMenu[2]['location']);
+                    unset($this->subMenu[1]['location']);
                 }
             }
 		}
@@ -132,7 +132,7 @@ class HistoryController extends Controller
                     unset($this->subMenu[1]['childs']);
                 }
                 if (!in_array('location', $archive->level->field)) {
-                    unset($this->subMenu[2]['location']);
+                    unset($this->subMenu[1]['location']);
                 }
             }
 		}

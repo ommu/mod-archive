@@ -132,7 +132,7 @@ class AdminController extends Controller
 			throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
 
-        $model = new ArchiveLurings(['publish' => 1, 'archive_id' => $id]);
+        $model = new ArchiveLurings(['archive_id' => $id]);
 
         $archive = $model->archive;
         $childs = $archive->getArchives('relation', 1)->all();
@@ -191,7 +191,7 @@ class AdminController extends Controller
                 }
 
                 Yii::$app->session->setFlash('success', Yii::t('app', 'Senarai luring success created.'));
-                return $this->redirect(['fond/manage']);
+                return $this->redirect(['manage', 'archive' => $model->archive_id]);
                 //return $this->redirect(['view', 'id' => $model->id]);
 	
 				ob_end_flush();

@@ -75,7 +75,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 			[['child', 'field', 'orders'], 'safe'],
 			//[['child', 'field], 'serialize'],
 			[['level_name_i'], 'string', 'max' => 64],
-			[['level_desc_i'], 'string', 'max' => 128],
+			[['level_desc_i'], 'string', 'max' => 256],
 		];
 	}
 
