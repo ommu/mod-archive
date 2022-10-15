@@ -38,6 +38,12 @@ fond_submenu:
         0: 'view/admin/manage'
         archive: $_GET*archive
       select: controller
+    favourites:
+      label: Favourite(s)
+      url:
+        0: 'favourite/admin/manage'
+        archive: $_GET*archive
+      select: controller
   3:
     delete:
       label: Delete
@@ -76,6 +82,12 @@ archive_submenu:
         0: 'admin/location'
         id: $_GET*id
       select: action
+    luring:
+      label: Senarai Lurings
+      url:
+        0: 'luring/admin/manage'
+        archive: $_GET*id
+      select: controller
   2:
     views:
       label: View(s)

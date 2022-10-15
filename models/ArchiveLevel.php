@@ -390,9 +390,11 @@ class ArchiveLevel extends \app\components\ActiveRecord
             'media' => Yii::t('app', 'Media Type'),
             'subject' => Yii::t('app', 'Subject'),
             'function' => Yii::t('app', 'Function'),
-            'location' => Yii::t('app', 'Location'),
             'medium' => Yii::t('app', 'Extent and medium'),
             'sidkkas' => Yii::t('app', 'SiDKKAS'),
+            'location' => Yii::t('app', 'Location'),
+            'luring' => Yii::t('app', 'Senarai Luring'),
+            'favourites' => Yii::t('app', 'Bookmark'),
 		);
 
         if ($field !== null) {

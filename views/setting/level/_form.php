@@ -43,16 +43,22 @@ use ommu\archive\models\ArchiveLevel;
 	->textarea(['rows' => 4, 'cols' => 50])
 	->label($model->getAttributeLabel('level_desc_i')); ?>
 
+<hr/>
+
 <?php $child = ArchiveLevel::getLevel(1);
 unset($child[$model->id]);
 echo $form->field($model, 'child')
 	->checkboxList($child)
 	->label($model->getAttributeLabel('child')); ?>
 
+<hr/>
+
 <?php $field = ArchiveLevel::getField();
 echo $form->field($model, 'field')
 	->checkboxList($field)
 	->label($model->getAttributeLabel('field')); ?>
+
+<hr/>
 
 <?php 
 if ($model->isNewRecord && !$model->getErrors()) {

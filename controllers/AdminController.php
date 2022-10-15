@@ -113,6 +113,7 @@ class AdminController extends Controller
 		$searchModel = new ArchivesSearch(['isFond' => $this->isFond()]);
         $queryParams = Yii::$app->request->queryParams;
         if (($parent = Yii::$app->request->get('parent')) != null) {
+            $this->subMenuParam = $parent;
             $queryParams = ArrayHelper::merge($queryParams, ['parent_id' => $parent]);
         }
 		$dataProvider = $searchModel->search($queryParams);
@@ -143,17 +144,22 @@ class AdminController extends Controller
         }
 
         if ($parent != null) {
-            $this->subMenuParam = $parent;
 			$parent = Archives::findOne($parent);
-            // $parent->isFond = $parent->level_id == 1 ? true : false;
             if ($parent->isFond == true) {
                 $this->subMenu = $this->module->params['fond_submenu'];
             }
             if (empty($parent->level->child)) {
+                throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
 				unset($this->subMenu[1]['childs']);
             }
-            if (!in_array('location', $parent->level->field)) {
+            if (empty($parent->level->field) || !in_array('location', $parent->level->field)) {
 				unset($this->subMenu[1]['location']);
+            }
+            if (empty($parent->level->field) || !in_array('luring', $parent->level->field)) {
+                unset($this->subMenu[1]['luring']);
+            }
+            if (empty($parent->level->field) || !in_array('favourites', $parent->level->field)) {
+				unset($this->subMenu[2]['favourites']);
             }
         }
 
@@ -239,8 +245,14 @@ class AdminController extends Controller
                 $this->subMenu = $this->module->params['fond_submenu'];
             }
             $this->subMenuParam = $parent->id;
-            if (!in_array('location', $parent->level->field)) {
+            if (empty($parent->level->field) || !in_array('location', $parent->level->field)) {
 				unset($this->subMenu[1]['location']);
+            }
+            if (empty($parent->level->field) || !in_array('luring', $parent->level->field)) {
+                unset($this->subMenu[1]['luring']);
+            }
+            if (empty($parent->level->field) || !in_array('favourites', $parent->level->field)) {
+				unset($this->subMenu[2]['favourites']);
             }
         }
 
@@ -297,8 +309,14 @@ class AdminController extends Controller
         if (empty($model->level->child)) {
             unset($this->subMenu[1]['childs']);
         }
-        if (!in_array('location', $model->level->field)) {
+        if (empty($model->level->field) || !in_array('location', $model->level->field)) {
             unset($this->subMenu[1]['location']);
+        }
+        if (empty($model->level->field) || !in_array('luring', $model->level->field)) {
+            unset($this->subMenu[1]['luring']);
+        }
+        if (empty($model->level->field) || !in_array('favourites', $model->level->field)) {
+            unset($this->subMenu[2]['favourites']);
         }
 
         $this->subMenuParam = $model->id;
@@ -324,8 +342,14 @@ class AdminController extends Controller
         if (empty($model->level->child)) {
             unset($this->subMenu[1]['childs']);
         }
-        if (!in_array('location', $model->level->field)) {
+        if (empty($model->level->field) || !in_array('location', $model->level->field)) {
             unset($this->subMenu[1]['location']);
+        }
+        if (empty($model->level->field) || !in_array('luring', $model->level->field)) {
+            unset($this->subMenu[1]['luring']);
+        }
+        if (empty($model->level->field) || !in_array('favourites', $model->level->field)) {
+            unset($this->subMenu[2]['favourites']);
         }
 
         $this->subMenuParam = $model->id;
@@ -450,6 +474,10 @@ class AdminController extends Controller
         }
 		$model->archive->isFond = $this->isFond();
 
+        if (empty($model->archive->level->field) || !in_array('location', $model->archive->level->field)) {
+			throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+
         if (Yii::$app->request->isPost) {
             $model->load(Yii::$app->request->post());
             // $postData = Yii::$app->request->post();
@@ -473,8 +501,14 @@ class AdminController extends Controller
         if (empty($model->archive->level->child)) {
 			unset($this->subMenu[1]['childs']);
         }
-        if (!in_array('location', $model->archive->level->field)) {
+        if (empty($model->archive->level->field) || !in_array('location', $model->archive->level->field)) {
 			unset($this->subMenu[1]['location']);
+        }
+        if (empty($model->archive->level->field) || !in_array('luring', $model->archive->level->field)) {
+            unset($this->subMenu[1]['luring']);
+        }
+        if (empty($model->archive->level->field) || !in_array('favourites', $model->archive->level->field)) {
+			unset($this->subMenu[2]['favourites']);
         }
 
         $this->subMenuParam = $model->archive_id;
@@ -514,6 +548,19 @@ class AdminController extends Controller
 	public function actionPreview($id)
 	{
 		$model = $this->findModel($id);
+
+        if (empty($model->level->child)) {
+            unset($this->subMenu[1]['childs']);
+        }
+        if (empty($model->level->field) || !in_array('location', $model->level->field)) {
+            unset($this->subMenu[1]['location']);
+        }
+        if (empty($model->level->field) || !in_array('luring', $model->level->field)) {
+            unset($this->subMenu[1]['luring']);
+        }
+        if (empty($model->level->field) || !in_array('favourites', $model->level->field)) {
+            unset($this->subMenu[2]['favourites']);
+        }
 
 		$this->view->title = Yii::t('app', 'Preview {level-name}: {code}', ['level-name' => $model->levelTitle->message, 'code' => $model->code]);
 		$this->view->description = '';
