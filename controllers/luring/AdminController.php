@@ -105,9 +105,23 @@ class AdminController extends Controller
         $columns = $searchModel->getGridColumn($cols);
 
         if (($archive = Yii::$app->request->get('archive')) != null) {
-            $this->subMenuParam = $archive;
             $this->subMenu = $this->module->params['fond_submenu'];
+            $this->subMenuParam = $archive;
             $archive = \ommu\archive\models\Archives::findOne($archive);
+
+            if (empty($archive->level->child)) {
+                unset($this->subMenu[1]['childs']);
+            }
+            if (empty($archive->level->field) || !in_array('location', $archive->level->field)) {
+                unset($this->subMenu[1]['location']);
+            }
+            if (empty($archive->level->field) || !in_array('luring', $archive->level->field)) {
+                throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
+                unset($this->subMenu[1]['luring']);
+            }
+            if (empty($archive->level->field) || !in_array('favourites', $archive->level->field)) {
+                unset($this->subMenu[2]['favourites']);
+            }
         }
 
 		$this->view->title = Yii::t('app', 'Senarai Lurings');
@@ -204,6 +218,21 @@ class AdminController extends Controller
         }
 
         $this->subMenu = $this->module->params['fond_submenu'];
+        $this->subMenuParam = $id;
+        if (empty($archive->level->child)) {
+            unset($this->subMenu[1]['childs']);
+        }
+        if (empty($archive->level->field) || !in_array('location', $archive->level->field)) {
+            unset($this->subMenu[1]['location']);
+        }
+        if (empty($archive->level->field) || !in_array('luring', $archive->level->field)) {
+            throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
+            unset($this->subMenu[1]['luring']);
+        }
+        if (empty($archive->level->field) || !in_array('favourites', $archive->level->field)) {
+            unset($this->subMenu[2]['favourites']);
+        }
+
 		$this->view->title = Yii::t('app', 'Generate Senarai Luring');
 		$this->view->description = '';
 		$this->view->keywords = '';
@@ -283,7 +312,7 @@ class AdminController extends Controller
 
         if ($model->save(false, ['publish','modified_id'])) {
             Yii::$app->session->setFlash('success', Yii::t('app', 'Senarai luring success deleted.'));
-            return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
+            return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'archive' => $model->archive_id]);
         }
 	}
 

@@ -109,16 +109,20 @@ class AdminController extends Controller
         if (($archive = Yii::$app->request->get('archive')) != null) {
             $this->subMenuParam = $archive;
 			$archive = \ommu\archive\models\Archives::findOne($archive);
-            $archive->isFond = $archive->level_id == 1 ? true : false;
             if ($archive->isFond == true) {
                 $this->subMenu = $this->module->params['fond_submenu'];
-            } else {
-                if (empty($archive->level->child)) {
-                    unset($this->subMenu[1]['childs']);
-                }
-                if (!in_array('location', $archive->level->field)) {
-                    unset($this->subMenu[1]['location']);
-                }
+            }
+            if (empty($archive->level->child)) {
+                unset($this->subMenu[1]['childs']);
+            }
+            if (empty($archive->level->field) || !in_array('location', $archive->level->field)) {
+                unset($this->subMenu[1]['location']);
+            }
+            if (empty($archive->level->field) || !in_array('luring', $archive->level->field)) {
+                unset($this->subMenu[1]['luring']);
+            }
+            if (empty($archive->level->field) || !in_array('favourites', $archive->level->field)) {
+                unset($this->subMenu[2]['favourites']);
             }
 		}
         if (($user = Yii::$app->request->get('user')) != null) {
@@ -145,22 +149,24 @@ class AdminController extends Controller
 	public function actionView($id)
 	{
         $model = $this->findModel($id);
+        $this->subMenuParam = $model->archive_id;
 
         $archive = $model->archive;
         if ($archive->isFond == true) {
             $this->subMenu = $this->module->params['fond_submenu'];
-        } else {
-            if (empty($archive->level->child)) {
-                unset($this->subMenu[1]['childs']);
-            }
-            if (!in_array('location', $archive->level->field)) {
-                unset($this->subMenu[1]['location']);
-            }
         }
-
-        if (!Yii::$app->request->isAjax) {
-			$this->subMenuParam = $model->archive_id;
-		}
+        if (empty($archive->level->child)) {
+            unset($this->subMenu[1]['childs']);
+        }
+        if (empty($archive->level->field) || !in_array('location', $archive->level->field)) {
+            unset($this->subMenu[1]['location']);
+        }
+        if (empty($archive->level->field) || !in_array('luring', $archive->level->field)) {
+            unset($this->subMenu[1]['luring']);
+        }
+        if (empty($archive->level->field) || !in_array('favourites', $archive->level->field)) {
+            unset($this->subMenu[2]['favourites']);
+        }
 
 		$this->view->title = Yii::t('app', 'Detail View: {archive-id}', ['archive-id' => $model::htmlHardDecode($model->archive->title)]);
 		$this->view->description = '';

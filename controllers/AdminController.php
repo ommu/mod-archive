@@ -113,7 +113,6 @@ class AdminController extends Controller
 		$searchModel = new ArchivesSearch(['isFond' => $this->isFond()]);
         $queryParams = Yii::$app->request->queryParams;
         if (($parent = Yii::$app->request->get('parent')) != null) {
-            $this->subMenuParam = $parent;
             $queryParams = ArrayHelper::merge($queryParams, ['parent_id' => $parent]);
         }
 		$dataProvider = $searchModel->search($queryParams);
@@ -144,6 +143,7 @@ class AdminController extends Controller
         }
 
         if ($parent != null) {
+            $this->subMenuParam = $parent;
 			$parent = Archives::findOne($parent);
             if ($parent->isFond == true) {
                 $this->subMenu = $this->module->params['fond_submenu'];
@@ -239,12 +239,12 @@ class AdminController extends Controller
         }
 
         if ($id != null) {
+            $this->subMenuParam = $id;
             $parent = Archives::findOne($id);
-            // $parent->isFond = $parent->level_id == 1 ? true : false;
+
             if ($parent->isFond == true) {
                 $this->subMenu = $this->module->params['fond_submenu'];
             }
-            $this->subMenuParam = $parent->id;
             if (empty($parent->level->field) || !in_array('location', $parent->level->field)) {
 				unset($this->subMenu[1]['location']);
             }
@@ -306,6 +306,7 @@ class AdminController extends Controller
             }
         }
 
+        $this->subMenuParam = $model->id;
         if (empty($model->level->child)) {
             unset($this->subMenu[1]['childs']);
         }
@@ -319,7 +320,6 @@ class AdminController extends Controller
             unset($this->subMenu[2]['favourites']);
         }
 
-        $this->subMenuParam = $model->id;
 		$this->view->title = Yii::t('app', 'Update {level-name}: {code}', ['level-name' => $model->levelTitle->message, 'code' => $model->code]);
 		$this->view->description = '';
 		$this->view->keywords = '';
@@ -339,6 +339,7 @@ class AdminController extends Controller
 	{
         $model = $this->findModel($id);
 
+        $this->subMenuParam = $model->id;
         if (empty($model->level->child)) {
             unset($this->subMenu[1]['childs']);
         }
@@ -352,7 +353,6 @@ class AdminController extends Controller
             unset($this->subMenu[2]['favourites']);
         }
 
-        $this->subMenuParam = $model->id;
 		$this->view->cards = false;
 		$this->view->title = Yii::t('app', 'Detail {level-name}: {code}', ['level-name' => $model->levelTitle->message, 'code' => $model->code]);
 		$this->view->description = '';
@@ -474,9 +474,6 @@ class AdminController extends Controller
         }
 		$model->archive->isFond = $this->isFond();
 
-        if (empty($model->archive->level->field) || !in_array('location', $model->archive->level->field)) {
-			throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
-        }
 
         if (Yii::$app->request->isPost) {
             $model->load(Yii::$app->request->post());
@@ -498,10 +495,12 @@ class AdminController extends Controller
             }
         }
 
+        $this->subMenuParam = $model->archive_id;
         if (empty($model->archive->level->child)) {
 			unset($this->subMenu[1]['childs']);
         }
         if (empty($model->archive->level->field) || !in_array('location', $model->archive->level->field)) {
+			throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
 			unset($this->subMenu[1]['location']);
         }
         if (empty($model->archive->level->field) || !in_array('luring', $model->archive->level->field)) {
@@ -511,7 +510,6 @@ class AdminController extends Controller
 			unset($this->subMenu[2]['favourites']);
         }
 
-        $this->subMenuParam = $model->archive_id;
 		$this->view->title = Yii::t('app', 'Storage Location {level-name}: {code}', ['level-name' => $model->archive->levelTitle->message, 'code' => $model->archive->code]);
 		$this->view->description = '';
 		$this->view->keywords = '';
@@ -549,6 +547,7 @@ class AdminController extends Controller
 	{
 		$model = $this->findModel($id);
 
+        $this->subMenuParam = $model->archive_id;
         if (empty($model->level->child)) {
             unset($this->subMenu[1]['childs']);
         }

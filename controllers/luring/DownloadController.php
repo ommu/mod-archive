@@ -131,7 +131,7 @@ class DownloadController extends Controller
 		$model->delete();
 
 		Yii::$app->session->setFlash('success', Yii::t('app', 'Archive luring download success deleted.'));
-		return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
+		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'luring' => $model->luring_id]);
 	}
 
 	/**

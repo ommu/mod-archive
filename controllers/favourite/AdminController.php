@@ -43,6 +43,11 @@ class AdminController extends Controller
 	{
         parent::init();
 
+        if (Yii::$app->request->get('archive') || Yii::$app->request->get('id')) {
+			$this->subMenu = $this->module->params['archive_submenu'];
+        }
+
+
 		$setting = ArchiveSetting::find()
 			->select(['breadcrumb_param'])
 			->where(['id' => 1])
@@ -100,8 +105,23 @@ class AdminController extends Controller
 
         if (($archive = Yii::$app->request->get('archive')) != null) {
             $this->subMenuParam = $archive;
-            $this->subMenu = $this->module->params['archive_submenu'];
             $archive = \ommu\archive\models\Archives::findOne($archive);
+            if ($archive->isFond == true) {
+                $this->subMenu = $this->module->params['fond_submenu'];
+            }
+            if (empty($archive->level->child)) {
+                unset($this->subMenu[1]['childs']);
+            }
+            if (empty($archive->level->field) || !in_array('location', $archive->level->field)) {
+                unset($this->subMenu[1]['location']);
+            }
+            if (empty($archive->level->field) || !in_array('luring', $archive->level->field)) {
+                unset($this->subMenu[1]['luring']);
+            }
+            if (empty($archive->level->field) || !in_array('favourites', $archive->level->field)) {
+                throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
+                unset($this->subMenu[2]['favourites']);
+            }
         }
 
 		$this->view->title = Yii::t('app', 'Favourites');
@@ -124,6 +144,23 @@ class AdminController extends Controller
 	{
         $model = $this->findModel($id);
         $this->subMenuParam = $model->archive_id;
+
+        $archive = $model->archive;
+        if ($archive->isFond == true) {
+            $this->subMenu = $this->module->params['fond_submenu'];
+        }
+        if (empty($archive->level->child)) {
+            unset($this->subMenu[1]['childs']);
+        }
+        if (empty($archive->level->field) || !in_array('location', $archive->level->field)) {
+            unset($this->subMenu[1]['location']);
+        }
+        if (empty($archive->level->field) || !in_array('luring', $archive->level->field)) {
+            unset($this->subMenu[1]['luring']);
+        }
+        if (empty($archive->level->field) || !in_array('favourites', $archive->level->field)) {
+            unset($this->subMenu[2]['favourites']);
+        }
 
         $this->subMenu = $this->module->params['archive_submenu'];
 		$this->view->title = Yii::t('app', 'Detail Favourite: {archive-id}', ['archive-id' => $model->archive->title]);

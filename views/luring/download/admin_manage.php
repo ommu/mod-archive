@@ -25,8 +25,10 @@ if ($context->breadcrumbApp) {
 	$this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
 if ($luring != null) {
-    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Luring'), 'url' => ['luring/admin/index']];
-    $this->params['breadcrumbs'][] = ['label' => $luring->archive->code, 'url' => ['luring/admin/view', 'id' => $luring->id]];
+    $this->params['breadcrumbs'][] = ['label' => $luring->archive->isFond ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventory'), 'url' => $luring->archive->isFond ? ['fond/index'] : ['admin/index']];
+    $archiveDetailUrl = $luring->archive->isFond ? ['fond/view', 'id' => $luring->archive_id] : ['admin/view', 'id' => $luring->archive_id];
+    $this->params['breadcrumbs'][] = ['label' => $luring->archive->isFond ? $luring->archive->code : Yii::t('app', '#{level-name} {code}', ['level-name' => strtoupper($luring->archive->levelTitle->message), 'code' => $luring->archive->code]), 'url' => $archiveDetailUrl];
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Luring'), 'url' => ['luring/admin/manage', 'archive' => $luring->archive_id]];
 } else {
     $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Lurings'), 'url' => ['luring/admin/index']];
 }

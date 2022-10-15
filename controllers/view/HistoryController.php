@@ -106,36 +106,31 @@ class HistoryController extends Controller
         }
         $columns = $searchModel->getGridColumn($cols);
 
-        if (($view = Yii::$app->request->get('view')) != null) {
-            $view = \ommu\archive\models\ArchiveViews::findOne($view);
-			$this->subMenuParam = $view->archive_id;
-            $view->archive->isFond = $view->archive->level_id == 1 ? true : false;
-            if ($view->archive->isFond == true) {
-                $this->subMenu = $this->module->params['fond_submenu'];
-            } else {
-                if (empty($view->archive->level->child)) {
-                    unset($this->subMenu[1]['childs']);
-                }
-                if (!in_array('location', $view->archive->level->field)) {
-                    unset($this->subMenu[1]['location']);
-                }
-            }
-		}
-
         if ($archive) {
-			$this->subMenuParam = $archive;
 			$archive = \ommu\archive\models\Archives::findOne($archive);
-            if ($archive->isFond == true) {
-                $this->subMenu = $this->module->params['fond_submenu'];
-            } else {
+		} else {
+            if (($view = Yii::$app->request->get('view')) != null) {
+                $view = \ommu\archive\models\ArchiveViews::findOne($view);
+                $this->subMenuParam = $view->archive_id;
+                $archive = $view->archive;
+
+                if ($archive->isFond == true) {
+                    $this->subMenu = $this->module->params['fond_submenu'];
+                }
                 if (empty($archive->level->child)) {
                     unset($this->subMenu[1]['childs']);
                 }
-                if (!in_array('location', $archive->level->field)) {
+                if (empty($archive->level->field) || !in_array('location', $archive->level->field)) {
                     unset($this->subMenu[1]['location']);
                 }
+                if (empty($archive->level->field) || !in_array('luring', $archive->level->field)) {
+                    unset($this->subMenu[1]['luring']);
+                }
+                if (empty($archive->level->field) || !in_array('favourites', $archive->level->field)) {
+                    unset($this->subMenu[2]['favourites']);
+                }
             }
-		}
+        }
 
 		$this->view->title = $view ? Yii::t('app', 'Histories') : Yii::t('app', 'View Histories');
 		$this->view->description = '';
@@ -145,7 +140,7 @@ class HistoryController extends Controller
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
 			'view' => $view,
-			'archive' => $archive,
+			'archive' => $view ? null : $archive,
 		]);
 	}
 
