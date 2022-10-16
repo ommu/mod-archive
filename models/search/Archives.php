@@ -28,7 +28,7 @@ class Archives extends ArchivesModel
 	{
 		return [
 			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'media', 
-                'preview', 'location', 'oView', 'oFile', 'oFavourite'], 'integer'],
+                'preview', 'location', 'creatorId', 'repositoryId', 'subjectId', 'functionId', 'oView', 'oFile', 'oFavourite'], 'integer'],
 			[['title', 'code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'senarai_file', 'creation_date', 'modified_date', 'updated_date', 
                 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository', 'subject', 'function'], 'safe'],
 		];
@@ -240,10 +240,10 @@ class Archives extends ArchivesModel
 		]);
 
         // related
-		$query->andFilterWhere(['creators.creator_id' => $params['creatorId']]);
-		$query->andFilterWhere(['repositories.repository_id' => $params['repositoryId']]);
-		$query->andFilterWhere(['subjects.tag_id' => $params['subjectId']]);
-		$query->andFilterWhere(['functions.tag_id' => $params['functionId']]);
+		$query->andFilterWhere(['creators.creator_id' => $this->creatorId]);
+		$query->andFilterWhere(['repositories.repository_id' => $this->repositoryId]);
+		$query->andFilterWhere(['subjects.tag_id' => $this->subjectId]);
+		$query->andFilterWhere(['functions.tag_id' => $this->functionId]);
 
         // location
 		$query->andFilterWhere(['locations.rack_id' => $params['rackId']]);

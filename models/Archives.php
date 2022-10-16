@@ -94,6 +94,10 @@ class Archives extends \app\components\ActiveRecord
     public $oView;
     public $oFile;
     public $oFavourite;
+    public $creatorId;
+    public $repositoryId;
+    public $subjectId;
+    public $functionId;
 
 	const EVENT_BEFORE_SAVE_ARCHIVES = 'BeforeSaveArchives';
 

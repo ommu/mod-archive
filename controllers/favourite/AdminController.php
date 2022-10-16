@@ -47,7 +47,6 @@ class AdminController extends Controller
 			$this->subMenu = $this->module->params['archive_submenu'];
         }
 
-
 		$setting = ArchiveSetting::find()
 			->select(['breadcrumb_param'])
 			->where(['id' => 1])
@@ -168,6 +167,7 @@ class AdminController extends Controller
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
 			'model' => $model,
+			'small' => false,
 		]);
 	}
 

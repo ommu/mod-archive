@@ -241,7 +241,7 @@ class ArchiveMedia extends \app\components\ActiveRecord
 			'value' => function($model, $key, $index, $column) {
 				// $archives = $model->getArchives(true);
                 $archives = $model->grid->archive;
-				return Html::a($archives, ['admin/manage', 'mediaId' => $model->primaryKey], ['title' => Yii::t('app', '{count} archives', ['count' => $archives]), 'data-pjax' => 0]);
+				return Html::a($archives, ['admin/manage', 'media' => $model->primaryKey], ['title' => Yii::t('app', '{count} archives', ['count' => $archives]), 'data-pjax' => 0]);
 			},
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],

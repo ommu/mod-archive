@@ -115,6 +115,12 @@ class AdminController extends Controller
         if (($parent = Yii::$app->request->get('parent')) != null) {
             $queryParams = ArrayHelper::merge($queryParams, ['parent_id' => $parent]);
         }
+        if (($creator = Yii::$app->request->get('creatorId')) != null) {
+            $queryParams = ArrayHelper::merge($queryParams, ['creatorId' => $creator]);
+        }
+        if (($repository = Yii::$app->request->get('repositoryId')) != null) {
+            $queryParams = ArrayHelper::merge($queryParams, ['repositoryId' => $repository]);
+        }
 		$dataProvider = $searchModel->search($queryParams);
 
         $gridColumn = Yii::$app->request->get('GridColumn', null);
@@ -132,13 +138,13 @@ class AdminController extends Controller
         if (Yii::$app->request->get('level') && Yii::$app->request->get('data') == 'yes') {
 			$level = \ommu\archive\models\ArchiveLevel::findOne(Yii::$app->request->get('level'));
         }
-        if (($media = Yii::$app->request->get('mediaId')) != null) {
+        if (($media = Yii::$app->request->get('media')) != null) {
             $media = \ommu\archive\models\ArchiveMedia::findOne($media);
         }
-        if (($creator = Yii::$app->request->get('creatorId')) != null) {
+        if ($creator) {
             $creator = \ommu\archive\models\ArchiveCreator::findOne($creator);
         }
-        if (($repository = Yii::$app->request->get('repositoryId')) != null) {
+        if ($repository) {
             $repository = \ommu\archive\models\ArchiveRepository::findOne($repository);
         }
 
@@ -360,6 +366,7 @@ class AdminController extends Controller
 		return $this->oRender('admin_view', [
 			'model' => $model,
 			'isFond' => $model->level_id == 1 ? true : false,
+			'small' => false,
 		]);
 	}
 
