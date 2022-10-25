@@ -36,10 +36,12 @@ class m221025_214413_archive_module_changeMenu_setting extends \yii\db\Migration
 				['Archive Settings', 'archive', null, Menu::getParentId('Settings#archive'), '/archive/setting/admin/index', 6, null],
 				['Levels of Descriptions', 'archive', null, Menu::getParentId('Settings#archive'), '/archive/setting/level/index', 1, null],
 				['Media Types', 'archive', null, Menu::getParentId('Settings#archive'), '/archive/setting/media/index', 2, null],
-				['Authority Records', 'archive', null, Menu::getParentId('Settings#archive'), '/archive/setting/creator/index', 3, null],
-				['Archival Institutions', 'archive', null, Menu::getParentId('Settings#archive'), '/archive/setting/repository/index', 4, null],
+				['Creators', 'archive', null, Menu::getParentId('Settings#archive'), '/archive/setting/creator/index', 3, null],
+				['Repositories', 'archive', null, Menu::getParentId('Settings#archive'), '/archive/setting/repository/index', 4, null],
 				['Physical Storage', 'archive', null, Menu::getParentId('Settings#archive'), '/archive-location/admin/index', 5, null],
 			]);
+
+            $this->delete($tableName, ['name' => 'Physical Storage', 'route' => '/archive-location/admin/index', 'module' => 'archive-location']);
         }
 	}
 
