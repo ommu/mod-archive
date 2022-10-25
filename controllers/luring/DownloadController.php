@@ -41,7 +41,9 @@ class DownloadController extends Controller
         parent::init();
 
         if (Yii::$app->request->get('luring')) {
-			$this->subMenu = $this->module->params['luring_submenu'];
+            if (array_key_exists('luring_submenu', $this->module->params)) {
+                $this->subMenu = $this->module->params['luring_submenu'];
+            }
         }
 
 		$setting = ArchiveSetting::find()

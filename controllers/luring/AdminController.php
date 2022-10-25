@@ -50,7 +50,9 @@ class AdminController extends Controller
         parent::init();
 
         if (Yii::$app->request->get('archive') || Yii::$app->request->get('id')) {
-			$this->subMenu = $this->module->params['archive_submenu'];
+            if (array_key_exists('archive_submenu', $this->module->params)) {
+                $this->subMenu = $this->module->params['archive_submenu'];
+            }
         }
 
 		$setting = ArchiveSetting::find()
@@ -78,6 +80,14 @@ class AdminController extends Controller
                 ],
             ],
         ];
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function ignoreLevelField()
+	{
+		return false;
 	}
 
 	/**
@@ -112,7 +122,9 @@ class AdminController extends Controller
             $this->subMenuParam = $archive;
             $archive = \ommu\archive\models\Archives::findOne($archive);
             if ($archive->isFond == true) {
-                $this->subMenu = $this->module->params['fond_submenu'];
+                if (array_key_exists('fond_submenu', $this->module->params)) {
+                    $this->subMenu = $this->module->params['fond_submenu'];
+                }
             }
             if (empty($archive->level->child)) {
                 unset($this->subMenu[1]['childs']);
@@ -120,7 +132,7 @@ class AdminController extends Controller
             if (empty($archive->level->field) || !in_array('location', $archive->level->field)) {
                 unset($this->subMenu[1]['location']);
             }
-            if (empty($archive->level->field) || !in_array('luring', $archive->level->field)) {
+            if (!$this->ignoreLevelField() && (empty($archive->level->field) || !in_array('luring', $archive->level->field))) {
                 throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
                 unset($this->subMenu[1]['luring']);
             }
@@ -169,7 +181,7 @@ class AdminController extends Controller
                 $documents = [];
 
                 $uploadPath = $archive::getUploadPath();
-                $documentPath = join('/', [$uploadPath, 'document_draft']);
+                $documentPath = join('/', [$uploadPath, 'senarai_luring_draft']);
                 $verwijderenPath = join('/', [$documentPath, 'verwijderen']);
                 $this->createUploadDirectory($documentPath);
 
@@ -223,7 +235,9 @@ class AdminController extends Controller
         }
 
         if ($archive->isFond == true) {
-            $this->subMenu = $this->module->params['fond_submenu'];
+            if (array_key_exists('fond_submenu', $this->module->params)) {
+                $this->subMenu = $this->module->params['fond_submenu'];
+            }
         }
         $this->subMenuParam = $id;
         if (empty($archive->level->child)) {
@@ -232,7 +246,7 @@ class AdminController extends Controller
         if (empty($archive->level->field) || !in_array('location', $archive->level->field)) {
             unset($this->subMenu[1]['location']);
         }
-        if (empty($archive->level->field) || !in_array('luring', $archive->level->field)) {
+        if (!$this->ignoreLevelField() && (empty($archive->level->field) || !in_array('luring', $archive->level->field))) {
             throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
             unset($this->subMenu[1]['luring']);
         }
@@ -277,7 +291,9 @@ class AdminController extends Controller
             }
         }
 
-        $this->subMenu = $this->module->params['luring_submenu'];
+        if (array_key_exists('luring_submenu', $this->module->params)) {
+            $this->subMenu = $this->module->params['luring_submenu'];
+        }
         $this->subMenuBackTo = $model->archive_id;
 		$this->view->title = Yii::t('app', 'Publish Luring: {archive-id}', ['archive-id' => $model->archive->title]);
 		$this->view->description = '';
@@ -296,7 +312,9 @@ class AdminController extends Controller
 	{
         $model = $this->findModel($id);
 
-        $this->subMenu = $this->module->params['luring_submenu'];
+        if (array_key_exists('luring_submenu', $this->module->params)) {
+            $this->subMenu = $this->module->params['luring_submenu'];
+        }
         $this->subMenuBackTo = $model->archive_id;
 		$this->view->title = Yii::t('app', 'Detail Luring: {archive-id}', ['archive-id' => $model->archive->title]);
 		$this->view->description = '';

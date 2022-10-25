@@ -38,7 +38,9 @@ class AdminController extends Controller
 	{
         parent::init();
 
-        $this->subMenu = $this->module->params['setting_submenu'];
+        if (array_key_exists('setting_submenu', $this->module->params)) {
+            $this->subMenu = $this->module->params['setting_submenu'];
+        }
 
 		$setting = ArchiveSetting::find()
 			->select(['breadcrumb_param'])

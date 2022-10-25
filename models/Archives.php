@@ -936,7 +936,7 @@ class Archives extends \app\components\ActiveRecord
             return '-';
         }
 
-		$items = self::getRelatedUrl($medias, $controller, true);
+		$items = self::getRelatedUrl($medias, $controller, $controller != null ? true : false);
 
         if ($sep == 'li') {
 			return Html::ul($items, ['item' => function($item, $index) {
@@ -954,11 +954,7 @@ class Archives extends \app\components\ActiveRecord
 	{
 		$items = [];
 		foreach ($relates as $key => $val) {
-            if ($hyperlink) {
-                $items[$val] = Html::a($val, ['setting/'.$controller.'/view', 'id' => $key], ['title' => $val, 'class' => 'modal-btn']);
-            } else {
-                $items[$val] = Url::to(['setting/'.$controller.'/view', 'id' => $key]);
-            }
+            $items[$val] = $hyperlink ? Html::a($val, ['setting/'.$controller.'/view', 'id' => $key], ['title' => $val, 'class' => 'modal-btn']) : $val;
         }
 
 		return $items;
@@ -1114,27 +1110,29 @@ class Archives extends \app\components\ActiveRecord
 
 		$this->code = preg_replace("/^[.-]/", '', preg_replace("/^(3400|23400-24)/", '', $this->code));
 		$this->oldCode = $this->code;
-		$parentCode = $this->parent->code;
-        if ($setting->maintenance_mode) {
-            if ($this->parent->code == $this->parent->confirmCode) {
-                $parentCode = preg_replace("/[.-]$/", '', join('.', $this->getReferenceCode(true)));
-            }
-			$confirmCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
-			$parentConfirmCode = $this->parent->confirmCode;
-            if (preg_match("/^($parentConfirmCode)/", $confirmCode)) {
-				$shortCodeStatus = false;
-				$this->confirmCode = $confirmCode;
-			} else {
-				$shortCodeStatus = true;
-                if (count(explode('.', $confirmCode)) == 1) {
-                    $this->confirmCode = join('.', [$parentConfirmCode, $confirmCode]);
-                } else {
-                    $this->confirmCode = $confirmCode;
+        if ($this->parent) {
+            $parentCode = $this->parent->code;
+            if ($setting->maintenance_mode) {
+                if ($this->parent->code == $this->parent->confirmCode) {
+                    $parentCode = preg_replace("/[.-]$/", '', join('.', $this->getReferenceCode(true)));
                 }
-			}
-			$this->shortCode = $shortCodeStatus ? $confirmCode : preg_replace("/^[.-]/", '', preg_replace("/^($parentConfirmCode)/", '', $this->confirmCode));
-		} else {
-            $this->shortCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
+                $confirmCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
+                $parentConfirmCode = $this->parent->confirmCode;
+                if (preg_match("/^($parentConfirmCode)/", $confirmCode)) {
+                    $shortCodeStatus = false;
+                    $this->confirmCode = $confirmCode;
+                } else {
+                    $shortCodeStatus = true;
+                    if (count(explode('.', $confirmCode)) == 1) {
+                        $this->confirmCode = join('.', [$parentConfirmCode, $confirmCode]);
+                    } else {
+                        $this->confirmCode = $confirmCode;
+                    }
+                }
+                $this->shortCode = $shortCodeStatus ? $confirmCode : preg_replace("/^[.-]/", '', preg_replace("/^($parentConfirmCode)/", '', $this->confirmCode));
+            } else {
+                $this->shortCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
+            }
         }
 
 		$this->oldConfirmCode = $this->confirmCode;

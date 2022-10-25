@@ -44,7 +44,9 @@ class AdminController extends Controller
         parent::init();
 
         if (Yii::$app->request->get('archive') || Yii::$app->request->get('id')) {
-			$this->subMenu = $this->module->params['archive_submenu'];
+            if (array_key_exists('archive_submenu', $this->module->params)) {
+                $this->subMenu = $this->module->params['archive_submenu'];
+            }
         }
 
 		$setting = ArchiveSetting::find()
@@ -106,7 +108,9 @@ class AdminController extends Controller
             $this->subMenuParam = $archive;
             $archive = \ommu\archive\models\Archives::findOne($archive);
             if ($archive->isFond == true) {
-                $this->subMenu = $this->module->params['fond_submenu'];
+                if (array_key_exists('fond_submenu', $this->module->params)) {
+                    $this->subMenu = $this->module->params['fond_submenu'];
+                }
             }
             if (empty($archive->level->child)) {
                 unset($this->subMenu[1]['childs']);
@@ -146,7 +150,9 @@ class AdminController extends Controller
 
         $archive = $model->archive;
         if ($archive->isFond == true) {
-            $this->subMenu = $this->module->params['fond_submenu'];
+            if (array_key_exists('fond_submenu', $this->module->params)) {
+                $this->subMenu = $this->module->params['fond_submenu'];
+            }
         }
         if (empty($archive->level->child)) {
             unset($this->subMenu[1]['childs']);
@@ -161,7 +167,9 @@ class AdminController extends Controller
             unset($this->subMenu[2]['favourites']);
         }
 
-        $this->subMenu = $this->module->params['archive_submenu'];
+        if (array_key_exists('archive_submenu', $this->module->params)) {
+            $this->subMenu = $this->module->params['archive_submenu'];
+        }
 		$this->view->title = Yii::t('app', 'Detail Favourite: {archive-id}', ['archive-id' => $model->archive->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';

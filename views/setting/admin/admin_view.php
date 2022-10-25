@@ -25,11 +25,10 @@ if ($breadcrumb) {
     $this->params['breadcrumbs'][] = $this->title;
 }
 
-if (!$small) {
-    $this->params['menu']['content'] = [
-        ['label' => Yii::t('app', 'Reset'), 'url' => Url::to(['delete']), 'htmlOptions' => ['data-confirm' => Yii::t('app', 'Are you sure you want to reset this setting?'), 'data-method' => 'post', 'class' => 'btn btn-danger'], 'icon' => 'trash'],
-    ];
-} ?>
+$this->params['menu']['content'] = [
+    ['label' => Yii::t('app', 'Reset'), 'url' => Url::to(['delete']), 'htmlOptions' => ['data-confirm' => Yii::t('app', 'Are you sure you want to reset this setting?'), 'data-method' => 'post', 'class' => 'btn btn-danger'], 'icon' => 'trash'],
+];
+?>
 
 <div class="archive-setting-view">
 
@@ -94,7 +93,6 @@ $attributes = [
         'attribute' => 'breadcrumb_param',
         'value' => $model::parseBreadcrumbApps($model->breadcrumb_param),
         'format' => 'html',
-        'visible' => !$small,
     ],
     [
         'attribute' => 'modified_date',

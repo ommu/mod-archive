@@ -54,9 +54,13 @@ class AdminController extends Controller
 
         if (Yii::$app->request->get('parent') || Yii::$app->request->get('id')) {
             if ($this->isFond() == true) {
-                $this->subMenu = $this->module->params['fond_submenu'];
+                if (array_key_exists('fond_submenu', $this->module->params)) {
+                    $this->subMenu = $this->module->params['fond_submenu'];
+                }
             } else {
-                $this->subMenu = $this->module->params['archive_submenu'];
+                if (array_key_exists('archive_submenu', $this->module->params)) {
+                    $this->subMenu = $this->module->params['archive_submenu'];
+                }
             }
         }
 
@@ -152,7 +156,9 @@ class AdminController extends Controller
             $this->subMenuParam = $parent;
 			$parent = Archives::findOne($parent);
             if ($parent->isFond == true) {
-                $this->subMenu = $this->module->params['fond_submenu'];
+                if (array_key_exists('fond_submenu', $this->module->params)) {
+                    $this->subMenu = $this->module->params['fond_submenu'];
+                }
             }
             if (empty($parent->level->child)) {
                 throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
@@ -249,7 +255,9 @@ class AdminController extends Controller
             $parent = Archives::findOne($id);
 
             if ($parent->isFond == true) {
-                $this->subMenu = $this->module->params['fond_submenu'];
+                if (array_key_exists('fond_submenu', $this->module->params)) {
+                    $this->subMenu = $this->module->params['fond_submenu'];
+                }
             }
             if (empty($parent->level->field) || !in_array('location', $parent->level->field)) {
 				unset($this->subMenu[1]['location']);
@@ -332,6 +340,7 @@ class AdminController extends Controller
 		return $this->render('admin_update', [
 			'model' => $model,
 			'setting' => $setting,
+			'parent' => $model->parent ?? null,
 			'isFond' => $model->level_id == 1 ? true : false,
 		]);
 	}

@@ -434,8 +434,8 @@ class ArchiveLurings extends \app\components\ActiveRecord
         if (parent::beforeSave($insert)) {
             if (!$insert) {
                 $uploadPath = self::getUploadPath();
-                $verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
-                $this->createUploadDirectory(self::getUploadPath());
+                $verwijderenPath = join('/', [$uploadPath, 'verwijderen']);
+                $this->createUploadDirectory($uploadPath);
 
                 // $this->senarai_file = UploadedFile::getInstance($this, 'senarai_file');
                 if ($this->senarai_file instanceof UploadedFile && !$this->senarai_file->getHasError()) {
@@ -466,8 +466,8 @@ class ArchiveLurings extends \app\components\ActiveRecord
         parent::afterSave($insert, $changedAttributes);
 
         $uploadPath = self::getUploadPath();
-        $verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
-        $this->createUploadDirectory(self::getUploadPath());
+        $verwijderenPath = join('/', [$uploadPath, 'verwijderen']);
+        $this->createUploadDirectory($uploadPath);
 
         if ($insert) {
             // $this->senarai_file = UploadedFile::getInstance($this, 'senarai_file');
@@ -494,7 +494,7 @@ class ArchiveLurings extends \app\components\ActiveRecord
         parent::afterDelete();
 
 		$uploadPath = self::getUploadPath();
-		$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+		$verwijderenPath = join('/', [$uploadPath, 'verwijderen']);
 
         if ($this->senarai_file != '' && file_exists(join('/', [$uploadPath, $this->senarai_file]))) {
             rename(join('/', [$uploadPath, $this->senarai_file]), join('/', [$verwijderenPath, time().'_deleted_'.$this->senarai_file]));

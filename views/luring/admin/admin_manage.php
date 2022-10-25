@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Lurings');
 
 if ($archive) {
     $this->params['menu']['content'] = [
-        ['label' => Yii::t('app', 'Generate Senarai Luring'), 'url' => Url::to(['luring/admin/create', 'id' => $archive->id]), 'icon' => 'plus-square', 'htmlOptions' => ['class' => 'btn btn-success']],
+        ['label' => Yii::t('app', 'Generate Senarai Luring'), 'url' => Url::to(['create', 'id' => $archive->id]), 'icon' => 'plus-square', 'htmlOptions' => ['class' => 'btn btn-success']],
     ];
 }
 
@@ -47,7 +47,7 @@ $this->params['menu']['option'] = [
 <?php Pjax::begin(); ?>
 
 <?php if ($archive != null) {
-	echo $this->render('/admin/admin_view', ['model' => $archive, 'small' => true]);
+	echo $this->render('@ommu/archive/views/admin/admin_view', ['model' => $archive, 'small' => true]);
 } ?>
 
 <?php //echo $this->render('_search', ['model' => $searchModel]); ?>

@@ -42,7 +42,9 @@ class HistoryController extends Controller
         parent::init();
 
         if (Yii::$app->request->get('view') || Yii::$app->request->get('id')) {
-			$this->subMenu = $this->module->params['archive_submenu'];
+            if (array_key_exists('archive_submenu', $this->module->params)) {
+                $this->subMenu = $this->module->params['archive_submenu'];
+            }
         }
 
 		$setting = ArchiveSetting::find()
@@ -115,7 +117,9 @@ class HistoryController extends Controller
                 $archive = $view->archive;
 
                 if ($archive->isFond == true) {
-                    $this->subMenu = $this->module->params['fond_submenu'];
+                    if (array_key_exists('fond_submenu', $this->module->params)) {
+                        $this->subMenu = $this->module->params['fond_submenu'];
+                    }
                 }
                 if (empty($archive->level->child)) {
                     unset($this->subMenu[1]['childs']);
