@@ -44,7 +44,11 @@ $this->params['menu']['option'] = [
 <?php Pjax::begin(); ?>
 
 <?php if ($luring != null) {
-	echo $this->render('/luring/admin/admin_view', ['model' => $luring, 'small' => true]);
+	echo $this->render('@ommu/archive/views/luring/admin/admin_view', ['model' => $luring, 'small' => true]);
+} ?>
+
+<?php if ($archive != null) {
+	echo $this->render('@ommu/archive/views/admin/admin_view', ['model' => $archive, 'small' => true]);
 } ?>
 
 <?php //echo $this->render('_search', ['model' => $searchModel]); ?>

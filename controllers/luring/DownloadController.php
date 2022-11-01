@@ -30,6 +30,7 @@ use yii\filters\VerbFilter;
 use ommu\archive\models\ArchiveLuringDownload;
 use ommu\archive\models\search\ArchiveLuringDownload as ArchiveLuringDownloadSearch;
 use ommu\archive\models\ArchiveSetting;
+use yii\helpers\ArrayHelper;
 
 class DownloadController extends Controller
 {
@@ -110,6 +111,12 @@ class DownloadController extends Controller
             $this->subMenuBackTo = $luring->archive_id;
         }
 
+        if ($archive != null) {
+            $this->subMenuParam = $archive;
+            $archive = \ommu\archive\models\Archives::findOne($archive);
+            $this->subMenuBackTo = $archive;
+        }
+
 		$this->view->title = Yii::t('app', 'Luring Downloads');
 		$this->view->description = '';
 		$this->view->keywords = '';
@@ -118,6 +125,7 @@ class DownloadController extends Controller
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
 			'luring' => $luring,
+			'archive' => $archive,
 		]);
 	}
 

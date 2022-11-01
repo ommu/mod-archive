@@ -431,8 +431,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
             }
             if ($this->breadcrumb_param['status'] == '') {
                 $this->addError('breadcrumb_param', Yii::t('app', '{attribute} cannot be blank.', ['attribute' => $this->getAttributeLabel('breadcrumb_status')]));
-            }
-			else {
+            } else {
                 if ($this->breadcrumb_param['status'] == 1 && !$this->getBreadcrumbApps()) {
                     $this->addError('breadcrumb_param', Yii::t('app', '{attribute} cannot be blank.', ['attribute' => $this->getAttributeLabel('breadcrumb_app')]));
                 }

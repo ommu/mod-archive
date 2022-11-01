@@ -27,8 +27,10 @@ class ArchiveLuringDownload extends ArchiveLuringDownloadModel
 	public function rules()
 	{
 		return [
-			[['id', 'download_ip', 'download_date', 'archiveTitle', 'userDisplayname'], 'safe'],
-			[['luring_id', 'user_id', 'archiveId'], 'integer'],
+			[['id', 'download_ip', 'download_date', 
+                'archiveTitle', 'userDisplayname'], 'safe'],
+			[['luring_id', 'user_id', 
+                'archiveId'], 'integer'],
 		];
 	}
 
