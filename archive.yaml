@@ -130,10 +130,6 @@ setting_submenu:
       label: Repositories
       url: ['setting/repository']
       select: controller
-    location:
-      label: Physical Storage
-      url: ['/archive-location/admin/index']
-      select: controller
   1:
     setting:
       label: Settings
