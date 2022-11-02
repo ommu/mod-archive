@@ -283,7 +283,7 @@ class ArchiveLurings extends \app\components\ActiveRecord
                 if ($model->publish) {
                     $publishContent = '<span class="glyphicon glyphicon-ok"></span>';
                 }
-				return Html::a($publishContent, ['luring/admin/update', 'id' => $model->primaryKey], ['title' => Yii::t('app', 'Publish Senarai Luring'), 'data-pjax' => 0]);
+				return Html::a($publishContent, ['update', 'id' => $model->primaryKey], ['title' => Yii::t('app', 'Publish Senarai Luring'), 'data-pjax' => 0]);
 			},
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
@@ -328,7 +328,7 @@ class ArchiveLurings extends \app\components\ActiveRecord
 	public static function parseArchive($model, $urlTitle=true)
 	{
 		$title = self::htmlHardDecode($model->archive->title);
-        $archiveTitle = $urlTitle == true ? Html::a($title, ['admin/view', 'id' => $model->archive_id], ['title' => $title, 'class' => 'modal-btn']) : $title ;
+        $archiveTitle = $urlTitle == true ? Html::a($title, ['/archive/admin/view', 'id' => $model->archive_id], ['title' => $title, 'class' => 'modal-btn']) : $title ;
 
         $html = Html::button($model->archive->code, ['class' => 'btn btn-info btn-xs']).'<br/>';
         $html .= $archiveTitle;

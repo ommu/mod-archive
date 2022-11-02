@@ -912,9 +912,9 @@ class Archives extends \app\components\ActiveRecord
 		$title = self::htmlHardDecode($model->title);
 		$levelName = $model->levelTitle->message;
 
-		$items[] = $model->getAttributeLabel('level_id').': '.Html::a($levelName, ['setting/level/view', 'id' => $model->level_id], ['title' => $levelName, 'class' => 'modal-btn']);
+		$items[] = $model->getAttributeLabel('level_id').': '.Html::a($levelName, ['/archive/setting/level/view', 'id' => $model->level_id], ['title' => $levelName, 'class' => 'modal-btn']);
 		$items[] = Yii::t('app', '{level} Code: {code}', ['level' => $levelName, 'code' => $model->code]);
-		$items[] = $model->getAttributeLabel('title').': '.Html::a($title, ['view', 'id' => $model->id], ['title' => $title, 'class' => 'modal-btn']);
+		$items[] = $model->getAttributeLabel('title').': '.Html::a($title, ['/archive/admin/view', 'id' => $model->id], ['title' => $title, 'class' => 'modal-btn']);
 
         if (Yii::$app->request->isAjax) {
             return Html::ul($items, ['encode' => false, 'class' => 'list-boxed']);

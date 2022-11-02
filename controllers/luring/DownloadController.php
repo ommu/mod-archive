@@ -29,8 +29,9 @@ use mdm\admin\components\AccessControl;
 use yii\filters\VerbFilter;
 use ommu\archive\models\ArchiveLuringDownload;
 use ommu\archive\models\search\ArchiveLuringDownload as ArchiveLuringDownloadSearch;
-use ommu\archive\models\ArchiveSetting;
 use yii\helpers\ArrayHelper;
+use ommu\archive\models\ArchiveSetting;
+use ommu\archivePengolahan\models\ArchivePengolahanSetting;
 
 class DownloadController extends Controller
 {
@@ -47,10 +48,15 @@ class DownloadController extends Controller
             }
         }
 
-		$setting = ArchiveSetting::find()
-			->select(['breadcrumb_param'])
-			->where(['id' => 1])
-			->one();
+
+        if ($this->isPengolahan()) {
+            $setting = new ArchivePengolahanSetting(['app' => 'archivePengolahanModule']);
+        } else {
+            $setting = ArchiveSetting::find()
+                ->select(['breadcrumb_param'])
+                ->where(['id' => 1])
+                ->one();
+        }
 		$this->breadcrumbApp = $setting->breadcrumb;
 		$this->breadcrumbAppParam = $setting->getBreadcrumbAppParam();
 	}
@@ -71,6 +77,14 @@ class DownloadController extends Controller
                 ],
             ],
         ];
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function isPengolahan()
+	{
+		return false;
 	}
 
 	/**
@@ -108,11 +122,16 @@ class DownloadController extends Controller
         if (($luring = Yii::$app->request->get('luring')) != null) {
             $this->subMenuParam = $luring;
             $luring = \ommu\archive\models\ArchiveLurings::findOne($luring);
+            if ($this->isPengolahan()) {
+                $this->subMenuParam = $luring->archive_id;
+            }
             $this->subMenuBackTo = $luring->archive_id;
         }
 
         if ($archive != null) {
-            $this->subMenuParam = $archive;
+            if ($this->isPengolahan()) {
+                $this->subMenuParam = $archive;
+            }
             $archive = \ommu\archive\models\Archives::findOne($archive);
             $this->subMenuBackTo = $archive;
         }
@@ -124,8 +143,9 @@ class DownloadController extends Controller
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
-			'luring' => $luring,
-			'archive' => $archive,
+			'luring' => $luring ?? null,
+			'archive' => $luring ? $luring->archive : $archive,
+			'isPengolahan' => $this->isPengolahan(),
 		]);
 	}
 

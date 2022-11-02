@@ -33,9 +33,10 @@ use mdm\admin\components\AccessControl;
 use yii\filters\VerbFilter;
 use ommu\archive\models\ArchiveLurings;
 use ommu\archive\models\search\ArchiveLurings as ArchiveLuringsSearch;
-use ommu\archive\models\ArchiveSetting;
 use yii\web\UploadedFile;
 use thamtech\uuid\helpers\UuidHelper;
+use ommu\archive\models\ArchiveSetting;
+use ommu\archivePengolahan\models\ArchivePengolahanSetting;
 
 class AdminController extends Controller
 {
@@ -55,10 +56,14 @@ class AdminController extends Controller
             }
         }
 
-		$setting = ArchiveSetting::find()
-			->select(['breadcrumb_param'])
-			->where(['id' => 1])
-			->one();
+        if ($this->isPengolahan()) {
+            $setting = new ArchivePengolahanSetting(['app' => 'archivePengolahanModule']);
+        } else {
+            $setting = ArchiveSetting::find()
+                ->select(['breadcrumb_param'])
+                ->where(['id' => 1])
+                ->one();
+        }
 		$this->breadcrumbApp = $setting->breadcrumb;
 		$this->breadcrumbAppParam = $setting->getBreadcrumbAppParam();
 	}
@@ -86,6 +91,14 @@ class AdminController extends Controller
 	 * {@inheritdoc}
 	 */
 	public function ignoreLevelField()
+	{
+		return false;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function isPengolahan()
 	{
 		return false;
 	}
@@ -149,6 +162,7 @@ class AdminController extends Controller
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
 			'archive' => $archive,
+			'isPengolahan' => $this->isPengolahan(),
 		]);
 	}
 
@@ -258,6 +272,7 @@ class AdminController extends Controller
 		return $this->oRender('admin_create', [
 			'model' => $model,
 			'archive' => $archive,
+			'isPengolahan' => $this->isPengolahan(),
 		]);
 	}
 
@@ -292,12 +307,16 @@ class AdminController extends Controller
         if (array_key_exists('luring_submenu', $this->module->params)) {
             $this->subMenu = $this->module->params['luring_submenu'];
         }
+        if ($this->isPengolahan()) {
+            $this->subMenuParam = $model->archive_id;
+        }
         $this->subMenuBackTo = $model->archive_id;
 		$this->view->title = Yii::t('app', 'Publish Luring: {archive-id}', ['archive-id' => $model->archive->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
 			'model' => $model,
+			'isPengolahan' => $this->isPengolahan(),
 		]);
 	}
 
@@ -313,6 +332,10 @@ class AdminController extends Controller
         if (array_key_exists('luring_submenu', $this->module->params)) {
             $this->subMenu = $this->module->params['luring_submenu'];
         }
+
+        if ($this->isPengolahan()) {
+            $this->subMenuParam = $model->archive_id;
+        }
         $this->subMenuBackTo = $model->archive_id;
 		$this->view->title = Yii::t('app', 'Detail Luring: {archive-id}', ['archive-id' => $model->archive->title]);
 		$this->view->description = '';
@@ -320,6 +343,7 @@ class AdminController extends Controller
 		return $this->oRender('admin_view', [
 			'model' => $model,
 			'small' => false,
+			'isPengolahan' => $this->isPengolahan(),
 		]);
 	}
 
