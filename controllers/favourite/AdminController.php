@@ -127,7 +127,7 @@ class AdminController extends Controller
             }
         }
 
-		$this->view->title = Yii::t('app', 'Favourites');
+		$this->view->title = Yii::t('app', 'Bookmarks');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
@@ -170,7 +170,7 @@ class AdminController extends Controller
         if (array_key_exists('archive_submenu', $this->module->params)) {
             $this->subMenu = $this->module->params['archive_submenu'];
         }
-		$this->view->title = Yii::t('app', 'Detail Favourite: {archive-id}', ['archive-id' => $model->archive->title]);
+		$this->view->title = Yii::t('app', 'Detail Bookmark: {archive-id}', ['archive-id' => $model->archive->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
@@ -191,7 +191,7 @@ class AdminController extends Controller
 		$model->publish = 2;
 
         if ($model->save(false, ['publish'])) {
-            Yii::$app->session->setFlash('success', Yii::t('app', 'Archive favourite success deleted.'));
+            Yii::$app->session->setFlash('success', Yii::t('app', 'Archive bookmark success deleted.'));
             return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
         }
 	}
@@ -209,7 +209,7 @@ class AdminController extends Controller
 		$model->publish = $replace;
 
         if ($model->save(false, ['publish'])) {
-            Yii::$app->session->setFlash('success', Yii::t('app', 'Archive favourite success updated.'));
+            Yii::$app->session->setFlash('success', Yii::t('app', 'Archive bookmark success updated.'));
             return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
         }
 	}

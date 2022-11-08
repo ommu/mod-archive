@@ -166,7 +166,7 @@ class Archives extends \app\components\ActiveRecord
 			'backToManage' => Yii::t('app', 'Back to Manage'),
             'oView' => Yii::t('app', 'Views'),
 			'oFile' => Yii::t('app', 'Luring File'),
-			'oFavourite' => Yii::t('app', 'Favourite'),
+			'oFavourite' => Yii::t('app', 'Bookmark'),
 		];
 	}
 
@@ -622,7 +622,7 @@ class Archives extends \app\components\ActiveRecord
 			'value' => function($model, $key, $index, $column) {
 				// $views = $model->getViews(true);
                 $favourites = $model->grid->favourite;
-				return Html::a($favourites, ['favourite/admin/manage', 'archive' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} favourites', ['count' => $favourites]), 'data-pjax' => 0]);
+				return Html::a($favourites, ['favourite/admin/manage', 'archive' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} bookmarks', ['count' => $favourites]), 'data-pjax' => 0]);
 			},
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
