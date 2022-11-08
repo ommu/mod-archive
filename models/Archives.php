@@ -69,6 +69,8 @@ class Archives extends \app\components\ActiveRecord
 
 	public $old_archive_file;
 	public $isFond = true;
+	public $isLuring = true;
+	public $isLocation = true;
 
 	public $confirmCode;
 	public $shortCode;
@@ -643,17 +645,17 @@ class Archives extends \app\components\ActiveRecord
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
-			'visible' => $this->isFond ? true : false,
+			'visible' => $this->isFond && $this->isLuring ? true : false,
 		];
 		$this->templateColumns['location'] = [
 			'attribute' => 'location',
 			'value' => function($model, $key, $index, $column) {
-                $location = $this->getLocations(false) != null ? 1 : 0;
+                $location = $model->getLocations(false) != null ? 1 : 0;
 				return $this->filterYesNo($location);
 			},
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
-			'visible' => !$this->isFond ? true : false,
+			'visible' => !$this->isFond && $this->isLocation ? true : false,
 		];
 		$this->templateColumns['preview'] = [
 			'attribute' => 'preview',

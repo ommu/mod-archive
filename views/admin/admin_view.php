@@ -73,7 +73,7 @@ $attributes = [
 		'value' => function ($model) {
 			$levelName = isset($model->levelTitle) ? $model->levelTitle->message : '-';
             if ($levelName != '-') {
-				return Html::a($levelName, ['setting/level/view', 'id' => $model->level_id], ['title' => $levelName, 'class' => 'modal-btn']);
+				return Html::a($levelName, ['/archive/setting/level/view', 'id' => $model->level_id], ['title' => $levelName, 'class' => 'modal-btn']);
             }
 			return $levelName;
 		},

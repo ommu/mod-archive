@@ -114,7 +114,7 @@ class AdminController extends Controller
         // print_r(Yii::$app->request->get());
         // echo '</pre>';
 
-		$searchModel = new ArchivesSearch(['isFond' => $this->isFond()]);
+		$searchModel = new ArchivesSearch(['isFond' => $this->isFond(), 'isLuring' => false, 'isLocation' => false]);
         $queryParams = Yii::$app->request->queryParams;
         if (($parent = Yii::$app->request->get('parent')) != null) {
             $queryParams = ArrayHelper::merge($queryParams, ['parent_id' => $parent]);
