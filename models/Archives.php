@@ -65,7 +65,7 @@ class Archives extends \app\components\ActiveRecord
 	use \ommu\traits\UtilityTrait;
 	use \ommu\traits\FileTrait;
 
-	public $gridForbiddenColumn = ['parentTitle', 'media', 'creator', 'repository', 'subject', 'function', 'archive_type', 'archive_file', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
+	public $gridForbiddenColumn = ['archive_type', 'archive_file', 'creation_date', 'modified_date', 'updated_date', 'media', 'creator', 'repository', 'subject', 'function', 'parentTitle', 'creationDisplayname', 'modifiedDisplayname', 'oView', 'oFavourite'];
 
 	public $old_archive_file;
 	public $isFond = true;
@@ -79,11 +79,11 @@ class Archives extends \app\components\ActiveRecord
 	public $oldShortCode;
 	public $updateCode = true;
 
-	public $media;
-	public $creator;
-	public $repository;
-	public $subject;
-	public $function;
+    public $media;
+    public $creator;
+    public $repository;
+    public $subject;
+    public $function;
 	public $preview;
 	public $location;
 	public $group_childs;
@@ -96,10 +96,16 @@ class Archives extends \app\components\ActiveRecord
     public $oView;
     public $oFile;
     public $oFavourite;
+
     public $creatorId;
     public $repositoryId;
     public $subjectId;
     public $functionId;
+
+    public $rackId;
+    public $roomId;
+    public $depoId;
+    public $buildingId;
 
 	const EVENT_BEFORE_SAVE_ARCHIVES = 'BeforeSaveArchives';
 
@@ -141,7 +147,7 @@ class Archives extends \app\components\ActiveRecord
 			'level_id' => Yii::t('app', 'Level of Description'),
 			'title' => Yii::t('app', 'Title'),
 			'code' => Yii::t('app', 'Reference code'),
-			'medium' => Yii::t('app', 'Extent and medium'),
+			'medium' => Yii::t('app', 'Medium'),
 			'archive_type' => Yii::t('app', 'Archive Type'),
 			'archive_date' => Yii::t('app', 'Archive Date'),
 			'archive_file' => Yii::t('app', 'Archive File'),
@@ -495,12 +501,12 @@ class Archives extends \app\components\ActiveRecord
 		];
 		$this->templateColumns['medium'] = [
 			'attribute' => 'medium',
-			'label' => Yii::t('app', 'Medium'),
+			'label' => Yii::t('app', 'Child & Medium'),
 			'value' => function($model, $key, $index, $column) {
                 if (strtolower($model->levelTitle->message) == 'item') {
                     return $model->medium ? $model->medium : '-';
                 }
-				// return self::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id);
+				return self::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id, ', ');
 			},
 			'filter' => false,
 			'enableSorting' => false,
@@ -1135,6 +1141,8 @@ class Archives extends \app\components\ActiveRecord
             } else {
                 $this->shortCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
             }
+        } else {
+            $this->confirmCode = $this->code;
         }
 
 		$this->oldConfirmCode = $this->confirmCode;

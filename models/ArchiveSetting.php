@@ -74,7 +74,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
 			[['reference_code_sikn', 'maintenance_image_path', 'maintenance_document_path'], 'safe'],
 			//[['image_type', 'document_type', 'breadcrumb_param'], 'json'],
 			[['license', 'reference_code_sikn', 'maintenance_image_path', 'maintenance_document_path'], 'string', 'max' => 32],
-			[['reference_code_separator'], 'string', 'max' => 1],
+			[['reference_code_separator'], 'string', 'max' => 4],
 		];
 	}
 

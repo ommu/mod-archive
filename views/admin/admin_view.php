@@ -87,9 +87,11 @@ $attributes = [
 				->where(['id' => 1])
 				->one();
             if (!$setting->maintenance_mode) {
-				$referenceCode = $model->referenceCode;
-				array_multisort($referenceCode);
-				return $setting->reference_code_sikn.' '.preg_replace("/($model->code)$/", '<span class="text-primary">'.$model->code.'</span>', join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'code')));
+                return $setting->reference_code_sikn.' <span class="text-primary">'.$model->code.'</span>';
+				// $referenceCode = $model->referenceCode;
+				// array_multisort($referenceCode);
+                // $firstKey = array_key_last($referenceCode);
+				// return $setting->reference_code_sikn.' '.preg_replace("/($model->code)$/", '<span class="text-primary">'.$model->code.'</span>', join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'code')));
 			} else {
 				$referenceCode = $model->referenceCode;
 				array_multisort($referenceCode);
@@ -161,11 +163,12 @@ $attributes = [
 	],
 	[
 		'attribute' => 'medium',
+        'label' => Yii::t('app', 'Child & Medium'),
 		'value' => function ($model) {
             if (strtolower($model->levelTitle->message) == 'item') {
                 return $model->medium ? $model->medium : '-';
             }
-			return $model::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id);
+			return $model::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id, ', ');
 		},
 		'format' => 'html',
         'visible' => !$small,

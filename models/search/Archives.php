@@ -28,7 +28,9 @@ class Archives extends ArchivesModel
 	{
 		return [
 			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'media', 
-                'preview', 'location', 'creatorId', 'repositoryId', 'subjectId', 'functionId', 'oView', 'oFile', 'oFavourite'], 'integer'],
+                'preview', 'location', 'oView', 'oFile', 'oFavourite', 
+                'creatorId', 'repositoryId', 'subjectId', 'functionId',
+                'rackId', 'roomId', 'depoId', 'buildingId'], 'integer'],
 			[['title', 'code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'senarai_file', 'creation_date', 'modified_date', 'updated_date', 
                 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository', 'subject', 'function'], 'safe'],
 		];
@@ -246,10 +248,10 @@ class Archives extends ArchivesModel
 		$query->andFilterWhere(['functions.tag_id' => $this->functionId]);
 
         // location
-		$query->andFilterWhere(['locations.rack_id' => $params['rackId']]);
-		$query->andFilterWhere(['locations.room_id' => $params['roomId']]);
-		$query->andFilterWhere(['relatedLocationRoom.parent_id' => $params['depoId']]);
-		$query->andFilterWhere(['relatedLocationDepo.parent_id' => $params['buildingId']]);
+		$query->andFilterWhere(['locations.rack_id' => $this->rackId]);
+		$query->andFilterWhere(['locations.room_id' => $this->roomId]);
+		$query->andFilterWhere(['relatedLocationRoom.parent_id' => $this->depoId]);
+		$query->andFilterWhere(['relatedLocationDepo.parent_id' => $this->buildingId]);
 
         if (isset($params['location']) && $params['location'] != '') {
             if ($this->location == 1) {
