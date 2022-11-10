@@ -19,6 +19,7 @@ class m221008_085849_archive_module_alterTrigger_archiveFavourite extends \yii\d
 	{
         $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertFavourites`');
         $this->execute('DROP TRIGGER IF EXISTS `archiveAfterUpdateFavourites`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterDeleteFavourites`');
 
         // create trigger archiveAfterInsertFavourites
         $archiveAfterInsertFavourites = <<< SQL
@@ -44,19 +45,32 @@ CREATE
 
 		IF (NEW.publish = 1) THEN
 			UPDATE `ommu_archive_grid` SET `favourite` = `favourite` + 1 WHERE `id` = NEW.archive_id;
-		ELSE
+		ELSEIF (OLD.publish = 1) THEN
 			UPDATE `ommu_archive_grid` SET `favourite` = `favourite` - 1 WHERE `id` = NEW.archive_id;
 		END IF;
 	END IF;
     END;
 SQL;
         $this->execute($archiveAfterUpdateFavourites);
+
+        // create trigger archiveAfterDeleteFavourites
+        $archiveAfterDeleteFavourites = <<< SQL
+CREATE
+    TRIGGER `archiveAfterDeleteFavourites` AFTER DELETE ON `ommu_archive_favourites` 
+    FOR EACH ROW BEGIN
+	IF (OLD.publish = 1) THEN
+		UPDATE `ommu_archive_grid` SET `favourite` = `favourite` - 1 WHERE `id` = OLD.archive_id;
+	END IF;
+    END;
+SQL;
+        $this->execute($archiveAfterDeleteFavourites);
 	}
 
 	public function down()
 	{
         $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertFavourites`');
         $this->execute('DROP TRIGGER IF EXISTS `archiveAfterUpdateFavourites`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterDeleteFavourites`');
 
         // create trigger archiveAfterInsertFavourites
         $archiveAfterInsertFavourites = <<< SQL

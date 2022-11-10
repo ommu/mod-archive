@@ -523,7 +523,10 @@ class Archives extends \app\components\ActiveRecord
 		$this->templateColumns['archive_type'] = [
 			'attribute' => 'archive_type',
 			'value' => function($model, $key, $index, $column) {
-				return self::getArchiveType($model->archive_type ? $model->archive_type : '-');
+                if ($model->archive_type) {
+                    return self::getArchiveType($model->archive_type);
+                }
+                return '-';
 			},
 			'filter' => self::getArchiveType(),
 		];

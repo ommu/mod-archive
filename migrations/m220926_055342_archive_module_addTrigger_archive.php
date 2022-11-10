@@ -19,6 +19,7 @@ class m220926_055342_archive_module_addTrigger_level extends \yii\db\Migration
 	{
         $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsert`');
         $this->execute('DROP TRIGGER IF EXISTS `archiveAfterUpdate`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterDelete`');
 
         // create trigger archiveAfterInsert
         $archiveAfterInsert = <<< SQL
@@ -39,17 +40,35 @@ CREATE
 		UPDATE `ommu_archive_level_grid` SET `archive` = `archive` + 1 WHERE `id` = NEW.level_id;
 		UPDATE `ommu_archive_level_grid` SET `archive` = `archive` - 1 WHERE `id` = OLD.level_id;
 	END IF;
-	IF (NEW.publish <> OLD.publish AND NEW.publish = 2) THEN
-		UPDATE `ommu_archive_level_grid` SET `archive` = `archive` - 1 WHERE `id` = NEW.level_id;
+
+	IF (NEW.publish <> OLD.publish) THEN
+		IF (NEW.publish = 2) THEN
+			UPDATE `ommu_archive_level_grid` SET `archive` = `archive` - 1 WHERE `id` = NEW.level_id;
+		ELSEIF (OLD.publish = 2) THEN
+			UPDATE `ommu_archive_level_grid` SET `archive` = `archive` + 1 WHERE `id` = NEW.level_id;
+		END IF;
 	END IF;
     END;
 SQL;
         $this->execute($archiveAfterUpdate);
+
+        // create trigger archiveAfterDelete
+        $archiveAfterDelete = <<< SQL
+CREATE
+    TRIGGER `archiveAfterDelete` AFTER DELETE ON `ommu_archives` 
+    FOR EACH ROW BEGIN
+	IF (OLD.publish <> 2) THEN
+		UPDATE `ommu_archive_level_grid` SET `archive` = `archive` - 1 WHERE `id` = OLD.level_id;
+	END IF;
+    END;
+SQL;
+        $this->execute($archiveAfterDelete);
 	}
 
 	public function down()
 	{
         $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsert`');
         $this->execute('DROP TRIGGER IF EXISTS `archiveAfterUpdate`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterDelete`');
     }
 }

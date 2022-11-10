@@ -38,8 +38,12 @@ SQL;
 CREATE
     TRIGGER `archiveAfterUpdateLurings` AFTER UPDATE ON `ommu_archive_lurings` 
     FOR EACH ROW BEGIN
-	IF (NEW.publish <> OLD.publish AND NEW.publish = 2) THEN
-		UPDATE `ommu_archive_grid` SET `luring` = `luring` - 1 WHERE `id` = NEW.archive_id;
+	IF (NEW.publish <> OLD.publish) THEN
+		IF (NEW.publish = 2) THEN
+			UPDATE `ommu_archive_grid` SET `luring` = `luring` - 1 WHERE `id` = NEW.archive_id;
+		ELSEIF (OLD.publish = 2) THEN
+			UPDATE `ommu_archive_grid` SET `luring` = `luring` + 1 WHERE `id` = NEW.archive_id;
+		END IF;
 	END IF;
     END;
 SQL;

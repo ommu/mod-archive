@@ -135,7 +135,12 @@ $attributes = [
 	],
 	[
 		'attribute' => 'archive_type',
-		'value' => $model::getArchiveType($model->archive_type ? $model->archive_type : '-'),
+		'value' => function ($model) {
+            if ($model->archive_type) {
+                return $model::getArchiveType($model->archive_type);
+            }
+            return '-';
+		},
 		'visible' => !$small && in_array('archive_type', $model->level->field) ? true : false,
 	],
 	[
