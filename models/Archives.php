@@ -65,7 +65,7 @@ class Archives extends \app\components\ActiveRecord
 	use \ommu\traits\UtilityTrait;
 	use \ommu\traits\FileTrait;
 
-	public $gridForbiddenColumn = ['archive_type', 'archive_file', 'creation_date', 'modified_date', 'updated_date', 'media', 'creator', 'repository', 'subject', 'function', 'parentTitle', 'creationDisplayname', 'modifiedDisplayname', 'oView', 'oFavourite'];
+	public $gridForbiddenColumn = ['archive_type', 'archive_file', 'creation_date', 'modified_date', 'updated_date', 'creator', 'repository', 'subject', 'function', 'parentTitle', 'creationDisplayname', 'modifiedDisplayname', 'oView', 'oFavourite'];
 
 	public $old_archive_file;
 	public $isFond = true;
@@ -517,7 +517,7 @@ class Archives extends \app\components\ActiveRecord
 			'attribute' => 'media',
 			'label' => Yii::t('app', 'Media'),
 			'value' => function($model, $key, $index, $column) {
-				return self::parseRelated($model->getMedias(true, 'title'), 'media', ', ');
+				return self::parseFilter($model->getMedias(true, 'title'), 'media', ', ');
 			},
 			'filter' => ArchiveMedia::getMedia(),
 			'format' => 'html',
@@ -532,14 +532,14 @@ class Archives extends \app\components\ActiveRecord
 		$this->templateColumns['subject'] = [
 			'attribute' => 'subject',
 			'value' => function($model, $key, $index, $column) {
-				return self::parseSubject($model->getSubjects(true, 'title'), 'subjectId', ', ');
+				return self::parseFilter($model->getSubjects(true, 'title'), 'subjectId', ', ');
 			},
 			'format' => 'html',
 		];
 		$this->templateColumns['function'] = [
 			'attribute' => 'function',
 			'value' => function($model, $key, $index, $column) {
-				return self::parseSubject($model->getFunctions(true, 'title'), 'functionId', ', ');
+				return self::parseFilter($model->getFunctions(true, 'title'), 'functionId', ', ');
 			},
 			'format' => 'html',
 		];
@@ -969,9 +969,9 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * function parseSubject
+	 * function parseFilter
 	 */
-	public static function parseSubject($subjects, $attr='subjectId', $sep='li')
+	public static function parseFilter($subjects, $attr='subjectId', $sep='li')
 	{
         if (!is_array($subjects) || (is_array($subjects) && empty($subjects))) {
             return '-';
@@ -1116,7 +1116,7 @@ class Archives extends \app\components\ActiveRecord
 		// $this->function =  implode(',', $this->getFunctions(true, 'title'));
 		// $this->location = $this->getLocations(false) != null ? 1 : 0;
 
-		$this->code = preg_replace("/^[.-]/", '', preg_replace("/^(3400|23400-24)/", '', $this->code));
+		$this->code = trim(preg_replace("/^[.-]/", "", preg_replace("/^(3400|23400-24)/", "", preg_replace("/[\s]/", "", $this->code))));
 		$this->oldCode = $this->code;
         if ($this->parent) {
             $parentCode = $this->parent->code;
@@ -1143,6 +1143,7 @@ class Archives extends \app\components\ActiveRecord
             }
         } else {
             $this->confirmCode = $this->code;
+            $this->shortCode = $this->code;
         }
 
 		$this->oldConfirmCode = $this->confirmCode;
@@ -1215,6 +1216,7 @@ class Archives extends \app\components\ActiveRecord
 			// 		join('.', [$this->parent->confirmCode, $this->shortCode]) :
 			// 		join('.', [$this->parent->code, $this->shortCode]));
 		}
+        $this->code = trim($this->code);
 	
 		// replace code
         if (!$insert && (array_key_exists('code', $this->dirtyAttributes) && $this->dirtyAttributes['code'] != $this->oldCode) && $this->getArchives('count') != 0) {

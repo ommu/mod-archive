@@ -129,7 +129,7 @@ $attributes = [
 	],
 	[
 		'attribute' => 'media',
-		'value' => $model::parseRelated($model->getMedias(true, 'title')),
+		'value' => $model::parseFilter($model->getMedias(true, 'title'), 'media', ', '),
 		'format' => 'html',
 		'visible' => !$small && in_array('media', $model->level->field) ? true : false,
 	],
@@ -140,13 +140,13 @@ $attributes = [
 	],
 	[
 		'attribute' => 'subject',
-		'value' => $model::parseSubject($model->getSubjects(true, 'title'), 'subjectId'),
+		'value' => $model::parseFilter($model->getSubjects(true, 'title'), 'subjectId', ', '),
 		'format' => 'html',
 		'visible' => !$small && in_array('subject', $model->level->field),
 	],
 	[
 		'attribute' => 'function',
-		'value' => $model::parseSubject($model->getFunctions(true, 'title'), 'functionId'),
+		'value' => $model::parseFilter($model->getFunctions(true, 'title'), 'functionId', ', '),
 		'format' => 'html',
 		'visible' => !$small && in_array('function', $model->level->field),
 	],

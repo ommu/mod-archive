@@ -15,7 +15,6 @@
  */
 
 use yii\helpers\Url;
-use yii\helpers\ArrayHelper;
 
 \ommu\archive\assets\AciTreeAsset::register($this);
 
