@@ -22,7 +22,6 @@
  * @property string $archive_type
  * @property string $archive_date
  * @property string $archive_file
- * @property string $senarai_file
  * @property string $creation_date
  * @property integer $creation_id
  * @property string $modified_date
@@ -126,7 +125,7 @@ class Archives extends \app\components\ActiveRecord
 			[['publish', 'level_id', 'title', 'shortCode'], 'required'],
 			[['publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'backToManage'], 'integer'],
 			[['title', 'archive_type', 'archive_date'], 'string'],
-			[['code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'senarai_file', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
+			[['code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
 			[['code'], 'string', 'max' => 255],
 			[['archive_date'], 'string', 'max' => 64],
 			[['shortCode'], 'string', 'max' => 32],
@@ -151,7 +150,6 @@ class Archives extends \app\components\ActiveRecord
 			'archive_type' => Yii::t('app', 'Archive Type'),
 			'archive_date' => Yii::t('app', 'Archive Date'),
 			'archive_file' => Yii::t('app', 'Archive File'),
-			'senarai_file' => Yii::t('app', 'Senarai File'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
@@ -1103,7 +1101,6 @@ class Archives extends \app\components\ActiveRecord
 		$this->old_archive_file = $this->archive_file;
         $this->isFond = $this->level_id == 1 ? true : false;
 		$this->preview = $this->archive_file != '' ? true : false;
-		$this->oFile = $this->senarai_file != '' ? true : false;
 		// $this->parentTitle = isset($this->parent) ? $this->parent->title : '-';
 		// $this->levelName = isset($this->level) ? $this->level->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';

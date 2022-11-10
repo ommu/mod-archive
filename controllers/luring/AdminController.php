@@ -229,9 +229,7 @@ class AdminController extends Controller
 
                 $model->senarai_file_draft = $documents;
 
-                if ($model->save(false, ['senarai_file_draft'])) {
-                    $archive::updateAll(['senarai_file' => $model->senarai_file_draft], ['id' => $id]);
-                }
+                $model->save(false, ['senarai_file_draft']);
 
                 Yii::$app->session->setFlash('success', Yii::t('app', 'Senarai luring success created.'));
                 return $this->redirect(['manage', 'archive' => $model->archive_id]);
