@@ -43,6 +43,12 @@ class AdminController extends Controller
 	{
         parent::init();
 
+        if (Yii::$app->request->get('archive') || Yii::$app->request->get('id')) {
+            if (array_key_exists('archive_submenu', $this->module->params)) {
+                $this->subMenu = $this->module->params['archive_submenu'];
+            }
+        }
+
 		$setting = ArchiveSetting::find()
 			->select(['breadcrumb_param'])
 			->where(['id' => 1])
@@ -100,11 +106,28 @@ class AdminController extends Controller
 
         if (($archive = Yii::$app->request->get('archive')) != null) {
             $this->subMenuParam = $archive;
-            $this->subMenu = $this->module->params['archive_submenu'];
             $archive = \ommu\archive\models\Archives::findOne($archive);
+            if ($archive->isFond == true) {
+                if (array_key_exists('fond_submenu', $this->module->params)) {
+                    $this->subMenu = $this->module->params['fond_submenu'];
+                }
+            }
+            if (empty($archive->level->child)) {
+                unset($this->subMenu[1]['childs']);
+            }
+            if (empty($archive->level->field) || !in_array('location', $archive->level->field)) {
+                unset($this->subMenu[1]['location']);
+            }
+            if (empty($archive->level->field) || !in_array('luring', $archive->level->field)) {
+                unset($this->subMenu[1]['luring']);
+            }
+            if (empty($archive->level->field) || !in_array('favourites', $archive->level->field)) {
+                throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
+                unset($this->subMenu[2]['favourites']);
+            }
         }
 
-		$this->view->title = Yii::t('app', 'Favourites');
+		$this->view->title = Yii::t('app', 'Bookmarks');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
@@ -125,12 +148,34 @@ class AdminController extends Controller
         $model = $this->findModel($id);
         $this->subMenuParam = $model->archive_id;
 
-        $this->subMenu = $this->module->params['archive_submenu'];
-		$this->view->title = Yii::t('app', 'Detail Favourite: {archive-id}', ['archive-id' => $model->archive->title]);
+        $archive = $model->archive;
+        if ($archive->isFond == true) {
+            if (array_key_exists('fond_submenu', $this->module->params)) {
+                $this->subMenu = $this->module->params['fond_submenu'];
+            }
+        }
+        if (empty($archive->level->child)) {
+            unset($this->subMenu[1]['childs']);
+        }
+        if (empty($archive->level->field) || !in_array('location', $archive->level->field)) {
+            unset($this->subMenu[1]['location']);
+        }
+        if (empty($archive->level->field) || !in_array('luring', $archive->level->field)) {
+            unset($this->subMenu[1]['luring']);
+        }
+        if (empty($archive->level->field) || !in_array('favourites', $archive->level->field)) {
+            unset($this->subMenu[2]['favourites']);
+        }
+
+        if (array_key_exists('archive_submenu', $this->module->params)) {
+            $this->subMenu = $this->module->params['archive_submenu'];
+        }
+		$this->view->title = Yii::t('app', 'Detail Bookmark: {archive-id}', ['archive-id' => $model->archive->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
 			'model' => $model,
+			'small' => false,
 		]);
 	}
 
@@ -146,7 +191,7 @@ class AdminController extends Controller
 		$model->publish = 2;
 
         if ($model->save(false, ['publish'])) {
-            Yii::$app->session->setFlash('success', Yii::t('app', 'Archive favourite success deleted.'));
+            Yii::$app->session->setFlash('success', Yii::t('app', 'Archive bookmark success deleted.'));
             return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
         }
 	}
@@ -164,7 +209,7 @@ class AdminController extends Controller
 		$model->publish = $replace;
 
         if ($model->save(false, ['publish'])) {
-            Yii::$app->session->setFlash('success', Yii::t('app', 'Archive favourite success updated.'));
+            Yii::$app->session->setFlash('success', Yii::t('app', 'Archive bookmark success updated.'));
             return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
         }
 	}

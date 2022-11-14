@@ -28,7 +28,7 @@ class ArchiveViewHistory extends ArchiveViewHistoryModel
 	{
 		return [
 			[['id', 'view_id'], 'integer'],
-			[['view_date', 'view_ip', 'archiveTitle', 'userDisplayname', 'levelId', 'archiveCode'], 'safe'],
+			[['view_date', 'view_ip', 'archiveTitle', 'userDisplayname', 'archiveCode', 'archiveId', 'levelId'], 'safe'],
 		];
 	}
 
@@ -72,8 +72,9 @@ class ArchiveViewHistory extends ArchiveViewHistoryModel
 		]);
         if ((isset($params['sort']) && in_array($params['sort'], ['archiveTitle', '-archiveTitle'])) || (
             (isset($params['archiveTitle']) && $params['archiveTitle'] != '') ||
+            (isset($params['archiveCode']) && $params['archiveCode'] != '') ||
             (isset($params['levelId']) && $params['levelId'] != '') ||
-            (isset($params['archiveCode']) && $params['archiveCode'] != '')
+            (isset($params['level']) && $params['level'] != '')
         )) {
             $query->joinWith(['archive archive']);
         }
@@ -82,7 +83,7 @@ class ArchiveViewHistory extends ArchiveViewHistoryModel
         ) {
             $query->joinWith(['user user']);
         }
-        if (isset($params['archiveId']) && $params['archiveId'] != '') {
+        if (isset($params['archive']) && $params['archive'] != '') {
             $query->joinWith(['view view']);
         }
         if ((isset($params['sort']) && in_array($params['sort'], ['levelId', '-levelId']))) {
@@ -139,10 +140,9 @@ class ArchiveViewHistory extends ArchiveViewHistoryModel
 			't.id' => $this->id,
 			't.view_id' => isset($params['view']) ? $params['view'] : $this->view_id,
 			'cast(t.view_date as date)' => $this->view_date,
-			'archive.level_id' => isset($params['levelId']) ? $params['levelId'] : $this->levelId,
+			'archive.level_id' => $this->levelId,
+			'view.archive_id' => $this->archiveId,
         ]);
-
-        $query->andFilterWhere(['view.archive_id' => $params['archiveId']]);
 
 		$query->andFilterWhere(['like', 't.view_ip', $this->view_ip])
 			->andFilterWhere(['like', 'archive.title', $this->archiveTitle])

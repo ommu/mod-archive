@@ -27,8 +27,10 @@ class ArchiveLuringDownload extends ArchiveLuringDownloadModel
 	public function rules()
 	{
 		return [
-			[['id', 'download_ip', 'download_date', 'archiveTitle', 'userDisplayname'], 'safe'],
-			[['luring_id', 'user_id'], 'integer'],
+			[['id', 'download_ip', 'download_date', 
+                'archiveTitle', 'userDisplayname'], 'safe'],
+			[['luring_id', 'user_id', 
+                'archiveId'], 'integer'],
 		];
 	}
 
@@ -80,6 +82,9 @@ class ArchiveLuringDownload extends ArchiveLuringDownloadModel
         ) {
             $query->joinWith(['user user']);
         }
+        if (isset($params['archive']) && $params['archive'] != '') {
+            $query->joinWith(['luring luring']);
+        }
 
 		$query->groupBy(['id']);
 
@@ -123,6 +128,7 @@ class ArchiveLuringDownload extends ArchiveLuringDownloadModel
 			't.luring_id' => isset($params['luring']) ? $params['luring'] : $this->luring_id,
 			't.user_id' => isset($params['user']) ? $params['user'] : $this->user_id,
 			'cast(t.download_date as date)' => $this->download_date,
+			'luring.archive_id' => $this->archiveId,
 		]);
 
 		$query->andFilterWhere(['like', 't.id', $this->id])

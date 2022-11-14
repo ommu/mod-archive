@@ -28,7 +28,7 @@ class ArchiveViews extends ArchiveViewsModel
 	{
 		return [
 			[['id', 'publish', 'archive_id', 'user_id', 'views'], 'integer'],
-			[['view_date', 'view_ip', 'updated_date', 'archiveTitle', 'userDisplayname', 'levelId', 'archiveCode'], 'safe'],
+			[['view_date', 'view_ip', 'updated_date', 'archiveTitle', 'userDisplayname', 'archiveCode', 'levelId'], 'safe'],
 		];
 	}
 
@@ -72,8 +72,9 @@ class ArchiveViews extends ArchiveViewsModel
 		]);
         if ((isset($params['sort']) && in_array($params['sort'], ['archiveTitle', '-archiveTitle'])) || (
             (isset($params['archiveTitle']) && $params['archiveTitle'] != '') ||
+            (isset($params['archiveCode']) && $params['archiveCode'] != '') ||
             (isset($params['levelId']) && $params['levelId'] != '') ||
-            (isset($params['archiveCode']) && $params['archiveCode'] != '')
+            (isset($params['level']) && $params['level'] != '')
         )) {
             $query->joinWith(['archive archive']);
         }
@@ -139,10 +140,10 @@ class ArchiveViews extends ArchiveViewsModel
 			't.views' => $this->views,
 			'cast(t.view_date as date)' => $this->view_date,
 			'cast(t.updated_date as date)' => $this->updated_date,
-			'archive.level_id' => isset($params['levelId']) ? $params['levelId'] : $this->levelId,
+			'archive.level_id' => $this->levelId,
 		]);
 
-        if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
+        if ((!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) && !$this->publish) {
             $query->andFilterWhere(['IN', 't.publish', [0,1]]);
         } else {
             $query->andFilterWhere(['t.publish' => $this->publish]);

@@ -28,8 +28,10 @@ class Archives extends ArchivesModel
 	{
 		return [
 			[['id', 'publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'media', 
-                'preview', 'location', 'oView', 'oFile', 'oFavourite'], 'integer'],
-			[['title', 'code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'senarai_file', 'creation_date', 'modified_date', 'updated_date', 
+                'preview', 'location', 'oView', 'oFile', 'oFavourite', 
+                'creatorId', 'repositoryId', 'subjectId', 'functionId',
+                'rackId', 'roomId', 'depoId', 'buildingId'], 'integer'],
+			[['title', 'code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'creation_date', 'modified_date', 'updated_date', 
                 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository', 'subject', 'function'], 'safe'],
 		];
 	}
@@ -240,16 +242,16 @@ class Archives extends ArchivesModel
 		]);
 
         // related
-		$query->andFilterWhere(['creators.creator_id' => $params['creatorId']]);
-		$query->andFilterWhere(['repositories.repository_id' => $params['repositoryId']]);
-		$query->andFilterWhere(['subjects.tag_id' => $params['subjectId']]);
-		$query->andFilterWhere(['functions.tag_id' => $params['functionId']]);
+		$query->andFilterWhere(['creators.creator_id' => $this->creatorId]);
+		$query->andFilterWhere(['repositories.repository_id' => $this->repositoryId]);
+		$query->andFilterWhere(['subjects.tag_id' => $this->subjectId]);
+		$query->andFilterWhere(['functions.tag_id' => $this->functionId]);
 
         // location
-		$query->andFilterWhere(['locations.rack_id' => $params['rackId']]);
-		$query->andFilterWhere(['locations.room_id' => $params['roomId']]);
-		$query->andFilterWhere(['relatedLocationRoom.parent_id' => $params['depoId']]);
-		$query->andFilterWhere(['relatedLocationDepo.parent_id' => $params['buildingId']]);
+		$query->andFilterWhere(['locations.rack_id' => $this->rackId]);
+		$query->andFilterWhere(['locations.room_id' => $this->roomId]);
+		$query->andFilterWhere(['relatedLocationRoom.parent_id' => $this->depoId]);
+		$query->andFilterWhere(['relatedLocationDepo.parent_id' => $this->buildingId]);
 
         if (isset($params['location']) && $params['location'] != '') {
             if ($this->location == 1) {
@@ -280,9 +282,9 @@ class Archives extends ArchivesModel
         }
         if (isset($params['oFile']) && $params['oFile'] != '') {
             if ($this->oFile == 1) {
-                $query->andWhere(['<>', 't.senarai_file', '']);
+                $query->andWhere(['<>', 'grid.luring', 0]);
             } else if ($this->oFile == 0) {
-                $query->andWhere(['=', 't.senarai_file', '']);
+                $query->andWhere(['=', 'grid.luring', 0]);
             }
         }
         if (isset($params['oFavourite']) && $params['oFavourite'] != '') {
@@ -293,7 +295,7 @@ class Archives extends ArchivesModel
             }
         }
 
-        if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
+        if ((!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) && !$this->publish) {
             $query->andFilterWhere(['IN', 't.publish', [0,1]]);
         } else {
             $query->andFilterWhere(['t.publish' => $this->publish]);
@@ -307,7 +309,6 @@ class Archives extends ArchivesModel
 			->andFilterWhere(['like', 't.code', $this->code])
 			->andFilterWhere(['like', 't.archive_date', $this->archive_date])
 			->andFilterWhere(['like', 't.archive_file', $this->archive_file])
-			->andFilterWhere(['like', 't.senarai_file', $this->senarai_file])
 			->andFilterWhere(['like', 'parent.title', $this->parentTitle])
 			->andFilterWhere(['like', 'levelTitle.message', $this->levelName])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
