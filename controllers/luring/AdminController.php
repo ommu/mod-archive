@@ -33,9 +33,10 @@ use mdm\admin\components\AccessControl;
 use yii\filters\VerbFilter;
 use ommu\archive\models\ArchiveLurings;
 use ommu\archive\models\search\ArchiveLurings as ArchiveLuringsSearch;
-use ommu\archive\models\ArchiveSetting;
 use yii\web\UploadedFile;
 use thamtech\uuid\helpers\UuidHelper;
+use ommu\archive\models\ArchiveSetting;
+use ommu\archivePengolahan\models\ArchivePengolahanSetting;
 
 class AdminController extends Controller
 {
@@ -49,10 +50,20 @@ class AdminController extends Controller
 	{
         parent::init();
 
-		$setting = ArchiveSetting::find()
-			->select(['breadcrumb_param'])
-			->where(['id' => 1])
-			->one();
+        if (Yii::$app->request->get('archive') || Yii::$app->request->get('id')) {
+            if (array_key_exists('archive_submenu', $this->module->params)) {
+                $this->subMenu = $this->module->params['archive_submenu'];
+            }
+        }
+
+        if ($this->isPengolahan()) {
+            $setting = new ArchivePengolahanSetting(['app' => 'archivePengolahanModule']);
+        } else {
+            $setting = ArchiveSetting::find()
+                ->select(['breadcrumb_param'])
+                ->where(['id' => 1])
+                ->one();
+        }
 		$this->breadcrumbApp = $setting->breadcrumb;
 		$this->breadcrumbAppParam = $setting->getBreadcrumbAppParam();
 	}
@@ -74,6 +85,22 @@ class AdminController extends Controller
                 ],
             ],
         ];
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function ignoreLevelField()
+	{
+		return false;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function isPengolahan()
+	{
+		return false;
 	}
 
 	/**
@@ -106,8 +133,25 @@ class AdminController extends Controller
 
         if (($archive = Yii::$app->request->get('archive')) != null) {
             $this->subMenuParam = $archive;
-            $this->subMenu = $this->module->params['fond_submenu'];
             $archive = \ommu\archive\models\Archives::findOne($archive);
+            if ($archive->isFond == true) {
+                if (array_key_exists('fond_submenu', $this->module->params)) {
+                    $this->subMenu = $this->module->params['fond_submenu'];
+                }
+            }
+            if (empty($archive->level->child)) {
+                unset($this->subMenu[1]['childs']);
+            }
+            if (empty($archive->level->field) || !in_array('location', $archive->level->field)) {
+                unset($this->subMenu[1]['location']);
+            }
+            if (!$this->ignoreLevelField() && (empty($archive->level->field) || !in_array('luring', $archive->level->field))) {
+                throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
+                unset($this->subMenu[1]['luring']);
+            }
+            if (empty($archive->level->field) || !in_array('favourites', $archive->level->field)) {
+                unset($this->subMenu[2]['favourites']);
+            }
         }
 
 		$this->view->title = Yii::t('app', 'Senarai Lurings');
@@ -118,6 +162,7 @@ class AdminController extends Controller
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
 			'archive' => $archive,
+			'isPengolahan' => $this->isPengolahan(),
 		]);
 	}
 
@@ -132,7 +177,7 @@ class AdminController extends Controller
 			throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
 
-        $model = new ArchiveLurings(['publish' => 1, 'archive_id' => $id]);
+        $model = new ArchiveLurings(['archive_id' => $id]);
 
         $archive = $model->archive;
         $childs = $archive->getArchives('relation', 1)->all();
@@ -150,7 +195,7 @@ class AdminController extends Controller
                 $documents = [];
 
                 $uploadPath = $archive::getUploadPath();
-                $documentPath = join('/', [$uploadPath, 'document_draft']);
+                $documentPath = join('/', [$uploadPath, 'senarai_luring_draft']);
                 $verwijderenPath = join('/', [$documentPath, 'verwijderen']);
                 $this->createUploadDirectory($documentPath);
 
@@ -184,14 +229,10 @@ class AdminController extends Controller
 
                 $model->senarai_file_draft = $documents;
 
-                if ($model->save(false, ['senarai_file_draft'])) {
-                    $archive = $model->archive;
-                    $archive->senarai_file = $model->senarai_file_draft;
-                    $archive->save(false, ['senarai_file']);
-                }
+                $model->save(false, ['senarai_file_draft']);
 
                 Yii::$app->session->setFlash('success', Yii::t('app', 'Senarai luring success created.'));
-                return $this->redirect(['fond/manage']);
+                return $this->redirect(['manage', 'archive' => $model->archive_id]);
                 //return $this->redirect(['view', 'id' => $model->id]);
 	
 				ob_end_flush();
@@ -203,13 +244,33 @@ class AdminController extends Controller
             }
         }
 
-        $this->subMenu = $this->module->params['fond_submenu'];
+        if ($archive->isFond == true) {
+            if (array_key_exists('fond_submenu', $this->module->params)) {
+                $this->subMenu = $this->module->params['fond_submenu'];
+            }
+        }
+        $this->subMenuParam = $id;
+        if (empty($archive->level->child)) {
+            unset($this->subMenu[1]['childs']);
+        }
+        if (empty($archive->level->field) || !in_array('location', $archive->level->field)) {
+            unset($this->subMenu[1]['location']);
+        }
+        if (!$this->ignoreLevelField() && (empty($archive->level->field) || !in_array('luring', $archive->level->field))) {
+            throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
+            unset($this->subMenu[1]['luring']);
+        }
+        if (empty($archive->level->field) || !in_array('favourites', $archive->level->field)) {
+            unset($this->subMenu[2]['favourites']);
+        }
+
 		$this->view->title = Yii::t('app', 'Generate Senarai Luring');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_create', [
 			'model' => $model,
 			'archive' => $archive,
+			'isPengolahan' => $this->isPengolahan(),
 		]);
 	}
 
@@ -241,13 +302,19 @@ class AdminController extends Controller
             }
         }
 
-        $this->subMenu = $this->module->params['luring_submenu'];
+        if (array_key_exists('luring_submenu', $this->module->params)) {
+            $this->subMenu = $this->module->params['luring_submenu'];
+        }
+        if ($this->isPengolahan()) {
+            $this->subMenuParam = $model->archive_id;
+        }
         $this->subMenuBackTo = $model->archive_id;
 		$this->view->title = Yii::t('app', 'Publish Luring: {archive-id}', ['archive-id' => $model->archive->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
 			'model' => $model,
+			'isPengolahan' => $this->isPengolahan(),
 		]);
 	}
 
@@ -260,13 +327,21 @@ class AdminController extends Controller
 	{
         $model = $this->findModel($id);
 
-        $this->subMenu = $this->module->params['luring_submenu'];
+        if (array_key_exists('luring_submenu', $this->module->params)) {
+            $this->subMenu = $this->module->params['luring_submenu'];
+        }
+
+        if ($this->isPengolahan()) {
+            $this->subMenuParam = $model->archive_id;
+        }
         $this->subMenuBackTo = $model->archive_id;
 		$this->view->title = Yii::t('app', 'Detail Luring: {archive-id}', ['archive-id' => $model->archive->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
 			'model' => $model,
+			'small' => false,
+			'isPengolahan' => $this->isPengolahan(),
 		]);
 	}
 
@@ -283,7 +358,7 @@ class AdminController extends Controller
 
         if ($model->save(false, ['publish','modified_id'])) {
             Yii::$app->session->setFlash('success', Yii::t('app', 'Senarai luring success deleted.'));
-            return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
+            return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'archive' => $model->archive_id]);
         }
 	}
 

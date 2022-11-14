@@ -31,7 +31,7 @@ class m210824_140133_archive_module_create_table_setting extends \yii\db\Migrati
 				'meta_keyword' => Schema::TYPE_TEXT . ' NOT NULL',
 				'fond_sidkkas' => Schema::TYPE_TINYINT . '(1) NOT NULL COMMENT \'"0=disable, 1=enable"\'',
 				'reference_code_sikn' => Schema::TYPE_STRING . '(32) NOT NULL',
-				'reference_code_separator' => Schema::TYPE_CHAR . '(1) NOT NULL',
+				'reference_code_separator' => Schema::TYPE_STRING . '(4) NOT NULL',
 				'short_code' => Schema::TYPE_TINYINT . '(1) NOT NULL COMMENT \'Enable,Disable\'',
 				'medium_sublevel' => Schema::TYPE_TINYINT . '(1) NOT NULL',
 				'production_date' => Schema::TYPE_DATE . ' NOT NULL DEFAULT \'0000-00-00\'',

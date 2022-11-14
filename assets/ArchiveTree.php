@@ -1,16 +1,17 @@
 <?php
 namespace ommu\archive\assets;
 
-class AciTreeAsset extends \yii\web\AssetBundle
+class ArchiveTree extends \yii\web\AssetBundle
 {
 	public $sourcePath = '@ommu/archive/assets';
-	
-	public $css = [
-		'css/custom.css',
+
+	public $js = [
+		'js/acitree.js',
 	];
 
 	public $depends = [
 		'ommu\archive\assets\AciTreePluginAsset',
+		'ommu\archive\assets\AciTreeAsset',
 	];
 
 	public $publishOptions = [
@@ -18,6 +19,7 @@ class AciTreeAsset extends \yii\web\AssetBundle
 		'except' => [
 			'AciTreeAsset.php',
 			'AciTreePluginAsset.php',
+			'ArchiveTree.php',
 		],
 	];
 }

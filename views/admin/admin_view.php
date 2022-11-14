@@ -18,7 +18,7 @@ use yii\helpers\Url;
 use yii\widgets\DetailView;
 use yii\helpers\ArrayHelper;
 
-!$small ? \ommu\archive\assets\AciTreeAsset::register($this) : '';
+!$small ? \ommu\archive\assets\ArchiveTree::register($this) : '';
 
 if (!$small) {
     $context = $this->context;
@@ -45,22 +45,22 @@ JS;
 
 $attributes = [
 	[
-		'attribute' => 'id',
+            'attribute' => 'id',
 		'value' => $model->id,
 		'visible' => !$small,
 	],
 	[
-		'attribute' => 'publish',
+            'attribute' => 'publish',
 		'value' => $model::getPublish($model->publish),
 		'visible' => !$small,
 	],
 	[
-		'attribute' => 'sidkkas',
+            'attribute' => 'sidkkas',
 		'value' => $model->filterYesNo($model->sidkkas),
 		'visible' => !$small,
 	],
 	[
-		'attribute' => 'parent_id',
+            'attribute' => 'parent_id',
 		'value' => function ($model) {
             $parent = $model->parent;
             return $model::parseParent($parent);
@@ -69,27 +69,33 @@ $attributes = [
 		'visible' => !$small && !$isFond,
 	],
 	[
-		'attribute' => 'levelName',
+            'attribute' => 'levelName',
 		'value' => function ($model) {
 			$levelName = isset($model->levelTitle) ? $model->levelTitle->message : '-';
             if ($levelName != '-') {
-				return Html::a($levelName, ['setting/level/view', 'id' => $model->level_id], ['title' => $levelName, 'class' => 'modal-btn']);
+				return Html::a($levelName, ['/archive/setting/level/view', 'id' => $model->level_id], ['title' => $levelName, 'class' => 'modal-btn']);
             }
 			return $levelName;
 		},
 		'format' => 'html',
 	],
 	[
-		'attribute' => 'code',
+            'attribute' => 'code',
 		'value' => function ($model) {
 			$setting = \ommu\archive\models\ArchiveSetting::find()
 				->select(['maintenance_mode', 'reference_code_sikn', 'reference_code_separator'])
 				->where(['id' => 1])
 				->one();
+
+            // echo '<pre>';
+            // print_r($model->referenceCode);
+            // echo '</pre>';
             if (!$setting->maintenance_mode) {
-				$referenceCode = $model->referenceCode;
-				array_multisort($referenceCode);
-				return $setting->reference_code_sikn.' '.preg_replace("/($model->code)$/", '<span class="text-primary">'.$model->code.'</span>', join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'code')));
+                return $setting->reference_code_sikn.' <span class="text-primary">'.$model->code.'</span>';
+				// $referenceCode = $model->referenceCode;
+				// array_multisort($referenceCode);
+                // $firstKey = array_key_last($referenceCode);
+				// return $setting->reference_code_sikn.' '.preg_replace("/($model->code)$/", '<span class="text-primary">'.$model->code.'</span>', join($setting->reference_code_separator, ArrayHelper::map($referenceCode, 'level', 'code')));
 			} else {
 				$referenceCode = $model->referenceCode;
 				array_multisort($referenceCode);
@@ -104,52 +110,57 @@ $attributes = [
 		'format' => 'html',
 	],
 	[
-		'attribute' => 'title',
+            'attribute' => 'title',
 		'value' => $model->title ? $model->title : '-',
 		'format' => 'html',
 	],
 	[
-		'attribute' => 'creator',
+            'attribute' => 'creator',
 		'value' => $model::parseRelated($model->getCreators(true, 'title'), 'creator'),
 		'format' => 'html',
 		'visible' => (!$small && in_array('creator', $model->level->field)) || ($small && $model->isFond) ? true : false,
 	],
 	[
-		'attribute' => 'repository',
+            'attribute' => 'repository',
 		'value' => $model::parseRelated($model->getRepositories(true, 'title'), 'repository', ', '),
 		'format' => 'html',
 		'visible' => !$small && in_array('repository', $model->level->field) ? true : false,
 	],
 	[
-		'attribute' => 'archive_date',
+            'attribute' => 'archive_date',
 		'value' => $model->archive_date ? $model->archive_date : '-',
 		'visible' => !$small,
 	],
 	[
-		'attribute' => 'media',
-		'value' => $model::parseRelated($model->getMedias(true, 'title')),
+            'attribute' => 'media',
+		'value' => $model::parseFilter($model->getMedias(true, 'title'), 'media', ', '),
 		'format' => 'html',
 		'visible' => !$small && in_array('media', $model->level->field) ? true : false,
 	],
 	[
-		'attribute' => 'archive_type',
-		'value' => $model::getArchiveType($model->archive_type ? $model->archive_type : '-'),
+            'attribute' => 'archive_type',
+		'value' => function ($model) {
+            if ($model->archive_type) {
+                return $model::getArchiveType($model->archive_type);
+            }
+            return '-';
+		},
 		'visible' => !$small && in_array('archive_type', $model->level->field) ? true : false,
 	],
 	[
-		'attribute' => 'subject',
-		'value' => $model::parseSubject($model->getSubjects(true, 'title'), 'subjectId'),
+            'attribute' => 'subject',
+		'value' => $model::parseFilter($model->getSubjects(true, 'title'), 'subjectId', ', '),
 		'format' => 'html',
 		'visible' => !$small && in_array('subject', $model->level->field),
 	],
 	[
-		'attribute' => 'function',
-		'value' => $model::parseSubject($model->getFunctions(true, 'title'), 'functionId'),
+            'attribute' => 'function',
+		'value' => $model::parseFilter($model->getFunctions(true, 'title'), 'functionId', ', '),
 		'format' => 'html',
 		'visible' => !$small && in_array('function', $model->level->field),
 	],
 	[
-		'attribute' => 'location',
+            'attribute' => 'location',
 		'value' => function ($model) {
             if (($location = $model->getLocations(false)) != null) {
                 return $model::parseLocation($location);
@@ -160,12 +171,13 @@ $attributes = [
 		'visible' => !$small && in_array('location', $model->level->field) ? true : false,
 	],
 	[
-		'attribute' => 'medium',
+            'attribute' => 'medium',
+        'label' => Yii::t('app', 'Child & Medium'),
 		'value' => function ($model) {
             if (strtolower($model->levelTitle->message) == 'item') {
                 return $model->medium ? $model->medium : '-';
             }
-			return $model::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id);
+			return $model::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id, ', ');
 		},
 		'format' => 'html',
         'visible' => !$small,
@@ -180,27 +192,27 @@ $attributes = [
 		'visible' => !$small,
     ],
 	[
-		'attribute' => 'creation_date',
+            'attribute' => 'creation_date',
 		'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),
 		'visible' => !$small,
 	],
 	[
-		'attribute' => 'creationDisplayname',
+            'attribute' => 'creationDisplayname',
 		'value' => isset($model->creation) ? $model->creation->displayname : '-',
 		'visible' => !$small,
 	],
 	[
-		'attribute' => 'modified_date',
+            'attribute' => 'modified_date',
 		'value' => Yii::$app->formatter->asDatetime($model->modified_date, 'medium'),
 		'visible' => !$small,
 	],
 	[
-		'attribute' => 'modifiedDisplayname',
+            'attribute' => 'modifiedDisplayname',
 		'value' => isset($model->modified) ? $model->modified->displayname : '-',
 		'visible' => !$small,
 	],
 	[
-		'attribute' => 'updated_date',
+            'attribute' => 'updated_date',
 		'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
 		'visible' => !$small,
 	],

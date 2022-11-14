@@ -66,11 +66,11 @@ class Events extends \yii\base\BaseObject
 		// drop difference media
         if (!empty($oldMedia)) {
 			foreach ($oldMedia as $key => $val) {
-				ArchiveRelatedMedia::find()
+				$model = ArchiveRelatedMedia::find()
 					->select(['id'])
 					->andWhere(['id' => $key])
-					->one()
-					->delete();
+					->one();
+                $model->delete();
 			}
 		}
 	}
@@ -81,6 +81,7 @@ class Events extends \yii\base\BaseObject
 	public static function setArchiveCreator($archive)
 	{
 		$oldCreator = $archive->getCreators(true, 'title');
+        $creator = [];
         if ($archive->creator) {
             $creator = explode(',', $archive->creator);
         }
@@ -118,11 +119,11 @@ class Events extends \yii\base\BaseObject
 		// drop difference creator
         if (!empty($oldCreator)) {
 			foreach ($oldCreator as $key => $val) {
-				ArchiveRelatedCreator::find()
+				$model = ArchiveRelatedCreator::find()
 					->select(['id'])
 					->andWhere(['archive_id' => $archive->id, 'creator_id' => $key])
-					->one()
-					->delete();
+					->one();
+                $model->delete();
 			}
 		}
 	}
@@ -173,11 +174,11 @@ class Events extends \yii\base\BaseObject
 				$model->save();
 			} else {
 				// drop old repository
-				ArchiveRelatedRepository::find()
+				$model = ArchiveRelatedRepository::find()
 					->select(['id'])
 					->andWhere(['id' => key($oldRepository)])
-					->one()
-					->delete();
+					->one();
+                $model->delete();
 			}
 		}
 	}
@@ -187,6 +188,7 @@ class Events extends \yii\base\BaseObject
 	 */
 	public static function setArchiveSubject($archive, $type='subject')
 	{
+        $subject = [];
         if ($type == 'subject') {
 			$oldSubject = $archive->getSubjects(true, 'title');
             if ($archive->subject) {
@@ -233,11 +235,11 @@ class Events extends \yii\base\BaseObject
 		// drop difference subject
         if (!empty($oldSubject)) {
 			foreach ($oldSubject as $key => $val) {
-				ArchiveRelatedSubject::find()
+				$model = ArchiveRelatedSubject::find()
 					->select(['id'])
 					->where(['type' => $type, 'archive_id' => $archive->id, 'tag_id' => $key])
-					->one()
-					->delete();
+					->one();
+                $model->delete();
 			}
 		}
 	}

@@ -75,7 +75,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
 			[['child', 'field', 'orders'], 'safe'],
 			//[['child', 'field], 'serialize'],
 			[['level_name_i'], 'string', 'max' => 64],
-			[['level_desc_i'], 'string', 'max' => 128],
+			[['level_desc_i'], 'string', 'max' => 256],
 		];
 	}
 
@@ -390,9 +390,11 @@ class ArchiveLevel extends \app\components\ActiveRecord
             'media' => Yii::t('app', 'Media Type'),
             'subject' => Yii::t('app', 'Subject'),
             'function' => Yii::t('app', 'Function'),
-            'location' => Yii::t('app', 'Location'),
             'medium' => Yii::t('app', 'Extent and medium'),
             'sidkkas' => Yii::t('app', 'SiDKKAS'),
+            'location' => Yii::t('app', 'Location'),
+            'luring' => Yii::t('app', 'Senarai Luring'),
+            'favourites' => Yii::t('app', 'Bookmark'),
 		);
 
         if ($field !== null) {

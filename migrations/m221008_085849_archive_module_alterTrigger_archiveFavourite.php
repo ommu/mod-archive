@@ -19,14 +19,15 @@ class m221008_085849_archive_module_alterTrigger_archiveFavourite extends \yii\d
 	{
         $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertFavourites`');
         $this->execute('DROP TRIGGER IF EXISTS `archiveAfterUpdateFavourites`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterDeleteFavourites`');
 
         // create trigger archiveAfterInsertFavourites
         $archiveAfterInsertFavourites = <<< SQL
 CREATE
     TRIGGER `archiveAfterInsertFavourites` AFTER INSERT ON `ommu_archive_favourites` 
     FOR EACH ROW BEGIN
-	INSERT `ommu_archive_favourite_history` (`favourite_id`, `creation_ip`, `creation_date`)
-	VALUE (NEW.id, NEW.creation_ip, NEW.creation_date);
+	INSERT `ommu_archive_favourite_history` (`favourite_id`, `publish`, `creation_ip`, `creation_date`)
+	VALUE (NEW.id, NEW.publish, NEW.creation_ip, NEW.creation_date);
 
 	UPDATE `ommu_archive_grid` SET `favourite` = `favourite` + 1 WHERE `id` = NEW.archive_id;
     END;
@@ -39,32 +40,45 @@ CREATE
     TRIGGER `archiveAfterUpdateFavourites` AFTER UPDATE ON `ommu_archive_favourites` 
     FOR EACH ROW BEGIN
 	IF (NEW.updated_date <> OLD.updated_date) THEN
-		INSERT `ommu_archive_favourite_history` (`favourite_id`, `creation_ip`, `creation_date`)
-		VALUE (NEW.id, NEW.creation_ip, NEW.creation_date);
+		INSERT `ommu_archive_favourite_history` (`favourite_id`, `publish`, `creation_ip`, `creation_date`)
+		VALUE (NEW.id, NEW.publish, NEW.creation_ip, NEW.creation_date);
 
 		IF (NEW.publish = 1) THEN
 			UPDATE `ommu_archive_grid` SET `favourite` = `favourite` + 1 WHERE `id` = NEW.archive_id;
-		ELSE
+		ELSEIF (OLD.publish = 1) THEN
 			UPDATE `ommu_archive_grid` SET `favourite` = `favourite` - 1 WHERE `id` = NEW.archive_id;
 		END IF;
 	END IF;
     END;
 SQL;
         $this->execute($archiveAfterUpdateFavourites);
+
+        // create trigger archiveAfterDeleteFavourites
+        $archiveAfterDeleteFavourites = <<< SQL
+CREATE
+    TRIGGER `archiveAfterDeleteFavourites` AFTER DELETE ON `ommu_archive_favourites` 
+    FOR EACH ROW BEGIN
+	IF (OLD.publish = 1) THEN
+		UPDATE `ommu_archive_grid` SET `favourite` = `favourite` - 1 WHERE `id` = OLD.archive_id;
+	END IF;
+    END;
+SQL;
+        $this->execute($archiveAfterDeleteFavourites);
 	}
 
 	public function down()
 	{
         $this->execute('DROP TRIGGER IF EXISTS `archiveAfterInsertFavourites`');
         $this->execute('DROP TRIGGER IF EXISTS `archiveAfterUpdateFavourites`');
+        $this->execute('DROP TRIGGER IF EXISTS `archiveAfterDeleteFavourites`');
 
         // create trigger archiveAfterInsertFavourites
         $archiveAfterInsertFavourites = <<< SQL
 CREATE
     TRIGGER `archiveAfterInsertFavourites` AFTER INSERT ON `ommu_archive_favourites` 
     FOR EACH ROW BEGIN
-	INSERT `ommu_archive_favourite_history` (`favourite_id`, `creation_ip`, `creation_date`)
-	VALUE (NEW.id, NEW.creation_ip, NEW.creation_date);
+	INSERT `ommu_archive_favourite_history` (`favourite_id`, `publish`, `creation_ip`, `creation_date`)
+	VALUE (NEW.id, NEW.publish, NEW.creation_ip, NEW.creation_date);
     END;
 SQL;
         $this->execute($archiveAfterInsertFavourites);
@@ -75,8 +89,8 @@ CREATE
     TRIGGER `archiveAfterUpdateFavourites` AFTER UPDATE ON `ommu_archive_favourites` 
     FOR EACH ROW BEGIN
 	IF (NEW.updated_date <> OLD.updated_date) THEN
-		INSERT `ommu_archive_favourite_history` (`favourite_id`, `creation_ip`, `creation_date`)
-		VALUE (NEW.id, NEW.creation_ip, NEW.creation_date);
+		INSERT `ommu_archive_favourite_history` (`favourite_id`, `publish`, `creation_ip`, `creation_date`)
+		VALUE (NEW.id, NEW.publish, NEW.creation_ip, NEW.creation_date);
 	END IF;
     END;
 SQL;

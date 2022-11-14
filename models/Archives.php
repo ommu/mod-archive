@@ -22,7 +22,6 @@
  * @property string $archive_type
  * @property string $archive_date
  * @property string $archive_file
- * @property string $senarai_file
  * @property string $creation_date
  * @property integer $creation_id
  * @property string $modified_date
@@ -65,10 +64,12 @@ class Archives extends \app\components\ActiveRecord
 	use \ommu\traits\UtilityTrait;
 	use \ommu\traits\FileTrait;
 
-	public $gridForbiddenColumn = ['parentTitle', 'media', 'creator', 'repository', 'subject', 'function', 'archive_type', 'archive_file', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
+	public $gridForbiddenColumn = ['archive_type', 'archive_file', 'creation_date', 'modified_date', 'updated_date', 'creator', 'repository', 'subject', 'function', 'parentTitle', 'creationDisplayname', 'modifiedDisplayname', 'oView', 'oFavourite'];
 
 	public $old_archive_file;
 	public $isFond = true;
+	public $isLuring = true;
+	public $isLocation = true;
 
 	public $confirmCode;
 	public $shortCode;
@@ -77,11 +78,11 @@ class Archives extends \app\components\ActiveRecord
 	public $oldShortCode;
 	public $updateCode = true;
 
-	public $media;
-	public $creator;
-	public $repository;
-	public $subject;
-	public $function;
+    public $media;
+    public $creator;
+    public $repository;
+    public $subject;
+    public $function;
 	public $preview;
 	public $location;
 	public $group_childs;
@@ -94,6 +95,16 @@ class Archives extends \app\components\ActiveRecord
     public $oView;
     public $oFile;
     public $oFavourite;
+
+    public $creatorId;
+    public $repositoryId;
+    public $subjectId;
+    public $functionId;
+
+    public $rackId;
+    public $roomId;
+    public $depoId;
+    public $buildingId;
 
 	const EVENT_BEFORE_SAVE_ARCHIVES = 'BeforeSaveArchives';
 
@@ -114,7 +125,7 @@ class Archives extends \app\components\ActiveRecord
 			[['publish', 'level_id', 'title', 'shortCode'], 'required'],
 			[['publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'backToManage'], 'integer'],
 			[['title', 'archive_type', 'archive_date'], 'string'],
-			[['code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'senarai_file', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
+			[['code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
 			[['code'], 'string', 'max' => 255],
 			[['archive_date'], 'string', 'max' => 64],
 			[['shortCode'], 'string', 'max' => 32],
@@ -135,11 +146,10 @@ class Archives extends \app\components\ActiveRecord
 			'level_id' => Yii::t('app', 'Level of Description'),
 			'title' => Yii::t('app', 'Title'),
 			'code' => Yii::t('app', 'Reference code'),
-			'medium' => Yii::t('app', 'Extent and medium'),
+			'medium' => Yii::t('app', 'Medium'),
 			'archive_type' => Yii::t('app', 'Archive Type'),
 			'archive_date' => Yii::t('app', 'Archive Date'),
 			'archive_file' => Yii::t('app', 'Archive File'),
-			'senarai_file' => Yii::t('app', 'Senarai File'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
@@ -162,7 +172,7 @@ class Archives extends \app\components\ActiveRecord
 			'backToManage' => Yii::t('app', 'Back to Manage'),
             'oView' => Yii::t('app', 'Views'),
 			'oFile' => Yii::t('app', 'Luring File'),
-			'oFavourite' => Yii::t('app', 'Favourite'),
+			'oFavourite' => Yii::t('app', 'Bookmark'),
 		];
 	}
 
@@ -489,12 +499,12 @@ class Archives extends \app\components\ActiveRecord
 		];
 		$this->templateColumns['medium'] = [
 			'attribute' => 'medium',
-			'label' => Yii::t('app', 'Medium'),
+			'label' => Yii::t('app', 'Child & Medium'),
 			'value' => function($model, $key, $index, $column) {
                 if (strtolower($model->levelTitle->message) == 'item') {
                     return $model->medium ? $model->medium : '-';
                 }
-				// return self::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id);
+				return self::parseChilds($model->getChilds(['sublevel' => false, 'back3nd' => true]), $model->id, ', ');
 			},
 			'filter' => false,
 			'enableSorting' => false,
@@ -505,7 +515,7 @@ class Archives extends \app\components\ActiveRecord
 			'attribute' => 'media',
 			'label' => Yii::t('app', 'Media'),
 			'value' => function($model, $key, $index, $column) {
-				return self::parseRelated($model->getMedias(true, 'title'), 'media', ', ');
+				return self::parseFilter($model->getMedias(true, 'title'), 'media', ', ');
 			},
 			'filter' => ArchiveMedia::getMedia(),
 			'format' => 'html',
@@ -513,21 +523,24 @@ class Archives extends \app\components\ActiveRecord
 		$this->templateColumns['archive_type'] = [
 			'attribute' => 'archive_type',
 			'value' => function($model, $key, $index, $column) {
-				return self::getArchiveType($model->archive_type ? $model->archive_type : '-');
+                if ($model->archive_type) {
+                    return self::getArchiveType($model->archive_type);
+                }
+                return '-';
 			},
 			'filter' => self::getArchiveType(),
 		];
 		$this->templateColumns['subject'] = [
 			'attribute' => 'subject',
 			'value' => function($model, $key, $index, $column) {
-				return self::parseSubject($model->getSubjects(true, 'title'), 'subjectId', ', ');
+				return self::parseFilter($model->getSubjects(true, 'title'), 'subjectId', ', ');
 			},
 			'format' => 'html',
 		];
 		$this->templateColumns['function'] = [
 			'attribute' => 'function',
 			'value' => function($model, $key, $index, $column) {
-				return self::parseSubject($model->getFunctions(true, 'title'), 'functionId', ', ');
+				return self::parseFilter($model->getFunctions(true, 'title'), 'functionId', ', ');
 			},
 			'format' => 'html',
 		];
@@ -618,7 +631,7 @@ class Archives extends \app\components\ActiveRecord
 			'value' => function($model, $key, $index, $column) {
 				// $views = $model->getViews(true);
                 $favourites = $model->grid->favourite;
-				return Html::a($favourites, ['favourite/admin/manage', 'archive' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} favourites', ['count' => $favourites]), 'data-pjax' => 0]);
+				return Html::a($favourites, ['favourite/admin/manage', 'archive' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} bookmarks', ['count' => $favourites]), 'data-pjax' => 0]);
 			},
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
@@ -639,17 +652,17 @@ class Archives extends \app\components\ActiveRecord
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
-			'visible' => $this->isFond ? true : false,
+			'visible' => $this->isFond && $this->isLuring ? true : false,
 		];
 		$this->templateColumns['location'] = [
 			'attribute' => 'location',
 			'value' => function($model, $key, $index, $column) {
-                $location = $this->getLocations(false) != null ? 1 : 0;
+                $location = $model->getLocations(false) != null ? 1 : 0;
 				return $this->filterYesNo($location);
 			},
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
-			'visible' => !$this->isFond ? true : false,
+			'visible' => !$this->isFond && $this->isLocation ? true : false,
 		];
 		$this->templateColumns['preview'] = [
 			'attribute' => 'preview',
@@ -908,9 +921,9 @@ class Archives extends \app\components\ActiveRecord
 		$title = self::htmlHardDecode($model->title);
 		$levelName = $model->levelTitle->message;
 
-		$items[] = $model->getAttributeLabel('level_id').': '.Html::a($levelName, ['setting/level/view', 'id' => $model->level_id], ['title' => $levelName, 'class' => 'modal-btn']);
+		$items[] = $model->getAttributeLabel('level_id').': '.Html::a($levelName, ['/archive/setting/level/view', 'id' => $model->level_id], ['title' => $levelName, 'class' => 'modal-btn']);
 		$items[] = Yii::t('app', '{level} Code: {code}', ['level' => $levelName, 'code' => $model->code]);
-		$items[] = $model->getAttributeLabel('title').': '.Html::a($title, ['view', 'id' => $model->id], ['title' => $title, 'class' => 'modal-btn']);
+		$items[] = $model->getAttributeLabel('title').': '.Html::a($title, ['/archive/admin/view', 'id' => $model->id], ['title' => $title, 'class' => 'modal-btn']);
 
         if (Yii::$app->request->isAjax) {
             return Html::ul($items, ['encode' => false, 'class' => 'list-boxed']);
@@ -932,7 +945,7 @@ class Archives extends \app\components\ActiveRecord
             return '-';
         }
 
-		$items = self::getRelatedUrl($medias, $controller, true);
+		$items = self::getRelatedUrl($medias, $controller, $controller != null ? true : false);
 
         if ($sep == 'li') {
 			return Html::ul($items, ['item' => function($item, $index) {
@@ -950,20 +963,16 @@ class Archives extends \app\components\ActiveRecord
 	{
 		$items = [];
 		foreach ($relates as $key => $val) {
-            if ($hyperlink) {
-                $items[$val] = Html::a($val, ['setting/'.$controller.'/view', 'id' => $key], ['title' => $val, 'class' => 'modal-btn']);
-            } else {
-                $items[$val] = Url::to(['setting/'.$controller.'/view', 'id' => $key]);
-            }
+            $items[$val] = $hyperlink ? Html::a($val, ['setting/'.$controller.'/view', 'id' => $key], ['title' => $val, 'class' => 'modal-btn']) : $val;
         }
 
 		return $items;
 	}
 
 	/**
-	 * function parseSubject
+	 * function parseFilter
 	 */
-	public static function parseSubject($subjects, $attr='subjectId', $sep='li')
+	public static function parseFilter($subjects, $attr='subjectId', $sep='li')
 	{
         if (!is_array($subjects) || (is_array($subjects) && empty($subjects))) {
             return '-';
@@ -1095,7 +1104,6 @@ class Archives extends \app\components\ActiveRecord
 		$this->old_archive_file = $this->archive_file;
         $this->isFond = $this->level_id == 1 ? true : false;
 		$this->preview = $this->archive_file != '' ? true : false;
-		$this->oFile = $this->senarai_file != '' ? true : false;
 		// $this->parentTitle = isset($this->parent) ? $this->parent->title : '-';
 		// $this->levelName = isset($this->level) ? $this->level->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
@@ -1108,29 +1116,34 @@ class Archives extends \app\components\ActiveRecord
 		// $this->function =  implode(',', $this->getFunctions(true, 'title'));
 		// $this->location = $this->getLocations(false) != null ? 1 : 0;
 
-		$this->code = preg_replace("/^[.-]/", '', preg_replace("/^(3400|23400-24)/", '', $this->code));
+		$this->code = trim(preg_replace("/^[.-]/", "", preg_replace("/^(3400|23400-24)/", "", preg_replace("/[\s]/", "", $this->code))));
 		$this->oldCode = $this->code;
-		$parentCode = $this->parent->code;
-        if ($setting->maintenance_mode) {
-            if ($this->parent->code == $this->parent->confirmCode) {
-                $parentCode = preg_replace("/[.-]$/", '', join('.', $this->getReferenceCode(true)));
-            }
-			$confirmCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
-			$parentConfirmCode = $this->parent->confirmCode;
-            if (preg_match("/^($parentConfirmCode)/", $confirmCode)) {
-				$shortCodeStatus = false;
-				$this->confirmCode = $confirmCode;
-			} else {
-				$shortCodeStatus = true;
-                if (count(explode('.', $confirmCode)) == 1) {
-                    $this->confirmCode = join('.', [$parentConfirmCode, $confirmCode]);
-                } else {
-                    $this->confirmCode = $confirmCode;
+        if ($this->parent) {
+            $parentCode = $this->parent->code;
+            if ($setting->maintenance_mode) {
+                if ($this->parent->code == $this->parent->confirmCode) {
+                    $parentCode = preg_replace("/[.-]$/", '', join('.', $this->getReferenceCode(true)));
                 }
-			}
-			$this->shortCode = $shortCodeStatus ? $confirmCode : preg_replace("/^[.-]/", '', preg_replace("/^($parentConfirmCode)/", '', $this->confirmCode));
-		} else {
-            $this->shortCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
+                $confirmCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
+                $parentConfirmCode = $this->parent->confirmCode;
+                if (preg_match("/^($parentConfirmCode)/", $confirmCode)) {
+                    $shortCodeStatus = false;
+                    $this->confirmCode = $confirmCode;
+                } else {
+                    $shortCodeStatus = true;
+                    if (count(explode('.', $confirmCode)) == 1) {
+                        $this->confirmCode = join('.', [$parentConfirmCode, $confirmCode]);
+                    } else {
+                        $this->confirmCode = $confirmCode;
+                    }
+                }
+                $this->shortCode = $shortCodeStatus ? $confirmCode : preg_replace("/^[.-]/", '', preg_replace("/^($parentConfirmCode)/", '', $this->confirmCode));
+            } else {
+                $this->shortCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
+            }
+        } else {
+            $this->confirmCode = $this->code;
+            $this->shortCode = $this->code;
         }
 
 		$this->oldConfirmCode = $this->confirmCode;
@@ -1203,6 +1216,7 @@ class Archives extends \app\components\ActiveRecord
 			// 		join('.', [$this->parent->confirmCode, $this->shortCode]) :
 			// 		join('.', [$this->parent->code, $this->shortCode]));
 		}
+        $this->code = trim($this->code);
 	
 		// replace code
         if (!$insert && (array_key_exists('code', $this->dirtyAttributes) && $this->dirtyAttributes['code'] != $this->oldCode) && $this->getArchives('count') != 0) {

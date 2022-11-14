@@ -21,12 +21,22 @@ if ($context->breadcrumbApp) {
 	$this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
 if ($archive) {
-    $this->params['breadcrumbs'][] = ['label' => $archive->isFond ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventory'), 'url' => $archive->isFond ? ['fond/index'] : ['admin/index']];
-    $archiveDetailUrl = $archive->isFond ? ['fond/view', 'id' => $archive->id] : ['admin/view', 'id' => $archive->id];
-    $this->params['breadcrumbs'][] = ['label' => $archive->isFond ? $archive->code : Yii::t('app', '#{level-name} {code}', ['level-name' => strtoupper($archive->levelTitle->message), 'code' => $archive->code]), 'url' => $archiveDetailUrl];
-    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Luring'), 'url' => ['manage', 'archive' => $archive->id]];
+    $senaraiLabel = $archive->isFond ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventory');
+    $senaraiUrl = $archive->isFond ? ['fond/index'] : ['admin/index'];
+    if ($isPengolahan) {
+        $senaraiLabel = Yii::t('app', 'Senarai');
+        $senaraiUrl = ['luring/admin/index'];
+    }
+    $this->params['breadcrumbs'][] = ['label' => $senaraiLabel, 'url' => $senaraiUrl];
+    $senaraiDetailLabel = $archive->isFond ? $archive->code : Yii::t('app', '#{level-name} {code}', ['level-name' => strtoupper($archive->levelTitle->message), 'code' => $archive->code]);
+    $senaraiDetailUrl = $archive->isFond ? ['fond/view', 'id' => $archive->id] : ['admin/view', 'id' => $archive->id];
+    if ($isPengolahan) {
+        $senaraiDetailUrl = ['luring/admin/view', 'id' => $archive->id];
+    }
+    $this->params['breadcrumbs'][] = ['label' => $senaraiDetailLabel, 'url' => $senaraiDetailUrl];
+    $this->params['breadcrumbs'][] = ['label' => $isPengolahan ? Yii::t('app', 'Document') : Yii::t('app', 'Luring'), 'url' => ['manage', 'archive' => $archive->id]];
 } else {
-    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Luring'), 'url' => ['index']];
+    $this->params['breadcrumbs'][] = ['label' => $isPengolahan ? Yii::t('app', 'Documents') : Yii::t('app', 'Lurings'), 'url' => ['index']];
 }
 $this->params['breadcrumbs'][] = Yii::t('app', 'Generate');
 ?>

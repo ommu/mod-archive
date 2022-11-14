@@ -24,11 +24,35 @@ $context = $this->context;
 if ($context->breadcrumbApp) {
 	$this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
 }
-if ($luring != null) {
-    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Luring'), 'url' => ['luring/admin/index']];
-    $this->params['breadcrumbs'][] = ['label' => $luring->archive->code, 'url' => ['luring/admin/view', 'id' => $luring->id]];
+if ($archive != null) {
+    $senaraiLabel = $archive->isFond ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventory');
+    $senaraiUrl = $archive->isFond ? ['fond/index'] : ['admin/index'];
+    if ($isPengolahan) {
+        $senaraiLabel = Yii::t('app', 'Senarai');
+        $senaraiUrl = ['luring/admin/index'];
+    }
+    $this->params['breadcrumbs'][] = ['label' => $senaraiLabel, 'url' => $senaraiUrl];
+    $senaraiDetailLabel = $archive->isFond ? $archive->code : Yii::t('app', '#{level-name} {code}', ['level-name' => strtoupper($archive->levelTitle->message), 'code' => $archive->code]);
+    $senaraiDetailUrl = $archive->isFond ? ['fond/view', 'id' => $archive->id] : ['admin/view', 'id' => $archive->id];
+    if ($isPengolahan) {
+        $senaraiDetailUrl = ['luring/admin/view', 'id' => $archive->id];
+    }
+    $this->params['breadcrumbs'][] = ['label' => $senaraiDetailLabel, 'url' => $senaraiDetailUrl];
+    $documentLabel = Yii::t('app', 'Luring');
+    $documentUrl = ['luring/admin/manage', 'archive' => $archive->id];
+    if ($isPengolahan) {
+        $documentLabel = Yii::t('app', 'Document');
+        $documentUrl = ['luring/document/manage', 'archive' => $archive->id];
+    }
+    $this->params['breadcrumbs'][] = ['label' => $documentLabel, 'url' => $documentUrl];
 } else {
-    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Lurings'), 'url' => ['luring/admin/index']];
+    $documentLabel = Yii::t('app', 'Luring');
+    $documentUrl = ['luring/admin/index'];
+    if ($isPengolahan) {
+        $documentLabel = Yii::t('app', 'Document');
+        $documentUrl = ['luring/document/index'];
+    }
+    $this->params['breadcrumbs'][] = ['label' => $documentLabel, 'url' => $documentUrl];
 }
 $this->params['breadcrumbs'][] = Yii::t('app', 'Downloads');
 
@@ -42,7 +66,11 @@ $this->params['menu']['option'] = [
 <?php Pjax::begin(); ?>
 
 <?php if ($luring != null) {
-	echo $this->render('/luring/admin/admin_view', ['model' => $luring, 'small' => true]);
+	echo $this->render('@ommu/archive/views/luring/admin/admin_view', ['model' => $luring, 'small' => true]);
+} ?>
+
+<?php if ($archive != null) {
+	echo $this->render('@ommu/archive/views/admin/admin_view', ['model' => $archive, 'small' => true]);
 } ?>
 
 <?php //echo $this->render('_search', ['model' => $searchModel]); ?>

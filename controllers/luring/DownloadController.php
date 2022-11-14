@@ -29,7 +29,9 @@ use mdm\admin\components\AccessControl;
 use yii\filters\VerbFilter;
 use ommu\archive\models\ArchiveLuringDownload;
 use ommu\archive\models\search\ArchiveLuringDownload as ArchiveLuringDownloadSearch;
+use yii\helpers\ArrayHelper;
 use ommu\archive\models\ArchiveSetting;
+use ommu\archivePengolahan\models\ArchivePengolahanSetting;
 
 class DownloadController extends Controller
 {
@@ -41,13 +43,20 @@ class DownloadController extends Controller
         parent::init();
 
         if (Yii::$app->request->get('luring')) {
-			$this->subMenu = $this->module->params['luring_submenu'];
+            if (array_key_exists('luring_submenu', $this->module->params)) {
+                $this->subMenu = $this->module->params['luring_submenu'];
+            }
         }
 
-		$setting = ArchiveSetting::find()
-			->select(['breadcrumb_param'])
-			->where(['id' => 1])
-			->one();
+
+        if ($this->isPengolahan()) {
+            $setting = new ArchivePengolahanSetting(['app' => 'archivePengolahanModule']);
+        } else {
+            $setting = ArchiveSetting::find()
+                ->select(['breadcrumb_param'])
+                ->where(['id' => 1])
+                ->one();
+        }
 		$this->breadcrumbApp = $setting->breadcrumb;
 		$this->breadcrumbAppParam = $setting->getBreadcrumbAppParam();
 	}
@@ -73,6 +82,14 @@ class DownloadController extends Controller
 	/**
 	 * {@inheritdoc}
 	 */
+	public function isPengolahan()
+	{
+		return false;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function actionIndex()
 	{
         return $this->redirect(['manage']);
@@ -85,7 +102,11 @@ class DownloadController extends Controller
 	public function actionManage()
 	{
         $searchModel = new ArchiveLuringDownloadSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $queryParams = Yii::$app->request->queryParams;
+        if (($archive = Yii::$app->request->get('archive')) != null) {
+            $queryParams = ArrayHelper::merge(Yii::$app->request->queryParams, ['archiveId' => $archive]);
+        }
+		$dataProvider = $searchModel->search($queryParams);
 
         $gridColumn = Yii::$app->request->get('GridColumn', null);
         $cols = [];
@@ -101,7 +122,18 @@ class DownloadController extends Controller
         if (($luring = Yii::$app->request->get('luring')) != null) {
             $this->subMenuParam = $luring;
             $luring = \ommu\archive\models\ArchiveLurings::findOne($luring);
+            if ($this->isPengolahan()) {
+                $this->subMenuParam = $luring->archive_id;
+            }
             $this->subMenuBackTo = $luring->archive_id;
+        }
+
+        if ($archive != null) {
+            if ($this->isPengolahan()) {
+                $this->subMenuParam = $archive;
+            }
+            $archive = \ommu\archive\models\Archives::findOne($archive);
+            $this->subMenuBackTo = $archive;
         }
 
 		$this->view->title = Yii::t('app', 'Luring Downloads');
@@ -111,7 +143,9 @@ class DownloadController extends Controller
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
-			'luring' => $luring,
+			'luring' => $luring ?? null,
+			'archive' => $luring ? $luring->archive : $archive,
+			'isPengolahan' => $this->isPengolahan(),
 		]);
 	}
 
@@ -127,7 +161,7 @@ class DownloadController extends Controller
 		$model->delete();
 
 		Yii::$app->session->setFlash('success', Yii::t('app', 'Archive luring download success deleted.'));
-		return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
+		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'luring' => $model->luring_id]);
 	}
 
 	/**

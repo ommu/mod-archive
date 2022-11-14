@@ -283,7 +283,7 @@ class ArchiveLurings extends \app\components\ActiveRecord
                 if ($model->publish) {
                     $publishContent = '<span class="glyphicon glyphicon-ok"></span>';
                 }
-				return Html::a($publishContent, ['luring/admin/update', 'id' => $model->primaryKey], ['title' => Yii::t('app', 'Publish Senarai Luring'), 'data-pjax' => 0]);
+				return Html::a($publishContent, ['update', 'id' => $model->primaryKey], ['title' => Yii::t('app', 'Publish Senarai Luring'), 'data-pjax' => 0]);
 			},
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
@@ -328,16 +328,10 @@ class ArchiveLurings extends \app\components\ActiveRecord
 	public static function parseArchive($model, $urlTitle=true)
 	{
 		$title = self::htmlHardDecode($model->archive->title);
-        $archiveTitle = $urlTitle == true ? Html::a($title, ['admin/view', 'id' => $model->archive_id], ['title' => $title, 'class' => 'modal-btn']) : $title ;
+        $archiveTitle = $urlTitle == true ? Html::a($title, ['/archive/admin/view', 'id' => $model->archive_id], ['title' => $title, 'class' => 'modal-btn']) : $title ;
 
-        $html = $archiveTitle;
-        if ($urlTitle == true) {
-            $html .= '<hr class="mt-5 mb-5"/>';
-        }
-
-		$items[] = Html::tag('span', Yii::t('app', 'Code'), ['class' => 'btn btn-primary btn-xs']).$model->archive->code;
-		
-		$html .= Html::ul($items, ['encode' => false, 'class' => 'list-boxed mt-5']);
+        $html = Html::button($model->archive->code, ['class' => 'btn btn-info btn-xs']).'<br/>';
+        $html .= $archiveTitle;
 
 		return $html;
 	}
@@ -440,8 +434,8 @@ class ArchiveLurings extends \app\components\ActiveRecord
         if (parent::beforeSave($insert)) {
             if (!$insert) {
                 $uploadPath = self::getUploadPath();
-                $verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
-                $this->createUploadDirectory(self::getUploadPath());
+                $verwijderenPath = join('/', [$uploadPath, 'verwijderen']);
+                $this->createUploadDirectory($uploadPath);
 
                 // $this->senarai_file = UploadedFile::getInstance($this, 'senarai_file');
                 if ($this->senarai_file instanceof UploadedFile && !$this->senarai_file->getHasError()) {
@@ -472,8 +466,8 @@ class ArchiveLurings extends \app\components\ActiveRecord
         parent::afterSave($insert, $changedAttributes);
 
         $uploadPath = self::getUploadPath();
-        $verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
-        $this->createUploadDirectory(self::getUploadPath());
+        $verwijderenPath = join('/', [$uploadPath, 'verwijderen']);
+        $this->createUploadDirectory($uploadPath);
 
         if ($insert) {
             // $this->senarai_file = UploadedFile::getInstance($this, 'senarai_file');
@@ -500,7 +494,7 @@ class ArchiveLurings extends \app\components\ActiveRecord
         parent::afterDelete();
 
 		$uploadPath = self::getUploadPath();
-		$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+		$verwijderenPath = join('/', [$uploadPath, 'verwijderen']);
 
         if ($this->senarai_file != '' && file_exists(join('/', [$uploadPath, $this->senarai_file]))) {
             rename(join('/', [$uploadPath, $this->senarai_file]), join('/', [$verwijderenPath, time().'_deleted_'.$this->senarai_file]));

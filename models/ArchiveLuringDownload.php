@@ -35,6 +35,7 @@ class ArchiveLuringDownload extends \app\components\ActiveRecord
 
 	public $archiveTitle;
 	public $userDisplayname;
+	public $archiveId;
 
 	/**
 	 * @return string the associated database table name
@@ -72,6 +73,7 @@ class ArchiveLuringDownload extends \app\components\ActiveRecord
 			'download_date' => Yii::t('app', 'Download Date'),
 			'archiveTitle' => Yii::t('app', 'Senarai'),
 			'userDisplayname' => Yii::t('app', 'User'),
+			'archiveId' => Yii::t('app', 'Senarai'),
 		];
 	}
 
@@ -138,7 +140,7 @@ class ArchiveLuringDownload extends \app\components\ActiveRecord
 				return $model->luring::parseArchive($model->luring, false);
 			},
 			'format' => 'raw',
-			'visible' => !Yii::$app->request->get('luring') ? true : false,
+			'visible' => !Yii::$app->request->get('luring') && !Yii::$app->request->get('archive') ? true : false,
 		];
 		$this->templateColumns['userDisplayname'] = [
 			'attribute' => 'userDisplayname',

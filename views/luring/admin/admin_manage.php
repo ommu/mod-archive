@@ -25,15 +25,25 @@ if ($context->breadcrumbApp) {
 }
 
 if ($archive) {
-    $this->params['breadcrumbs'][] = ['label' => $archive->isFond ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventory'), 'url' => $archive->isFond ? ['fond/index'] : ['admin/index']];
-    $archiveDetailUrl = $archive->isFond ? ['fond/view', 'id' => $archive->id] : ['admin/view', 'id' => $archive->id];
-    $this->params['breadcrumbs'][] = ['label' => $archive->isFond ? $archive->code : Yii::t('app', '#{level-name} {code}', ['level-name' => strtoupper($archive->levelTitle->message), 'code' => $archive->code]), 'url' => $archiveDetailUrl];
+    $senaraiLabel = $archive->isFond ? Yii::t('app', 'Senarai') : Yii::t('app', 'Inventory');
+    $senaraiUrl = $archive->isFond ? ['fond/index'] : ['admin/index'];
+    if ($isPengolahan) {
+        $senaraiLabel = Yii::t('app', 'Senarai');
+        $senaraiUrl = ['luring/admin/index'];
+    }
+    $this->params['breadcrumbs'][] = ['label' => $senaraiLabel, 'url' => $senaraiUrl];
+    $senaraiDetailLabel = $archive->isFond ? $archive->code : Yii::t('app', '#{level-name} {code}', ['level-name' => strtoupper($archive->levelTitle->message), 'code' => $archive->code]);
+    $senaraiDetailUrl = $archive->isFond ? ['fond/view', 'id' => $archive->id] : ['admin/view', 'id' => $archive->id];
+    if ($isPengolahan) {
+        $senaraiDetailUrl = ['luring/admin/view', 'id' => $archive->id];
+    }
+    $this->params['breadcrumbs'][] = ['label' => $senaraiDetailLabel, 'url' => $senaraiDetailUrl];
 }
-$this->params['breadcrumbs'][] = Yii::t('app', 'Lurings');
+$this->params['breadcrumbs'][] = $isPengolahan ? Yii::t('app', 'Documents') : Yii::t('app', 'Lurings');
 
 if ($archive) {
     $this->params['menu']['content'] = [
-        ['label' => Yii::t('app', 'Generate Senarai Luring'), 'url' => Url::to(['luring/admin/create', 'id' => $archive->id]), 'icon' => 'plus-square', 'htmlOptions' => ['class' => 'btn btn-success']],
+        ['label' => Yii::t('app', 'Generate Senarai Luring'), 'url' => Url::to(['create', 'id' => $archive->id]), 'icon' => 'plus-square', 'htmlOptions' => ['class' => 'btn btn-success']],
     ];
 }
 
@@ -47,7 +57,7 @@ $this->params['menu']['option'] = [
 <?php Pjax::begin(); ?>
 
 <?php if ($archive != null) {
-	echo $this->render('/admin/admin_view', ['model' => $archive, 'small' => true]);
+	echo $this->render('@ommu/archive/views/admin/admin_view', ['model' => $archive, 'small' => true]);
 } ?>
 
 <?php //echo $this->render('_search', ['model' => $searchModel]); ?>

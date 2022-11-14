@@ -74,7 +74,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
 			[['reference_code_sikn', 'maintenance_image_path', 'maintenance_document_path'], 'safe'],
 			//[['image_type', 'document_type', 'breadcrumb_param'], 'json'],
 			[['license', 'reference_code_sikn', 'maintenance_image_path', 'maintenance_document_path'], 'string', 'max' => 32],
-			[['reference_code_separator'], 'string', 'max' => 1],
+			[['reference_code_separator'], 'string', 'max' => 4],
 		];
 	}
 
@@ -431,8 +431,7 @@ class ArchiveSetting extends \app\components\ActiveRecord
             }
             if ($this->breadcrumb_param['status'] == '') {
                 $this->addError('breadcrumb_param', Yii::t('app', '{attribute} cannot be blank.', ['attribute' => $this->getAttributeLabel('breadcrumb_status')]));
-            }
-			else {
+            } else {
                 if ($this->breadcrumb_param['status'] == 1 && !$this->getBreadcrumbApps()) {
                     $this->addError('breadcrumb_param', Yii::t('app', '{attribute} cannot be blank.', ['attribute' => $this->getAttributeLabel('breadcrumb_app')]));
                 }
