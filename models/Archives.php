@@ -123,9 +123,9 @@ class Archives extends \app\components\ActiveRecord
 	{
 		return [
 			[['publish', 'level_id', 'title', 'shortCode'], 'required'],
-			[['publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'backToManage'], 'integer'],
+			[['publish', 'sidkkas', 'parent_id', 'level_id', 'sync_schema', 'creation_id', 'modified_id', 'backToManage'], 'integer'],
 			[['title', 'archive_type', 'archive_date'], 'string'],
-			[['code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
+			[['code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'sync_schema', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
 			[['code'], 'string', 'max' => 255],
 			[['archive_date'], 'string', 'max' => 64],
 			[['shortCode'], 'string', 'max' => 32],

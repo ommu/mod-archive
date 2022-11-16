@@ -250,6 +250,7 @@ class AdminController extends Controller
             }
         }
 
+        $parent = null;
         if ($id != null) {
             $this->subMenuParam = $id;
             $parent = Archives::findOne($id);
@@ -276,7 +277,7 @@ class AdminController extends Controller
 		return $this->render('admin_create', [
 			'model' => $model,
 			'setting' => $setting,
-			'parent' => $parent,
+			'parent' => $parent ?? null,
 			'isFond' => $parent ? false : true,
 		]);
 	}
@@ -340,7 +341,6 @@ class AdminController extends Controller
 		return $this->render('admin_update', [
 			'model' => $model,
 			'setting' => $setting,
-			'parent' => $model->parent ?? null,
 			'isFond' => $model->level_id == 1 ? true : false,
 		]);
 	}

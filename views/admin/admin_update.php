@@ -46,8 +46,8 @@ $aciTree = !Yii::$app->request->isAjax && !$isFond ? '<div id="tree" class="aciT
 echo $this->render('_form', [
 	'model' => $model,
 	'setting' => $setting,
-	'parent' => $parent,
-	'referenceCode' => $model->referenceCode,
+    'parent' => $model->parent ?? null,
+	'referenceCode' => $model->referenceCode ?? [],
 	'isFond' => $isFond,
     'aciTree' => $aciTree,
 ]); ?>

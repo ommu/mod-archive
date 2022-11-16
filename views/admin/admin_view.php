@@ -18,7 +18,7 @@ use yii\helpers\Url;
 use yii\widgets\DetailView;
 use yii\helpers\ArrayHelper;
 
-!$small ? \ommu\archive\assets\ArchiveTree::register($this) : '';
+!$small && !Yii::$app->request->isAjax ? \ommu\archive\assets\ArchiveTree::register($this) : '';
 
 if (!$small) {
     $context = $this->context;
@@ -41,7 +41,7 @@ $js = <<<JS
 	var treeDataUrl = '$treeDataUrl';
 	var selectedId = '$model->id';
 JS;
-!$small ? $this->registerJs($js, \yii\web\View::POS_HEAD) : '';
+!$small && !Yii::$app->request->isAjax ? $this->registerJs($js, \yii\web\View::POS_HEAD) : '';
 
 $attributes = [
 	[
