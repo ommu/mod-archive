@@ -16,12 +16,14 @@
  * @property integer $sidkkas
  * @property integer $parent_id
  * @property integer $level_id
+ * @property integer $fond_id
  * @property string $title
  * @property string $code
  * @property string $medium
  * @property string $archive_type
  * @property string $archive_date
  * @property string $archive_file
+ * @property integer $sync_fond
  * @property string $creation_date
  * @property integer $creation_id
  * @property string $modified_date
@@ -123,7 +125,7 @@ class Archives extends \app\components\ActiveRecord
 	{
 		return [
 			[['publish', 'level_id', 'title', 'shortCode'], 'required'],
-			[['publish', 'sidkkas', 'parent_id', 'level_id', 'creation_id', 'modified_id', 'backToManage'], 'integer'],
+			[['publish', 'sidkkas', 'parent_id', 'level_id', 'fond_id', 'sync_fond', 'creation_id', 'modified_id', 'backToManage'], 'integer'],
 			[['title', 'archive_type', 'archive_date'], 'string'],
 			[['code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
 			[['code'], 'string', 'max' => 255],
@@ -144,12 +146,14 @@ class Archives extends \app\components\ActiveRecord
 			'sidkkas' => Yii::t('app', 'SiDKKAS'),
 			'parent_id' => Yii::t('app', 'Parent'),
 			'level_id' => Yii::t('app', 'Level of Description'),
+			'fond_id' => Yii::t('app', 'Fond'),
 			'title' => Yii::t('app', 'Title'),
 			'code' => Yii::t('app', 'Reference code'),
 			'medium' => Yii::t('app', 'Medium'),
 			'archive_type' => Yii::t('app', 'Archive Type'),
 			'archive_date' => Yii::t('app', 'Archive Date'),
 			'archive_file' => Yii::t('app', 'Archive File'),
+			'sync_fond' => Yii::t('app', 'Sync Fond'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
@@ -332,6 +336,15 @@ class Archives extends \app\components\ActiveRecord
 	{
 		return $this->hasOne(ArchiveLevel::className(), ['id' => 'level_id'])
             ->select(['id', 'level_name', 'child', 'field']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getFond()
+	{
+		return $this->hasOne(Archives::className(), ['id' => 'fond_id'])
+            ->select(['id', 'parent_id', 'level_id', 'title', 'code']);
 	}
 
 	/**

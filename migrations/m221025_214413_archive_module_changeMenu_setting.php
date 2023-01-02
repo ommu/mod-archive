@@ -52,6 +52,13 @@ class m221025_214413_archive_module_changeMenu_setting extends \yii\db\Migration
 
         if (Yii::$app->db->getTableSchema($tableName, true)) {
             $this->update($tableName, ['route' => '/archive/setting/admin/index'], ['name' => 'Settings', 'route' => '/#']);
+
+            $this->delete($tableName, ['name' => 'Archive Settings', 'route' => '/archive/setting/admin/index', 'module' => 'archive']);
+            $this->delete($tableName, ['name' => 'Levels of Descriptions', 'route' => '/archive/setting/level/index', 'module' => 'archive']);
+            $this->delete($tableName, ['name' => 'Media Types', 'route' => '/archive/setting/media/index', 'module' => 'archive']);
+            $this->delete($tableName, ['name' => 'Creators', 'route' => '/archive/setting/creator/index', 'module' => 'archive']);
+            $this->delete($tableName, ['name' => 'Repositories', 'route' => '/archive/setting/repository/index', 'module' => 'archive']);
+            $this->delete($tableName, ['name' => 'Physical Storage', 'route' => '/archive-location/admin/index', 'module' => 'archive']);
         }
 	}
 }

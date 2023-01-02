@@ -26,4 +26,15 @@ class m221005_180709_archive_module_addColumn_senaraiFile_archives extends \yii\
 			);
 		}
 	}
+
+	public function down()
+	{
+		$tableName = Yii::$app->db->tablePrefix . 'ommu_archives';
+		if (Yii::$app->db->getTableSchema($tableName, true)) {
+			$this->dropColumn(
+				$tableName,
+				'senarai_file',
+			);
+		}
+	}
 }
