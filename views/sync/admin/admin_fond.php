@@ -23,6 +23,9 @@ use yii\helpers\Url;
     <div class="col-md-6 col-sm-6 col-xs-12">
         <?php echo Html::textInput('limit', '', ['class' => 'form-control mb-5', 'placeholder' => Yii::t('app', 'Limit')]);?>
     </div>
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        <?php echo Html::dropDownList('cascade', '', [0 => Yii::t('app', 'No'), 1 => Yii::t('app', 'Yes')], ['prompt' => '', 'class' => 'form-control mb-5']);?>
+    </div>
     <div class="col-md-12 col-sm-12 col-xs-12">
         <?php echo Html::submitButton(Yii::t('app', 'Run..'), ['class'=>'btn btn-primary']);?>
     </div>

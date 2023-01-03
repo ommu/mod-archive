@@ -81,42 +81,65 @@ class AdminController extends Controller
 	public function actionFond()
 	{
         $limit = 100;
+        $cascade = false;
         if (Yii::$app->request->isPost) {
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             $postData = Yii::$app->request->post();
 
             $limitForm = $postData['limit'];
+            $cascadeForm = $postData['cascade'];
             if ($limitForm) {
                 $limit = $limitForm;
             }
-
-            $model = Archives::find()
-                ->select(['id', 'parent_id', 'level_id', 'code'])
-                ->andWhere(['is', 'fond_id', null])
-                ->andWhere(['sync_fond' => 0])
-                ->limit($limit)
-                ->all();
-
-            if ($model) {
-                $i = 0;
-                foreach ($model as $val) {
-                    $i++;
-                    $referenceCode = $val->referenceCode;
-                    if (array_key_exists('Fond', $referenceCode)) {
-                        Archives::updateAll(['fond_id' => $referenceCode['Fond']['id'], 'sync_fond' => 1], ['id' => $val->id]);
-                    } else {
-                        Archives::updateAll(['sync_fond' => 1], ['id' => $val->id]);
-                    }
-                    Yii::$app->broadcaster->publish('devtool', ['message' => Yii::t('app', '#{id} {referencce} success sync fondId', ['id' => $val->id, 'id' => $val->code])]);
-                }
-                Yii::$app->broadcaster->publish('devtool', ['message' => '================']);
-                Yii::$app->broadcaster->publish('devtool', ['message' => Yii::t('app', '{items} success sync', ['items' => $i])]);
+            if ($cascadeForm) {
+                $cascade = $cascadeForm == 1 ? true : false;
             }
+
+            ini_set('max_execution_time', 0);
+            ob_start();
+
+            self::setFond($limit, $cascade);
+	
+            ob_end_flush();
         }
 
 		$this->view->title = Yii::t('app', 'Sync FondID');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->renderModal('admin_fond');
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function setFond($limit, $cascade=false)
+	{
+        $model = Archives::find()
+            ->select(['id', 'parent_id', 'level_id', 'code'])
+            ->andWhere(['is', 'fond_id', null])
+            ->andWhere(['sync_fond' => 0])
+            ->limit($limit)
+            ->all();
+
+        if ($model) {
+            $i = 0;
+            foreach ($model as $val) {
+                $i++;
+                $referenceCode = $val->referenceCode;
+                if (array_key_exists('Fond', $referenceCode)) {
+                    Archives::updateAll(['fond_id' => $referenceCode['Fond']['id'], 'sync_fond' => 1], ['id' => $val->id]);
+                } else {
+                    Archives::updateAll(['sync_fond' => 1], ['id' => $val->id]);
+                }
+                Yii::$app->broadcaster->publish('devtool', ['message' => Yii::t('app', '#{id} {referencce} success sync fondId', ['id' => $val->id, 'id' => $val->code])]);
+            }
+
+            Yii::$app->broadcaster->publish('devtool', ['message' => '================']);
+            Yii::$app->broadcaster->publish('devtool', ['message' => Yii::t('app', '{items} success sync', ['items' => $i])]);
+
+            if ($cascade) {
+                self::setFond($limit, $cascade);
+            }
+        }
 	}
 }
