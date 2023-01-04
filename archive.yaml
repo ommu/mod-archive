@@ -135,6 +135,11 @@ setting_submenu:
       label: Settings
       url: ['setting/admin']
       select: controller
+  2:
+    sync:
+      label: Synchronization
+      url: ['sync/admin']
+      select: controller
 
 luring_submenu:
   0:
