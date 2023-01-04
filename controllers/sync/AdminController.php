@@ -98,7 +98,10 @@ class AdminController extends Controller
             ini_set('max_execution_time', 0);
             ob_start();
 
-            self::setFond($limit, $cascade);
+            $archives = $this->getArchiveNotFondId($limit);
+            if ($archives) {
+                self::setFondId($archives);
+            }
 	
             ob_end_flush();
         }
@@ -110,9 +113,32 @@ class AdminController extends Controller
 	}
 
 	/**
+	 * Fond Action
+	 */
+	public function actionSetFond()
+	{
+        $limit = 200;
+        $cascade = true;
+
+        ini_set('max_execution_time', 0);
+        ob_start();
+
+        $archives = $this->getArchiveNotFondId($limit);
+        if ($archives) {
+            self::setFondId($archives);
+        }
+	
+        ob_end_flush();
+
+        if ($archives && $cascade) {
+            return $this->redirect(['set-fond']);
+        }
+    }
+
+	/**
 	 * {@inheritdoc}
 	 */
-	public function setFond($limit, $cascade=false)
+	public function getArchiveNotFondId($limit)
 	{
         $model = Archives::find()
             ->select(['id', 'parent_id', 'level_id', 'code'])
@@ -121,25 +147,29 @@ class AdminController extends Controller
             ->limit($limit)
             ->all();
 
-        if ($model) {
-            $i = 0;
-            foreach ($model as $val) {
-                $i++;
-                $referenceCode = $val->referenceCode;
-                if (array_key_exists('Fond', $referenceCode)) {
-                    Archives::updateAll(['fond_id' => $referenceCode['Fond']['id'], 'sync_fond' => 1], ['id' => $val->id]);
-                } else {
-                    Archives::updateAll(['sync_fond' => 1], ['id' => $val->id]);
-                }
-                Yii::$app->broadcaster->publish('devtool', ['message' => Yii::t('app', '#{id} {referencce} success sync fondId', ['id' => $val->id, 'id' => $val->code])]);
-            }
+        return $model;
+	}
 
-            Yii::$app->broadcaster->publish('devtool', ['message' => '================']);
-            Yii::$app->broadcaster->publish('devtool', ['message' => Yii::t('app', '{items} success sync', ['items' => $i])]);
-
-            if ($cascade) {
-                self::setFond($limit, $cascade);
+	/**
+	 * {@inheritdoc}
+	 */
+	public function setFondId($archives=null)
+	{
+        $i = 0;
+        foreach ($archives as $val) {
+            $i++;
+            $referenceCode = $val->referenceCode;
+            if (array_key_exists('Fond', $referenceCode)) {
+                Archives::updateAll(['fond_id' => $referenceCode['Fond']['id'], 'sync_fond' => 1], ['id' => $val->id]);
+            } else {
+                Archives::updateAll(['sync_fond' => 1], ['id' => $val->id]);
             }
+            Yii::$app->broadcaster->publish('devtool', ['message' => Yii::t('app', '#{id} {referencce} success sync fondId', ['id' => $val->id, 'id' => $val->code])]);
         }
+
+        Yii::$app->broadcaster->publish('devtool', ['message' => '================']);
+        Yii::$app->broadcaster->publish('devtool', ['message' => Yii::t('app', '{items} success sync', ['items' => $i])]);
+
+        return;
 	}
 }
