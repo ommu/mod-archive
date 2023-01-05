@@ -250,9 +250,17 @@ class AdminController extends Controller
             }
         }
 
+        $parent = null;
+        $fondId = null;
+        $referenceCode = [];
         if ($id != null) {
             $this->subMenuParam = $id;
             $parent = Archives::findOne($id);
+            $referenceCode = $parent->referenceCode;
+            if ($parent != null && array_key_exists('Fond', $referenceCode)) {
+                $fondId = $referenceCode['Fond']['id'];
+                $model->fond_id = $fondId;
+            }
 
             if ($parent->isFond == true) {
                 if (array_key_exists('fond_submenu', $this->module->params)) {
@@ -277,6 +285,7 @@ class AdminController extends Controller
 			'model' => $model,
 			'setting' => $setting,
 			'parent' => $parent,
+			'referenceCode' => $referenceCode,
 			'isFond' => $parent ? false : true,
 		]);
 	}
@@ -295,6 +304,14 @@ class AdminController extends Controller
 			->one();
 
 		$model = $this->findModel($id);
+
+        $parent = $model->parent ?? null;
+        $referenceCode = $model->referenceCode;
+        $fondId = null;
+        if ($model->fond_id == null && $parent != null && array_key_exists('Fond', $referenceCode)) {
+            $fondId = $referenceCode['Fond']['id'];
+            $model->fond_id = $fondId;
+        }
 
         if (Yii::$app->request->isPost) {
             $model->load(Yii::$app->request->post());
@@ -340,7 +357,8 @@ class AdminController extends Controller
 		return $this->render('admin_update', [
 			'model' => $model,
 			'setting' => $setting,
-			'parent' => $model->parent ?? null,
+			'parent' => $parent,
+			'referenceCode' => $referenceCode,
 			'isFond' => $model->level_id == 1 ? true : false,
 		]);
 	}

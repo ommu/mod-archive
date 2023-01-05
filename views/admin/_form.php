@@ -28,8 +28,9 @@ $redactorOptions = [
 	'plugins' => ['fontcolor']
 ];
 
-if (!$isFond)
+if (!$isFond) {
 	$level = $model->isNewRecord ? $parent->getChildLevels(true) : $model->getChildLevels();
+}
 // if ($setting->maintenance_mode) {
 	echo '<div id="reference-code-box" class="hide"><pre>';
 	print_r($referenceCode);
@@ -114,6 +115,9 @@ $form = ActiveForm::begin([
 		->hint(Yii::t('app', 'Record the level of this unit of description.'));
 }
 
+echo $form->field($model, 'fond_id', ['template' => '{input}', 'options' => ['tag' => null]])
+    ->hiddenInput();
+
 $shortCode = $model->shortCode ? $model->shortCode : 'XXX';
 if ($isFond) {
 	echo $form->field($model, 'level_id', ['template' => '{label}{beginWrapper}{input}<h5 class="text-muted">'.$setting->reference_code_sikn.' <span class="text-primary reference-code">'.$shortCode.'</span></h5>{endWrapper}'])
@@ -152,6 +156,9 @@ if ($isFond) {
         $template .= '<hr/>';
         $template .= $aciTree;
 	}
+    echo $form->field($model, 'parent_id', ['template' => '{input}', 'options' => ['tag' => null]])
+        ->hiddenInput();
+
 	echo $form->field($model, 'code', ['template' => '{label}{beginWrapper}{input}'.$template.'{endWrapper}'])
 		->hiddenInput()
 		->label($model->getAttributeLabel('code'));

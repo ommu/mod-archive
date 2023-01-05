@@ -52,7 +52,7 @@ echo $this->render('_form', [
 	'model' => $model,
 	'setting' => $setting,
 	'parent' => $parent,
-	'referenceCode' => $parent->referenceCode,
+	'referenceCode' => $referenceCode,
 	'isFond' => $isFond,
     'aciTree' => $aciTree,
 ]); ?>

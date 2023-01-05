@@ -127,7 +127,7 @@ class Archives extends \app\components\ActiveRecord
 			[['publish', 'level_id', 'title', 'shortCode'], 'required'],
 			[['publish', 'sidkkas', 'parent_id', 'level_id', 'fond_id', 'sync_fond', 'creation_id', 'modified_id', 'backToManage'], 'integer'],
 			[['title', 'archive_type', 'archive_date'], 'string'],
-			[['code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
+			[['fond_id', 'code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
 			[['code'], 'string', 'max' => 255],
 			[['archive_date'], 'string', 'max' => 64],
 			[['shortCode'], 'string', 'max' => 32],
@@ -1152,6 +1152,7 @@ class Archives extends \app\components\ActiveRecord
                 }
                 $this->shortCode = $shortCodeStatus ? $confirmCode : preg_replace("/^[.-]/", '', preg_replace("/^($parentConfirmCode)/", '', $this->confirmCode));
             } else {
+                $this->confirmCode = $this->code;
                 $this->shortCode = preg_replace("/^[.-]/", '', preg_replace("/^($parentCode)/", '', $this->code));
             }
         } else {
