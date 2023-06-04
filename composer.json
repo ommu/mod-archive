@@ -34,7 +34,8 @@
 	],
 	"require": {
 		"php": "~7.0",
-		"npm-asset/acitree": "4.5.1"
+		"npm-asset/acitree": "4.5.1",
+        "ommu/archive-location": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
