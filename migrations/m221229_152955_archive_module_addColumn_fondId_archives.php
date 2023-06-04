@@ -1,11 +1,11 @@
 <?php
 /**
- * m221005_180709_archive_module_addColumn_senaraiFile_archives
+ * m221229_152955_archive_module_addColumn_fondId_archives
  * 
  * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2022 OMMU (www.ommu.id)
- * @created date 5 October 2022, 18:09 WIB
+ * @created date 29 December 2022, 15:35 WIB
  * @link https://bitbucket.org/ommu/archive
  *
  */
@@ -13,7 +13,7 @@
 use Yii;
 use yii\db\Schema;
 
-class m221005_180709_archive_module_addColumn_senaraiFile_archives extends \yii\db\Migration
+class m221229_152955_archive_module_addColumn_fondId_archives extends \yii\db\Migration
 {
 	public function up()
 	{
@@ -21,8 +21,17 @@ class m221005_180709_archive_module_addColumn_senaraiFile_archives extends \yii\
 		if (Yii::$app->db->getTableSchema($tableName, true)) {
 			$this->addColumn(
 				$tableName,
-				'senarai_file',
-				$this->text()->notNull()->after('archive_file'),
+				'fond_id',
+				$this->integer()->unsigned()->after('level_id'),
+			);
+
+			$this->addColumn(
+				$tableName,
+				'sync_fond',
+				$this->tinyInteger(1)
+                    ->notNull()
+                    ->defaultValue(0)
+                    ->after('archive_file'),
 			);
 		}
 	}
@@ -33,7 +42,12 @@ class m221005_180709_archive_module_addColumn_senaraiFile_archives extends \yii\
 		if (Yii::$app->db->getTableSchema($tableName, true)) {
 			$this->dropColumn(
 				$tableName,
-				'senarai_file',
+				'fond_id',
+			);
+
+			$this->dropColumn(
+				$tableName,
+				'sync_fond',
 			);
 		}
 	}
