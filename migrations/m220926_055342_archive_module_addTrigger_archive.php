@@ -1,6 +1,6 @@
 <?php
 /**
- * m220926_055342_archive_module_addTrigger_level
+ * m220926_055342_archive_module_addTrigger_archive
  * 
  * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
@@ -13,7 +13,7 @@
 use Yii;
 use yii\db\Schema;
 
-class m220926_055342_archive_module_addTrigger_level extends \yii\db\Migration
+class m220926_055342_archive_module_addTrigger_archive extends \yii\db\Migration
 {
 	public function up()
 	{

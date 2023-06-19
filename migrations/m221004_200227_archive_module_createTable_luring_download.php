@@ -24,7 +24,7 @@ class m221004_200227_archive_module_createTable_luring_download extends \yii\db\
 		$tableName = Yii::$app->db->tablePrefix . '{{%ommu_archive_luring_download}}';
 		if (!Yii::$app->db->getTableSchema($tableName, true)) {
 			$this->createTable($tableName, [
-				'id' => Schema::TYPE_STRING . '(32) NOT NULL',
+				'id' => Schema::TYPE_STRING . '(36) NOT NULL COMMENT \'uuid\'',
 				'luring_id' => Schema::TYPE_INTEGER . '(11) UNSIGNED',
 				'user_id' => Schema::TYPE_INTEGER . '(11) UNSIGNED',
 				'download_ip' => Schema::TYPE_STRING . '(20) NOT NULL',

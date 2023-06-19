@@ -61,7 +61,7 @@ SQL;
         // create trigger archiveBeforeInsertFavouriteHistory
         $archiveBeforeInsertFavouriteHistory = <<< SQL
 CREATE
-    TRIGGER `archiveBeforeInsertFavouriteHistory` AFTER UPDATE ON `ommu_archive_favourite_history` 
+    TRIGGER `archiveBeforeInsertFavouriteHistory` BEFORE INSERT ON `ommu_archive_favourite_history` 
     FOR EACH ROW BEGIN
 	SET NEW.id = UUID();
     END;
