@@ -24,7 +24,7 @@ class m221007_224813_archive_module_createTable_archiveFavouriteHistory extends 
 		$tableName = Yii::$app->db->tablePrefix . '{{%ommu_archive_favourite_history}}';
 		if (!Yii::$app->db->getTableSchema($tableName, true)) {
 			$this->createTable($tableName, [
-				'id' => Schema::TYPE_STRING . '(32) NOT NULL OMMENT \'trigger,uuid\'',
+				'id' => Schema::TYPE_STRING . '(36) NOT NULL COMMENT \'trigger,uuid\'',
 				'publish' => Schema::TYPE_TINYINT . '(1) NOT NULL DEFAULT \'1\'',
 				'favourite_id' => Schema::TYPE_INTEGER . '(11) UNSIGNED NOT NULL',
 				'creation_ip' => Schema::TYPE_STRING . '(20) NOT NULL',

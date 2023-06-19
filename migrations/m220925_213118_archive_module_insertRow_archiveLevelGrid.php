@@ -23,7 +23,7 @@ INSERT INTO `ommu_archive_level_grid` (`id`, `archive`)
 SELECT 
 	a.id AS id,
 	case when a.archives is null then 0 else a.archives end AS `archives`
-FROM _archive_media AS a
+FROM _archive_level AS a
 LEFT JOIN ommu_archive_level_grid AS b
 	ON b.id = a.id
 WHERE

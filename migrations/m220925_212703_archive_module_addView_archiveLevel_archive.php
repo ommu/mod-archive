@@ -1,6 +1,6 @@
 <?php
 /**
- * m220925_212703_archive_module_addView_level
+ * m220925_212703_archive_module_addView_archiveLevel_archive
  * 
  * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
@@ -13,7 +13,7 @@
 use Yii;
 use yii\db\Schema;
 
-class m220925_212703_archive_module_addView_level extends \yii\db\Migration
+class m220925_212703_archive_module_addView_archiveLevel_archive extends \yii\db\Migration
 {
 	public function up()
 	{
