@@ -101,6 +101,8 @@ class AdminController extends Controller
             $archives = $this->getArchiveNotFondId($limit);
             if ($archives) {
                 self::setFondId($archives);
+            } else {
+                Yii::$app->broadcaster->publish('devtool', ['message' => Yii::t('app', '{items} success sync', ['items' => 0])]);
             }
 	
             ob_end_flush();
