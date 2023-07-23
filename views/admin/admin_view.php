@@ -45,22 +45,22 @@ JS;
 
 $attributes = [
 	[
-            'attribute' => 'id',
+        'attribute' => 'id',
 		'value' => $model->id,
 		'visible' => !$small,
 	],
 	[
-            'attribute' => 'publish',
+        'attribute' => 'publish',
 		'value' => $model::getPublish($model->publish),
 		'visible' => !$small,
 	],
 	[
-            'attribute' => 'sidkkas',
+        'attribute' => 'sidkkas',
 		'value' => $model->filterYesNo($model->sidkkas),
 		'visible' => !$small,
 	],
 	[
-            'attribute' => 'parent_id',
+        'attribute' => 'parent_id',
 		'value' => function ($model) {
             $parent = $model->parent;
             return $model::parseParent($parent);
@@ -69,7 +69,7 @@ $attributes = [
 		'visible' => !$small && !$isFond,
 	],
 	[
-            'attribute' => 'levelName',
+        'attribute' => 'levelName',
 		'value' => function ($model) {
 			$levelName = isset($model->levelTitle) ? $model->levelTitle->message : '-';
             if ($levelName != '-') {
@@ -80,7 +80,7 @@ $attributes = [
 		'format' => 'html',
 	],
 	[
-            'attribute' => 'code',
+        'attribute' => 'code',
 		'value' => function ($model) {
 			$setting = \ommu\archive\models\ArchiveSetting::find()
 				->select(['maintenance_mode', 'reference_code_sikn', 'reference_code_separator'])
@@ -110,35 +110,35 @@ $attributes = [
 		'format' => 'html',
 	],
 	[
-            'attribute' => 'title',
+        'attribute' => 'title',
 		'value' => $model->title ? $model->title : '-',
 		'format' => 'html',
 	],
 	[
-            'attribute' => 'creator',
+        'attribute' => 'creator',
 		'value' => $model::parseRelated($model->getCreators(true, 'title'), 'creator'),
 		'format' => 'html',
 		'visible' => (!$small && in_array('creator', $model->level->field)) || ($small && $model->isFond) ? true : false,
 	],
 	[
-            'attribute' => 'repository',
+        'attribute' => 'repository',
 		'value' => $model::parseRelated($model->getRepositories(true, 'title'), 'repository', ', '),
 		'format' => 'html',
 		'visible' => !$small && in_array('repository', $model->level->field) ? true : false,
 	],
 	[
-            'attribute' => 'archive_date',
+        'attribute' => 'archive_date',
 		'value' => $model->archive_date ? $model->archive_date : '-',
 		'visible' => !$small,
 	],
 	[
-            'attribute' => 'media',
+        'attribute' => 'media',
 		'value' => $model::parseFilter($model->getMedias(true, 'title'), 'media', ', '),
 		'format' => 'html',
 		'visible' => !$small && in_array('media', $model->level->field) ? true : false,
 	],
 	[
-            'attribute' => 'archive_type',
+        'attribute' => 'archive_type',
 		'value' => function ($model) {
             if ($model->archive_type) {
                 return $model::getArchiveType($model->archive_type);
@@ -148,19 +148,7 @@ $attributes = [
 		'visible' => !$small && in_array('archive_type', $model->level->field) ? true : false,
 	],
 	[
-            'attribute' => 'subject',
-		'value' => $model::parseFilter($model->getSubjects(true, 'title'), 'subjectId', ', '),
-		'format' => 'html',
-		'visible' => !$small && in_array('subject', $model->level->field),
-	],
-	[
-            'attribute' => 'function',
-		'value' => $model::parseFilter($model->getFunctions(true, 'title'), 'functionId', ', '),
-		'format' => 'html',
-		'visible' => !$small && in_array('function', $model->level->field),
-	],
-	[
-            'attribute' => 'location',
+        'attribute' => 'location',
 		'value' => function ($model) {
             if (($location = $model->getLocations(false)) != null) {
                 return $model::parseLocation($location);
@@ -171,8 +159,8 @@ $attributes = [
 		'visible' => !$small && in_array('location', $model->level->field) ? true : false,
 	],
 	[
-            'attribute' => 'medium',
-        'label' => Yii::t('app', 'Child & Medium'),
+        'attribute' => 'medium',
+        'label' => Yii::t('app', 'Child & Volume'),
 		'value' => function ($model) {
             if (strtolower($model->levelTitle->message) == 'item') {
                 return $model->medium ? $model->medium : '-';
@@ -181,6 +169,28 @@ $attributes = [
 		},
 		'format' => 'html',
         'visible' => !$small,
+	],
+	[
+        'attribute' => 'condition',
+		'value' => $model->condition ? $model->condition : '-',
+		'visible' => !$small && in_array('condition', $model->level->field) ? true : false,
+	],
+	[
+        'attribute' => 'restoration_status',
+		'value' => $model->restoration_status ? $model->restoration_status : '-',
+		'visible' => !$small && in_array('restoration_status', $model->level->field) ? true : false,
+	],
+	[
+        'attribute' => 'subject',
+		'value' => $model::parseFilter($model->getSubjects(true, 'title'), 'subjectId', ', '),
+		'format' => 'html',
+		'visible' => !$small && in_array('subject', $model->level->field),
+	],
+	[
+        'attribute' => 'function',
+		'value' => $model::parseFilter($model->getFunctions(true, 'title'), 'functionId', ', '),
+		'format' => 'html',
+		'visible' => !$small && in_array('function', $model->level->field),
 	],
     [
         'attribute' => 'oView',
@@ -192,27 +202,27 @@ $attributes = [
 		'visible' => !$small,
     ],
 	[
-            'attribute' => 'creation_date',
+        'attribute' => 'creation_date',
 		'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),
 		'visible' => !$small,
 	],
 	[
-            'attribute' => 'creationDisplayname',
+        'attribute' => 'creationDisplayname',
 		'value' => isset($model->creation) ? $model->creation->displayname : '-',
 		'visible' => !$small,
 	],
 	[
-            'attribute' => 'modified_date',
+        'attribute' => 'modified_date',
 		'value' => Yii::$app->formatter->asDatetime($model->modified_date, 'medium'),
 		'visible' => !$small,
 	],
 	[
-            'attribute' => 'modifiedDisplayname',
+        'attribute' => 'modifiedDisplayname',
 		'value' => isset($model->modified) ? $model->modified->displayname : '-',
 		'visible' => !$small,
 	],
 	[
-            'attribute' => 'updated_date',
+        'attribute' => 'updated_date',
 		'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
 		'visible' => !$small,
 	],

@@ -31,7 +31,7 @@ class Archives extends ArchivesModel
                 'preview', 'location', 'oView', 'oFile', 'oFavourite', 
                 'creatorId', 'repositoryId', 'subjectId', 'functionId',
                 'rackId', 'roomId', 'depoId', 'buildingId'], 'integer'],
-			[['title', 'code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'creation_date', 'modified_date', 'updated_date', 
+			[['title', 'code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'condition', 'restoration_status', 'creation_date', 'modified_date', 'updated_date', 
                 'parentTitle', 'levelName', 'creationDisplayname', 'modifiedDisplayname', 'creator', 'repository', 'subject', 'function'], 'safe'],
 		];
 	}
@@ -233,6 +233,7 @@ class Archives extends ArchivesModel
 			't.parent_id' => isset($params['parent']) ? $params['parent'] : $this->parent_id,
 			't.level_id' => isset($params['level']) ? $params['level'] : $this->level_id,
 			't.archive_type' => $this->archive_type,
+			't.restoration_status' => $this->restoration_status,
 			'cast(t.creation_date as date)' => $this->creation_date,
 			't.creation_id' => isset($params['creation']) ? $params['creation'] : $this->creation_id,
 			'cast(t.modified_date as date)' => $this->modified_date,
@@ -309,6 +310,7 @@ class Archives extends ArchivesModel
 			->andFilterWhere(['like', 't.code', $this->code])
 			->andFilterWhere(['like', 't.archive_date', $this->archive_date])
 			->andFilterWhere(['like', 't.archive_file', $this->archive_file])
+			->andFilterWhere(['like', 't.condition', $this->condition])
 			->andFilterWhere(['like', 'parent.title', $this->parentTitle])
 			->andFilterWhere(['like', 'levelTitle.message', $this->levelName])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])

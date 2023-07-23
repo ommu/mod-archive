@@ -23,7 +23,11 @@
  * @property string $archive_type
  * @property string $archive_date
  * @property string $archive_file
+ * @property string $condition
+ * @property string $restoration_status
  * @property integer $sync_fond
+ * @property integer $sync_schema
+ * @property string $fond_schema_id
  * @property string $creation_date
  * @property integer $creation_id
  * @property string $modified_date
@@ -125,12 +129,13 @@ class Archives extends \app\components\ActiveRecord
 	{
 		return [
 			[['publish', 'level_id', 'title', 'shortCode'], 'required'],
-			[['publish', 'sidkkas', 'parent_id', 'level_id', 'fond_id', 'sync_fond', 'creation_id', 'modified_id', 'backToManage'], 'integer'],
+			[['publish', 'sidkkas', 'parent_id', 'level_id', 'fond_id', 'sync_fond', 'sync_schema', 'creation_id', 'modified_id', 'backToManage'], 'integer'],
 			[['title', 'archive_type', 'archive_date'], 'string'],
 			[['fond_id', 'code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
-			[['code'], 'string', 'max' => 255],
+			[['code', 'condition'], 'string', 'max' => 255],
 			[['archive_date'], 'string', 'max' => 64],
-			[['shortCode'], 'string', 'max' => 32],
+			[['restoration_status', 'shortCode'], 'string', 'max' => 32],
+			[['fond_schema_id'], 'string', 'max' => 32],
 			[['level_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLevel::className(), 'targetAttribute' => ['level_id' => 'id']],
 		];
 	}
@@ -149,11 +154,15 @@ class Archives extends \app\components\ActiveRecord
 			'fond_id' => Yii::t('app', 'Fond'),
 			'title' => Yii::t('app', 'Title'),
 			'code' => Yii::t('app', 'Reference code'),
-			'medium' => Yii::t('app', 'Medium'),
+			'medium' => Yii::t('app', 'Volume'),
 			'archive_type' => Yii::t('app', 'Archive Type'),
 			'archive_date' => Yii::t('app', 'Archive Date'),
 			'archive_file' => Yii::t('app', 'Archive File'),
+			'condition' => Yii::t('app', 'Condition'),
+			'restoration_status' => Yii::t('app', 'Restoration Status'),
 			'sync_fond' => Yii::t('app', 'Sync Fond'),
+			'sync_schema' => Yii::t('app', 'Sync Schema'),
+			'fond_schema_id' => Yii::t('app', 'Fond Schema'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
@@ -512,7 +521,7 @@ class Archives extends \app\components\ActiveRecord
 		];
 		$this->templateColumns['medium'] = [
 			'attribute' => 'medium',
-			'label' => Yii::t('app', 'Child & Medium'),
+			'label' => Yii::t('app', 'Child & Volume'),
 			'value' => function($model, $key, $index, $column) {
                 if (strtolower($model->levelTitle->message) == 'item') {
                     return $model->medium ? $model->medium : '-';
@@ -523,6 +532,13 @@ class Archives extends \app\components\ActiveRecord
 			'enableSorting' => false,
 			'contentOptions' => ['class' => 'text-nowrap'],
 			'format' => 'raw',
+		];
+		$this->templateColumns['condition'] = [
+			'attribute' => 'condition',
+			'value' => function($model, $key, $index, $column) {
+				return $model->condition ? $model->condition : '-';
+			},
+			'visible' => !$this->isFond ? true : false,
 		];
 		$this->templateColumns['media'] = [
 			'attribute' => 'media',
@@ -697,6 +713,14 @@ class Archives extends \app\components\ActiveRecord
 				'visible' => !Yii::$app->request->get('id') ? true : false,
 			];
 		}
+		$this->templateColumns['restoration_status'] = [
+			'attribute' => 'restoration_status',
+			'value' => function($model, $key, $index, $column) {
+				return $model->restoration_status ? $model->restoration_status : '-';
+			},
+			'contentOptions' => ['class' => 'text-center'],
+			'visible' => !$this->isFond ? true : false,
+		];
 		$this->templateColumns['publish'] = [
 			'attribute' => 'publish',
 			'label' => Yii::t('app', 'Status'),
