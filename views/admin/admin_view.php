@@ -171,6 +171,11 @@ $attributes = [
         'visible' => !$small,
 	],
 	[
+        'attribute' => 'developmental_level',
+		'value' => $model->developmental_level ? $model->developmental_level : '-',
+		'visible' => !$small && in_array('developmental_level', $model->level->field) ? true : false,
+	],
+	[
         'attribute' => 'condition',
 		'value' => $model->condition ? $model->condition : '-',
 		'visible' => !$small && in_array('condition', $model->level->field) ? true : false,

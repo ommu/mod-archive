@@ -23,6 +23,7 @@
  * @property string $archive_type
  * @property string $archive_date
  * @property string $archive_file
+ * @property string $developmental_level
  * @property string $condition
  * @property string $restoration_status
  * @property integer $sync_fond
@@ -134,8 +135,8 @@ class Archives extends \app\components\ActiveRecord
 			[['fond_id', 'code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
 			[['code', 'condition'], 'string', 'max' => 255],
 			[['archive_date'], 'string', 'max' => 64],
-			[['restoration_status', 'shortCode'], 'string', 'max' => 32],
-			[['fond_schema_id'], 'string', 'max' => 32],
+			[['developmental_level', 'restoration_status', 'shortCode'], 'string', 'max' => 32],
+			[['fond_schema_id'], 'string', 'max' => 3],
 			[['level_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLevel::className(), 'targetAttribute' => ['level_id' => 'id']],
 		];
 	}
@@ -158,6 +159,7 @@ class Archives extends \app\components\ActiveRecord
 			'archive_type' => Yii::t('app', 'Archive Type'),
 			'archive_date' => Yii::t('app', 'Archive Date'),
 			'archive_file' => Yii::t('app', 'Archive File'),
+			'developmental_level' => Yii::t('app', 'Developmental Level'),
 			'condition' => Yii::t('app', 'Condition'),
 			'restoration_status' => Yii::t('app', 'Restoration Status'),
 			'sync_fond' => Yii::t('app', 'Sync Fond'),
@@ -532,6 +534,13 @@ class Archives extends \app\components\ActiveRecord
 			'enableSorting' => false,
 			'contentOptions' => ['class' => 'text-nowrap'],
 			'format' => 'raw',
+		];
+		$this->templateColumns['developmental_level'] = [
+			'attribute' => 'developmental_level',
+			'value' => function($model, $key, $index, $column) {
+				return $model->developmental_level ? $model->developmental_level : '-';
+			},
+			'visible' => !$this->isFond ? true : false,
 		];
 		$this->templateColumns['condition'] = [
 			'attribute' => 'condition',

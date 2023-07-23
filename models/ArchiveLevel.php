@@ -389,6 +389,7 @@ class ArchiveLevel extends \app\components\ActiveRecord
             'archive_type' => Yii::t('app', 'Archive Type'),
             'media' => Yii::t('app', 'Media Type'),
             'medium' => Yii::t('app', 'Child & Volume'),
+			'developmental_level' => Yii::t('app', 'Developmental Level'),
 			'condition' => Yii::t('app', 'Condition'),
 			'restoration_status' => Yii::t('app', 'Restoration Status'),
             'subject' => Yii::t('app', 'Subject'),

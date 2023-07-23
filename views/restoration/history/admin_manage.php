@@ -26,7 +26,7 @@ if ($context->breadcrumbApp) {
 }
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Restoration'), 'url' => ['restoration/admin/index']];
 if ($restoration != null) {
-    $this->params['breadcrumbs'][] = ['label' => $restoration->archive->code, 'url' => ['view', 'id' => $restoration->id]];
+    $this->params['breadcrumbs'][] = ['label' => $restoration->archive->code, 'url' => ['restoration/admin/view', 'id' => $restoration->id]];
 }
 $this->params['breadcrumbs'][] = Yii::t('app', 'History');
 
