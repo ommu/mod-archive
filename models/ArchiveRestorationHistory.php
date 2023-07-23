@@ -28,7 +28,6 @@ namespace ommu\archive\models;
 use Yii;
 use thamtech\uuid\helpers\UuidHelper;
 use app\models\Users;
-use ommu\uuid\models\ArchiveRestoration;
 
 class ArchiveRestorationHistory extends \app\components\ActiveRecord
 {

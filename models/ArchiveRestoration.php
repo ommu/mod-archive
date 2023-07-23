@@ -34,15 +34,15 @@ use Yii;
 use yii\helpers\Html;
 use thamtech\uuid\helpers\UuidHelper;
 use app\models\Users;
-use ommu\levelItem\models\Archives;
 
 class ArchiveRestoration extends \app\components\ActiveRecord
 {
-    public $gridForbiddenColumn = ['archiveTitle', 'creationDisplayname', 'modifiedDisplayname'];
+    public $gridForbiddenColumn = ['creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname'];
 
     public $stayInHere;
 
 	public $archiveTitle;
+	public $archiveCode;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
 
@@ -78,14 +78,15 @@ class ArchiveRestoration extends \app\components\ActiveRecord
 		return [
 			'id' => Yii::t('app', 'ID'),
 			'archive_id' => Yii::t('app', 'Archive'),
-			'condition' => Yii::t('app', 'Condition'),
-			'condition_date' => Yii::t('app', 'Condition Date'),
+			'condition' => Yii::t('app', 'Restoration Status'),
+			'condition_date' => Yii::t('app', 'Restoration Date'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'stayInHere' => Yii::t('app', 'stayInHere'),
 			'archiveTitle' => Yii::t('app', 'Archive'),
+			'archiveCode' => Yii::t('app', 'Reference code'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
 		];
@@ -168,6 +169,14 @@ class ArchiveRestoration extends \app\components\ActiveRecord
 			'value' => function($model, $key, $index, $column) {
 				return isset($model->archive) ? $model->archive->title : '-';
 				// return $model->archiveTitle;
+			},
+			'visible' => !Yii::$app->request->get('archive') ? true : false,
+		];
+		$this->templateColumns['archiveCode'] = [
+			'attribute' => 'archiveCode',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->archive) ? $model->archive->code : '-';
+				// return $model->archiveCode;
 			},
 			'visible' => !Yii::$app->request->get('archive') ? true : false,
 		];
@@ -264,6 +273,7 @@ class ArchiveRestoration extends \app\components\ActiveRecord
 		parent::afterFind();
 
 		// $this->archiveTitle = isset($this->archive) ? $this->archive->title : '-';
+		// $this->archiveCode = isset($this->archive) ? $this->archive->code : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
 		// $this->history = $this->getHistories(true) ? 1 : 0;
@@ -286,17 +296,6 @@ class ArchiveRestoration extends \app\components\ActiveRecord
                     $this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
                 }
             }
-        }
-        return true;
-	}
-
-	/**
-	 * before save attributes
-	 */
-	public function beforeSave($insert)
-	{
-        if (parent::beforeSave($insert)) {
-            $this->condition_date = Yii::$app->formatter->asDate($this->condition_date, 'php:Y-m-d');
         }
         return true;
 	}
