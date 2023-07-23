@@ -19,7 +19,16 @@ use yii\helpers\Url;
 use app\components\grid\GridView;
 use yii\widgets\Pjax;
 
-$this->params['breadcrumbs'][] = $this->title;
+
+$context = $this->context;
+if ($context->breadcrumbApp) {
+	$this->params['breadcrumbs'][] = ['label' => $context->breadcrumbAppParam['name'], 'url' => [$context->breadcrumbAppParam['url']]];
+}
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Restoration'), 'url' => ['restoration/admin/index']];
+if ($restoration != null) {
+    $this->params['breadcrumbs'][] = ['label' => $restoration->archive->code, 'url' => ['view', 'id' => $restoration->id]];
+}
+$this->params['breadcrumbs'][] = Yii::t('app', 'History');
 
 $this->params['menu']['option'] = [
 	//['label' => Yii::t('app', 'Search'), 'url' => 'javascript:void(0);'],
@@ -31,7 +40,7 @@ $this->params['menu']['option'] = [
 <?php Pjax::begin(); ?>
 
 <?php if ($restoration != null) {
-	echo $this->render('/restoration/admin_view', ['model' => $restoration, 'small' => true]);
+	echo $this->render('/restoration/admin/admin_view', ['model' => $restoration, 'small' => true]);
 } ?>
 
 <?php //echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -69,7 +78,7 @@ array_push($columnData, [
 			]);
 		},
 	],
-	'template' => '{view} {delete}',
+	'template' => '{delete}',
 ]);
 
 echo GridView::widget([

@@ -9,7 +9,6 @@
  * TOC :
  *  Index
  *  Manage
- *  View
  *  Delete
  *
  *  findModel
@@ -30,9 +29,26 @@ use mdm\admin\components\AccessControl;
 use yii\filters\VerbFilter;
 use ommu\archive\models\ArchiveRestorationHistory;
 use ommu\archive\models\search\ArchiveRestorationHistory as ArchiveRestorationHistorySearch;
+use ommu\archive\models\ArchiveSetting;
 
 class HistoryController extends Controller
 {
+	/**
+	 * {@inheritdoc}
+	 */
+	public function init()
+	{
+        parent::init();
+
+        $setting = ArchiveSetting::find()
+            ->select(['breadcrumb_param'])
+            ->where(['id' => 1])
+            ->one();
+
+		$this->breadcrumbApp = $setting->breadcrumb;
+		$this->breadcrumbAppParam = $setting->getBreadcrumbAppParam();
+	}
+
 	/**
 	 * {@inheritdoc}
 	 */
@@ -81,7 +97,7 @@ class HistoryController extends Controller
         $columns = $searchModel->getGridColumn($cols);
 
         if (($restoration = Yii::$app->request->get('restoration')) != null) {
-            $restoration = \ommu\uuid\models\ArchiveRestoration::findOne($restoration);
+            $restoration = \ommu\archive\models\ArchiveRestoration::findOne($restoration);
         }
 
 		$this->view->title = Yii::t('app', 'Restoration Histories');
@@ -92,24 +108,6 @@ class HistoryController extends Controller
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
 			'restoration' => $restoration,
-		]);
-	}
-
-	/**
-	 * Displays a single ArchiveRestorationHistory model.
-	 * @param string $id
-	 * @return mixed
-	 */
-	public function actionView($id)
-	{
-        $model = $this->findModel($id);
-
-		$this->view->title = Yii::t('app', 'Detail Restoration History: {restoration-id}', ['restoration-id' => $model->restoration->archive->title]);
-		$this->view->description = '';
-		$this->view->keywords = '';
-		return $this->oRender('admin_view', [
-			'model' => $model,
-			'small' => false,
 		]);
 	}
 

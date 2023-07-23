@@ -120,14 +120,14 @@ class ArchiveRestorationHistory extends ArchiveRestorationHistoryModel
 
 		// grid filtering conditions
         $query->andFilterWhere([
+			't.id' => $this->id,
+			't.restoration_id' => isset($params['restoration']) ? $params['restoration'] : $this->restoration_id,
 			't.condition' => $this->condition,
 			'cast(t.condition_date as date)' => $this->condition_date,
 			't.creation_id' => isset($params['creation']) ? $params['creation'] : $this->creation_id,
 		]);
 
-		$query->andFilterWhere(['like', 't.id', $this->id])
-			->andFilterWhere(['like', 't.restoration_id', $this->restoration_id])
-			->andFilterWhere(['like', 'restoration.title', $this->restorationArchiveId])
+		$query->andFilterWhere(['like', 'restoration.title', $this->restorationArchiveId])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname]);
 
 		return $dataProvider;

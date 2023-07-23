@@ -46,6 +46,8 @@ class ArchiveRestoration extends \app\components\ActiveRecord
 	public $creationDisplayname;
 	public $modifiedDisplayname;
 
+    public $oHistory;
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -89,6 +91,7 @@ class ArchiveRestoration extends \app\components\ActiveRecord
 			'archiveCode' => Yii::t('app', 'Reference code'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
+			'oHistory' => Yii::t('app', 'History'),
 		];
 	}
 
@@ -170,6 +173,7 @@ class ArchiveRestoration extends \app\components\ActiveRecord
 				return isset($model->archive) ? $model->archive->title : '-';
 				// return $model->archiveTitle;
 			},
+			'format' => 'html',
 			'visible' => !Yii::$app->request->get('archive') ? true : false,
 		];
 		$this->templateColumns['archiveCode'] = [
@@ -193,6 +197,15 @@ class ArchiveRestoration extends \app\components\ActiveRecord
 				return Yii::$app->formatter->asDatetime($model->condition_date, 'medium');
 			},
 			'filter' => $this->filterDatepicker($this, 'condition_date'),
+		];
+		$this->templateColumns['oHistory'] = [
+			'attribute' => 'oHistory',
+			'value' => function($model, $key, $index, $column) {
+				$history = $model->getHistories(true);
+				return Html::a($history, ['restoration/history/manage', 'restoration' => $model->primaryKey], ['title' => Yii::t('app', '{count} histories', ['count' => $history]), 'data-pjax' => 0]);
+			},
+			'contentOptions' => ['class' => 'text-center'],
+			'format' => 'raw',
 		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',

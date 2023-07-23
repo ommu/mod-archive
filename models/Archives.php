@@ -716,9 +716,17 @@ class Archives extends \app\components\ActiveRecord
 		$this->templateColumns['restoration_status'] = [
 			'attribute' => 'restoration_status',
 			'value' => function($model, $key, $index, $column) {
-				return $model->restoration_status ? $model->restoration_status : '-';
+                if (!$model->restoration_status) {
+                    if (in_array('restoration_status', $model->level->field)) {
+                        return Html::a(Yii::t('app', 'Add to restoration'), ['restoration/admin/create', 'id' => $model->primaryKey], ['title' => Yii::t('app', 'Add to restoration'), 'class' => 'modal-btn']);
+                    }
+                    return '-';
+                }
+				return ArchiveRestoration::getCondition($model->restoration_status);
 			},
+			'filter' => ArchiveRestoration::getCondition(),
 			'contentOptions' => ['class' => 'text-center'],
+			'format' => 'raw',
 			'visible' => !$this->isFond ? true : false,
 		];
 		$this->templateColumns['publish'] = [

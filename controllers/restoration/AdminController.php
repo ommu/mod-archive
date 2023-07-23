@@ -121,7 +121,11 @@ class AdminController extends Controller
 	 */
 	public function actionCreate()
 	{
-        $model = new ArchiveRestoration();
+        if (!($id = Yii::$app->request->get('id'))) {
+			throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+
+        $model = new ArchiveRestoration(['archive_id' => $id]);
 
         if (Yii::$app->request->isPost) {
             $model->load(Yii::$app->request->post());
@@ -147,7 +151,7 @@ class AdminController extends Controller
 		$this->view->title = Yii::t('app', 'Create Restoration');
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_create', [
+		return $this->oRender('admin_create', [
 			'model' => $model,
 		]);
 	}

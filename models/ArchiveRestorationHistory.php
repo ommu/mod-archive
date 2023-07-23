@@ -31,7 +31,7 @@ use app\models\Users;
 
 class ArchiveRestorationHistory extends \app\components\ActiveRecord
 {
-    public $gridForbiddenColumn = ['restorationArchiveId', 'creationDisplayname'];
+    public $gridForbiddenColumn = ['restorationArchiveId'];
 
     public $stayInHere;
 
