@@ -1059,6 +1059,51 @@ class Archives extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * function arrayReset
+	 * @param array $array
+	 * @param array $action
+	 * @return mixed
+	 */
+	public function setTreeAction($array, $action=[])
+	{
+        foreach ($array as $key => $val) {
+            if (is_array($action) && in_array('view', $action)) {
+                $array[$key]['view-url'] = Url::to(['view', 'id' => $val['id']]);
+            }
+            if (is_array($action) && in_array('update', $action)) {
+                $array[$key]['update-url'] = Url::to(['update', 'id' => $val['id']]);
+            }
+            if (is_array($action) && in_array('child', $action)) {
+                $array[$key]['child-url'] = Url::to(['manage', 'parent' => $val['id']]);
+            }
+            if (is_array($val) && array_key_exists('branch', $val)) {
+                $val = $this->setTreeAction($val['branch'], $action);
+                $array[$key]['branch'] = $val;
+            }
+        }
+        return $array;
+	}
+
+	/**
+	 * function arrayReset
+	 * @param array $array
+	 * @param array $action
+	 * @return mixed
+	 */
+	public function arrayReset($array)
+	{
+        $array = array_values($array);
+        foreach ($array as $key => $val) {
+            if (is_array($val) && array_key_exists('branch', $val)) {
+                $val = $this->arrayReset($val['branch']);
+                $array[$key]['branch'] = $val;
+            }
+        }
+
+        return $array;
+	}
+
+	/**
 	 * function getLongCode
 	 * @param short true|false 
 	 * @param link true|false 
