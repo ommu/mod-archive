@@ -18,6 +18,7 @@
  *	Location
  *	ResetLocation
  *	Preview
+ *	Tree
  *
  *	findModel
  *
@@ -601,5 +602,57 @@ class AdminController extends Controller
 		return $this->oRender('admin_preview_document', [
 			'model' => $model,
 		]);
+	}
+
+	/**
+	 * Displays a single Archives model.
+	 * @param integer $id
+	 * @return mixed
+	 */
+	public function actionTree($id)
+	{
+        $model = $this->findModel($id);
+
+        if (!(!$model->parent_id && $model->level_id === 1)) {
+			throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
+
+        $this->subMenuParam = $model->id;
+        if (empty($model->level->child)) {
+            unset($this->subMenu[1]['childs']);
+        }
+        if (empty($model->level->field) || !in_array('location', $model->level->field)) {
+            unset($this->subMenu[1]['location']);
+        }
+        if (empty($model->level->field) || !in_array('luring', $model->level->field)) {
+            unset($this->subMenu[1]['luring']);
+        }
+        if (empty($model->level->field) || !in_array('favourites', $model->level->field)) {
+            unset($this->subMenu[2]['favourites']);
+        }
+
+		$this->view->title = Yii::t('app', 'Tree {level-name}: {code}', ['level-name' => $model->levelTitle->message, 'code' => $model->code]);
+		$this->view->description = '';
+		$this->view->keywords = '';
+		return $this->oRender('admin_tree', [
+			'model' => $model,
+		]);
+	}
+
+	/**
+	 * actionArchive an existing ArchivePengolahanFinal model.
+	 * @param integer $id
+	 * @return mixed
+	 */
+	public function actionArchiveTree($id)
+	{
+		Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+		$model = $this->findModel($id);
+        $archiveJson = \yii\helpers\Json::decode($model->archive_json);
+
+        $data = $model->arrayReset($model->setTreeAction($archiveJson, ['view']));
+
+        return $data;
 	}
 }

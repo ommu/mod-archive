@@ -1,12 +1,12 @@
 <?php
 namespace ommu\archive\assets;
 
-class ArchiveTree extends \yii\web\AssetBundle
+class ArchiveTreeFond extends \yii\web\AssetBundle
 {
 	public $sourcePath = '@ommu/archive/assets';
 
 	public $js = [
-		'js/acitree.js',
+		'js/acitree-fond.js',
 	];
 
 	public $depends = [

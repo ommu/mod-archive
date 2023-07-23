@@ -25,6 +25,14 @@ fond_submenu:
         0: 'fond/location'
         id: $_GET*id
       select: action
+  4:
+    tree:
+      label: Tree
+      url:
+        0: 'fond/tree'
+        id: $_GET*id
+      select: action
+  5:
     luring:
       label: Senarai Lurings
       url:
