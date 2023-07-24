@@ -179,6 +179,12 @@ if ($isFond) {
 	->hint(Yii::t('app', 'Provide either a formal title or a concise supplied title in accordance with the rules of multilevel description and national conventions.')); ?>
 
 <?php
+$fondArchiveDate = $isFond && in_array('archive_date', $model->level->field) ? true : false;
+echo ($fondArchiveDate || !$isFond) ? $form->field($model, 'archive_date', ['options' => ['class' => 'form-group row field-item'.(!$isFond && (!isset($model->level) || !empty($model->level->child) || !in_array('archive_date', $model->level->field)) ? ' hide' : '').'']])
+	->textInput(['maxlength' => true])
+	->label($model->getAttributeLabel('archive_date')) : ''; ?>
+
+<?php
 $fondMedium = $isFond && in_array('medium', $model->level->field) ? true : false;
 echo ($fondMedium || !$isFond) ? $form->field($model, 'medium', ['options' => ['class' => 'form-group row field-item'.(!$isFond && (!isset($model->level) || !empty($model->level->child) || !in_array('medium', $model->level->field)) ? ' hide' : '').'']])
     ->textarea(['rows' => 2, 'cols' => 50])
@@ -186,10 +192,16 @@ echo ($fondMedium || !$isFond) ? $form->field($model, 'medium', ['options' => ['
     ->hint(Yii::t('app', 'Record the extent of the unit of description by giving the number of physical or logical units in arabic numerals and the unit of measurement. Give the specific medium (media) of the unit of description. Separate multiple extents with a linebreak.')) : ''; ?>
 
 <?php
-$fondArchiveDate = $isFond && in_array('archive_date', $model->level->field) ? true : false;
-echo ($fondArchiveDate || !$isFond) ? $form->field($model, 'archive_date', ['options' => ['class' => 'form-group row field-item'.(!$isFond && (!isset($model->level) || !empty($model->level->child) || !in_array('archive_date', $model->level->field)) ? ' hide' : '').'']])
+$condition = $isFond && in_array('condition', $model->level->field) ? true : false;
+echo ($condition || !$isFond) ? $form->field($model, 'condition', ['options' => ['class' => 'form-group row field-item'.(!$isFond && (!isset($model->level) || !empty($model->level->child) || !in_array('condition', $model->level->field)) ? ' hide' : '').'']])
 	->textInput(['maxlength' => true])
-	->label($model->getAttributeLabel('archive_date')) : ''; ?>
+	->label($model->getAttributeLabel('condition')) : ''; ?>
+
+<?php
+$developmentalLevel = $isFond && in_array('developmental_level', $model->level->field) ? true : false;
+echo ($developmentalLevel || !$isFond) ? $form->field($model, 'developmental_level', ['options' => ['class' => 'form-group row field-item'.(!$isFond && (!isset($model->level) || !empty($model->level->child) || !in_array('developmental_level', $model->level->field)) ? ' hide' : '').'']])
+	->textInput(['maxlength' => true])
+	->label($model->getAttributeLabel('developmental_level')) : ''; ?>
 
 <hr/>
 

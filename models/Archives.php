@@ -132,11 +132,11 @@ class Archives extends \app\components\ActiveRecord
 			[['publish', 'level_id', 'title', 'shortCode'], 'required'],
 			[['publish', 'sidkkas', 'parent_id', 'level_id', 'fond_id', 'sync_fond', 'sync_schema', 'creation_id', 'modified_id', 'backToManage'], 'integer'],
 			[['title', 'archive_type', 'archive_date'], 'string'],
-			[['fond_id', 'code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
+			[['fond_id', 'code', 'medium', 'archive_type', 'archive_date', 'archive_file', 'developmental_level', 'condition', 'media', 'creator', 'repository', 'subject', 'function', 'backToManage'], 'safe'],
 			[['code', 'condition'], 'string', 'max' => 255],
 			[['archive_date'], 'string', 'max' => 64],
 			[['developmental_level', 'restoration_status', 'shortCode'], 'string', 'max' => 32],
-			[['fond_schema_id'], 'string', 'max' => 3],
+			[['fond_schema_id'], 'string', 'max' => 36],
 			[['level_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArchiveLevel::className(), 'targetAttribute' => ['level_id' => 'id']],
 		];
 	}
