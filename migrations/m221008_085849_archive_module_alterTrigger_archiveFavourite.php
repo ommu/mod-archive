@@ -10,7 +10,6 @@
  *
  */
 
-use Yii;
 use yii\db\Schema;
 
 class m221008_085849_archive_module_alterTrigger_archiveFavourite extends \yii\db\Migration

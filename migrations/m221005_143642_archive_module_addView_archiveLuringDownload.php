@@ -10,7 +10,6 @@
  *
  */
 
-use Yii;
 use yii\db\Schema;
 
 class m221005_143642_archive_module_addView_archiveLuringDownload extends \yii\db\Migration

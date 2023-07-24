@@ -10,7 +10,6 @@
  *
  */
 
-use Yii;
 use yii\db\Schema;
 
 class m220926_112327_archive_module_insertRow_archiveRepositoryGrid extends \yii\db\Migration

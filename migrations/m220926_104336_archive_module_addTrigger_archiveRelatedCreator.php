@@ -10,7 +10,6 @@
  *
  */
 
-use Yii;
 use yii\db\Schema;
 
 class m220926_104336_archive_module_addTrigger_archiveRelatedCreator extends \yii\db\Migration

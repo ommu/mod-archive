@@ -10,7 +10,6 @@
  *
  */
 
-use Yii;
 use yii\db\Schema;
 
 class m221004_200002_archive_module_createTable_lurings extends \yii\db\Migration

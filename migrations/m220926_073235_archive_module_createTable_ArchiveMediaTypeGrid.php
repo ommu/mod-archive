@@ -10,7 +10,6 @@
  *
  */
 
-use Yii;
 use yii\db\Schema;
 
 class m220926_073235_archive_module_createTable_ArchiveMediaTypeGrid extends \yii\db\Migration

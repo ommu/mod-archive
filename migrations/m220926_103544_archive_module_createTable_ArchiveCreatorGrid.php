@@ -10,7 +10,6 @@
  *
  */
 
-use Yii;
 use yii\db\Schema;
 
 class m220926_103544_archive_module_createTable_ArchiveCreatorGrid extends \yii\db\Migration

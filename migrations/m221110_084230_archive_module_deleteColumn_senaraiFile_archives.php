@@ -10,7 +10,6 @@
  *
  */
 
-use Yii;
 use yii\db\Schema;
 
 class m221110_084230_archive_module_deleteColumn_senaraiFile_archives extends \yii\db\Migration

@@ -10,7 +10,6 @@
  *
  */
 
-use Yii;
 use yii\db\Schema;
 
 class m210824_140955_archive_module_create_table_view_history extends \yii\db\Migration

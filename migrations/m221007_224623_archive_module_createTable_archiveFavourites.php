@@ -10,7 +10,6 @@
  *
  */
 
-use Yii;
 use yii\db\Schema;
 
 class m221007_224623_archive_module_createTable_archiveFavourites extends \yii\db\Migration

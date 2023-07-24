@@ -10,7 +10,6 @@
  *
  */
 
-use Yii;
 use yii\db\Schema;
 
 class m220929_215306_archive_module_addView_archiveView extends \yii\db\Migration

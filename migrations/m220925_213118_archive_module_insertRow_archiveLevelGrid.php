@@ -10,7 +10,6 @@
  *
  */
 
-use Yii;
 use yii\db\Schema;
 
 class m220925_213118_archive_module_insertRow_archiveLevelGrid extends \yii\db\Migration

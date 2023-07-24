@@ -10,7 +10,6 @@
  *
  */
 
-use Yii;
 use yii\db\Schema;
 
 class m221005_165555_archive_module_addTrigger_archiveLurings extends \yii\db\Migration

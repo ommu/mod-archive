@@ -10,7 +10,6 @@
  *
  */
 
-use Yii;
 use yii\db\Schema;
 
 class m220926_073807_archive_module_insertRow_archiveMediaGrid extends \yii\db\Migration

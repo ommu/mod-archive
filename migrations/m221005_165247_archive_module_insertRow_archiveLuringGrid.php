@@ -10,7 +10,6 @@
  *
  */
 
-use Yii;
 use yii\db\Schema;
 
 class m221005_165247_archive_module_insertRow_archiveLuringGrid extends \yii\db\Migration

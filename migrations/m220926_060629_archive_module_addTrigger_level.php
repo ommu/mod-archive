@@ -10,7 +10,6 @@
  *
  */
 
-use Yii;
 use yii\db\Schema;
 
 class m220926_060629_archive_module_addTrigger_level extends \yii\db\Migration
