@@ -71,7 +71,7 @@ $attributes = [
 	[
 		'attribute' => 'senarai_file_draft',
 		'value' => function ($model) {
-            $uploadPath = join('/', [$model->archive::getUploadPath(false), 'document_draft']);
+            $uploadPath = join('/', [$model->archive::getUploadPath(false), 'senarai_luring_draft']);
             return $model::parseSenaraiFileDraft($model->senarai_file_draft, $uploadPath);
 		},
 		'format' => 'raw',
