@@ -6,7 +6,7 @@
  * @see \ommu\archive\models\ArchiveViewHistory
  * 
  * @author Putra Sudaryanto <putra@ommu.id>
- * @contact (+62)856-299-4114
+ * @contact (+62)811-2540-432
  * @copyright Copyright (c) 2020 OMMU (www.ommu.id)
  * @created date 12 Fabruary 2020, 08:42 WIB
  * @link https://bitbucket.org/ommu/archive

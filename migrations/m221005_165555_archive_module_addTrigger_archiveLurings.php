@@ -3,7 +3,7 @@
  * m221005_165555_archive_module_addTrigger_archiveLurings
  * 
  * @author Putra Sudaryanto <putra@ommu.id>
- * @contact (+62)856-299-4114
+ * @contact (+62)811-2540-432
  * @copyright Copyright (c) 2022 OMMU (www.ommu.id)
  * @created date 26 Septemmber 2022, 05:48 WIB
  * @link https://github.com/ommu/mod-archive
