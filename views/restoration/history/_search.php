@@ -6,7 +6,7 @@
  * @var $model ommu\archive\models\search\ArchiveRestorationHistory
  * @var $form yii\widgets\ActiveForm
  *
- * @author Putra Sudaryanto <dwptr@ommu.id>
+ * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)811-2540-432
  * @copyright Copyright (c) 2023 OMMU (www.ommu.id)
  * @created date 24 July 2023, 01:23 WIB

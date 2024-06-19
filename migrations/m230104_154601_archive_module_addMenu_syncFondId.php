@@ -3,7 +3,7 @@
  * m230104_154601_archive_module_addMenu_syncFondId
  * 
  * @author Putra Sudaryanto <putra@ommu.id>
- * @contact (+62)856-299-4114
+ * @contact (+62)811-2540-432
  * @copyright Copyright (c) 2019 OMMU (www.ommu.id)
  * @created date 30 January 2023, 06:59 WIB
  * @link https://github.com/ommu/ommu
