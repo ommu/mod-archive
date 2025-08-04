@@ -2,9 +2,9 @@
 /**
  * ViewArchiveType
  *
- * @author Putra Sudaryanto <putra@ommu.co>
- * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
+ * @author Putra Sudaryanto <putra@ommu.id>
+ * @contact (+62)811-2540-432
+ * @copyright Copyright (c) 2016 OMMU (www.ommu.id)
  * @created date 16 June 2016, 13:44 WIB
  * @link https://github.com/ommu/ommu-archive
  *

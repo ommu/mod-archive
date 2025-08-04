@@ -5,9 +5,9 @@
  * @var $model ArchiveConvertCategory
  * @var $form CActiveForm
  *
- * @author Putra Sudaryanto <putra@ommu.co>
- * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
+ * @author Putra Sudaryanto <putra@ommu.id>
+ * @contact (+62)811-2540-432
+ * @copyright Copyright (c) 2016 OMMU (www.ommu.id)
  * @created date 17 June 2016, 06:48 WIB
  * @link https://github.com/ommu/ommu-archive
  *
