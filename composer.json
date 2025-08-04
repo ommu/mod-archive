@@ -1,6 +1,6 @@
 {
 	"name": "ommu/archive",
-	"description": "Archive Module from OMMU",
+	"description": "Archive Module For OMMU",
 	"type": "ommu-module",
 	"keywords": [
 		"module",
@@ -9,20 +9,19 @@
 		"sikn",
 		"jikn",
 		"anri",
-		"ommu",
-		"ommu-platform",
+		"ommu2",
 		"yii2"
 	],
 	"license": "Apache-2.0",
-	"homepage": "https://bitbucket.org/ommu/archive",
+	"homepage": "https://github.com/ommu/mod-archive",
 	"support": {
-		"issues": "https://bitbucket.org/ommu/archive/issues",
-		"wiki": "https://bitbucket.org/ommu/archive/wiki",
-		"source": "https://bitbucket.org/ommu/archive"
+		"issues": "https://github.com/ommu/mod-archive/issues",
+		"wiki": "https://github.com/ommu/mod-archive/wiki",
+		"source": "https://github.com/ommu/mod-archive"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://bitbucket.org/ommu/archive.git"
+		"url": "https://github.com/ommu/mod-archive.git"
 	},
 	"authors": [
 		{
